@@ -9,10 +9,14 @@ let detectedPlatform = null;
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', async () => {
   await loadManifest();
+  await loadModelWeights();
   detectClientHardware();
   renderMatrixTables();
   initTabNavigation();
   initDragAndDropVerifier();
+  initPortal3DHeart();
+  initPortalECG();
+  updatePortalPrediction();
 });
 
 /**
@@ -368,4 +372,634 @@ async function handleFileVerification(file) {
     statusTitle.innerText = 'Verification Error';
     statusDetails.innerText = err.message;
   }
+}
+
+// ==============================================================================
+// 3D CGI ANATOMICAL HEART & REAL-TIME PREDICTION LAB (WEBGL THREE.JS)
+// ==============================================================================
+let modelWeights = null;
+let pScene, pCamera, pRenderer, pControls;
+let pHeartGroup, pVentricleMesh, pAtriumMesh, pAortaMesh, pPulmonaryMesh, pVenaCavaMesh;
+let pCoronaryVessels = [], pStenosisMarkers = [], pConductionFibers = [];
+let pParticleSystem;
+let pCurrentMode = 'cinematic';
+let pAnimationTime = 0;
+let pClock = new THREE.Clock();
+let currentPrediction = {
+  prob: 0.45,
+  band: 'Moderate Risk',
+  bpm: 150,
+  oldpeak: 1.2,
+  slope: 2,
+  ca: 1,
+  color: '#F59E0B',
+  glow: '#D97706'
+};
+
+// Web Audio API Stethoscope Synth
+let pAudioCtx = null;
+let pSoundEnabled = false;
+let pNextBeatTime = 0;
+
+// Lead-II ECG Oscilloscope
+let pEcgCanvas, pEcgCtx;
+let pEcgPoints = [];
+let pSweepX = 0;
+
+async function loadModelWeights() {
+  try {
+    const res = await fetch('model_weights.json');
+    modelWeights = await res.json();
+    console.log('[Amex Portal] Model weights loaded for in-browser inference.');
+  } catch (e) {
+    console.warn('[Amex Portal] model_weights.json fetch fallback:', e);
+  }
+}
+
+/**
+ * In-browser Logistic Regression Inference with Occlusion Feature Deltas
+ */
+function runClientInference(patient) {
+  if (!modelWeights) {
+    // Fallback heuristic scoring if weights file unavailable
+    let z = -2.5 + (patient.age * 0.03) + (patient.sex * 0.7) + (patient.cp * 0.4) + (patient.oldpeak * 0.5) + (patient.ca * 0.8);
+    let p = 1.0 / (1.0 + Math.exp(-z));
+    return { prob: p, deltas: [] };
+  }
+
+  function scorePatient(pt) {
+    let z = modelWeights.intercept;
+    // Standardize numeric features
+    for (let i = 0; i < modelWeights.numeric.length; i++) {
+      const col = modelWeights.numeric[i];
+      const val = pt[col] !== undefined ? pt[col] : modelWeights.baseline[col];
+      const norm = (val - modelWeights.num_mean[i]) / modelWeights.num_scale[i];
+      z += norm * modelWeights.coef[i];
+    }
+    // One-hot categorical features
+    let coefOffset = modelWeights.numeric.length;
+    for (let c = 0; c < modelWeights.categorical.length; c++) {
+      const col = modelWeights.categorical[c];
+      const val = pt[col] !== undefined ? pt[col] : modelWeights.baseline[col];
+      const cats = modelWeights.cat_categories[c];
+      for (let k = 0; k < cats.length; k++) {
+        if (Number(val) === Number(cats[k])) {
+          z += 1.0 * modelWeights.coef[coefOffset + k];
+        }
+      }
+      coefOffset += cats.length;
+    }
+    return 1.0 / (1.0 + Math.exp(-z));
+  }
+
+  const baseProb = scorePatient(patient);
+  const deltas = [];
+
+  // Occlusion: swap each feature with baseline
+  const featureLabels = {
+    age: "Age", sex: "Sex", cp: "Chest Pain", trestbps: "Blood Pressure",
+    chol: "Cholesterol", fbs: "Fasting Sugar", restecg: "Resting ECG",
+    thalach: "Max Heart Rate", exang: "Exercise Angina", oldpeak: "ST Depression",
+    slope: "ST Slope", ca: "Major Vessels (Ca)", thal: "Thalassemia"
+  };
+
+  modelWeights.features.forEach(f => {
+    const alt = { ...patient, [f]: modelWeights.baseline[f] };
+    const altProb = scorePatient(alt);
+    deltas.push({ feature: f, label: featureLabels[f] || f, delta: (baseProb - altProb) * 100 });
+  });
+
+  deltas.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+  return { prob: baseProb, deltas };
+}
+
+function updatePortalPrediction() {
+  const age = parseFloat(document.getElementById('inp-age').value);
+  const sex = parseFloat(document.getElementById('inp-sex').value);
+  const trestbps = parseFloat(document.getElementById('inp-trestbps').value);
+  const chol = parseFloat(document.getElementById('inp-chol').value);
+  const thalach = parseFloat(document.getElementById('inp-thalach').value);
+  const cp = parseFloat(document.getElementById('inp-cp').value);
+  const exang = parseFloat(document.getElementById('inp-exang').value);
+  const oldpeak = parseFloat(document.getElementById('inp-oldpeak').value);
+  const slope = parseFloat(document.getElementById('inp-slope').value);
+  const ca = parseFloat(document.getElementById('inp-ca').value);
+  const thal = parseFloat(document.getElementById('inp-thal').value);
+
+  // Update form display badges
+  document.getElementById('val-age').innerText = `${age} yrs`;
+  document.getElementById('val-trestbps').innerText = `${trestbps} mmHg`;
+  document.getElementById('val-chol').innerText = `${chol} mg/dl`;
+  document.getElementById('val-thalach').innerText = `${thalach} BPM`;
+  document.getElementById('val-oldpeak').innerText = `${oldpeak.toFixed(1)} mm`;
+
+  const patient = {
+    age, sex, trestbps, chol, thalach, fbs: 0,
+    cp, exang, restecg: 0, slope, oldpeak, ca, thal
+  };
+
+  const { prob, deltas } = runClientInference(patient);
+
+  let band = 'Low Risk';
+  let color = '#10B981';
+  let glow = '#059669';
+  let blurb = 'Clinical indicators reflect optimal cardiovascular tolerance with low probability of significant coronary artery disease.';
+
+  if (prob >= 0.66) {
+    band = 'High Risk';
+    color = '#F43F5E';
+    glow = '#E11D48';
+    blurb = 'Multiple high-impact biomarkers present (coronary fluoroscopy occlusion, ST-segment depression, or symptomatic ischemia). High likelihood of significant stenosis.';
+  } else if (prob >= 0.33) {
+    band = 'Moderate Risk';
+    color = '#F59E0B';
+    glow = '#D97706';
+    blurb = 'Borderline ischemic tolerance observed. Moderate probability of coronary insufficiency requiring clinical follow-up and stress testing.';
+  }
+
+  currentPrediction = {
+    prob, band, bpm: thalach, oldpeak, slope, ca, color, glow
+  };
+
+  // Update UI Elements
+  const riskValEl = document.getElementById('portal-risk-value');
+  const riskTitleEl = document.getElementById('portal-risk-title');
+  const hudPulseEl = document.getElementById('portal-hud-pulse');
+  const bpmDisplayEl = document.getElementById('portal-bpm-display');
+  const stenosisDisplayEl = document.getElementById('portal-stenosis-val');
+  const ecgMetaEl = document.getElementById('portal-ecg-meta');
+  const riskBlurbEl = document.getElementById('portal-risk-blurb');
+
+  if (riskValEl) {
+    riskValEl.innerText = `${band} (${(prob * 100).toFixed(1)}%)`;
+    riskValEl.style.color = color;
+  }
+  if (hudPulseEl) {
+    hudPulseEl.style.backgroundColor = color;
+    hudPulseEl.style.boxShadow = `0 0 10px ${glow}`;
+  }
+  if (bpmDisplayEl) bpmDisplayEl.innerText = Math.round(thalach);
+  if (stenosisDisplayEl) {
+    stenosisDisplayEl.innerText = `${ca} / 3`;
+    stenosisDisplayEl.style.color = ca > 0 ? '#F43F5E' : '#10B981';
+  }
+  if (ecgMetaEl) {
+    const slopeNames = ['Upsloping', 'Flat', 'Downsloping'];
+    ecgMetaEl.innerText = `ST: -${oldpeak.toFixed(1)} mm | ${slopeNames[slope - 1] || 'Flat'}`;
+  }
+  if (riskBlurbEl) riskBlurbEl.innerText = blurb;
+
+  // Render Attribution Bars
+  const attrContainer = document.getElementById('portal-attribution-bars');
+  if (attrContainer && deltas.length > 0) {
+    attrContainer.innerHTML = '';
+    const topDeltas = deltas.slice(0, 5);
+    topDeltas.forEach(d => {
+      const isRiskRaiser = d.delta > 0;
+      const barColor = isRiskRaiser ? '#F43F5E' : '#10B981';
+      const pctWidth = Math.min(Math.abs(d.delta) * 2.5, 100);
+      const row = document.createElement('div');
+      row.className = 'attribution-bar-row';
+      row.innerHTML = `
+        <span class="attribution-bar-label" title="${d.label}">${d.label}</span>
+        <div class="attribution-bar-track">
+          <div class="attribution-bar-fill" style="width:${pctWidth}%; background-color:${barColor};"></div>
+        </div>
+        <span class="attribution-bar-val" style="color:${barColor};">${d.delta >= 0 ? '+' : ''}${d.delta.toFixed(1)}%</span>
+      `;
+      attrContainer.appendChild(row);
+    });
+  }
+
+  // Update Stenosis markers on 3D Heart
+  updateStenosisMarkers(ca);
+}
+
+function applyPortalPreset(preset) {
+  if (preset === 'low') {
+    document.getElementById('inp-age').value = 32;
+    document.getElementById('inp-sex').value = 0;
+    document.getElementById('inp-trestbps').value = 115;
+    document.getElementById('inp-chol').value = 180;
+    document.getElementById('inp-thalach').value = 165;
+    document.getElementById('inp-cp').value = 2;
+    document.getElementById('inp-exang').value = 0;
+    document.getElementById('inp-oldpeak').value = 0.2;
+    document.getElementById('inp-slope').value = 1;
+    document.getElementById('inp-ca').value = 0;
+    document.getElementById('inp-thal').value = 3;
+  } else if (preset === 'mid') {
+    document.getElementById('inp-age').value = 52;
+    document.getElementById('inp-sex').value = 1;
+    document.getElementById('inp-trestbps').value = 135;
+    document.getElementById('inp-chol').value = 240;
+    document.getElementById('inp-thalach').value = 140;
+    document.getElementById('inp-cp').value = 3;
+    document.getElementById('inp-exang').value = 0;
+    document.getElementById('inp-oldpeak').value = 1.4;
+    document.getElementById('inp-slope').value = 2;
+    document.getElementById('inp-ca').value = 1;
+    document.getElementById('inp-thal').value = 6;
+  } else if (preset === 'high') {
+    document.getElementById('inp-age').value = 65;
+    document.getElementById('inp-sex').value = 1;
+    document.getElementById('inp-trestbps').value = 165;
+    document.getElementById('inp-chol').value = 295;
+    document.getElementById('inp-thalach').value = 105;
+    document.getElementById('inp-cp').value = 4;
+    document.getElementById('inp-exang').value = 1;
+    document.getElementById('inp-oldpeak').value = 3.2;
+    document.getElementById('inp-slope').value = 3;
+    document.getElementById('inp-ca').value = 2;
+    document.getElementById('inp-thal').value = 7;
+  }
+  updatePortalPrediction();
+}
+
+/**
+ * Three.js 3D CGI Anatomical Heart Initialization
+ */
+function initPortal3DHeart() {
+  const container = document.getElementById('portal-cgi-viewport');
+  const canvas = document.getElementById('portal-webgl-canvas');
+  if (!container || !canvas || typeof THREE === 'undefined') return;
+
+  pScene = new THREE.Scene();
+  pScene.fog = new THREE.FogExp2(0x050811, 0.045);
+
+  pCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+  pCamera.position.set(0, 0.7, 5.0);
+
+  pRenderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true,
+    alpha: true,
+    powerPreference: 'high-performance'
+  });
+  pRenderer.setSize(container.clientWidth, container.clientHeight);
+  pRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  pRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+  pRenderer.toneMappingExposure = 1.25;
+
+  pControls = new THREE.OrbitControls(pCamera, pRenderer.domElement);
+  pControls.enableDamping = true;
+  pControls.dampingFactor = 0.06;
+  pControls.minDistance = 2.5;
+  pControls.maxDistance = 8.0;
+  pControls.autoRotate = true;
+  pControls.autoRotateSpeed = 0.8;
+
+  // Lights
+  const ambLight = new THREE.AmbientLight(0x1e293b, 1.2);
+  pScene.add(ambLight);
+
+  const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
+  mainLight.position.set(5, 8, 6);
+  pScene.add(mainLight);
+
+  const rimLight = new THREE.DirectionalLight(0x006FCF, 2.2);
+  rimLight.position.set(-6, -3, -5);
+  pScene.add(rimLight);
+
+  // Group
+  pHeartGroup = new THREE.Group();
+  pScene.add(pHeartGroup);
+
+  // 1. Ventricular Body
+  const ventGeo = new THREE.SphereGeometry(1.2, 54, 54);
+  const pos = ventGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    let x = pos.getX(i);
+    let y = pos.getY(i);
+    let z = pos.getZ(i);
+    if (y < 0) {
+      const taper = 1.0 + y * 0.45;
+      x *= Math.max(0.2, taper);
+      z *= Math.max(0.2, taper);
+      x -= y * 0.22;
+    } else {
+      x *= 1.08;
+      z *= 0.95;
+    }
+    if (z > 0 && Math.abs(x) < 0.4) {
+      z -= 0.08 * (1.0 - Math.abs(x) / 0.4);
+    }
+    pos.setXYZ(i, x, y, z);
+  }
+  ventGeo.computeVertexNormals();
+
+  pVentricleMesh = new THREE.Mesh(ventGeo, getPortalMaterial('ventricle'));
+  pHeartGroup.add(pVentricleMesh);
+
+  // 2. Atria
+  const atriaGeo = new THREE.SphereGeometry(0.72, 40, 40);
+  pAtriumMesh = new THREE.Mesh(atriaGeo, getPortalMaterial('atrium'));
+  pAtriumMesh.scale.set(1.4, 0.75, 1.0);
+  pAtriumMesh.position.set(-0.1, 0.95, -0.2);
+  pHeartGroup.add(pAtriumMesh);
+
+  // 3. Aortic Arch
+  const aortaCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.1, 0.6, 0.1),
+    new THREE.Vector3(0.25, 1.4, 0.1),
+    new THREE.Vector3(0.05, 1.9, -0.1),
+    new THREE.Vector3(-0.4, 1.8, -0.3),
+    new THREE.Vector3(-0.55, 0.8, -0.45),
+  ]);
+  const aortaGeo = new THREE.TubeGeometry(aortaCurve, 36, 0.22, 20, false);
+  pAortaMesh = new THREE.Mesh(aortaGeo, getPortalMaterial('vessel'));
+  pHeartGroup.add(pAortaMesh);
+
+  // Branching Vessels
+  [-0.15, 0.02, 0.18].forEach((xOff, idx) => {
+    const bCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(xOff, 1.8, -0.1),
+      new THREE.Vector3(xOff * 1.3, 2.3 + idx * 0.08, -0.05)
+    ]);
+    const bMesh = new THREE.Mesh(new THREE.TubeGeometry(bCurve, 14, 0.065, 12, false), getPortalMaterial('vessel'));
+    pHeartGroup.add(bMesh);
+  });
+
+  // 4. Pulmonary Trunk & SVC
+  const pulmCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.15, 0.6, 0.35),
+    new THREE.Vector3(-0.25, 1.3, 0.15),
+    new THREE.Vector3(-0.4, 1.5, -0.05),
+  ]);
+  pPulmonaryMesh = new THREE.Mesh(new THREE.TubeGeometry(pulmCurve, 24, 0.2, 16, false), getPortalMaterial('pulmonary'));
+  pHeartGroup.add(pPulmonaryMesh);
+
+  const svcCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.65, 0.7, -0.25),
+    new THREE.Vector3(0.65, 1.7, -0.25),
+  ]);
+  pVenaCavaMesh = new THREE.Mesh(new THREE.TubeGeometry(svcCurve, 18, 0.18, 14, false), getPortalMaterial('pulmonary'));
+  pHeartGroup.add(pVenaCavaMesh);
+
+  // Coronary Tree (LAD + RCA)
+  const ladCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.0, 0.8, 0.7),
+    new THREE.Vector3(-0.1, 0.4, 0.95),
+    new THREE.Vector3(-0.15, 0.0, 0.98),
+    new THREE.Vector3(-0.22, -0.4, 0.88),
+    new THREE.Vector3(-0.35, -0.85, 0.55),
+    new THREE.Vector3(-0.42, -1.2, 0.18),
+  ]);
+  const ladMesh = new THREE.Mesh(new THREE.TubeGeometry(ladCurve, 36, 0.045, 14, false), getPortalMaterial('coronary'));
+  pHeartGroup.add(ladMesh);
+  pCoronaryVessels.push(ladMesh);
+
+  const rcaCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.35, 0.7, 0.5),
+    new THREE.Vector3(0.7, 0.45, 0.6),
+    new THREE.Vector3(0.85, 0.0, 0.45),
+    new THREE.Vector3(0.75, -0.45, 0.35),
+    new THREE.Vector3(0.4, -0.8, 0.2),
+  ]);
+  const rcaMesh = new THREE.Mesh(new THREE.TubeGeometry(rcaCurve, 36, 0.04, 14, false), getPortalMaterial('coronary'));
+  pHeartGroup.add(rcaMesh);
+  pCoronaryVessels.push(rcaMesh);
+
+  // Particle Field
+  const pCount = 350;
+  const pGeo = new THREE.BufferGeometry();
+  const pPositions = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount; i++) {
+    const r = 1.8 + Math.random() * 2.2;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    pPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    pPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    pPositions[i * 3 + 2] = r * Math.cos(phi);
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+  pParticleSystem = new THREE.Points(pGeo, new THREE.PointsMaterial({
+    size: 0.04, color: 0x38bdf8, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending
+  }));
+  pScene.add(pParticleSystem);
+
+  window.addEventListener('resize', onPortalResize);
+  requestAnimationFrame(animatePortalHeart);
+}
+
+function updateStenosisMarkers(caCount) {
+  if (!pHeartGroup) return;
+  // Clear existing
+  pStenosisMarkers.forEach(m => pHeartGroup.remove(m));
+  pStenosisMarkers = [];
+
+  const stenosisPositions = [
+    new THREE.Vector3(-0.15, 0.0, 1.0),
+    new THREE.Vector3(0.85, 0.0, 0.47),
+    new THREE.Vector3(-0.65, 0.55, 0.42),
+  ];
+
+  for (let i = 0; i < Math.min(caCount, 3); i++) {
+    const ringGeo = new THREE.TorusGeometry(0.08, 0.025, 12, 24);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.copy(stenosisPositions[i]);
+    ring.lookAt(pHeartGroup.position);
+    pHeartGroup.add(ring);
+    pStenosisMarkers.push(ring);
+  }
+}
+
+function getPortalMaterial(part) {
+  if (pCurrentMode === 'cinematic') {
+    if (part === 'ventricle') {
+      return new THREE.MeshPhysicalMaterial({
+        color: 0xbe123c, emissive: new THREE.Color(currentPrediction.glow || 0xd97706),
+        emissiveIntensity: 0.15, roughness: 0.35, clearcoat: 0.8
+      });
+    }
+    if (part === 'atrium') return new THREE.MeshPhysicalMaterial({ color: 0x9f1239, roughness: 0.4 });
+    if (part === 'vessel') return new THREE.MeshPhysicalMaterial({ color: 0xdc2626, roughness: 0.25, clearcoat: 0.9 });
+    if (part === 'pulmonary') return new THREE.MeshPhysicalMaterial({ color: 0x1d4ed8, roughness: 0.3, clearcoat: 0.7 });
+    if (part === 'coronary') return new THREE.MeshStandardMaterial({ color: 0xff0044, emissive: 0xff0022, emissiveIntensity: 0.4 });
+  } else if (pCurrentMode === 'bioelectric') {
+    return new THREE.MeshBasicMaterial({ color: 0x0284c7, wireframe: true, transparent: true, opacity: 0.4 });
+  } else if (pCurrentMode === 'angiogram') {
+    if (part === 'coronary' || part === 'vessel') return new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+    return new THREE.MeshBasicMaterial({ color: 0x1e293b, transparent: true, opacity: 0.22, wireframe: true });
+  } else if (pCurrentMode === 'matrix') {
+    return new THREE.MeshBasicMaterial({ color: new THREE.Color(currentPrediction.color), wireframe: true, transparent: true, opacity: 0.6 });
+  }
+  return new THREE.MeshStandardMaterial({ color: 0xbe123c });
+}
+
+function setPortalMode(mode, btn) {
+  pCurrentMode = mode;
+  document.querySelectorAll('.cgi-mode-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  if (pVentricleMesh) pVentricleMesh.material = getPortalMaterial('ventricle');
+  if (pAtriumMesh) pAtriumMesh.material = getPortalMaterial('atrium');
+  if (pAortaMesh) pAortaMesh.material = getPortalMaterial('vessel');
+  if (pPulmonaryMesh) pPulmonaryMesh.material = getPortalMaterial('pulmonary');
+  pCoronaryVessels.forEach(m => m.material = getPortalMaterial('coronary'));
+}
+
+function onPortalResize() {
+  const container = document.getElementById('portal-cgi-viewport');
+  if (!container || !pCamera || !pRenderer) return;
+  pCamera.aspect = container.clientWidth / container.clientHeight;
+  pCamera.updateProjectionMatrix();
+  pRenderer.setSize(container.clientWidth, container.clientHeight);
+}
+
+function animatePortalHeart() {
+  requestAnimationFrame(animatePortalHeart);
+  const delta = pClock.getDelta();
+  if (pControls) pControls.update();
+
+  const beatsPerSecond = (currentPrediction.bpm || 150) / 60.0;
+  pAnimationTime += delta * beatsPerSecond * Math.PI * 2;
+  const phase = pAnimationTime % (Math.PI * 2);
+
+  let squeeze = 0;
+  if (phase < 0.6) {
+    squeeze = Math.sin(phase / 0.6 * Math.PI);
+  } else if (phase > 4.5 && phase < 5.4) {
+    squeeze = 0.2 * Math.sin((phase - 4.5) / 0.9 * Math.PI);
+  }
+
+  if (pVentricleMesh) {
+    const scaleY = 1.0 - squeeze * 0.14;
+    const scaleXZ = 1.0 - squeeze * 0.08;
+    pVentricleMesh.scale.set(scaleXZ, scaleY, scaleXZ);
+  }
+  if (pHeartGroup) {
+    pHeartGroup.rotation.y = Math.sin(pAnimationTime * 0.15) * 0.18 + (squeeze * 0.05);
+  }
+
+  // Pulsing stenosis markers
+  pStenosisMarkers.forEach(m => {
+    const s = 1.0 + Math.sin(pAnimationTime * 4.0) * 0.25;
+    m.scale.set(s, s, s);
+  });
+
+  if (pParticleSystem) pParticleSystem.rotation.y += delta * 0.06;
+  if (pRenderer && pScene && pCamera) pRenderer.render(pScene, pCamera);
+
+  drawPortalECG(delta);
+
+  // Sound
+  if (pSoundEnabled && pAudioCtx) {
+    const now = pAudioCtx.currentTime;
+    if (now >= pNextBeatTime) {
+      playPortalHeartbeat(now);
+      pNextBeatTime = now + (60.0 / (currentPrediction.bpm || 150));
+    }
+  }
+}
+
+/**
+ * Lead-II Vector Electrocardiogram
+ */
+function initPortalECG() {
+  pEcgCanvas = document.getElementById('portal-ecg-canvas');
+  if (!pEcgCanvas) return;
+  pEcgCtx = pEcgCanvas.getContext('2d');
+  resizePortalECG();
+  window.addEventListener('resize', resizePortalECG);
+}
+
+function resizePortalECG() {
+  if (!pEcgCanvas) return;
+  pEcgCanvas.width = pEcgCanvas.clientWidth * window.devicePixelRatio;
+  pEcgCanvas.height = pEcgCanvas.clientHeight * window.devicePixelRatio;
+}
+
+function drawPortalECG(delta) {
+  if (!pEcgCtx || !pEcgCanvas) return;
+  const w = pEcgCanvas.width;
+  const h = pEcgCanvas.height;
+  const midY = h * 0.52;
+
+  pEcgCtx.fillStyle = 'rgba(5, 8, 17, 0.08)';
+  pEcgCtx.fillRect(0, 0, w, h);
+
+  const sweepSpeed = ((currentPrediction.bpm || 150) / 75.0) * 3.5 * window.devicePixelRatio;
+  const prevX = pSweepX;
+  pSweepX = (pSweepX + sweepSpeed) % w;
+
+  pEcgCtx.clearRect(pSweepX, 0, 14 * window.devicePixelRatio, h);
+
+  const cycleWidth = w / ((currentPrediction.bpm || 150) / 30);
+  const cyclePos = (pSweepX % cycleWidth) / cycleWidth;
+
+  let voltage = 0;
+  if (cyclePos >= 0.10 && cyclePos < 0.20) {
+    voltage = 0.15 * Math.sin((cyclePos - 0.10) / 0.10 * Math.PI);
+  } else if (cyclePos >= 0.28 && cyclePos < 0.31) {
+    voltage = -0.15 * Math.sin((cyclePos - 0.28) / 0.03 * Math.PI);
+  } else if (cyclePos >= 0.31 && cyclePos < 0.36) {
+    voltage = 1.0 * Math.sin((cyclePos - 0.31) / 0.05 * Math.PI);
+  } else if (cyclePos >= 0.36 && cyclePos < 0.40) {
+    voltage = -0.35 * Math.sin((cyclePos - 0.36) / 0.04 * Math.PI);
+  } else if (cyclePos >= 0.40 && cyclePos < 0.60) {
+    const stProgress = (cyclePos - 0.40) / 0.20;
+    const baseDep = -((currentPrediction.oldpeak || 0) * 0.08);
+    if (currentPrediction.slope === 1) voltage = baseDep + stProgress * 0.15;
+    else if (currentPrediction.slope === 2) voltage = baseDep;
+    else voltage = baseDep - stProgress * 0.12;
+  } else if (cyclePos >= 0.60 && cyclePos < 0.80) {
+    voltage = 0.28 * Math.sin((cyclePos - 0.60) / 0.20 * Math.PI);
+  }
+
+  const targetY = midY - (voltage * h * 0.38);
+
+  pEcgCtx.beginPath();
+  pEcgCtx.strokeStyle = currentPrediction.color || '#38bdf8';
+  pEcgCtx.lineWidth = 2.0 * window.devicePixelRatio;
+  pEcgCtx.lineCap = 'round';
+  pEcgCtx.moveTo(prevX, pEcgPoints[Math.floor(prevX)] || targetY);
+  pEcgCtx.lineTo(pSweepX, targetY);
+  pEcgCtx.stroke();
+
+  pEcgPoints[Math.floor(pSweepX)] = targetY;
+}
+
+/**
+ * Web Audio Stethoscope
+ */
+function togglePortalSound() {
+  if (!pAudioCtx) {
+    pAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (pAudioCtx.state === 'suspended') pAudioCtx.resume();
+
+  pSoundEnabled = !pSoundEnabled;
+  const btn = document.getElementById('portal-sound-btn');
+  if (btn) {
+    btn.classList.toggle('active', pSoundEnabled);
+    btn.innerText = pSoundEnabled ? '🔊 Sound' : '🔈 Sound';
+  }
+}
+
+function playPortalHeartbeat(time) {
+  if (!pAudioCtx) return;
+  // S1 (Lub)
+  playToneGen(time, 65, 0.14, 0.7);
+  // S2 (Dub)
+  playToneGen(time + 0.16, 90, 0.10, 0.6);
+}
+
+function playToneGen(time, freq, dur, gain) {
+  const osc = pAudioCtx.createOscillator();
+  const g = pAudioCtx.createGain();
+  const f = pAudioCtx.createBiquadFilter();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, time);
+  f.type = 'lowpass';
+  f.frequency.setValueAtTime(140, time);
+  g.gain.setValueAtTime(0.001, time);
+  g.gain.exponentialRampToValueAtTime(gain, time + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+  osc.connect(f);
+  f.connect(g);
+  g.connect(pAudioCtx.destination);
+  osc.start(time);
+  osc.stop(time + dur);
 }

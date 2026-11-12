@@ -956,8 +956,261 @@ a:hover {
   transform: translateY(0);
 }
 
+/* ==============================================================================
+   LIVE 3D CGI CARDIAC TELEMETRY LAB STYLES
+   ============================================================================== */
+.amex-lab-grid {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 28px;
+  padding: 28px;
+}
+
+.clinical-panel {
+  background: #FFFFFF;
+  border: 1px solid var(--amex-border-card);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.clinical-section-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--amex-blue-primary);
+  margin-bottom: 12px;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--amex-border-card);
+  background: #F8FAFC;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+.preset-btn:hover {
+  background: #EEF2F6;
+  border-color: #94A3B8;
+}
+.preset-btn.low { color: #047857; border-color: #A7F3D0; background: #ECFDF5; }
+.preset-btn.mid { color: #B45309; border-color: #FDE68A; background: #FFFBEB; }
+.preset-btn.high { color: #B91C1C; border-color: #FECACA; background: #FEF2F2; }
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--amex-text-headline);
+  margin-bottom: 6px;
+}
+
+.form-value-badge {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--amex-blue-primary);
+  font-weight: 700;
+}
+
+.clinical-slider {
+  width: 100%;
+  accent-color: var(--amex-blue-primary);
+  cursor: pointer;
+}
+
+.clinical-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--amex-border-card);
+  border-radius: 6px;
+  background: #FFFFFF;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--amex-text-body);
+  outline: none;
+  cursor: pointer;
+}
+.clinical-select:focus {
+  border-color: var(--amex-blue-primary);
+  box-shadow: 0 0 0 2px rgba(0, 111, 207, 0.15);
+}
+
+/* 3D CGI Heart Viewport */
+.cgi-heart-viewport {
+  position: relative;
+  height: 520px;
+  background: radial-gradient(circle at 50% 45%, #0d1527 0%, #050811 85%);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #1E293B;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+#portal-webgl-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cgi-hud-top {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cgi-hud-badge {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 8px;
+  padding: 8px 14px;
+  pointer-events: auto;
+}
+
+.cgi-mode-toolbar {
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.cgi-mode-btn {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94A3B8;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.15s ease;
+}
+.cgi-mode-btn:hover {
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.cgi-mode-btn.active {
+  color: #FFFFFF;
+  background: rgba(0, 111, 207, 0.5);
+  border-color: #006FCF;
+}
+
+.cgi-hud-bottom {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cgi-ecg-card {
+  flex: 1;
+  background: rgba(10, 15, 29, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 12px;
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+}
+
+#portal-ecg-canvas {
+  width: 100%;
+  height: 60px;
+  display: block;
+  background: rgba(5, 8, 17, 0.95);
+  border-radius: 4px;
+}
+
+.cgi-vitals-pill {
+  background: rgba(10, 15, 29, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 12px;
+  backdrop-filter: blur(14px);
+  min-width: 95px;
+  pointer-events: auto;
+}
+
+/* Telemetry Summary Cards under 3D Heart */
+.telemetry-summary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.telemetry-card {
+  background: #FFFFFF;
+  border: 1px solid var(--amex-border-card);
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.attribution-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+}
+.attribution-bar-label {
+  width: 110px;
+  color: var(--amex-text-body);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.attribution-bar-track {
+  flex: 1;
+  height: 8px;
+  background: #EDF2F7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.attribution-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.attribution-bar-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  width: 45px;
+  text-align: right;
+  font-size: 0.72rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
+  .amex-lab-grid { grid-template-columns: 1fr; }
   .amex-hero h1 { font-size: 2.125rem; }
   .amex-detection-card { flex-direction: column; align-items: flex-start; }
   .amex-detection-actions { align-items: flex-start; width: 100%; }
