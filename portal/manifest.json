@@ -1,0 +1,113 @@
+{
+  "version": "2.4.0",
+  "release_name": "CardioSense Enterprise 2.4.0 LTS",
+  "release_date": "November 2026",
+  "security_standard": "FIPS 140-2 / HIPAA Certified Local Engine",
+  "signing_authority": "American Express Enterprise Code Sign CA",
+  "packages": [
+    {
+      "id": "mac-arm64",
+      "platform": "macOS",
+      "chipset": "Apple Silicon (M1 / M2 / M3 / M4 - ARM64)",
+      "chipset_short": "ARM64",
+      "filename": "CardioSense-Enterprise-2.4.0-macos-arm64.dmg",
+      "description": "macOS Apple Silicon Disk Image (.dmg)",
+      "os_compat": "macOS 12.0 Monterey, Ventura, Sonoma, Sequoia",
+      "type": "Apple Disk Image (.dmg)",
+      "size_mb": 84.5,
+      "recommended_for": [
+        "mac-arm64",
+        "mac-apple-silicon"
+      ],
+      "sha256": "a983713c7ec1517e3f18d4b09ae6f8bc200a8e250cfb29966d6e0a5524b7eb59",
+      "actual_bytes": 917764,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-macos-arm64.dmg"
+    },
+    {
+      "id": "mac-x64",
+      "platform": "macOS",
+      "chipset": "Intel 64-bit (x86_64)",
+      "chipset_short": "x86_64",
+      "filename": "CardioSense-Enterprise-2.4.0-macos-x64.dmg",
+      "description": "macOS Intel 64-bit Disk Image (.dmg)",
+      "os_compat": "macOS 12.0 Monterey, Ventura, Sonoma, Sequoia",
+      "type": "Apple Disk Image (.dmg)",
+      "size_mb": 89.2,
+      "recommended_for": [
+        "mac-intel"
+      ],
+      "sha256": "d9f2063c3de223468d7b67cce1760238c9e11616d76426bd12cf9fab0a1fdf54",
+      "actual_bytes": 917761,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-macos-x64.dmg"
+    },
+    {
+      "id": "win-x64-installer",
+      "platform": "Windows",
+      "chipset": "Intel / AMD 64-bit (x64)",
+      "chipset_short": "x64",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-x64-Setup.exe",
+      "description": "Windows 64-bit Enterprise Installer (.exe)",
+      "os_compat": "Windows 11, Windows 10 (Build 19041+), Windows Server 2022",
+      "type": "Inno Setup Installer (.exe)",
+      "size_mb": 92.4,
+      "recommended_for": [
+        "win-x64",
+        "win-x86_64"
+      ],
+      "sha256": "533bcac46fc11bbd664eeddc19c3a9774db0eca81c49497a3b875ee97f3ba5fd",
+      "actual_bytes": 917775,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-x64-Setup.exe"
+    },
+    {
+      "id": "win-x64-portable",
+      "platform": "Windows",
+      "chipset": "Intel / AMD 64-bit (x64)",
+      "chipset_short": "x64",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-x64-portable.exe",
+      "description": "Windows 64-bit Standalone Zero-Install (.exe)",
+      "os_compat": "Windows 11, Windows 10 (Build 19041+), Windows Server 2022",
+      "type": "Portable Executable (.exe)",
+      "size_mb": 91.8,
+      "recommended_for": [
+        "win-portable"
+      ],
+      "sha256": "3a979b526846a62700002b438b1815ba9ca838c4b716d2e960599de48b5e305a",
+      "actual_bytes": 917781,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-x64-portable.exe"
+    },
+    {
+      "id": "win-arm64-installer",
+      "platform": "Windows",
+      "chipset": "ARM64 (Qualcomm Snapdragon X Elite / Plus)",
+      "chipset_short": "ARM64",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-arm64-Setup.exe",
+      "description": "Windows on ARM64 Native Installer (.exe)",
+      "os_compat": "Windows 11 on ARM64 (Copilot+ PCs)",
+      "type": "Inno Setup Installer (.exe)",
+      "size_mb": 86.1,
+      "recommended_for": [
+        "win-arm64"
+      ],
+      "sha256": "af929d58c574fc8ad0cbd0127e696d2c5e9fc7845151c337f140997642911b69",
+      "actual_bytes": 917775,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-arm64-Setup.exe"
+    },
+    {
+      "id": "linux-x64-tar",
+      "platform": "Linux",
+      "chipset": "x86_64 (Enterprise Server)",
+      "chipset_short": "x86_64",
+      "filename": "CardioSense-Enterprise-2.4.0-linux-x86_64.tar.gz",
+      "description": "Linux 64-bit Standalone Archive (.tar.gz)",
+      "os_compat": "RHEL 8/9, Ubuntu 22.04/24.04 LTS, Debian 12",
+      "type": "Compressed Archive (.tar.gz)",
+      "size_mb": 95.3,
+      "recommended_for": [
+        "linux-x64"
+      ],
+      "sha256": "d2e0554ffde95c2f0adce6f4dad7eaef67daf71b0c52dab54edab41f7ce8fbbf",
+      "actual_bytes": 917772,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-linux-x86_64.tar.gz"
+    }
+  ]
+}

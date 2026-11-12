@@ -1,0 +1,973 @@
+/* ==============================================================================
+   AMERICAN EXPRESS DESIGN LANGUAGE SYSTEM (DLS) - REVERSE ENGINEERED
+   CardioSense Enterprise Client Distribution Portal
+   Tokens, Typography, Cards, Tables, Buttons, and Grid System
+   ============================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* American Express Brand Color Tokens */
+  --amex-blue-primary: #006FCF;      /* Iconic Amex Digital Action Blue */
+  --amex-blue-hover: #0056a3;        /* Darkened Action Blue */
+  --amex-blue-deep: #002663;         /* Masterbrand Deep Navy */
+  --amex-blue-midnight: #00175A;     /* Amex Signature Midnight Header/Footer */
+  --amex-gold-accent: #C5A059;       /* Centurion / Gold Card Trim */
+  --amex-gold-light: #F4EBD0;        /* Gold Subtle Tint */
+  --amex-platinum: #E6E8EA;          /* Platinum Brushed Metallic */
+  
+  /* Neutral System */
+  --amex-bg-page: #F7F8F9;           /* Hallmark Amex Page Canvas */
+  --amex-bg-card: #FFFFFF;           /* Pristine White Surfaces */
+  --amex-border-card: #D5D8DC;       /* Subtle Architectural Border */
+  --amex-border-subtle: #E8ECEF;     /* Micro Divider */
+  --amex-text-headline: #00175A;     /* Amex Midnight for Top Hierarchy */
+  --amex-text-body: #333333;         /* Neutral Charcoal Body */
+  --amex-text-muted: #5B6770;        /* Cool Gray Secondary */
+  --amex-text-link: #006FCF;         /* Action Link Blue */
+  
+  /* Status */
+  --amex-success-green: #00823B;
+  --amex-success-bg: #E8F5E9;
+  --amex-warn-amber: #D97706;
+  
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Benton Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--amex-bg-page);
+  color: var(--amex-text-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--amex-text-link);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--amex-blue-hover);
+  text-decoration: underline;
+}
+
+/* ==============================================================================
+   AMEX TOP UTILITY RIBBON & MAIN NAVIGATION
+   ============================================================================== */
+.amex-utility-ribbon {
+  background-color: var(--amex-blue-midnight);
+  color: #FFFFFF;
+  font-size: 0.8125rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.amex-utility-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.amex-utility-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.amex-utility-left a {
+  color: #DDE2E6;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.amex-utility-left a:hover {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.amex-utility-left a.active {
+  color: #FFFFFF;
+  font-weight: 600;
+  border-bottom: 2px solid var(--amex-gold-accent);
+  padding-bottom: 2px;
+}
+
+.amex-utility-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.amex-region-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #DDE2E6;
+  cursor: pointer;
+  font-size: 0.8125rem;
+}
+.amex-region-selector:hover {
+  color: #FFFFFF;
+}
+
+.amex-login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 4px 14px;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.amex-login-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #FFFFFF;
+}
+
+/* Main Navigation Bar */
+.amex-header {
+  background-color: var(--amex-bg-card);
+  border-bottom: 1px solid var(--amex-border-card);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 23, 90, 0.04);
+}
+
+.amex-header-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.amex-brand-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Reverse-Engineered American Express Blue Box Logo */
+.amex-blue-box {
+  width: 48px;
+  height: 48px;
+  background-color: var(--amex-blue-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  padding: 4px;
+  box-shadow: 0 2px 6px rgba(0, 111, 207, 0.35);
+  flex-shrink: 0;
+}
+
+.amex-blue-box-inner {
+  border: 1.5px solid #FFFFFF;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2px 1px;
+}
+
+.amex-blue-box-line1 {
+  font-family: var(--font-sans);
+  font-size: 6px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.8px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.amex-blue-box-line2 {
+  font-family: var(--font-sans);
+  font-size: 5.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.6px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.amex-brand-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.amex-brand-main {
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--amex-text-headline);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.amex-brand-sub {
+  font-size: 0.75rem;
+  color: var(--amex-text-muted);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.amex-nav-menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 28px;
+}
+
+.amex-nav-item a {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--amex-text-headline);
+  padding: 8px 0;
+  position: relative;
+  transition: color 0.2s ease;
+}
+.amex-nav-item a:hover {
+  color: var(--amex-blue-primary);
+  text-decoration: none;
+}
+.amex-nav-item.active a {
+  color: var(--amex-blue-primary);
+}
+.amex-nav-item.active a::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--amex-blue-primary);
+}
+
+.amex-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ==============================================================================
+   BUTTONS & CTAS (AMEX DLS)
+   ============================================================================== */
+.amex-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 10px 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+  text-decoration: none !important;
+  border: 1px solid transparent;
+  line-height: 1.25;
+}
+
+.amex-btn-primary {
+  background-color: var(--amex-blue-primary);
+  color: #FFFFFF !important;
+  border-color: var(--amex-blue-primary);
+  box-shadow: 0 1px 3px rgba(0, 111, 207, 0.25);
+}
+.amex-btn-primary:hover {
+  background-color: var(--amex-blue-hover);
+  border-color: var(--amex-blue-hover);
+  box-shadow: 0 2px 6px rgba(0, 111, 207, 0.4);
+}
+
+.amex-btn-secondary {
+  background-color: transparent;
+  color: var(--amex-blue-primary) !important;
+  border-color: var(--amex-blue-primary);
+}
+.amex-btn-secondary:hover {
+  background-color: rgba(0, 111, 207, 0.05);
+  color: var(--amex-blue-hover) !important;
+}
+
+.amex-btn-dark {
+  background-color: var(--amex-blue-midnight);
+  color: #FFFFFF !important;
+  border-color: var(--amex-blue-midnight);
+}
+.amex-btn-dark:hover {
+  background-color: var(--amex-blue-deep);
+}
+
+.amex-btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+}
+
+.amex-btn-lg {
+  padding: 14px 32px;
+  font-size: 1.0625rem;
+}
+
+/* ==============================================================================
+   BREADCRUMBS
+   ============================================================================== */
+.amex-breadcrumb-bar {
+  background-color: #EDF1F5;
+  border-bottom: 1px solid var(--amex-border-card);
+  font-size: 0.8125rem;
+}
+
+.amex-breadcrumb-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--amex-text-muted);
+}
+.amex-breadcrumb-container a {
+  color: var(--amex-text-headline);
+  font-weight: 500;
+}
+.amex-breadcrumb-separator {
+  color: #9BA6B2;
+}
+
+/* ==============================================================================
+   HERO BANNER - AMEX CENTURION / ENTERPRISE LUXURY
+   ============================================================================== */
+.amex-hero {
+  background: linear-gradient(135deg, #00175A 0%, #002663 55%, #003B95 100%);
+  color: #FFFFFF;
+  padding: 56px 24px 64px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 3px solid var(--amex-gold-accent);
+}
+
+.amex-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 85% 20%, rgba(197, 160, 89, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 10% 80%, rgba(0, 111, 207, 0.25) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+.amex-hero-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.amex-badge-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(197, 160, 89, 0.18);
+  border: 1px solid var(--amex-gold-accent);
+  color: var(--amex-gold-light);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+.amex-hero h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.18;
+  margin-bottom: 16px;
+  max-width: 880px;
+}
+
+.amex-hero p {
+  font-size: 1.1875rem;
+  color: #D6E0EA;
+  max-width: 820px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.amex-trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.amex-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.amex-trust-badge svg {
+  color: var(--amex-gold-accent);
+  flex-shrink: 0;
+}
+
+/* ==============================================================================
+   PAGE MAIN LAYOUT
+   ============================================================================== */
+.amex-main {
+  max-width: 1240px;
+  margin: -32px auto 60px;
+  padding: 0 24px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ==============================================================================
+   AMEX SMART RECOMMENDATION CARD (CLIENT AUTO-DETECTION)
+   ============================================================================== */
+.amex-detection-card {
+  background-color: var(--amex-bg-card);
+  border: 1px solid var(--amex-border-card);
+  border-top: 4px solid var(--amex-blue-primary);
+  border-radius: 6px;
+  padding: 28px 32px;
+  box-shadow: 0 4px 20px rgba(0, 23, 90, 0.08);
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+}
+
+.amex-detection-info {
+  flex: 1;
+}
+
+.amex-detection-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--amex-blue-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+}
+
+.amex-detection-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--amex-text-headline);
+  margin-bottom: 6px;
+}
+
+.amex-detection-desc {
+  font-size: 0.9375rem;
+  color: var(--amex-text-muted);
+  line-height: 1.5;
+}
+
+.amex-detection-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: var(--amex-text-body);
+}
+
+.amex-detection-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ==============================================================================
+   ORACLE-STYLE MULTI-CHIP ARCHITECTURE MATRIX SECTION
+   ============================================================================== */
+.amex-section {
+  background-color: var(--amex-bg-card);
+  border: 1px solid var(--amex-border-card);
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 23, 90, 0.04);
+  margin-bottom: 36px;
+  overflow: hidden;
+}
+
+.amex-section-header {
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--amex-border-card);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  background-color: #FAFCFE;
+}
+
+.amex-section-header h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--amex-text-headline);
+  margin-bottom: 4px;
+}
+
+.amex-section-header p {
+  font-size: 0.875rem;
+  color: var(--amex-text-muted);
+}
+
+/* Tabs */
+.amex-tabs-container {
+  display: flex;
+  border-bottom: 1px solid var(--amex-border-card);
+  background-color: #F1F4F8;
+  padding: 0 20px;
+}
+
+.amex-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 14px 22px;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--amex-text-muted);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.amex-tab-btn:hover {
+  color: var(--amex-blue-primary);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.amex-tab-btn.active {
+  color: var(--amex-blue-midnight);
+  background-color: var(--amex-bg-card);
+  font-weight: 700;
+}
+.amex-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--amex-blue-primary);
+}
+
+/* Architecture Table */
+.amex-table-wrapper {
+  overflow-x: auto;
+}
+
+.amex-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.amex-table th {
+  background-color: #F4F6F9;
+  color: var(--amex-text-headline);
+  font-weight: 700;
+  padding: 14px 20px;
+  border-bottom: 2px solid var(--amex-border-card);
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.amex-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--amex-border-subtle);
+  vertical-align: middle;
+}
+
+.amex-table tbody tr:hover {
+  background-color: #F8FAFD;
+}
+
+.amex-table tr.highlighted-row {
+  background-color: #F0F7FF;
+  border-left: 4px solid var(--amex-blue-primary);
+}
+
+/* Chip Badges */
+.amex-chip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: -0.2px;
+}
+
+.chip-arm64 {
+  background-color: #EBF3FC;
+  color: #0056A3;
+  border: 1px solid #B8D6F5;
+}
+
+.chip-x64 {
+  background-color: #EDF2F7;
+  color: #2D3748;
+  border: 1px solid #CBD5E0;
+}
+
+.chip-win-arm {
+  background-color: #F3E8FF;
+  color: #6B21A8;
+  border: 1px solid #D8B4FE;
+}
+
+.file-type-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+.file-dmg { background: #E1F0FF; color: #0066CC; border: 1px solid #B3D7FF; }
+.file-exe { background: #E6F4EA; color: #137333; border: 1px solid #CEEAD6; }
+.file-zip { background: #FEF7E0; color: #B06000; border: 1px solid #FEEFC3; }
+
+/* Hash Copy Tool */
+.amex-hash-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #4A5568;
+}
+
+.amex-hash-code {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: #EDF2F7;
+  padding: 3px 6px;
+  border-radius: 3px;
+  border: 1px solid #E2E8F0;
+}
+
+.amex-copy-btn {
+  background: transparent;
+  border: 1px solid #CBD5E0;
+  border-radius: 3px;
+  padding: 3px 7px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: var(--amex-text-muted);
+  transition: all 0.15s ease;
+}
+.amex-copy-btn:hover {
+  background-color: #E2E8F0;
+  color: var(--amex-text-headline);
+}
+
+/* ==============================================================================
+   LIVE CLIENT-SIDE SHA-256 CHECKSUM VERIFIER
+   ============================================================================== */
+.amex-verifier-box {
+  padding: 32px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%);
+  border-radius: 6px;
+}
+
+.amex-dropzone {
+  border: 2px dashed #B8C2CC;
+  border-radius: 8px;
+  padding: 36px 24px;
+  text-align: center;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.amex-dropzone:hover, .amex-dropzone.dragover {
+  border-color: var(--amex-blue-primary);
+  background-color: #F0F7FF;
+}
+
+.amex-dropzone-icon {
+  font-size: 2.5rem;
+  color: var(--amex-blue-primary);
+  margin-bottom: 12px;
+}
+
+.amex-verification-result {
+  margin-top: 24px;
+  padding: 18px 24px;
+  border-radius: 6px;
+  display: none;
+}
+.amex-verification-result.verified {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--amex-success-bg);
+  border: 1px solid #A5D6A7;
+  color: #1B5E20;
+}
+.amex-verification-result.unverified {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: #FFEBEE;
+  border: 1px solid #FFCDD2;
+  color: #B71C1C;
+}
+
+/* ==============================================================================
+   ENTERPRISE IT INSTALLATION COMMANDS & CODE BLOCKS
+   ============================================================================== */
+.amex-cli-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 28px;
+}
+
+.amex-cli-card {
+  background-color: #0E1726;
+  border-radius: 6px;
+  border: 1px solid #1E293B;
+  overflow: hidden;
+  color: #E2E8F0;
+}
+
+.amex-cli-card-header {
+  background-color: #1A2333;
+  padding: 10px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-bottom: 1px solid #2A364B;
+}
+
+.amex-cli-code {
+  padding: 16px 18px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  color: #93C5FD;
+}
+
+/* ==============================================================================
+   AMEX CENTURION BENEFITS & VALUE TILES
+   ============================================================================== */
+.amex-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.amex-tile-card {
+  background-color: var(--amex-bg-card);
+  border: 1px solid var(--amex-border-card);
+  border-radius: 6px;
+  padding: 24px 20px;
+  box-shadow: 0 2px 8px rgba(0, 23, 90, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.amex-tile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 23, 90, 0.08);
+  border-color: #BDC6CF;
+}
+
+.amex-tile-icon {
+  width: 44px;
+  height: 44px;
+  background: #EBF3FC;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--amex-blue-primary);
+  margin-bottom: 16px;
+}
+
+.amex-tile-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--amex-text-headline);
+  margin-bottom: 8px;
+}
+
+.amex-tile-desc {
+  font-size: 0.875rem;
+  color: var(--amex-text-muted);
+  line-height: 1.5;
+}
+
+/* ==============================================================================
+   AUTHENTIC AMERICAN EXPRESS CORPORATE FOOTER
+   ============================================================================== */
+.amex-footer {
+  background-color: var(--amex-blue-midnight);
+  color: #C5D0DC;
+  padding: 56px 24px 32px;
+  font-size: 0.8125rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.amex-footer-container {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.amex-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.amex-footer-col h4 {
+  color: #FFFFFF;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.amex-footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.amex-footer-links a {
+  color: #B2C1D2;
+  font-size: 0.8125rem;
+  transition: color 0.15s ease;
+}
+.amex-footer-links a:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.amex-footer-bottom {
+  padding-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #8C9CAE;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.amex-footer-bottom-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.amex-footer-bottom-links a {
+  color: #A3B5C8;
+}
+.amex-footer-bottom-links a:hover {
+  color: #FFFFFF;
+}
+
+/* Toast */
+.amex-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #00175A;
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s ease;
+  pointer-events: none;
+  border-left: 4px solid var(--amex-gold-accent);
+}
+.amex-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .amex-hero h1 { font-size: 2.125rem; }
+  .amex-detection-card { flex-direction: column; align-items: flex-start; }
+  .amex-detection-actions { align-items: flex-start; width: 100%; }
+  .amex-cli-grid { grid-template-columns: 1fr; }
+  .amex-grid-4 { grid-template-columns: 1fr 1fr; }
+  .amex-footer-grid { grid-template-columns: repeat(2, 1fr); }
+  .amex-nav-menu { display: none; }
+}
+
+@media (max-width: 600px) {
+  .amex-grid-4 { grid-template-columns: 1fr; }
+  .amex-footer-grid { grid-template-columns: 1fr; }
+}

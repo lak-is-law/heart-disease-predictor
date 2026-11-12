@@ -1,0 +1,80 @@
+{
+  "best": "Logistic Regression",
+  "metrics": {
+    "Logistic Regression": {
+      "accuracy": 0.8688524590163934,
+      "precision": 0.8125,
+      "recall": 0.9285714285714286,
+      "f1": 0.8666666666666667,
+      "roc_auc": 0.958874458874459,
+      "cv_roc_auc": 0.9075566140783531,
+      "confusion": [
+        [
+          27,
+          6
+        ],
+        [
+          2,
+          26
+        ]
+      ]
+    },
+    "Random Forest": {
+      "accuracy": 0.8852459016393442,
+      "precision": 0.8387096774193549,
+      "recall": 0.9285714285714286,
+      "f1": 0.8813559322033898,
+      "roc_auc": 0.9437229437229437,
+      "cv_roc_auc": 0.897477562694954,
+      "confusion": [
+        [
+          28,
+          5
+        ],
+        [
+          2,
+          26
+        ]
+      ]
+    },
+    "Gradient Boosting": {
+      "accuracy": 0.9344262295081968,
+      "precision": 0.9,
+      "recall": 0.9642857142857143,
+      "f1": 0.9310344827586207,
+      "roc_auc": 0.9632034632034632,
+      "cv_roc_auc": 0.8593335810727115,
+      "confusion": [
+        [
+          30,
+          3
+        ],
+        [
+          1,
+          27
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "n_total": 303,
+    "n_train": 242,
+    "n_test": 61,
+    "prevalence": 0.45874587458745875,
+    "features": [
+      "age",
+      "sex",
+      "cp",
+      "trestbps",
+      "chol",
+      "fbs",
+      "restecg",
+      "thalach",
+      "exang",
+      "oldpeak",
+      "slope",
+      "ca",
+      "thal"
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+name: Multi-Architecture Desktop Distribution (Oracle Matrix Style)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release Version'
+        required: true
+        default: '2.4.0'
+
+jobs:
+  build-binaries:
+    name: Build ${{ matrix.platform }} (${{ matrix.chipset }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS Apple Silicon (M1/M2/M3/M4)
+          - os: macos-14
+            platform: macos
+            chipset: arm64
+            artifact_name: CardioSense-Enterprise-2.4.0-macos-arm64.dmg
+            builder: packaging/build_mac_dmg.sh arm64
+
+          # macOS Intel (x86_64)
+          - os: macos-13
+            platform: macos
+            chipset: x86_64
+            artifact_name: CardioSense-Enterprise-2.4.0-macos-x64.dmg
+            builder: packaging/build_mac_dmg.sh x86_64
+
+          # Windows 64-bit (x64)
+          - os: windows-latest
+            platform: windows
+            chipset: x64
+            artifact_name: CardioSense-Enterprise-2.4.0-windows-x64-Setup.exe
+            builder: packaging/build_win_exe.bat x64
+
+          # Windows ARM64
+          - os: windows-latest
+            platform: windows
+            chipset: arm64
+            artifact_name: CardioSense-Enterprise-2.4.0-windows-arm64-Setup.exe
+            builder: packaging/build_win_exe.bat arm64
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pywebview
+
+      - name: Train Initial Models (if needed)
+        run: |
+          python train.py || true
+
+      - name: Build macOS DMG (${{ matrix.chipset }})
+        if: runner.os == 'macOS'
+        run: |
+          chmod +x ${{ matrix.builder }}
+          ./${{ matrix.builder }}
+
+      - name: Build Windows Installer & Portable (${{ matrix.chipset }})
+        if: runner.os == 'Windows'
+        run: |
+          chcp 65001
+          call ${{ matrix.builder }}
+
+      - name: Generate SHA-256 Digest
+        shell: bash
+        run: |
+          cd dist
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            shasum -a 256 * > CHECKSUMS-SHA256-${{ matrix.platform }}-${{ matrix.chipset }}.txt
+          else
+            sha256sum * > CHECKSUMS-SHA256-${{ matrix.platform }}-${{ matrix.chipset }}.txt
+          fi
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: CardioSense-${{ matrix.platform }}-${{ matrix.chipset }}
+          path: dist/*
