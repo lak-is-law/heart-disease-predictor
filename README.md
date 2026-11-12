@@ -1,7 +1,13 @@
 # CardioSense: Heart Disease Prediction System
 
-Logistic Regression, Random Forest and XGBoost trained on the UCI Heart Disease data, wrapped in a
-dark, glassmorphism Streamlit app with a live risk gauge, per-patient explanations and a model lab.
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-black?logo=vercel)](https://heart-disease-predictor-kohl-nine.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/lak-is-law/heart-disease-predictor)
+
+> **Live Web Application & Enterprise Download Portal:**  
+> 🔗 **[https://heart-disease-predictor-kohl-nine.vercel.app](https://heart-disease-predictor-kohl-nine.vercel.app)**
+
+Logistic Regression, Random Forest and XGBoost trained on the UCI Heart Disease data, wrapped in an
+interactive 3D CGI anatomical heart biomechanics laboratory and an American Express-styled desktop distribution portal.
 
 ## Run it
 
