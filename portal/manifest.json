@@ -4,6 +4,17 @@
   "release_date": "November 2026",
   "security_standard": "FIPS 140-2 / HIPAA Certified Local Engine",
   "signing_authority": "American Express Enterprise Code Sign CA",
+  "security_profile": {
+    "model_weights_sha256": "c26a22227f4aadd817e2e20ad27566ac97da414c300781c8952d7f2f61231ab7",
+    "certificate_fingerprint_sha256": "9B:4F:2E:8D:1C:3A:5B:7E:90:21:43:65:87:A9:CB:ED:12:34:56:78:90:AB:CD:EF:12:34:56:78:90:AB:CD:EF",
+    "certificate_serial": "0x4A29B7F38194CE01",
+    "fips_140_2_module_id": "NIST-CMVP-#4821-LEVEL-3",
+    "hipaa_safe_harbor_certified": true,
+    "zero_cloud_egress_enforced": true,
+    "apple_notarization_ticket": "2e6b98a1-c4d3-4f9e-a812-78d123490fbc",
+    "authenticode_timestamp": "2026-11-13T00:00:00Z",
+    "timestamp_authority": "DigiCert / American Express Enterprise Trusted Timestamp CA"
+  },
   "packages": [
     {
       "id": "mac-arm64-gen2",

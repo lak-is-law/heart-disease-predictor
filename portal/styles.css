@@ -1256,6 +1256,235 @@ a:hover {
   border: 1px solid #CBD5E1;
 }
 
+/* ==============================================================================
+   SECURITY & CLINICAL DIAGNOSTIC CHECKUP STYLES
+   ============================================================================== */
+.sec-overview-banner {
+  background: linear-gradient(135deg, #00175A 0%, #002677 60%, #006FCF 100%);
+  color: #FFFFFF;
+  border-radius: var(--amex-radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  box-shadow: var(--amex-shadow-md);
+}
+
+.sec-overview-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sec-shield-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sec-overview-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+
+.sec-overview-subtitle {
+  font-size: 0.875rem;
+  color: #CBD5E1;
+  line-height: 1.4;
+}
+
+.sec-overview-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sec-seal-tag {
+  background: rgba(197, 160, 89, 0.2);
+  border: 1px solid #C5A059;
+  color: #F8E7BE;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.sec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sec-diag-card {
+  background: #FFFFFF;
+  border: 1px solid var(--amex-border-card);
+  border-radius: var(--amex-radius-md);
+  padding: 18px 20px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.sec-diag-card:hover {
+  border-color: var(--amex-blue-primary);
+  box-shadow: var(--amex-shadow-sm);
+}
+
+.sec-diag-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.sec-diag-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--amex-text-headline);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sec-status-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.sec-status-badge.pass {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.sec-status-badge.running {
+  background: #EFF6FF;
+  color: #1E40AF;
+  border: 1px solid #BFDBFE;
+}
+
+.sec-diag-desc {
+  font-size: 0.8125rem;
+  color: var(--amex-text-body);
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.sec-diag-metric {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #334155;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.sec-console-box {
+  background: #0B0F19;
+  border: 1px solid #1E293B;
+  border-radius: var(--amex-radius-md);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.sec-console-header {
+  background: #111827;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1F2937;
+}
+
+.sec-console-title {
+  color: #9CA3AF;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sec-console-body {
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #38BDF8;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.sec-console-line {
+  margin-bottom: 4px;
+}
+
+.sec-console-line .ts {
+  color: #64748B;
+  margin-right: 8px;
+}
+
+.sec-console-line .tag {
+  color: #34D399;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.sec-console-line .val {
+  color: #E2E8F0;
+}
+
+.sec-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.clinical-seal-box {
+  background: rgba(0, 111, 207, 0.06);
+  border: 1px solid rgba(0, 111, 207, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+}
+
+.clinical-seal-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #006FCF;
+  font-weight: 600;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .amex-lab-grid { grid-template-columns: 1fr; }
@@ -1266,9 +1495,11 @@ a:hover {
   .amex-grid-4 { grid-template-columns: 1fr 1fr; }
   .amex-footer-grid { grid-template-columns: repeat(2, 1fr); }
   .amex-nav-menu { display: none; }
+  .sec-overview-banner { flex-direction: column; align-items: flex-start; }
 }
 
 @media (max-width: 600px) {
   .amex-grid-4 { grid-template-columns: 1fr; }
   .amex-footer-grid { grid-template-columns: 1fr; }
+  .sec-grid { grid-template-columns: 1fr; }
 }
