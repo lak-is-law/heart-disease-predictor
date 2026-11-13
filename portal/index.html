@@ -429,6 +429,15 @@
         </button>
       </div>
 
+      <!-- Generational Processor Filter Bar -->
+      <div class="amex-gen-filter-bar">
+        <span style="font-size:0.75rem; font-weight:700; color:var(--amex-text-muted); text-transform:uppercase; letter-spacing:0.5px;">Processor Generation:</span>
+        <button type="button" class="gen-filter-btn active" onclick="filterByGeneration('all', this)">All Generations (10 Builds)</button>
+        <button type="button" class="gen-filter-btn" onclick="filterByGeneration('modern', this)">🚀 Modern (M3/M4, Intel 12th+, Snapdragon X)</button>
+        <button type="button" class="gen-filter-btn" onclick="filterByGeneration('standard', this)">⚖️ Universal Baseline (M1/M2, Intel 6th-11th)</button>
+        <button type="button" class="gen-filter-btn" onclick="filterByGeneration('legacy', this)">🛡️ Legacy Compatibility (Intel Mac, SSE4.2 Fallback)</button>
+      </div>
+
       <!-- Tab 1: macOS -->
       <div id="tab-macos" class="amex-tab-content">
         <div class="amex-table-wrapper">
@@ -436,7 +445,7 @@
             <thead>
               <tr>
                 <th>Product / Package Description</th>
-                <th>Processor & Chipset</th>
+                <th>Processor Generation & Instruction Set</th>
                 <th>OS Compatibility</th>
                 <th>File Size</th>
                 <th>SHA-256 Checksum</th>
@@ -457,7 +466,7 @@
             <thead>
               <tr>
                 <th>Product / Package Description</th>
-                <th>Processor & Chipset</th>
+                <th>Processor Generation & Instruction Set</th>
                 <th>OS Compatibility</th>
                 <th>File Size</th>
                 <th>SHA-256 Checksum</th>
@@ -478,7 +487,7 @@
             <thead>
               <tr>
                 <th>Product / Package Description</th>
-                <th>Processor & Chipset</th>
+                <th>Processor Generation & Instruction Set</th>
                 <th>OS Compatibility</th>
                 <th>File Size</th>
                 <th>SHA-256 Checksum</th>
@@ -499,7 +508,7 @@
             <thead>
               <tr>
                 <th>Product / Package Description</th>
-                <th>Processor & Chipset</th>
+                <th>Processor Generation & Instruction Set</th>
                 <th>OS Compatibility</th>
                 <th>File Size</th>
                 <th>SHA-256 Checksum</th>

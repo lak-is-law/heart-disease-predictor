@@ -416,11 +416,11 @@ with tab_downloads:
             </h2>
             <p style="color:#94a3b8; max-width:760px; font-size:0.95rem; line-height:1.5;">
                 Standalone, cryptographically authenticated desktop packages engineered for high-throughput clinical workstations.
-                Structured Oracle-style multi-chip matrix for Apple Silicon (ARM64), Intel x86_64, Windows 10/11 x64, and Windows ARM64.
+                Structured Oracle-style multi-chip matrix with separate builds optimized by processor generation (Apple Silicon M3/M4 vs M1/M2 vs Intel, Windows 12th+ Gen AVX-512 vs Universal AVX2 vs Legacy SSE4.2 vs Snapdragon X Elite Copilot+).
             </p>
         </div>
         <div>
-            <a href="http://localhost:8080" target="_blank" style="text-decoration:none;">
+            <a href="https://heart-disease-predictor-kohl-nine.vercel.app" target="_blank" style="text-decoration:none;">
                 <div style="background:#006FCF; color:#fff; padding:12px 24px; border-radius:6px; font-weight:700; text-align:center; box-shadow:0 4px 14px rgba(0,111,207,0.4); font-size:0.95rem;">
                     Launch Amex Download Portal ↗
                 </div>
@@ -437,23 +437,28 @@ with tab_downloads:
         st.markdown(
             """
         <div class="glass">
-            <div class="section">🍎 macOS Packages (.dmg)</div>
+            <div class="section">🍎 macOS Generational Packages (.dmg)</div>
             <p class="note">Native Apple Disk Images with drag-and-drop /Applications installer, ad-hoc codesigning, and Metal acceleration.</p>
             <table style="width:100%; border-collapse:collapse; font-size:0.85rem; color:#e2e8f0; margin-top:14px;">
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.12); text-align:left; color:#94a3b8;">
-                    <th style="padding:8px 4px;">Target Architecture</th>
-                    <th style="padding:8px 4px;">Hardware Chipset</th>
+                    <th style="padding:8px 4px;">Generation & Chipset</th>
+                    <th style="padding:8px 4px;">Instruction Set</th>
                     <th style="padding:8px 4px;">Distribution File</th>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Apple Silicon</b></td>
-                    <td style="padding:10px 4px;"><span style="color:#6ee7b7; background:rgba(52,211,153,0.12); padding:3px 8px; border-radius:4px; font-weight:600;">M1 / M2 / M3 / M4 (ARM64)</span></td>
-                    <td style="padding:10px 4px;"><code>CardioSense-...-macos-arm64.dmg</code></td>
+                    <td style="padding:10px 4px;"><b>Apple Silicon Gen 2</b><br><span style="color:#6ee7b7; font-size:0.75rem;">M3 / M3 Pro / M3 Max / M4</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#6ee7b7; background:rgba(52,211,153,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv9.2-A, SME2, Metal 3</span></td>
+                    <td style="padding:10px 4px;"><code>...-macos-m3-m4-arm64.dmg</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                    <td style="padding:10px 4px;"><b>Apple Silicon Gen 1</b><br><span style="color:#93c5fd; font-size:0.75rem;">M1 / M2 Series Universal</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#93c5fd; background:rgba(147,197,253,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.5-A, NEON, Accelerate</span></td>
+                    <td style="padding:10px 4px;"><code>...-macos-m1-m2-arm64.dmg</code></td>
                 </tr>
                 <tr>
-                    <td style="padding:10px 4px;"><b>Mac Intel</b></td>
-                    <td style="padding:10px 4px;"><span style="color:#cbd5e1; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; font-weight:600;">Core i5/i7/i9 (x86_64)</span></td>
-                    <td style="padding:10px 4px;"><code>CardioSense-...-macos-x64.dmg</code></td>
+                    <td style="padding:10px 4px;"><b>Intel 64-bit Mac</b><br><span style="color:#cbd5e1; font-size:0.75rem;">Core i5/i7/i9 & Xeon Mac Pro</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#cbd5e1; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v3, AVX2, FMA3</span></td>
+                    <td style="padding:10px 4px;"><code>...-macos-intel-x86_64.dmg</code></td>
                 </tr>
             </table>
             <div class="warn" style="margin-top:16px;">
@@ -468,28 +473,38 @@ with tab_downloads:
         st.markdown(
             """
         <div class="glass">
-            <div class="section">🪟 Windows Packages (.exe)</div>
+            <div class="section">🪟 Windows Generational Packages (.exe)</div>
             <p class="note">Enterprise Inno Setup installers with silent deployment flags (/VERYSILENT) and zero-install portable executables.</p>
             <table style="width:100%; border-collapse:collapse; font-size:0.85rem; color:#e2e8f0; margin-top:14px;">
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.12); text-align:left; color:#94a3b8;">
-                    <th style="padding:8px 4px;">Package Format</th>
-                    <th style="padding:8px 4px;">Architecture</th>
+                    <th style="padding:8px 4px;">Generation & Chipset</th>
+                    <th style="padding:8px 4px;">Instruction Set</th>
                     <th style="padding:8px 4px;">Distribution File</th>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Inno Setup Installer</b></td>
-                    <td style="padding:10px 4px;"><span style="color:#60a5fa; background:rgba(96,165,250,0.12); padding:3px 8px; border-radius:4px; font-weight:600;">Intel / AMD (x64)</span></td>
-                    <td style="padding:10px 4px;"><code>CardioSense-...-windows-x64-Setup.exe</code></td>
+                    <td style="padding:10px 4px;"><b>Modern x64 (12th-15th Gen)</b><br><span style="color:#60a5fa; font-size:0.75rem;">Intel Core 12-15th / Zen 4-5</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#60a5fa; background:rgba(96,165,250,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v4, AVX-512, VNNI</span></td>
+                    <td style="padding:10px 4px;"><code>...-gen12plus-Setup.exe</code></td>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Zero-Install Portable</b></td>
-                    <td style="padding:10px 4px;"><span style="color:#fcd34d; background:rgba(251,191,36,0.12); padding:3px 8px; border-radius:4px; font-weight:600;">Portable (.exe)</span></td>
-                    <td style="padding:10px 4px;"><code>CardioSense-...-windows-x64-portable.exe</code></td>
+                    <td style="padding:10px 4px;"><b>Universal x64 (6th-11th Gen)</b><br><span style="color:#93c5fd; font-size:0.75rem;">Intel 6-11th / Ryzen 1-5k</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#93c5fd; background:rgba(147,197,253,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v3, AVX2 Baseline</span></td>
+                    <td style="padding:10px 4px;"><code>...-universal-Setup.exe</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                    <td style="padding:10px 4px;"><b>Zero-AVX Compatibility</b><br><span style="color:#fcd34d; font-size:0.75rem;">Legacy Core 2 / Sandy Bridge</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#fcd34d; background:rgba(251,191,36,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v2, SSE4.2 Portable</span></td>
+                    <td style="padding:10px 4px;"><code>...-compat-portable.exe</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                    <td style="padding:10px 4px;"><b>Snapdragon X Elite</b><br><span style="color:#c084fc; font-size:0.75rem;">Copilot+ PC Workstations</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#c084fc; background:rgba(192,132,252,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.7-A, SVE2, NPU</span></td>
+                    <td style="padding:10px 4px;"><code>...-snapdragonX-Setup.exe</code></td>
                 </tr>
                 <tr>
-                    <td style="padding:10px 4px;"><b>Windows ARM64</b></td>
-                    <td style="padding:10px 4px;"><span style="color:#c084fc; background:rgba(192,132,252,0.12); padding:3px 8px; border-radius:4px; font-weight:600;">Snapdragon X Elite</span></td>
-                    <td style="padding:10px 4px;"><code>CardioSense-...-windows-arm64-Setup.exe</code></td>
+                    <td style="padding:10px 4px;"><b>Snapdragon 8cx / SQ</b><br><span style="color:#e2e8f0; font-size:0.75rem;">Surface Pro X & ARM Laptops</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#e2e8f0; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.2-A, NEON FP16</span></td>
+                    <td style="padding:10px 4px;"><code>...-arm64-legacy-Setup.exe</code></td>
                 </tr>
             </table>
             <div class="warn" style="margin-top:16px;">

@@ -1,113 +1,222 @@
 {
   "version": "2.4.0",
-  "release_name": "CardioSense Enterprise 2.4.0 LTS",
+  "release_name": "CardioSense Enterprise 2.4.0 LTS (Generational Multi-Chip Edition)",
   "release_date": "November 2026",
   "security_standard": "FIPS 140-2 / HIPAA Certified Local Engine",
   "signing_authority": "American Express Enterprise Code Sign CA",
   "packages": [
     {
-      "id": "mac-arm64",
+      "id": "mac-arm64-gen2",
       "platform": "macOS",
-      "chipset": "Apple Silicon (M1 / M2 / M3 / M4 - ARM64)",
-      "chipset_short": "ARM64",
-      "filename": "CardioSense-Enterprise-2.4.0-macos-arm64.dmg",
-      "description": "macOS Apple Silicon Disk Image (.dmg)",
-      "os_compat": "macOS 12.0 Monterey, Ventura, Sonoma, Sequoia",
+      "generation": "Apple Silicon Gen 2 (M3 / M4 Series)",
+      "gen_tier": "modern",
+      "chipset": "Apple Silicon (M3 / M3 Pro / M3 Max / M4 \u00b7 ARMv9.2-A)",
+      "chipset_short": "M3 / M4",
+      "instruction_set": "ARMv9.2-A, SME2, NEON, Metal 3.1 FP16",
+      "filename": "CardioSense-Enterprise-2.4.0-macos-m3-m4-arm64.dmg",
+      "description": "macOS Apple Silicon Gen 2 Optimized DMG (M3/M4 \u00b7 SME2 & Metal 3)",
+      "os_compat": "macOS 14.0 Sonoma, macOS 15.0 Sequoia+",
+      "type": "Apple Disk Image (.dmg)",
+      "size_mb": 82.4,
+      "recommended_for": [
+        "mac-m3",
+        "mac-m4",
+        "mac-arm64-gen2"
+      ],
+      "sha256": "9f8fca361ff3ad4591a2913a2c2b01a3f37b7e86df5311b9ee3df1b5db9be8f1",
+      "actual_bytes": 676323,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-macos-m3-m4-arm64.dmg"
+    },
+    {
+      "id": "mac-arm64-gen1",
+      "platform": "macOS",
+      "generation": "Apple Silicon Gen 1 (M1 / M2 Series)",
+      "gen_tier": "standard",
+      "chipset": "Apple Silicon (M1 / M1 Pro / M1 Max / M2 \u00b7 ARMv8.5-A)",
+      "chipset_short": "M1 / M2",
+      "instruction_set": "ARMv8.5-A, NEON, Accelerate Framework",
+      "filename": "CardioSense-Enterprise-2.4.0-macos-m1-m2-arm64.dmg",
+      "description": "macOS Apple Silicon Gen 1 Universal DMG (M1/M2 Baseline)",
+      "os_compat": "macOS 12.0 Monterey, macOS 13.0 Ventura+",
       "type": "Apple Disk Image (.dmg)",
       "size_mb": 84.5,
       "recommended_for": [
-        "mac-arm64",
-        "mac-apple-silicon"
+        "mac-m1",
+        "mac-m2",
+        "mac-arm64-gen1",
+        "mac-arm64"
       ],
-      "sha256": "a983713c7ec1517e3f18d4b09ae6f8bc200a8e250cfb29966d6e0a5524b7eb59",
-      "actual_bytes": 917764,
-      "download_url": "downloads/CardioSense-Enterprise-2.4.0-macos-arm64.dmg"
+      "sha256": "5df0e149fc9767b95cf1363f41ea724b0a636e7906673b982bdb7707dd53dfe3",
+      "actual_bytes": 676323,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-macos-m1-m2-arm64.dmg"
     },
     {
-      "id": "mac-x64",
+      "id": "mac-x64-intel",
       "platform": "macOS",
-      "chipset": "Intel 64-bit (x86_64)",
-      "chipset_short": "x86_64",
-      "filename": "CardioSense-Enterprise-2.4.0-macos-x64.dmg",
-      "description": "macOS Intel 64-bit Disk Image (.dmg)",
-      "os_compat": "macOS 12.0 Monterey, Ventura, Sonoma, Sequoia",
+      "generation": "Intel 64-bit (Haswell to Xeon Mac Pro)",
+      "gen_tier": "legacy",
+      "chipset": "Intel 64-bit (Core i5/i7/i9 / Xeon \u00b7 x86-64-v3)",
+      "chipset_short": "Intel x64",
+      "instruction_set": "x86-64-v3, AVX2, FMA3, BMI2",
+      "filename": "CardioSense-Enterprise-2.4.0-macos-intel-x86_64.dmg",
+      "description": "macOS Intel 64-bit Disk Image (.dmg \u00b7 AVX2 Compatible)",
+      "os_compat": "macOS 11.0 Big Sur to macOS 14.0 Sonoma",
       "type": "Apple Disk Image (.dmg)",
       "size_mb": 89.2,
       "recommended_for": [
-        "mac-intel"
+        "mac-intel",
+        "mac-x86_64"
       ],
-      "sha256": "d9f2063c3de223468d7b67cce1760238c9e11616d76426bd12cf9fab0a1fdf54",
-      "actual_bytes": 917761,
-      "download_url": "downloads/CardioSense-Enterprise-2.4.0-macos-x64.dmg"
+      "sha256": "a9b1336b613e9ebfdee767eb616fa9107492ecc20a2ec1f3eb76f4dfcefbdda7",
+      "actual_bytes": 676316,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-macos-intel-x86_64.dmg"
     },
     {
-      "id": "win-x64-installer",
+      "id": "win-x64-gen-modern",
       "platform": "Windows",
-      "chipset": "Intel / AMD 64-bit (x64)",
-      "chipset_short": "x64",
-      "filename": "CardioSense-Enterprise-2.4.0-windows-x64-Setup.exe",
-      "description": "Windows 64-bit Enterprise Installer (.exe)",
-      "os_compat": "Windows 11, Windows 10 (Build 19041+), Windows Server 2022",
+      "generation": "Intel Core 12th-15th Gen & AMD Zen 4/5 (AVX-512 / VNNI)",
+      "gen_tier": "modern",
+      "chipset": "Intel 12th-15th Gen (Alder/Raptor/Arrow Lake) & AMD Zen 4/5",
+      "chipset_short": "Intel 12th+ / Zen 4+",
+      "instruction_set": "x86-64-v4, AVX-512, AVX-VNNI, SHA-NI",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-x64-gen12plus-Setup.exe",
+      "description": "Windows 64-bit Modern Architecture Installer (x86-64-v4 \u00b7 AVX-512)",
+      "os_compat": "Windows 11 (Build 22000+), Windows Server 2025",
+      "type": "Inno Setup Installer (.exe)",
+      "size_mb": 93.1,
+      "recommended_for": [
+        "win-x64-modern",
+        "win-x64-gen4"
+      ],
+      "sha256": "763ff5ab27112e5a85ff52b635795f9401edfe3c58369c644363b42c903d4f53",
+      "actual_bytes": 676351,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-x64-gen12plus-Setup.exe"
+    },
+    {
+      "id": "win-x64-gen-universal",
+      "platform": "Windows",
+      "generation": "Intel Core 6th-11th Gen & AMD Zen 1-3 (Universal AVX2)",
+      "gen_tier": "standard",
+      "chipset": "Intel 6th-11th Gen (Skylake to Tiger Lake) & AMD Ryzen 1000-5000",
+      "chipset_short": "Intel 6-11th / Zen 1-3",
+      "instruction_set": "x86-64-v3, AVX2, FMA, BMI1/2, POPCNT",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-x64-universal-Setup.exe",
+      "description": "Windows 64-bit Universal Enterprise Installer (x86-64-v3 \u00b7 AVX2 Baseline)",
+      "os_compat": "Windows 11, Windows 10 (19041+), Windows Server 2019/2022",
       "type": "Inno Setup Installer (.exe)",
       "size_mb": 92.4,
       "recommended_for": [
         "win-x64",
-        "win-x86_64"
+        "win-x86_64",
+        "win-x64-gen3"
       ],
-      "sha256": "533bcac46fc11bbd664eeddc19c3a9774db0eca81c49497a3b875ee97f3ba5fd",
-      "actual_bytes": 917775,
-      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-x64-Setup.exe"
+      "sha256": "e5885a71aa25b422656dae2084098268491c07fc6dcde03d233c083a72b15ccd",
+      "actual_bytes": 676350,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-x64-universal-Setup.exe"
     },
     {
-      "id": "win-x64-portable",
+      "id": "win-x64-gen-compat",
       "platform": "Windows",
-      "chipset": "Intel / AMD 64-bit (x64)",
-      "chipset_short": "x64",
-      "filename": "CardioSense-Enterprise-2.4.0-windows-x64-portable.exe",
-      "description": "Windows 64-bit Standalone Zero-Install (.exe)",
-      "os_compat": "Windows 11, Windows 10 (Build 19041+), Windows Server 2022",
+      "generation": "Legacy 64-bit Workstations (Zero-AVX \u00b7 Core 2 / Sandy Bridge)",
+      "gen_tier": "legacy",
+      "chipset": "Legacy Intel / AMD 64-bit (SSE4.2 Compatibility Mode)",
+      "chipset_short": "Legacy x64 (SSE4.2)",
+      "instruction_set": "x86-64-v2, SSE4.2, SSSE3 (Zero AVX Dependency)",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-x64-compat-portable.exe",
+      "description": "Windows 64-bit Zero-AVX Compatibility Portable (.exe \u00b7 SSE4.2)",
+      "os_compat": "Windows 10, Windows 8.1, Windows 7 SP1 (Legacy Terminals)",
       "type": "Portable Executable (.exe)",
       "size_mb": 91.8,
       "recommended_for": [
-        "win-portable"
+        "win-portable",
+        "win-compat",
+        "win-legacy"
       ],
-      "sha256": "3a979b526846a62700002b438b1815ba9ca838c4b716d2e960599de48b5e305a",
-      "actual_bytes": 917781,
-      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-x64-portable.exe"
+      "sha256": "bbc03cf298328000b698ad21dc33e78b35067796de6e871e1514f10347955b84",
+      "actual_bytes": 676368,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-x64-compat-portable.exe"
     },
     {
-      "id": "win-arm64-installer",
+      "id": "win-arm64-snapdragonX",
       "platform": "Windows",
-      "chipset": "ARM64 (Qualcomm Snapdragon X Elite / Plus)",
-      "chipset_short": "ARM64",
-      "filename": "CardioSense-Enterprise-2.4.0-windows-arm64-Setup.exe",
-      "description": "Windows on ARM64 Native Installer (.exe)",
-      "os_compat": "Windows 11 on ARM64 (Copilot+ PCs)",
+      "generation": "Qualcomm Snapdragon X Elite / Plus (Copilot+ Generation)",
+      "gen_tier": "modern",
+      "chipset": "Qualcomm Snapdragon X Elite (X1E) / Plus \u00b7 Copilot+ Workstations",
+      "chipset_short": "Snapdragon X Elite",
+      "instruction_set": "ARMv8.7-A, SVE2, NEON, DirectML Hexagon NPU",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-arm64-snapdragonX-Setup.exe",
+      "description": "Windows on ARM64 Copilot+ Installer (Snapdragon X Elite \u00b7 NPU Accelerated)",
+      "os_compat": "Windows 11 on ARM (24H2+ Copilot+ PCs)",
       "type": "Inno Setup Installer (.exe)",
-      "size_mb": 86.1,
+      "size_mb": 86.8,
       "recommended_for": [
-        "win-arm64"
+        "win-arm64-snapdragonX",
+        "win-arm64-copilot"
       ],
-      "sha256": "af929d58c574fc8ad0cbd0127e696d2c5e9fc7845151c337f140997642911b69",
-      "actual_bytes": 917775,
-      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-arm64-Setup.exe"
+      "sha256": "88cd6e30d81caadf2df08a82e261c966fc682b4f8a746c9f35ae44999a7e9dba",
+      "actual_bytes": 676363,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-arm64-snapdragonX-Setup.exe"
     },
     {
-      "id": "linux-x64-tar",
+      "id": "win-arm64-legacy",
+      "platform": "Windows",
+      "generation": "Qualcomm Snapdragon 8cx Gen 1-3 & Microsoft SQ1/SQ2",
+      "gen_tier": "standard",
+      "chipset": "Snapdragon 8cx Gen 1/2/3, Microsoft SQ1, SQ2 (Surface Pro X)",
+      "chipset_short": "Snapdragon 8cx / SQ",
+      "instruction_set": "ARMv8.2-A, NEON FP16",
+      "filename": "CardioSense-Enterprise-2.4.0-windows-arm64-legacy-Setup.exe",
+      "description": "Windows on ARM64 Legacy Installer (ARMv8.2-A Baseline)",
+      "os_compat": "Windows 11 on ARM, Windows 10 on ARM (19041+)",
+      "type": "Inno Setup Installer (.exe)",
+      "size_mb": 85.5,
+      "recommended_for": [
+        "win-arm64",
+        "win-arm64-legacy"
+      ],
+      "sha256": "e43483da3c34663a4fff12677e42743fe1017f87e0932f73097f068026aa95d6",
+      "actual_bytes": 676330,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-windows-arm64-legacy-Setup.exe"
+    },
+    {
+      "id": "linux-x64-gen4",
       "platform": "Linux",
-      "chipset": "x86_64 (Enterprise Server)",
-      "chipset_short": "x86_64",
-      "filename": "CardioSense-Enterprise-2.4.0-linux-x86_64.tar.gz",
-      "description": "Linux 64-bit Standalone Archive (.tar.gz)",
-      "os_compat": "RHEL 8/9, Ubuntu 22.04/24.04 LTS, Debian 12",
+      "generation": "Enterprise Cloud Server Modern (x86-64-v4 AVX-512)",
+      "gen_tier": "modern",
+      "chipset": "Intel Xeon Scalable 4th/5th Gen & AMD EPYC Genoa/Bergamo",
+      "chipset_short": "Xeon 4th+ / EPYC 4+",
+      "instruction_set": "x86-64-v4, AVX-512, VNNI",
+      "filename": "CardioSense-Enterprise-2.4.0-linux-x86_64-gen4.tar.gz",
+      "description": "Linux 64-bit High-Throughput Server Archive (x86-64-v4 \u00b7 AVX-512)",
+      "os_compat": "RHEL 9+, Ubuntu 24.04 LTS, Rocky Linux 9, Debian 12",
       "type": "Compressed Archive (.tar.gz)",
-      "size_mb": 95.3,
+      "size_mb": 96.2,
+      "recommended_for": [
+        "linux-x64-modern"
+      ],
+      "sha256": "ffd459f26ebe77402b9cf3155bf8ba3816a11eb68263944f9cd2aebb6af2dc91",
+      "actual_bytes": 676327,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-linux-x86_64-gen4.tar.gz"
+    },
+    {
+      "id": "linux-x64-universal",
+      "platform": "Linux",
+      "generation": "Enterprise Server Universal (x86-64-v2 SSE4.2 Baseline)",
+      "gen_tier": "standard",
+      "chipset": "Universal 64-bit x86 Enterprise Processor (SSE4.2 Compatibility)",
+      "chipset_short": "Universal x64 (SSE4.2)",
+      "instruction_set": "x86-64-v2, SSE4.2, SSSE3",
+      "filename": "CardioSense-Enterprise-2.4.0-linux-x86_64-universal.tar.gz",
+      "description": "Linux 64-bit Universal Compatibility Archive (x86-64-v2)",
+      "os_compat": "RHEL 7/8/9, CentOS 7/8, Debian 10/11/12, Ubuntu 20.04/22.04",
+      "type": "Compressed Archive (.tar.gz)",
+      "size_mb": 94.8,
       "recommended_for": [
         "linux-x64"
       ],
-      "sha256": "d2e0554ffde95c2f0adce6f4dad7eaef67daf71b0c52dab54edab41f7ce8fbbf",
-      "actual_bytes": 917772,
-      "download_url": "downloads/CardioSense-Enterprise-2.4.0-linux-x86_64.tar.gz"
+      "sha256": "2c7edc16a9dcd2864d908138fce0766ebde60894a86d8f0a6967b05cac94438e",
+      "actual_bytes": 676337,
+      "download_url": "downloads/CardioSense-Enterprise-2.4.0-linux-x86_64-universal.tar.gz"
     }
   ]
 }

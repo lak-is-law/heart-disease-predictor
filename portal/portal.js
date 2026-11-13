@@ -34,7 +34,7 @@ async function loadManifest() {
 
 /**
  * Advanced Client Chipset and Operating System Detection
- * Detects: Apple Silicon (ARM64), Intel Mac (x86_64), Windows x64, Windows ARM64
+ * Detects: Apple Silicon M3/M4 vs M1/M2, Intel Mac, Windows x64 Modern vs Universal vs Compat, Snapdragon X Elite
  */
 async function detectClientHardware() {
   const ua = navigator.userAgent;
@@ -43,7 +43,7 @@ async function detectClientHardware() {
   let os = 'Unknown OS';
   let arch = 'x64';
   let chipName = 'Standard 64-bit Processor';
-  let packageId = 'win-x64-installer';
+  let packageId = 'win-x64-gen-universal';
   let badgeIcon = '💻';
 
   // Check modern User-Agent Client Hints API if available
@@ -58,22 +58,26 @@ async function detectClientHardware() {
     }
   }
 
-  // macOS Detection & Apple Silicon check
+  // macOS Detection & Apple Silicon generational check
   const isMac = /Macintosh|MacIntel|MacPPC|Mac68K/i.test(ua) || (platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if (isMac) {
     os = 'macOS';
     badgeIcon = '🍎';
     
     // Check for Apple Silicon GPU renderer heuristic or ARM hints
-    const isAppleSilicon = await detectAppleSiliconHeuristic();
-    if (isAppleSilicon || arch === 'arm64') {
+    const appleSiliconTier = await detectAppleSiliconGeneration();
+    if (appleSiliconTier === 'gen2') {
       arch = 'arm64';
-      chipName = 'Apple Silicon (M1 / M2 / M3 / M4 - ARM64)';
-      packageId = 'mac-arm64';
+      chipName = 'Apple Silicon M3 / M4 Series (ARMv9.2-A · SME2 / Metal 3)';
+      packageId = 'mac-arm64-gen2';
+    } else if (appleSiliconTier === 'gen1' || arch === 'arm64') {
+      arch = 'arm64';
+      chipName = 'Apple Silicon M1 / M2 Series (ARMv8.5-A Baseline)';
+      packageId = 'mac-arm64-gen1';
     } else {
       arch = 'x86_64';
-      chipName = 'Intel Core / Xeon 64-bit (x86_64)';
-      packageId = 'mac-x64';
+      chipName = 'Intel Core / Xeon 64-bit (AVX2 Compatibility)';
+      packageId = 'mac-x64-intel';
     }
   }
   // Windows Detection
@@ -82,12 +86,22 @@ async function detectClientHardware() {
     badgeIcon = '🪟';
     if (/ARM64|WOA/i.test(ua) || arch === 'arm64') {
       arch = 'arm64';
-      chipName = 'Windows on ARM64 (Qualcomm Snapdragon X Elite)';
-      packageId = 'win-arm64-installer';
+      if (/Snapdragon|X1E|Copilot/i.test(ua)) {
+        chipName = 'Qualcomm Snapdragon X Elite / Plus (Copilot+ NPU)';
+        packageId = 'win-arm64-snapdragonX';
+      } else {
+        chipName = 'Qualcomm Snapdragon 8cx / SQ1/SQ2 (ARMv8.2-A)';
+        packageId = 'win-arm64-legacy';
+      }
     } else {
       arch = 'x64';
-      chipName = 'Intel / AMD 64-bit Processor (x64)';
-      packageId = 'win-x64-installer';
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 12) {
+        chipName = 'Intel 12th-15th Gen / AMD Zen 4/5 (AVX-512 / VNNI)';
+        packageId = 'win-x64-gen-modern';
+      } else {
+        chipName = 'Intel 6th-11th Gen / AMD Zen 1-3 (Universal AVX2)';
+        packageId = 'win-x64-gen-universal';
+      }
     }
   }
   // Linux Detection
@@ -95,8 +109,13 @@ async function detectClientHardware() {
     os = 'Enterprise Linux';
     badgeIcon = '🐧';
     arch = 'x86_64';
-    chipName = 'x86_64 Architecture';
-    packageId = 'linux-x64-tar';
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 16) {
+      chipName = 'Xeon Scalable 4th+ / EPYC Genoa (AVX-512)';
+      packageId = 'linux-x64-gen4';
+    } else {
+      chipName = 'Universal 64-bit Enterprise Linux (SSE4.2)';
+      packageId = 'linux-x64-universal';
+    }
   }
 
   detectedPlatform = { os, arch, chipName, packageId, badgeIcon };
@@ -104,24 +123,29 @@ async function detectClientHardware() {
 }
 
 /**
- * Heuristic to detect Apple Silicon via WebGL unmasked renderer
+ * Heuristic to detect Apple Silicon generation via WebGL unmasked renderer
  */
-async function detectAppleSiliconHeuristic() {
+async function detectAppleSiliconGeneration() {
   try {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return false;
+    if (!gl) return 'gen2';
     const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-    if (!debugInfo) return false;
-    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-    // Apple Silicon reports 'Apple M1', 'Apple M2', 'Apple M3', 'Apple M4', or 'Apple GPU'
-    if (/Apple M[1-4]|Apple GPU/i.test(renderer)) {
-      return true;
+    if (!debugInfo) return 'gen2';
+    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '';
+    if (/Apple M[3-4]/i.test(renderer)) {
+      return 'gen2';
+    }
+    if (/Apple M[1-2]|Apple GPU/i.test(renderer)) {
+      return 'gen1';
+    }
+    if (/Intel/i.test(renderer)) {
+      return 'intel';
     }
   } catch (e) {
     // ignore
   }
-  return true; // Default modern Macs to Apple Silicon if indeterminate
+  return 'gen2'; // Default modern Mac hardware to Gen 2
 }
 
 /**
@@ -131,7 +155,9 @@ function updateSmartRecommendationCard(detected) {
   const card = document.getElementById('smart-recommendation-card');
   if (!card || !manifest) return;
 
-  const pkg = manifest.packages.find(p => p.id === detected.packageId) || manifest.packages[0];
+  const pkg = manifest.packages.find(p => p.id === detected.packageId) ||
+              manifest.packages.find(p => p.recommended_for && p.recommended_for.includes(detected.packageId)) ||
+              manifest.packages[0];
 
   const titleEl = document.getElementById('rec-title');
   const descEl = document.getElementById('rec-desc');
@@ -149,9 +175,11 @@ function updateSmartRecommendationCard(detected) {
     metaEl.innerHTML = `
       <span><strong>Chip:</strong> ${pkg.chipset_short}</span>
       <span>•</span>
-      <span><strong>Size:</strong> ${pkg.size_mb} MB</span>
+      <span><strong>Tier:</strong> ${pkg.generation}</span>
       <span>•</span>
-      <span><strong>Format:</strong> ${pkg.type}</span>
+      <span><strong>Instruction Set:</strong> ${pkg.instruction_set}</span>
+      <span>•</span>
+      <span><strong>Size:</strong> ${pkg.size_mb} MB</span>
       <span>•</span>
       <span><strong>Security:</strong> FIPS 140-2 Compatible</span>
     `;
@@ -199,14 +227,13 @@ function renderTable(tableBodyId, packages) {
 
   tbody.innerHTML = '';
   packages.forEach(pkg => {
-    const isRecommended = detectedPlatform && pkg.id === detectedPlatform.packageId;
+    const isRecommended = detectedPlatform && (
+      pkg.id === detectedPlatform.packageId ||
+      (pkg.recommended_for && pkg.recommended_for.includes(detectedPlatform.packageId))
+    );
     const tr = document.createElement('tr');
+    tr.setAttribute('data-gen-tier', pkg.gen_tier);
     if (isRecommended) tr.className = 'highlighted-row';
-
-    let chipClass = 'chip-x64';
-    if (pkg.chipset_short.includes('ARM')) {
-      chipClass = pkg.platform === 'macOS' ? 'chip-arm64' : 'chip-win-arm';
-    }
 
     let fileBadge = 'file-dmg';
     if (pkg.filename.endsWith('.exe')) fileBadge = 'file-exe';
@@ -220,9 +247,13 @@ function renderTable(tableBodyId, packages) {
         <div style="font-size:0.75rem; color:#6B7280; margin-top:2px;">${pkg.description}</div>
       </td>
       <td>
-        <span class="amex-chip-pill ${chipClass}">${pkg.chipset}</span>
+        <div style="font-weight:600; font-size:0.875rem; color:var(--amex-text-headline);">${pkg.generation}</div>
+        <div style="display:flex; align-items:center; gap:6px; margin-top:4px; flex-wrap:wrap;">
+          <span class="amex-chip-pill chip-${pkg.gen_tier}">${pkg.chipset_short}</span>
+          <span style="font-size:0.75rem; color:var(--amex-text-muted); font-family:var(--font-mono);">${pkg.instruction_set}</span>
+        </div>
       </td>
-      <td style="color:#4B5563;">
+      <td style="color:#4B5563; font-size:0.8125rem;">
         ${pkg.os_compat}
       </td>
       <td>
@@ -243,6 +274,24 @@ function renderTable(tableBodyId, packages) {
       </td>
     `;
     tbody.appendChild(tr);
+  });
+}
+
+/**
+ * Filter Architecture Matrix rows by processor generation tier
+ */
+function filterByGeneration(genTier, btn) {
+  document.querySelectorAll('.gen-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const allRows = document.querySelectorAll('.amex-table tbody tr');
+  allRows.forEach(row => {
+    const rowTier = row.getAttribute('data-gen-tier');
+    if (genTier === 'all' || rowTier === genTier) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
   });
 }
 
