@@ -176,7 +176,63 @@ if bundle is None:
 
 names = list(bundle["models"])
 with st.sidebar:
-    st.markdown("### 🫀 CardioSense")
+    st.markdown("### 🫀 CardioSense Enterprise")
+
+    st.session_state.setdefault("auth_user", {
+        "name": "Dr. Alexander Wright, MD",
+        "role": "Chief Medical Officer",
+        "clearance": "Centurion Healthcare Admin",
+        "npi": "1982736450"
+    })
+
+    if st.session_state["auth_user"]:
+        user = st.session_state["auth_user"]
+        st.markdown(
+            f"""
+            <div style="background:rgba(16,185,129,0.12); border:1px solid #10b981; border-radius:8px; padding:10px; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:6px; font-size:0.75rem; color:#6ee7b7; font-weight:700;">
+                    <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 6px #10b981;"></span>
+                    AUTHENTICATED CLINICIAN
+                </div>
+                <div style="font-weight:700; color:#fff; font-size:0.9rem; margin-top:4px;">{user['name']}</div>
+                <div style="font-size:0.75rem; color:#cbd5e1;">{user['role']}</div>
+                <div style="font-size:0.7rem; color:#94a3b8; font-family:monospace; margin-top:4px;">NPI: #{user['npi']} · {user['clearance']}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        if st.button("Sign Out (Revoke Session)", key="sidebar_signout", use_container_width=True):
+            st.session_state["auth_user"] = None
+            st.rerun()
+    else:
+        st.markdown(
+            """
+            <div style="background:rgba(239,68,68,0.12); border:1px solid #ef4444; border-radius:8px; padding:10px; margin-bottom:12px;">
+                <div style="font-size:0.75rem; color:#f87171; font-weight:700;">🔒 UNVERIFIED SESSION</div>
+                <div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">Select clinician credentials to authenticate:</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        col_cmo, col_cardio = st.columns(2)
+        if col_cmo.button("Dr. Wright (CMO)", key="quick_cmo", use_container_width=True):
+            st.session_state["auth_user"] = {
+                "name": "Dr. Alexander Wright, MD",
+                "role": "Chief Medical Officer",
+                "clearance": "Centurion Healthcare Admin",
+                "npi": "1982736450"
+            }
+            st.rerun()
+        if col_cardio.button("Dr. Rostova", key="quick_cardio", use_container_width=True):
+            st.session_state["auth_user"] = {
+                "name": "Dr. Elena Rostova, MD, FACC",
+                "role": "Interventional Cardiologist",
+                "clearance": "Clinical Decision Specialist",
+                "npi": "1827364519"
+            }
+            st.rerun()
+
+    st.markdown("---")
     model_name = st.selectbox("Model", names, index=names.index(bundle["best"]))
     st.caption("★ Best by cross-validation: " + bundle["best"])
     meta = bundle["meta"]

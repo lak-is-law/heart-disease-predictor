@@ -33,13 +33,15 @@
           </svg>
           <span>United States (English)</span>
         </div>
-        <button class="amex-login-btn">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          Enterprise Sign In
-        </button>
+        <div id="amex-auth-top-slot">
+          <button class="amex-login-btn" onclick="openAuthModal()" id="btn-top-signin">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Enterprise Sign In
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -937,6 +939,115 @@ Start-Process -FilePath .\CardioSense-Enterprise-2.4.0-windows-x64-Setup.exe `
       </div>
     </div>
   </footer>
+
+  <!-- ==============================================================================
+       AMERICAN EXPRESS ENTERPRISE SINGLE SIGN-ON & MFA AUTHENTICATION MODAL
+       ============================================================================== -->
+  <div class="amex-modal-backdrop" id="amex-auth-modal" style="display:none;" onclick="handleModalBackdropClick(event)">
+    <div class="amex-auth-dialog" onclick="event.stopPropagation()">
+      <div class="amex-auth-header">
+        <div class="amex-blue-box" style="width:40px; height:40px;">
+          <div class="amex-blue-box-inner" style="font-size:7px; line-height:8px;">
+            <span style="font-size:6px; letter-spacing:0.5px;">AMERICAN</span>
+            <span style="font-size:6px; letter-spacing:0.5px;">EXPRESS</span>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:1.1875rem; color:var(--amex-text-headline); font-weight:700; margin:0 0 2px;">Enterprise Authentication</h3>
+          <p style="font-size:0.75rem; color:var(--amex-text-muted); margin:0;">Centurion Healthcare & Clinical AI Decision Systems</p>
+        </div>
+        <button type="button" class="amex-modal-close" onclick="closeAuthModal()" aria-label="Close Modal">&times;</button>
+      </div>
+
+      <!-- Auth Navigation Tabs -->
+      <div class="amex-auth-nav">
+        <button type="button" class="auth-tab-btn active" onclick="switchAuthTab('password', this)">Credentials & 2FA</button>
+        <button type="button" class="auth-tab-btn" onclick="switchAuthTab('fido2', this)">Passkey / FIDO2</button>
+        <button type="button" class="auth-tab-btn" onclick="switchAuthTab('quick', this)">Quick Demo Roles</button>
+      </div>
+
+      <!-- Tab 1: Credentials & 2FA -->
+      <div id="auth-tab-password" class="auth-tab-content">
+        <form id="amex-login-form" onsubmit="handleCredentialSubmit(event)">
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label" for="auth-email">Corporate Email / User ID</label>
+            <input type="email" id="auth-email" class="clinical-select" style="width:100%; box-sizing:border-box;" required value="alexander.wright@amex.health" placeholder="name@enterprise.org">
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label" for="auth-pwd">Password</label>
+            <input type="password" id="auth-pwd" class="clinical-select" style="width:100%; box-sizing:border-box;" required value="CardioSense2026!" placeholder="••••••••••••">
+          </div>
+          <div id="mfa-step" style="display:none; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:0.8125rem; font-weight:600; color:#00175A;">🔑 Enter 6-Digit 2FA Token</span>
+              <button type="button" class="amex-copy-btn" onclick="autoFillOtp()">Auto-Fill OTP</button>
+            </div>
+            <input type="text" id="auth-otp" class="clinical-select" maxlength="6" style="letter-spacing:6px; font-weight:700; text-align:center; font-size:1.1rem; width:100%; box-sizing:border-box; font-family:var(--font-mono);" placeholder="654321">
+          </div>
+          <button type="submit" class="amex-btn amex-btn-primary" style="width:100%; justify-content:center; padding:11px;" id="btn-auth-submit">
+            Authenticate Session
+          </button>
+        </form>
+      </div>
+
+      <!-- Tab 2: FIDO2 / WebAuthn -->
+      <div id="auth-tab-fido2" class="auth-tab-content" style="display:none;">
+        <div style="text-align:center; padding:16px 10px;">
+          <div style="font-size:2.8rem; margin-bottom:12px;">🔐</div>
+          <h4 style="font-size:1rem; color:var(--amex-text-headline); font-weight:700; margin-bottom:6px;">Hardware Security Key / Touch ID</h4>
+          <p style="font-size:0.8125rem; color:var(--amex-text-muted); line-height:1.5; margin-bottom:18px;">
+            Authenticate using your YubiKey FIPS 140-2 token, Apple Touch ID / Face ID, or Windows Hello.
+          </p>
+          <button type="button" class="amex-btn amex-btn-primary" style="width:100%; justify-content:center; padding:11px;" onclick="simulateFido2Auth()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right:8px;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Trigger Biometric / FIDO2 Challenge
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 3: Quick Demo Roles -->
+      <div id="auth-tab-quick" class="auth-tab-content" style="display:none;">
+        <p style="font-size:0.75rem; color:var(--amex-text-muted); margin-bottom:12px;">Select an authentic clinical persona to test role-based permissions:</p>
+        <div class="demo-profile-list">
+          <div class="demo-profile-card" onclick="loginDemoProfile('cmo')">
+            <div style="font-size:1.5rem;">🩺</div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:0.875rem; color:var(--amex-text-headline);">Dr. Alexander Wright, MD</div>
+              <div style="font-size:0.75rem; color:#006FCF; font-weight:600;">Chief Medical Officer · Admin Clearance</div>
+              <div style="font-size:0.6875rem; color:#6B7280;">NPI: #1982736450 · Full Code-Signing & IT Export</div>
+            </div>
+            <button class="amex-btn amex-btn-secondary amex-btn-sm" type="button">Select</button>
+          </div>
+
+          <div class="demo-profile-card" onclick="loginDemoProfile('cardiologist')">
+            <div style="font-size:1.5rem;">🫀</div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:0.875rem; color:var(--amex-text-headline);">Dr. Elena Rostova, MD, FACC</div>
+              <div style="font-size:0.75rem; color:#10B981; font-weight:600;">Lead Interventional Cardiologist</div>
+              <div style="font-size:0.6875rem; color:#6B7280;">NPI: #1827364519 · 3D Telemetry & Diagnostics</div>
+            </div>
+            <button class="amex-btn amex-btn-secondary amex-btn-sm" type="button">Select</button>
+          </div>
+
+          <div class="demo-profile-card" onclick="loginDemoProfile('auditor')">
+            <div style="font-size:1.5rem;">🛡️</div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:0.875rem; color:var(--amex-text-headline);">Sarah Jenkins, CISA, CISSP</div>
+              <div style="font-size:0.75rem; color:#C5A059; font-weight:600;">Enterprise Compliance & HIPAA Auditor</div>
+              <div style="font-size:0.6875rem; color:#6B7280;">Audit Trail & Cryptographic Seal Verification</div>
+            </div>
+            <button class="amex-btn amex-btn-secondary amex-btn-sm" type="button">Select</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="amex-auth-footer">
+        <span>FIPS 140-2 Level 3 HSM · TLS 1.3 Certified Session</span>
+      </div>
+    </div>
+  </div>
 
   <script src="portal.js"></script>
 </body>

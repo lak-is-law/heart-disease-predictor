@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadManifest();
   await loadModelWeights();
   initSecurityLayer();
+  initAuthSession();
   detectClientHardware();
   renderMatrixTables();
   initTabNavigation();
@@ -1353,4 +1354,215 @@ function copyAuditLog() {
   const text = secAuditLogs.map(l => `[${l.ts}] [${l.tag}] ${l.message}`).join('\n');
   copyToClipboard(text, 'Full Security Audit Log Copied');
 }
+
+// ==============================================================================
+// ENTERPRISE AUTHENTICATION, SINGLE SIGN-ON & ROLE-BASED ACCESS CONTROL (RBAC)
+// ==============================================================================
+let currentUser = null;
+
+const DEMO_PROFILES = {
+  cmo: {
+    id: "user-cmo-001",
+    name: "Dr. Alexander Wright, MD",
+    email: "alexander.wright@amex.health",
+    title: "Dr.",
+    role: "Chief Medical Officer",
+    clearance: "Centurion Healthcare Admin",
+    npi: "1982736450",
+    badge: "CMO"
+  },
+  cardiologist: {
+    id: "user-cardio-002",
+    name: "Dr. Elena Rostova, MD, FACC",
+    email: "elena.rostova@amex.health",
+    title: "Dr.",
+    role: "Interventional Cardiologist",
+    clearance: "Clinical Decision Specialist",
+    npi: "1827364519",
+    badge: "Cardiologist"
+  },
+  auditor: {
+    id: "user-audit-003",
+    name: "Sarah Jenkins, CISA",
+    email: "sarah.jenkins@amex.security",
+    title: "Ms.",
+    role: "Compliance & HIPAA Auditor",
+    clearance: "FIPS 140-2 Inspector",
+    npi: "AUD-99120",
+    badge: "Auditor"
+  }
+};
+
+function initAuthSession() {
+  const saved = sessionStorage.getItem('amex_auth_user');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      logSecurityEvent('AUTH-RESTORE', `Active session restored for ${currentUser.name} (${currentUser.role}).`);
+    } catch (e) {
+      sessionStorage.removeItem('amex_auth_user');
+      currentUser = null;
+    }
+  }
+  renderAuthRibbon();
+}
+
+function openAuthModal() {
+  const modal = document.getElementById('amex-auth-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    const emailInp = document.getElementById('auth-email');
+    if (emailInp) emailInp.focus();
+  }
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('amex-auth-modal');
+  if (modal) modal.style.display = 'none';
+  const mfaStep = document.getElementById('mfa-step');
+  if (mfaStep) mfaStep.style.display = 'none';
+  const submitBtn = document.getElementById('btn-auth-submit');
+  if (submitBtn) submitBtn.innerText = 'Authenticate Session';
+}
+
+function handleModalBackdropClick(event) {
+  if (event.target.id === 'amex-auth-modal') {
+    closeAuthModal();
+  }
+}
+
+function switchAuthTab(tabId, btn) {
+  document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  document.querySelectorAll('.auth-tab-content').forEach(c => c.style.display = 'none');
+  const target = document.getElementById(`auth-tab-${tabId}`);
+  if (target) target.style.display = 'block';
+}
+
+function handleCredentialSubmit(event) {
+  event.preventDefault();
+  const mfaStep = document.getElementById('mfa-step');
+  const otpInp = document.getElementById('auth-otp');
+  const submitBtn = document.getElementById('btn-auth-submit');
+  const email = document.getElementById('auth-email').value;
+
+  // Step 1: Prompt for MFA Token
+  if (mfaStep && mfaStep.style.display === 'none') {
+    mfaStep.style.display = 'block';
+    submitBtn.innerText = 'Verify 2FA Token & Sign In';
+    if (otpInp) {
+      otpInp.focus();
+      otpInp.value = '654321'; // Pre-seed valid token for convenience
+    }
+    showToast('2FA Challenge Dispatched: Auto-seeded token ready');
+    logSecurityEvent('MFA-CHALLENGE', `TOTP 2FA challenge dispatched to ${email}`);
+    return;
+  }
+
+  // Step 2: Validate OTP and Grant Access
+  const otpVal = otpInp ? otpInp.value.trim() : '';
+  if (otpVal.length < 6) {
+    alert('Please enter a 6-digit TOTP verification token.');
+    return;
+  }
+
+  // Establish Authenticated User Session
+  currentUser = {
+    id: "user-session-" + Date.now().toString(36),
+    name: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    email: email,
+    title: "Clinician",
+    role: "Attending Physician",
+    clearance: "Centurion Clinical Tier",
+    token: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + btoa(email) + ".valid",
+    authMethod: "Password + TOTP MFA"
+  };
+
+  completeLoginSuccess();
+}
+
+function autoFillOtp() {
+  const otpInp = document.getElementById('auth-otp');
+  if (otpInp) {
+    otpInp.value = '654321';
+    showToast('OTP auto-filled: 654321');
+  }
+}
+
+function simulateFido2Auth() {
+  logSecurityEvent('FIDO2-PROMPT', 'WebAuthn navigator.credentials.get challenge initiated...');
+  showToast('Touch your YubiKey or use Touch ID / Windows Hello...');
+
+  setTimeout(() => {
+    currentUser = {
+      id: "user-fido2-" + Date.now().toString(36),
+      name: "Dr. Alexander Wright, MD",
+      email: "alexander.wright@amex.health",
+      title: "Dr.",
+      role: "Chief Medical Officer",
+      clearance: "FIPS 140-2 Hardware Token Verified",
+      token: "Bearer eyJhbGciOiJFUzM4NCJ9.fido2-hardware-token.valid",
+      authMethod: "FIDO2 / WebAuthn Biometric"
+    };
+    logSecurityEvent('FIDO2-SUCCESS', 'Hardware cryptographic assertion verified by Amex CA.');
+    completeLoginSuccess();
+  }, 900);
+}
+
+function loginDemoProfile(roleKey) {
+  const profile = DEMO_PROFILES[roleKey] || DEMO_PROFILES.cmo;
+  currentUser = {
+    ...profile,
+    token: "Bearer eyJhbGciOiJIUzI1NiJ9." + btoa(profile.id) + ".valid",
+    authMethod: "Enterprise Fast-Path SSO"
+  };
+  completeLoginSuccess();
+}
+
+function completeLoginSuccess() {
+  sessionStorage.setItem('amex_auth_user', JSON.stringify(currentUser));
+  logSecurityEvent('AUTH-LOGIN', `Session established for ${currentUser.name} (${currentUser.role}) via ${currentUser.authMethod}.`);
+  renderAuthRibbon();
+  closeAuthModal();
+  showToast(`Authenticated: Welcome, ${currentUser.name}`);
+  runSecurityCheckup(true);
+}
+
+function handleSignOut() {
+  if (currentUser) {
+    logSecurityEvent('AUTH-SIGNOUT', `User ${currentUser.name} logged out. Session revoked.`);
+  }
+  currentUser = null;
+  sessionStorage.removeItem('amex_auth_user');
+  renderAuthRibbon();
+  showToast('Enterprise session terminated safely.');
+}
+
+function renderAuthRibbon() {
+  const slot = document.getElementById('amex-auth-top-slot');
+  if (!slot) return;
+
+  if (currentUser) {
+    slot.innerHTML = `
+      <div class="amex-user-ribbon-badge" title="Active Session: ${currentUser.clearance || 'Enterprise Clearance'}">
+        <span class="user-avatar-dot"></span>
+        <span style="font-weight:600;">${currentUser.name}</span>
+        <span style="color:#C5A059; font-weight:700;">(${currentUser.role || 'Clinician'})</span>
+        <button class="amex-signout-btn" onclick="handleSignOut()" type="button" title="Sign Out of Enterprise Session">Sign Out</button>
+      </div>
+    `;
+  } else {
+    slot.innerHTML = `
+      <button class="amex-login-btn" onclick="openAuthModal()" id="btn-top-signin" type="button">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Enterprise Sign In
+      </button>
+    `;
+  }
+}
+
 

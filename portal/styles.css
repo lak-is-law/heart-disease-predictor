@@ -1485,6 +1485,158 @@ a:hover {
   font-weight: 600;
 }
 
+/* ==============================================================================
+   AUTHENTICATION & USER SESSION STYLES
+   ============================================================================== */
+.amex-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 23, 90, 0.65);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: amexFadeIn 0.2s ease-out;
+}
+
+@keyframes amexFadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.amex-auth-dialog {
+  background: #FFFFFF;
+  border-radius: var(--amex-radius-lg);
+  border-top: 4px solid var(--amex-blue-primary);
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 24px 48px -12px rgba(0, 23, 90, 0.35);
+  padding: 28px 30px;
+  position: relative;
+}
+
+.amex-auth-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.amex-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--amex-text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.amex-modal-close:hover {
+  color: var(--amex-text-headline);
+}
+
+.amex-auth-nav {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--amex-border-card);
+  margin-bottom: 20px;
+}
+
+.auth-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--amex-text-body);
+  cursor: pointer;
+}
+
+.auth-tab-btn.active {
+  color: var(--amex-blue-primary);
+  border-bottom-color: var(--amex-blue-primary);
+}
+
+.demo-profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.demo-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--amex-border-card);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: #FFFFFF;
+}
+
+.demo-profile-card:hover {
+  border-color: var(--amex-blue-primary);
+  background: #F8FAFC;
+  transform: translateY(-1px);
+}
+
+.amex-auth-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--amex-border-card);
+  font-size: 0.6875rem;
+  color: var(--amex-text-muted);
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.amex-user-ribbon-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  color: #FFFFFF;
+}
+
+.user-avatar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34D399;
+  box-shadow: 0 0 6px #34D399;
+}
+
+.amex-signout-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.6875rem;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.amex-signout-btn:hover {
+  background: #DC2626;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .amex-lab-grid { grid-template-columns: 1fr; }
