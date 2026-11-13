@@ -330,19 +330,19 @@ def render_cgi_heart(
 
     <!-- Mode Switcher -->
     <div class="mode-toolbar">
-      <button class="mode-btn active" onclick="setMode('cinematic')">🩺 Anatomical CGI</button>
-      <button class="mode-btn" onclick="setMode('bioelectric')">⚡ Bio-Electric</button>
-      <button class="mode-btn" onclick="setMode('angiogram')">🩻 CT Angiogram</button>
-      <button class="mode-btn" onclick="setMode('matrix')">🌐 Matrix Hologram</button>
+      <button class="mode-btn active" onclick="setMode('cinematic')">Anatomical CTA</button>
+      <button class="mode-btn" onclick="setMode('bioelectric')">Perfusion Map</button>
+      <button class="mode-btn" onclick="setMode('angiogram')">Fluoroscopy</button>
+      <button class="mode-btn" onclick="setMode('matrix')">Coronary FFR</button>
       <button class="sound-btn" id="sound-btn" onclick="toggleCardiacAudio()">
-        <span id="sound-icon">🔈</span> Sound
+        <span id="sound-icon">[Muted]</span> Sound
       </button>
     </div>
   </div>
 
   <!-- Orbit Hint -->
   <div class="orbit-hint">
-    ✦ Click & Drag to Rotate 360° · Scroll to Zoom · Right Click to Pan
+    Click & Drag to Rotate 360° · Scroll to Zoom · Right Click to Pan
   </div>
 
   <!-- Bottom Telemetry HUD -->
@@ -968,11 +968,11 @@ function toggleCardiacAudio() {{
 
   if (soundEnabled) {{
     btn.classList.add('active');
-    icon.innerText = '🔊';
+    icon.innerText = '[Live]';
     nextBeatTime = audioCtx.currentTime + 0.1;
   }} else {{
     btn.classList.remove('active');
-    icon.innerText = '🔈';
+    icon.innerText = '[Muted]';
   }}
 }}
 

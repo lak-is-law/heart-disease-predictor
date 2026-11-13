@@ -1,13 +1,13 @@
-# CardioSense: Heart Disease Prediction System
+# CardioSense AI: Clinical Decision Support & Cardiac Hemodynamics Workstation
 
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-black?logo=vercel)](https://heart-disease-predictor-kohl-nine.vercel.app)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/lak-is-law/heart-disease-predictor)
 
-> **Live Web Application & Enterprise Download Portal:**  
-> 🔗 **[https://heart-disease-predictor-kohl-nine.vercel.app](https://heart-disease-predictor-kohl-nine.vercel.app)**
+> **Live Web Application & Distribution Portal:**  
+> **[https://heart-disease-predictor-kohl-nine.vercel.app](https://heart-disease-predictor-kohl-nine.vercel.app)**
 
 Logistic Regression, Random Forest and XGBoost trained on the UCI Heart Disease data, wrapped in an
-interactive 3D CGI anatomical heart biomechanics laboratory and an American Express-styled desktop distribution portal.
+interactive 3D anatomical heart biomechanics laboratory, clinical lab report ingestion parser, and multi-architecture desktop distribution portal.
 
 ## Run it
 
@@ -35,22 +35,16 @@ streamlit run app.py
 | `train.py` | cross-validation, hold-out evaluation, permutation importance, saves the artifacts |
 | `app.py` | Streamlit UI (risk assessment, model lab, about, desktop downloads) |
 | `desktop_launcher.py` | Native desktop launcher running Streamlit headlessly in a desktop frame |
-| `serve_portal.py` | Local web server for the American Express-themed client download portal |
-| `portal/` | Reverse-engineered American Express (Amex) UI/UX enterprise download center |
+| `portal/` | Clinical decision support workstation and 18-package architecture distribution hub |
 | `packaging/` | PyInstaller specs, macOS DMG builder, Windows Inno Setup scripts, manifest generator |
 | `artifacts/` | trained models and `metrics.json` (created by `train.py`) |
 
-## Desktop Distribution & Oracle Multi-Chip Matrix
+## Desktop Distribution (18 Granular Architectures)
 
-CardioSense is packaged as native standalone desktop executables (`.dmg` for macOS and `.exe` for Windows), mirroring the multi-architecture distribution models used by enterprise platforms like Oracle:
-
-| Operating System | Processor / Chipset | Package Format | Binary File |
-|---|---|---|---|
-| **macOS** | Apple Silicon (M1 / M2 / M3 / M4 - ARM64) | Apple Disk Image (`.dmg`) | `CardioSense-Enterprise-2.4.0-macos-arm64.dmg` |
-| **macOS** | Intel 64-bit (x86_64) | Apple Disk Image (`.dmg`) | `CardioSense-Enterprise-2.4.0-macos-x64.dmg` |
-| **Windows** | Intel / AMD 64-bit (x64) | Inno Setup Installer (`.exe`) | `CardioSense-Enterprise-2.4.0-windows-x64-Setup.exe` |
-| **Windows** | Intel / AMD 64-bit (x64) | Zero-Install Portable (`.exe`) | `CardioSense-Enterprise-2.4.0-windows-x64-portable.exe` |
-| **Windows** | ARM64 (Qualcomm Snapdragon X Elite) | Inno Setup Installer (`.exe`) | `CardioSense-Enterprise-2.4.0-windows-arm64-Setup.exe` |
+CardioSense AI is packaged as native standalone desktop executables (`.dmg` for macOS, `.exe`/`.msi` for Windows, and `.tar.gz` for Linux), covering granular processor generations:
+- **macOS (7 builds):** Apple Silicon M4, M3, M2, M1, Intel 10th Gen Core, Intel Xeon W Workstation, and Intel Legacy 64-bit.
+- **Windows (8 builds):** Intel Core Ultra (Series 1 & 2), Intel 12th/13th Gen, AMD Ryzen Zen 4/5, Universal x64 Baseline, Zero-Install Portable, Snapdragon X Elite Copilot+, Snapdragon 8cx Gen 3, and Windows Server Enterprise Edition.
+- **Linux (3 builds):** Enterprise HPC (AVX-512), Universal (SSE4.2), and ARM64 Server.
 
 ### Building Desktop Packages
 

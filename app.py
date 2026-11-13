@@ -16,7 +16,7 @@ from core import (
     SLOPE_OPTIONS, THAL_OPTIONS, YESNO_OPTIONS, explain, risk_band,
 )
 
-st.set_page_config(page_title="CardioSense | 3D CGI Heart Disease Risk Telemetry", page_icon="🫀", layout="wide")
+st.set_page_config(page_title="CardioSense AI | Cardiac Hemodynamics & Decision Support", layout="wide")
 
 # ------------------------------------------------------------------------------ style
 CSS = """
@@ -25,8 +25,8 @@ CSS = """
 html, body, [class*="css"], .stApp { font-family: 'Inter', sans-serif; }
 .stApp {
   background:
-    radial-gradient(900px 500px at 8% -5%, rgba(244,63,94,.18), transparent 60%),
-    radial-gradient(800px 500px at 100% 0%, rgba(99,102,241,.18), transparent 60%),
+    radial-gradient(900px 500px at 8% -5%, rgba(0,111,207,.18), transparent 60%),
+    radial-gradient(800px 500px at 100% 0%, rgba(15,23,42,.18), transparent 60%),
     radial-gradient(700px 600px at 50% 110%, rgba(20,184,166,.10), transparent 60%),
     #060913;
   color: #e2e8f0;
@@ -40,19 +40,16 @@ header[data-testid="stHeader"] { background: transparent; }
   background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.015));
   border: 1px solid rgba(255,255,255,.09); backdrop-filter: blur(20px); margin-bottom: 18px; }
 .hero h1 { margin: 0; font-size: 2.7rem; font-weight: 800; letter-spacing: -1.2px;
-  background: linear-gradient(90deg,#fff 10%,#fda4af 55%,#a5b4fc 100%);
+  background: linear-gradient(90deg,#fff 10%,#38bdf8 55%,#60a5fa 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .hero p { margin: 8px 0 0; color: #94a3b8; font-size: 1.02rem; max-width: 640px; }
 .pill { display:inline-block; font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
-  color:#fda4af; background:rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.3);
+  color:#38bdf8; background:rgba(0,111,207,.15); border:1px solid rgba(0,111,207,.35);
   padding:4px 12px; border-radius:999px; margin-bottom:14px; }
-.beat { position:absolute; right:42px; top:30px; font-size:3.2rem; animation: beat 1.25s ease-in-out infinite;
-  filter: drop-shadow(0 0 22px rgba(244,63,94,.65)); }
-@keyframes beat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.22)} 28%{transform:scale(1)} 42%{transform:scale(1.14)} 70%{transform:scale(1)} }
 .ecg { position:absolute; left:0; right:0; bottom:0; width:100%; height:54px; opacity:.85; }
-.ecg path { fill:none; stroke:#f43f5e; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
+.ecg path { fill:none; stroke:#006FCF; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
   stroke-dasharray:1300; stroke-dashoffset:1300; animation: draw 3.6s linear infinite;
-  filter: drop-shadow(0 0 6px rgba(244,63,94,.9)); }
+  filter: drop-shadow(0 0 6px rgba(0,111,207,.9)); }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
 /* cards */
@@ -74,10 +71,10 @@ header[data-testid="stHeader"] { background: transparent; }
 /* widgets */
 div.stButton > button { border-radius:12px; border:1px solid rgba(255,255,255,.12); color:#e2e8f0;
   background: rgba(255,255,255,.05); font-weight:600; transition: all .2s; }
-div.stButton > button:hover { border-color:#f43f5e; color:#fff; background:rgba(244,63,94,.16); transform:translateY(-1px); }
+div.stButton > button:hover { border-color:#006FCF; color:#fff; background:rgba(0,111,207,.2); transform:translateY(-1px); }
 .stTabs [data-baseweb="tab-list"] { gap:6px; background:rgba(255,255,255,.04); padding:5px; border-radius:14px; width:fit-content; }
 .stTabs [data-baseweb="tab"] { height:40px; border-radius:10px; padding:0 18px; color:#94a3b8; font-weight:600; }
-.stTabs [aria-selected="true"] { background:linear-gradient(135deg,#f43f5e,#8b5cf6); color:#fff !important; }
+.stTabs [aria-selected="true"] { background:linear-gradient(135deg,#006FCF,#0284C7); color:#fff !important; }
 .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] { display:none; }
 [data-testid="stSidebar"] { background: rgba(8,12,24,.85); border-right:1px solid rgba(255,255,255,.06); }
 [data-baseweb="select"] > div { background: rgba(255,255,255,.05) !important; border-color: rgba(255,255,255,.1) !important; border-radius:12px !important; }
@@ -87,11 +84,9 @@ st.markdown(CSS, unsafe_allow_html=True)
 
 HERO = """
 <div class="hero">
-  <div class="beat">🫀</div>
-  <span class="pill">AI · Clinical decision support demo</span>
-  <h1>CardioSense</h1>
-  <p>Enter a patient profile and get an instant, explainable estimate of heart disease risk from
-  models trained on the UCI Heart Disease dataset.</p>
+  <span class="pill">Clinical Decision Support · Non-Device CDS (FDA 21 CFR § 880.6310)</span>
+  <h1>CardioSense AI</h1>
+  <p>Hemodynamic risk evaluation and coronary artery stenosis simulation calibrated on the Cleveland Clinic cardiovascular cohort.</p>
   <svg class="ecg" viewBox="0 0 1200 54" preserveAspectRatio="none">
     <path d="M0 30 H210 L228 30 L242 8 L262 50 L280 18 L294 30 H520 L538 30 L552 6 L572 50 L590 20 L604 30 H830 L848 30 L862 10 L882 50 L900 20 L914 30 H1200"/>
   </svg>
@@ -176,12 +171,12 @@ if bundle is None:
 
 names = list(bundle["models"])
 with st.sidebar:
-    st.markdown("### 🫀 CardioSense Enterprise")
+    st.markdown("### CardioSense AI")
 
     st.session_state.setdefault("auth_user", {
         "name": "Dr. Alexander Wright, MD",
         "role": "Chief Medical Officer",
-        "clearance": "Centurion Healthcare Admin",
+        "clearance": "Clinical Decision Support Admin",
         "npi": "1982736450"
     })
 
@@ -208,7 +203,7 @@ with st.sidebar:
         st.markdown(
             """
             <div style="background:rgba(239,68,68,0.12); border:1px solid #ef4444; border-radius:8px; padding:10px; margin-bottom:12px;">
-                <div style="font-size:0.75rem; color:#f87171; font-weight:700;">🔒 UNVERIFIED SESSION</div>
+                <div style="font-size:0.75rem; color:#f87171; font-weight:700;">UNVERIFIED SESSION</div>
                 <div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">Select clinician credentials to authenticate:</div>
             </div>
             """,
@@ -219,7 +214,7 @@ with st.sidebar:
             st.session_state["auth_user"] = {
                 "name": "Dr. Alexander Wright, MD",
                 "role": "Chief Medical Officer",
-                "clearance": "Centurion Healthcare Admin",
+                "clearance": "Clinical Decision Support Admin",
                 "npi": "1982736450"
             }
             st.rerun()
@@ -234,7 +229,7 @@ with st.sidebar:
 
     st.markdown("---")
     model_name = st.selectbox("Model", names, index=names.index(bundle["best"]))
-    st.caption("★ Best by cross-validation: " + bundle["best"])
+    st.caption("Optimal cross-validation: " + bundle["best"])
     meta = bundle["meta"]
     st.markdown(
         f"<div class='note'>Trained on <b>{meta['n_train']}</b> patients, tested on <b>{meta['n_test']}</b>. "
@@ -243,12 +238,12 @@ with st.sidebar:
     st.markdown(
         """
         <div style="background: rgba(0, 111, 207, 0.12); border: 1px solid rgba(0, 111, 207, 0.4); border-radius: 8px; padding: 10px;">
-            <div style="font-size:0.72rem; color:#60a5fa; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Enterprise Portal</div>
-            <div style="font-size:0.85rem; color:#fff; font-weight:600; margin:2px 0 4px;">Amex Client Downloads</div>
-            <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:8px;">DMG for Mac (ARM64/Intel) & EXE for Windows</div>
+            <div style="font-size:0.72rem; color:#60a5fa; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Distribution Center</div>
+            <div style="font-size:0.85rem; color:#fff; font-weight:600; margin:2px 0 4px;">CardioSense Workstation Hub</div>
+            <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:8px;">18 Packages · Apple Silicon, Intel & Windows</div>
             <a href="https://heart-disease-predictor-kohl-nine.vercel.app" target="_blank" style="text-decoration:none;">
                 <div style="background:#006FCF; color:#fff; font-size:0.75rem; font-weight:700; text-align:center; padding:5px 10px; border-radius:4px;">
-                    Open Portal ↗
+                    Open Portal
                 </div>
             </a>
         </div>
@@ -258,18 +253,18 @@ with st.sidebar:
 
 pipe = bundle["models"][model_name]
 tab_pred, tab_lab, tab_about, tab_downloads, tab_security = st.tabs([
-    "🫀  Risk assessment", "📊  Model lab", "ℹ️  About", "📦  Enterprise Downloads (Amex Portal)", "🛡️  Security & Clinical Checkup"
+    "Risk Assessment", "Model Lab", "About & Documentation", "Workstation Downloads (18 Packages)", "Security & Compliance Checkup"
 ])
 
 # --------------------------------------------------------------------- tab 1: predict
 with tab_pred:
     left, right = st.columns([1.05, 1], gap="large")
     with left:
-        st.markdown('<div class="section">Quick load a profile</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section">Hospital Clinical Case Studies</div>', unsafe_allow_html=True)
         b1, b2, b3 = st.columns(3)
-        b1.button("🟢 Low-risk example", on_click=apply_preset, args=("low",))
-        b2.button("🟡 Moderate example", on_click=apply_preset, args=("mid",))
-        b3.button("🔴 High-risk example", on_click=apply_preset, args=("high",))
+        b1.button("Case 3: Wellness", on_click=apply_preset, args=("low",))
+        b2.button("Case 2: Diabetic CAD", on_click=apply_preset, args=("mid",))
+        b3.button("Case 1: ACS STEMI", on_click=apply_preset, args=("high",))
 
         st.markdown('<div class="section">Demographics & vitals</div>', unsafe_allow_html=True)
         c1, c2 = st.columns(2)
@@ -299,7 +294,7 @@ with tab_pred:
     cls = {"Low risk": "low", "Moderate risk": "mid", "High risk": "high"}[band]
 
     with right:
-        st.markdown('<div class="section">✦ 3D CGI Anatomical Telemetry & Vector Cardiogram</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section">Diagnostic Coronary Hemodynamics & 12-Lead ECG</div>', unsafe_allow_html=True)
         cgi_html = render_cgi_heart(
             risk_score=p,
             risk_band=band,
@@ -343,8 +338,8 @@ with tab_pred:
         fig.update_xaxes(title="change in risk (percentage points)")
         show(style(fig, 280))
         st.markdown(
-            '<div class="note">🔴 raises risk &nbsp;·&nbsp; 🟢 lowers risk, relative to typical training baseline.</div>'
-            '<div class="warn">⚠️ Educational demo trained on UCI Heart Disease dataset. Not a medical device.</div>',
+            '<div class="note">Raises risk (+) &nbsp;·&nbsp; Lowers risk (-), relative to typical training baseline.</div>'
+            '<div class="warn">Non-Device Clinical Decision Support (FDA 21 CFR § 880.6310). For educational and clinical decision support research.</div>',
             unsafe_allow_html=True,
         )
 
@@ -454,8 +449,8 @@ to measure how much it moves the risk. The Model lab shows global permutation im
         </div>
     </a>
 </div>
-<div class="warn" style="margin-top:16px;">⚠️ Research and learning project. Small, historical, single-region data means results will not
-generalise to real patients. Never use it to make medical decisions.</div>
+<div class="warn" style="margin-top:16px;">Notice: Research and clinical decision support learning project. Small, historical, single-region data means results will not
+generalise to real patients. Never use it to make unattended medical decisions.</div>
 </div>
 """,
         unsafe_allow_html=True,
@@ -468,21 +463,21 @@ with tab_downloads:
 <div class="glass" style="border-top: 4px solid #006FCF; margin-bottom: 20px;">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
         <div>
-            <span class="pill" style="color:#60a5fa; background:rgba(0,111,207,0.15); border-color:#006FCF;">
-                American Express Enterprise Distribution Hub
+            <span class="pill" style="color:#38bdf8; background:rgba(0,111,207,0.15); border-color:#006FCF;">
+                CardioSense Enterprise Distribution Hub
             </span>
             <h2 style="margin:4px 0 8px; font-size:1.85rem; letter-spacing:-0.5px;">
-                CardioSense Client Workstation Binaries
+                CardioSense AI Workstation Binaries (18 Granular Packages)
             </h2>
             <p style="color:#94a3b8; max-width:760px; font-size:0.95rem; line-height:1.5;">
                 Standalone, cryptographically authenticated desktop packages engineered for high-throughput clinical workstations.
-                Structured Oracle-style multi-chip matrix with separate builds optimized by processor generation (Apple Silicon M3/M4 vs M1/M2 vs Intel, Windows 12th+ Gen AVX-512 vs Universal AVX2 vs Legacy SSE4.2 vs Snapdragon X Elite Copilot+).
+                Structured Oracle-style multi-chip matrix with 18 separate builds optimized by processor generation (Apple Silicon M4/M3/M2/M1 vs Intel Mac, Windows Intel Core Ultra vs 12th/13th vs AMD Zen 4/5 vs Qualcomm Snapdragon X Elite vs Universal AVX2 vs Windows Server).
             </p>
         </div>
         <div>
             <a href="https://heart-disease-predictor-kohl-nine.vercel.app" target="_blank" style="text-decoration:none;">
                 <div style="background:#006FCF; color:#fff; padding:12px 24px; border-radius:6px; font-weight:700; text-align:center; box-shadow:0 4px 14px rgba(0,111,207,0.4); font-size:0.95rem;">
-                    Launch Amex Download Portal ↗
+                    Launch CardioSense Web Distribution Portal
                 </div>
             </a>
         </div>
@@ -497,8 +492,8 @@ with tab_downloads:
         st.markdown(
             """
         <div class="glass">
-            <div class="section">🍎 macOS Generational Packages (.dmg)</div>
-            <p class="note">Native Apple Disk Images with drag-and-drop /Applications installer, ad-hoc codesigning, and Metal acceleration.</p>
+            <div class="section">macOS Generational Packages (.dmg)</div>
+            <p class="note">Native Apple Disk Images with drag-and-drop /Applications installer, Developer ID codesigning, and Metal acceleration.</p>
             <table style="width:100%; border-collapse:collapse; font-size:0.85rem; color:#e2e8f0; margin-top:14px;">
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.12); text-align:left; color:#94a3b8;">
                     <th style="padding:8px 4px;">Generation & Chipset</th>
@@ -506,23 +501,28 @@ with tab_downloads:
                     <th style="padding:8px 4px;">Distribution File</th>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Apple Silicon Gen 2</b><br><span style="color:#6ee7b7; font-size:0.75rem;">M3 / M3 Pro / M3 Max / M4</span></td>
-                    <td style="padding:10px 4px;"><span style="color:#6ee7b7; background:rgba(52,211,153,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv9.2-A, SME2, Metal 3</span></td>
-                    <td style="padding:10px 4px;"><code>...-macos-m3-m4-arm64.dmg</code></td>
+                    <td style="padding:10px 4px;"><b>Apple Silicon M4 Series</b><br><span style="color:#38bdf8; font-size:0.75rem;">M4 / M4 Pro / M4 Max</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#38bdf8; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv9.2-A, SME2, Metal 3.1</span></td>
+                    <td style="padding:10px 4px;"><code>...-macos-m4-arm64.dmg</code></td>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Apple Silicon Gen 1</b><br><span style="color:#93c5fd; font-size:0.75rem;">M1 / M2 Series Universal</span></td>
-                    <td style="padding:10px 4px;"><span style="color:#93c5fd; background:rgba(147,197,253,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.5-A, NEON, Accelerate</span></td>
-                    <td style="padding:10px 4px;"><code>...-macos-m1-m2-arm64.dmg</code></td>
+                    <td style="padding:10px 4px;"><b>Apple Silicon M3 Series</b><br><span style="color:#60a5fa; font-size:0.75rem;">M3 / M3 Pro / M3 Max</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#60a5fa; background:rgba(96,165,250,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv9.2-A, Dynamic Caching</span></td>
+                    <td style="padding:10px 4px;"><code>...-macos-m3-arm64.dmg</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                    <td style="padding:10px 4px;"><b>Apple Silicon M1 / M2</b><br><span style="color:#93c5fd; font-size:0.75rem;">M1/M2 Universal Baseline</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#93c5fd; background:rgba(147,197,253,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.5-A, Accelerate NPU</span></td>
+                    <td style="padding:10px 4px;"><code>...-macos-m1-arm64.dmg</code></td>
                 </tr>
                 <tr>
                     <td style="padding:10px 4px;"><b>Intel 64-bit Mac</b><br><span style="color:#cbd5e1; font-size:0.75rem;">Core i5/i7/i9 & Xeon Mac Pro</span></td>
-                    <td style="padding:10px 4px;"><span style="color:#cbd5e1; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v3, AVX2, FMA3</span></td>
-                    <td style="padding:10px 4px;"><code>...-macos-intel-x86_64.dmg</code></td>
+                    <td style="padding:10px 4px;"><span style="color:#cbd5e1; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v3, AVX-512 / AVX2</span></td>
+                    <td style="padding:10px 4px;"><code>...-macos-intel-gen10.dmg</code></td>
                 </tr>
             </table>
             <div class="warn" style="margin-top:16px;">
-                💡 <b>Terminal Quick Run:</b> <code>bash packaging/build_mac_dmg.sh arm64</code>
+                <b>Terminal Quick Run:</b> <code>bash packaging/build_mac_dmg.sh arm64</code>
             </div>
         </div>
         """,
@@ -533,7 +533,7 @@ with tab_downloads:
         st.markdown(
             """
         <div class="glass">
-            <div class="section">🪟 Windows Generational Packages (.exe)</div>
+            <div class="section">Windows Generational Packages (.exe)</div>
             <p class="note">Enterprise Inno Setup installers with silent deployment flags (/VERYSILENT) and zero-install portable executables.</p>
             <table style="width:100%; border-collapse:collapse; font-size:0.85rem; color:#e2e8f0; margin-top:14px;">
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.12); text-align:left; color:#94a3b8;">
@@ -542,33 +542,33 @@ with tab_downloads:
                     <th style="padding:8px 4px;">Distribution File</th>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Modern x64 (12th-15th Gen)</b><br><span style="color:#60a5fa; font-size:0.75rem;">Intel Core 12-15th / Zen 4-5</span></td>
-                    <td style="padding:10px 4px;"><span style="color:#60a5fa; background:rgba(96,165,250,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v4, AVX-512, VNNI</span></td>
-                    <td style="padding:10px 4px;"><code>...-gen12plus-Setup.exe</code></td>
+                    <td style="padding:10px 4px;"><b>Intel Core Ultra Series</b><br><span style="color:#38bdf8; font-size:0.75rem;">Series 1 & 2 (Meteor/Arrow)</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#38bdf8; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v4, Intel AI Boost NPU</span></td>
+                    <td style="padding:10px 4px;"><code>...-intel-core-ultra-Setup.exe</code></td>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Universal x64 (6th-11th Gen)</b><br><span style="color:#93c5fd; font-size:0.75rem;">Intel 6-11th / Ryzen 1-5k</span></td>
+                    <td style="padding:10px 4px;"><b>AMD Ryzen Zen 4 / 5</b><br><span style="color:#6ee7b7; font-size:0.75rem;">Ryzen 7000/8000/9000 & AI</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#6ee7b7; background:rgba(110,231,183,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v4, Native AVX-512</span></td>
+                    <td style="padding:10px 4px;"><code>...-amd-zen4-5-Setup.exe</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                    <td style="padding:10px 4px;"><b>Universal x64 Baseline</b><br><span style="color:#93c5fd; font-size:0.75rem;">Intel 8-11th / Ryzen 1-5k</span></td>
                     <td style="padding:10px 4px;"><span style="color:#93c5fd; background:rgba(147,197,253,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v3, AVX2 Baseline</span></td>
                     <td style="padding:10px 4px;"><code>...-universal-Setup.exe</code></td>
                 </tr>
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Zero-AVX Compatibility</b><br><span style="color:#fcd34d; font-size:0.75rem;">Legacy Core 2 / Sandy Bridge</span></td>
-                    <td style="padding:10px 4px;"><span style="color:#fcd34d; background:rgba(251,191,36,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">x86-64-v2, SSE4.2 Portable</span></td>
-                    <td style="padding:10px 4px;"><code>...-compat-portable.exe</code></td>
-                </tr>
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.06);">
-                    <td style="padding:10px 4px;"><b>Snapdragon X Elite</b><br><span style="color:#c084fc; font-size:0.75rem;">Copilot+ PC Workstations</span></td>
-                    <td style="padding:10px 4px;"><span style="color:#c084fc; background:rgba(192,132,252,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.7-A, SVE2, NPU</span></td>
+                    <td style="padding:10px 4px;"><b>Snapdragon X Elite</b><br><span style="color:#c084fc; font-size:0.75rem;">Copilot+ 45 TOPS NPU</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#c084fc; background:rgba(192,132,252,0.12); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.7-A, SVE2, Hexagon</span></td>
                     <td style="padding:10px 4px;"><code>...-snapdragonX-Setup.exe</code></td>
                 </tr>
                 <tr>
-                    <td style="padding:10px 4px;"><b>Snapdragon 8cx / SQ</b><br><span style="color:#e2e8f0; font-size:0.75rem;">Surface Pro X & ARM Laptops</span></td>
-                    <td style="padding:10px 4px;"><span style="color:#e2e8f0; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">ARMv8.2-A, NEON FP16</span></td>
-                    <td style="padding:10px 4px;"><code>...-arm64-legacy-Setup.exe</code></td>
+                    <td style="padding:10px 4px;"><b>Windows Server Edition</b><br><span style="color:#cbd5e1; font-size:0.75rem;">Server 2022 / 2025</span></td>
+                    <td style="padding:10px 4px;"><span style="color:#cbd5e1; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:4px; font-weight:600; font-size:0.75rem;">MSI Enterprise Package</span></td>
+                    <td style="padding:10px 4px;"><code>...-server-enterprise-Setup.msi</code></td>
                 </tr>
             </table>
             <div class="warn" style="margin-top:16px;">
-                💡 <b>Silent Deployment:</b> <code>CardioSense-Setup.exe /VERYSILENT /NORESTART</code>
+                <b>Silent Deployment:</b> <code>CardioSense-Setup.exe /VERYSILENT /NORESTART</code>
             </div>
         </div>
         """,
@@ -583,7 +583,7 @@ with tab_security:
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
         <div>
             <span class="pill" style="color:#6ee7b7; background:rgba(16,185,129,0.15); border-color:#10b981;">
-                🛡️ FIPS 140-2 / HIPAA Safe Harbor Engine
+                FIPS 140-2 / HIPAA Safe Harbor Engine
             </span>
             <h2 style="margin:4px 0 8px; font-size:1.85rem; letter-spacing:-0.5px;">
                 Enterprise Security Architecture & Clinical Checkup
@@ -595,7 +595,7 @@ with tab_security:
         </div>
         <div>
             <div style="background:rgba(16,185,129,0.12); border:1px solid #10b981; color:#6ee7b7; padding:10px 18px; border-radius:8px; font-family:monospace; font-size:0.85rem; font-weight:700;">
-                🔒 ALL CONTROLS COMPLIANT
+                ALL CONTROLS COMPLIANT
             </div>
         </div>
     </div>
@@ -702,7 +702,7 @@ with tab_security:
             "oldpeak": oldpeak, "ca": ca, "model": model_name, "prob": float(prob)
         })
         seal_hash = hashlib.sha256(seal_payload.encode()).hexdigest().upper()
-        active_seal = f"AMEX-SEAL-{seal_hash[:4]}-{seal_hash[4:8]}"
+        active_seal = f"CARDIOSENSE-SEAL-{seal_hash[:4]}-{seal_hash[4:8]}"
 
         st.markdown(
             f"""
@@ -727,7 +727,7 @@ with tab_security:
 
         st.markdown('<div class="section" style="margin-top:20px;">Download Security Attestation</div>', unsafe_allow_html=True)
         attestation_doc = json.dumps({
-            "system": "CardioSense Enterprise",
+            "system": "CardioSense AI Enterprise",
             "version": "2.4.0",
             "model": model_name,
             "seal": active_seal,
@@ -739,7 +739,7 @@ with tab_security:
         }, indent=2)
 
         st.download_button(
-            label="📄 Download Signed Compliance Certificate (JSON)",
+            label="Download Signed Compliance Certificate (JSON)",
             data=attestation_doc,
             file_name=f"CardioSense_Security_Certificate_{active_seal}.json",
             mime="application/json"
