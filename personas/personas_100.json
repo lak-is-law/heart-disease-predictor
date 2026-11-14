@@ -1,0 +1,4705 @@
+[
+  {
+    "persona_id": "PERS-001",
+    "name": "Marcus Sterling",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 64,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 64,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 168.0,
+      "chol": 285.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 118.0,
+      "exang": 1,
+      "oldpeak": 2.8,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Emergency triage self-assessment during substernal pressure",
+      "secondary_action": "Attempt to notify nurse station",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 85.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "The screen lit up in bright red shouting 88% Multi-Vessel CAD while I sat in the emergency bay. The 3D heart was pulsing on the screen, but I couldn't understand what thalach or oldpeak meant. I needed a clear emergency button to call a nurse, not technical clinical abbreviations.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-002",
+    "name": "Elena Gomez",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 58,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 58,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 155.0,
+      "chol": 260.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 126.0,
+      "exang": 1,
+      "oldpeak": 2.4,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Review risk assessment on bilingual mobile tablet",
+      "secondary_action": "Attempt to translate English medical terms",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 92.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "I was clutching my chest in the waiting room while using the tablet. The screen showed acute danger, but all the parameters were in English abbreviations like trestbps and ca. The complex display made my panic worse without giving me actionable instructions.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-003",
+    "name": "Arthur Pendelton",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 71,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 71,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 172.0,
+      "chol": 290.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 110.0,
+      "exang": 1,
+      "oldpeak": 3.2,
+      "slope": 3,
+      "ca": 3,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Self-entry of triage vitals during emergency admission",
+      "secondary_action": "Review 3D coronary occlusion rings",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 110.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The 3D heart rendering clearly showed blockages in the front vessel, but the interface offered no immediate emergency pathway. Seeing severe risk displayed without an immediate clinician escalation action caused tremendous anxiety in the emergency department.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-004",
+    "name": "Keisha Washington",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 52,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 52,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 160.0,
+      "chol": 275.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 130.0,
+      "exang": 1,
+      "oldpeak": 2.2,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Review acute chest pain probability score",
+      "secondary_action": "Seek safety-net financial counseling link",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 78.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "Sitting in the public hospital emergency room with radiating arm pain, I tried entering my numbers. The red risk indicator flashed 82%, but there was no plain-English explanation or emergency guidance. The interface felt built exclusively for medical technicians.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-005",
+    "name": "Dmitri Volkov",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 60,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 60,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 158.0,
+      "chol": 268.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 122.0,
+      "exang": 1,
+      "oldpeak": 2.6,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Input vitals from hospital bedside monitor",
+      "secondary_action": "Toggle between 3D heart modes",
+      "completion_status": "Success",
+      "time_on_task_sec": 95.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-05",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The 3D heart visualization showed coronary narrowing that matched what the emergency doctor suspected. However, the system defaulted my incomplete lab values to severe disease assumptions immediately, creating unnecessary alarm before the doctor finished reviewing my chart.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-006",
+    "name": "Hiroshi Tanaka",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 62,
+      "sex": 1,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 62,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 164.0,
+      "chol": 245.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 128.0,
+      "exang": 1,
+      "oldpeak": 2.0,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Evaluate ischemic risk prediction after heavy exertion",
+      "secondary_action": "Inspect Lead-II ECG waveform canvas",
+      "completion_status": "Success",
+      "time_on_task_sec": 105.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-08",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The Lead-II ECG canvas accurately depicted the ST depression I experienced during exercise. However, the 3D viewport camera locked up on my browser until I refreshed, which was frustrating during an acute symptom evaluation.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-007",
+    "name": "Brendan Miller",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 66,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 66,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 165.0,
+      "chol": 280.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 115.0,
+      "exang": 1,
+      "oldpeak": 2.7,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Review acute triage risk score and symptom attribution",
+      "secondary_action": "Show results to attending nurse",
+      "completion_status": "Success",
+      "time_on_task_sec": 115.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The tool clearly alerted my care team to my elevated cardiac risk, which sped up my triage. Still, the slider bars on the mobile interface were fiddly to adjust while I was lying down on an emergency cot.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-008",
+    "name": "Jamal Crawford",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 38,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 38,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 150.0,
+      "chol": 310.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 142.0,
+      "exang": 1,
+      "oldpeak": 2.1,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Early-onset chest pain evaluation after athletic drill",
+      "secondary_action": "Compare risk against baseline",
+      "completion_status": "Success",
+      "time_on_task_sec": 88.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-GAP-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "At 38, having severe chest tightness after coaching football was terrifying. The platform accurately flagged high risk due to my extreme familial cholesterol. But the clinical team noted the software did not incorporate my cardiac troponin blood test.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-009",
+    "name": "Mateo Silva",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 54,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 54,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 162.0,
+      "chol": 255.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 120.0,
+      "exang": 1,
+      "oldpeak": 2.5,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Evaluate transfer necessity to tertiary cardiac center",
+      "secondary_action": "Review risk level with rural GP",
+      "completion_status": "Success",
+      "time_on_task_sec": 130.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "In our rural clinic, deciding whether to call a medevac helicopter is critical. The high probability score supported our doctor's decision to transfer me, but we could not export a clean one-page PDF summary to send in the ambulance.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-010",
+    "name": "Thomas O'Connor",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 74,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 74,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 175.0,
+      "chol": 240.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 108.0,
+      "exang": 1,
+      "oldpeak": 3.1,
+      "slope": 3,
+      "ca": 3,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Comprehensive CAD assessment with prior stent history",
+      "secondary_action": "Inspect 3D coronary stenosis rings",
+      "completion_status": "Success",
+      "time_on_task_sec": 140.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-MOD-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The 3D heart rendering and anatomical stenosis rings are remarkably impressive from an engineering standpoint. However, the clinical explanations behind the vessel score need more transparency regarding stent restenosis.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-011",
+    "name": "Rachel Cohen",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 59,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 59,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 158.0,
+      "chol": 295.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 125.0,
+      "exang": 1,
+      "oldpeak": 2.3,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Cross-examine acute CAD risk against emergency labs",
+      "secondary_action": "Inquire about troponin integration",
+      "completion_status": "Success",
+      "time_on_task_sec": 98.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "I wanted to see how my high-sensitivity troponin numbers factored into the calculation. The emergency physician explained that CardioSense relies solely on 1988 Cleveland biomarkers, meaning the most critical acute biomarker is omitted.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-012",
+    "name": "Devon Scott",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 34,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 34,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 148.0,
+      "chol": 320.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 145.0,
+      "exang": 1,
+      "oldpeak": 2.0,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Check acute cardiac symptoms following night shift",
+      "secondary_action": "Consult with telemedicine triage",
+      "completion_status": "Success",
+      "time_on_task_sec": 112.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "At 34 with severe hyperlipidemia, the system immediately identified high cardiovascular risk. Still, the doctor had to manually reconcile this with my negative bedside troponin test because the portal has no input field for troponin.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-013",
+    "name": "Carmen Ortiz",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 57,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 57,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 162.0,
+      "chol": 270.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 124.0,
+      "exang": 1,
+      "oldpeak": 2.4,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Assess substernal tightness during diabetic flareup",
+      "secondary_action": "Review feature attribution breakdown",
+      "completion_status": "Success",
+      "time_on_task_sec": 125.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-GAP-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The risk attribution waterfall clearly showed blood pressure and cholesterol driving my score. But for an acute cardiac presentation, omitting troponin and glycated hemoglobin creates an incomplete clinical picture.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-014",
+    "name": "Sunita Patel",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 48,
+      "sex": 0,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 48,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 152.0,
+      "chol": 285.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 132.0,
+      "exang": 1,
+      "oldpeak": 2.2,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Evaluate acute chest pressure with South Asian risk profile",
+      "secondary_action": "Inspect occlusion attribution chart",
+      "completion_status": "Success",
+      "time_on_task_sec": 102.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-GAP-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "South Asians experience premature CAD at elevated rates. The 86% risk estimate matched my clinical reality, but modern cardiovascular evaluation demands Lp(a) and hs-troponin assays rather than 1988 baseline factors alone.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-015",
+    "name": "Raymond Whitefeather",
+    "archetype": "Patient: Acute Chest Pain (High Risk)",
+    "demographics": {
+      "age": 76,
+      "sex": 1,
+      "ethnicity": "Native American/Multiracial",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 76,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 170.0,
+      "chol": 235.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 106.0,
+      "exang": 1,
+      "oldpeak": 2.9,
+      "slope": 3,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Emergency triage evaluation in tribal health clinic",
+      "secondary_action": "Review transfer recommendation",
+      "completion_status": "Success",
+      "time_on_task_sec": 135.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "In our reservation clinic, getting specialized labs takes hours. The software confirmed high risk, but our visiting doctor emphasized that without troponin and BNP, we had to rely on clinical suspicion to authorize an emergency air ambulance.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-016",
+    "name": "George Baxter",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 58,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 58,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 148.0,
+      "chol": 260.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 130.0,
+      "exang": 1,
+      "oldpeak": 1.8,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Upload Quest Diagnostics lab report PDF",
+      "secondary_action": "Verify automated extraction of fasting glucose",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 180.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "As a type 2 diabetic, my doctor warned me I might not feel chest pain. When I dragged my Quest Diagnostics PDF report into the box, the ingestion failed completely because it treated the PDF as raw text. Then it defaulted missing fields to extreme disease values.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-017",
+    "name": "Lillian Thorne",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 65,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 65,
+      "sex": 0,
+      "cp": 4,
+      "trestbps": 156.0,
+      "chol": 275.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 122.0,
+      "exang": 1,
+      "oldpeak": 2.1,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Drop LabCorp diabetic panel PDF into ingestion zone",
+      "secondary_action": "Review extracted biomarker values",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 210.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "I tried uploading my hospital discharge summary to see my heart risk. The upload read the PDF file as garbage characters and failed to parse my glucose or cholesterol, forcing my clinic nurse to re-enter all thirteen numbers manually.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-018",
+    "name": "Ramiro Mendoza",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 53,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 53,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 144.0,
+      "chol": 250.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 134.0,
+      "exang": 1,
+      "oldpeak": 1.9,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Upload outpatient EHR summary PDF",
+      "secondary_action": "Check silent ischemia risk estimation",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 195.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "The portal upload froze when I selected my PDF lab report. When I tried again with text, it incorrectly parsed my medical summary and defaulted me to Class 1 Typical Angina even though my chart explicitly says asymptomatic silent ischemia.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-019",
+    "name": "Kenji Takahashi",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 68,
+      "sex": 1,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 68,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 150.0,
+      "chol": 240.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 120.0,
+      "exang": 1,
+      "oldpeak": 2.0,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Ingest digital health record export",
+      "secondary_action": "Verify automated regex field mapping",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 160.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The client-side parser uses readAsText on binary PDF files without a decoding pipeline. Every regex pattern fails against binary headers (%PDF), and the fallback silently populates ca=1 and oldpeak=1.2 without warning the user.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-020",
+    "name": "Theresa Washington",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 61,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 61,
+      "sex": 0,
+      "cp": 4,
+      "trestbps": 152.0,
+      "chol": 280.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 128.0,
+      "exang": 1,
+      "oldpeak": 2.2,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Submit annual diabetic cardiovascular checkup labs",
+      "secondary_action": "Review personalized lifestyle recommendation",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 220.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "I have had neuropathy for a decade and never feel angina. When the PDF upload choked, I felt lost. When my nurse typed the numbers, the 92% risk was sobering, but the software bug on upload wasted ten minutes of my clinic visit.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-021",
+    "name": "Walter Kowalski",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 72,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 72,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 162.0,
+      "chol": 265.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 114.0,
+      "exang": 1,
+      "oldpeak": 2.4,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Ingest cardiology stress test report PDF",
+      "secondary_action": "Verify ST-depression extraction",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 175.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "My treadmill test showed silent ST depression while I felt zero chest tightness. Dragging that report into the web portal produced an unhandled parsing error. Having an automated intake tool fail on standard PDF files is unacceptable for hospital software.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-022",
+    "name": "Javier Morales",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 56,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 56,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 146.0,
+      "chol": 270.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 132.0,
+      "exang": 1,
+      "oldpeak": 1.7,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Paste raw clinical notes into text dropzone",
+      "secondary_action": "Verify negation handling for angina",
+      "completion_status": "Success",
+      "time_on_task_sec": 140.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-04",
+      "PP-BUG-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "I pasted my doctor's note stating 'patient denies angina and reports no chest pain'. Shockingly, the regex matched the word 'angina' and flipped my exercise angina to YES. The lack of negation parsing in medical software is a serious hazard.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-023",
+    "name": "Dorothy Higgins",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 63,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 63,
+      "sex": 0,
+      "cp": 4,
+      "trestbps": 142.0,
+      "chol": 255.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 126.0,
+      "exang": 1,
+      "oldpeak": 1.6,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Input telehealth glucose and vitals stream",
+      "secondary_action": "Check for symptom negation detection",
+      "completion_status": "Success",
+      "time_on_task_sec": 155.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-04",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "My note said 'negative for chest tightness', but the parser flagged me as having exercise angina anyway because it lacks negative keyword filters. Once corrected, the risk score was 89%, but that parsing bug could easily mislead patients.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-024",
+    "name": "Anand Sharma",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 51,
+      "sex": 1,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 51,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 140.0,
+      "chol": 290.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 136.0,
+      "exang": 1,
+      "oldpeak": 1.8,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Evaluate CAD risk model for diabetic dyslipidemia",
+      "secondary_action": "Inquire about HbA1c input field",
+      "completion_status": "Success",
+      "time_on_task_sec": 110.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "In modern diabetology, fasting glucose alone is inadequate; glycated hemoglobin (HbA1c) is the gold standard for microvascular and macrovascular risk. The platform completely lacks an HbA1c field, relying on an antiquated binary glucose threshold.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-025",
+    "name": "Eunice Adebayo",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 57,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 57,
+      "sex": 0,
+      "cp": 4,
+      "trestbps": 154.0,
+      "chol": 260.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 128.0,
+      "exang": 1,
+      "oldpeak": 2.0,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Consult with diabetes educator using risk visualization",
+      "secondary_action": "Review 10-year risk attribution",
+      "completion_status": "Success",
+      "time_on_task_sec": 130.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The visual 3D heart was great for helping me understand silent ischemia. However, my diabetes educator noted that the algorithm does not consider diabetes duration, insulin dependence, or HbA1c, which are primary drivers of our cardiovascular risk.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-026",
+    "name": "Samuel Gross",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 59,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 59,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 146.0,
+      "chol": 245.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 130.0,
+      "exang": 1,
+      "oldpeak": 1.9,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Review silent CAD risk after nuclear stress test",
+      "secondary_action": "Inspect coronary perfusion map",
+      "completion_status": "Success",
+      "time_on_task_sec": 125.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-02",
+      "PP-GAP-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The nuclear stress test findings matched the high probability score. But as a long-term diabetic, my kidney function and microalbuminuria are major risk multipliers that CardioSense currently ignores entirely.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-027",
+    "name": "Carlos Zhang-Mendoza",
+    "archetype": "Patient: Diabetic Silent Ischemia",
+    "demographics": {
+      "age": 48,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 48,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 138.0,
+      "chol": 280.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 138.0,
+      "exang": 1,
+      "oldpeak": 1.7,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Telehealth self-assessment for metabolic syndrome",
+      "secondary_action": "Cross-reference fasting insulin metrics",
+      "completion_status": "Success",
+      "time_on_task_sec": 95.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-02",
+      "PP-MOD-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The interface design is very polished. However, the underlying predictive model is constrained by 1980s data definitions. Diabetics today have access to continuous glucose monitors, HbA1c, and insulin resistance metrics that this engine cannot utilize.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-028",
+    "name": "Alexander Vance",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 35,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 35,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 115.0,
+      "chol": 175.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 185.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Corporate wellness executive cardiac screen (Case 3 preset)",
+      "secondary_action": "Attempt export of 1-page health summary PDF",
+      "completion_status": "Success",
+      "time_on_task_sec": 65.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-03",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 5,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The Amex dark-mode styling and rotating 3D heart look remarkably sleek on my MacBook Pro. My calculated risk was 1.2%, which is reassuring. My only complaint was that the stethoscope audio blasted through my office speakers without warning, and there was no button to export a clean PDF for my personal trainer.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-029",
+    "name": "Claire Beauchamp",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 29,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 29,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 110.0,
+      "chol": 168.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 192.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Pre-marathon cardiovascular risk assessment",
+      "secondary_action": "Inspect exercise heart rate reserve",
+      "completion_status": "Success",
+      "time_on_task_sec": 70.0
+    },
+    "observed_pain_points": [
+      "PP-UX-03",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 5,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The interface is gorgeous and confirmed my low cardiac risk before my first marathon. However, the audio heartbeat synthesizer started blaring immediately upon loading the page, which startled everyone in my open office.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-030",
+    "name": "Jason Chen",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 33,
+      "sex": 1,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 33,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 118.0,
+      "chol": 180.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 182.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Executive annual health optimization assessment",
+      "secondary_action": "Review biometric parameter glossary",
+      "completion_status": "Success",
+      "time_on_task_sec": 85.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 5,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "Very clean WebGL rendering and fast client-side calculations. But even as a tech executive, acronyms like trestbps and oldpeak required looking up definitions. Clear tooltips with normal reference ranges would improve user onboarding.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-031",
+    "name": "Sophia Al-Mansoor",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 31,
+      "sex": 0,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 31,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 112.0,
+      "chol": 165.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 188.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Corporate wellness executive screening",
+      "secondary_action": "Review occlusion feature attribution waterfall",
+      "completion_status": "Success",
+      "time_on_task_sec": 75.0
+    },
+    "observed_pain_points": [
+      "PP-UX-03",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 5,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The occlusion attribution waterfall is an elegant way to show why my risk is so low (0.8%). Adding a one-click button to download or print a branded executive summary report would turn this into a five-star executive health tool.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-032",
+    "name": "Ethan Gallagher",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 27,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 27,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 114.0,
+      "chol": 172.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 195.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Triathlon training baseline cardiovascular profile",
+      "secondary_action": "Inspect synchronized Lead-II ECG canvas",
+      "completion_status": "Success",
+      "time_on_task_sec": 80.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 5,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The Lead-II ECG drawing accurately matched my physiological rest state. Still, the automatic audio simulation should have a prominent mute toggle in the primary navigation rather than deep in the settings panel.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-033",
+    "name": "Maya Robinson",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 38,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 38,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 120.0,
+      "chol": 185.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 178.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Routine preventative cardiology consultation",
+      "secondary_action": "Evaluate blood pressure impact scenario",
+      "completion_status": "Success",
+      "time_on_task_sec": 90.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "I loved being able to slide my systolic blood pressure up and down to see how my risk changed. But without a direct PDF export, I had to take screenshot snippets of the dashboard to share with my primary care physician.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-034",
+    "name": "David Ortiz",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 41,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 41,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 122.0,
+      "chol": 195.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 172.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Mid-career executive cardiovascular baseline",
+      "secondary_action": "Toggle 3D heart diagnostic shader modes",
+      "completion_status": "Success",
+      "time_on_task_sec": 70.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 5,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The four shader modes (CTA, Perfusion, Angiogram, FFR) look world-class. Providing plain-language translations next to the medical jargon would make this accessible to non-clinical corporate wellness participants.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-035",
+    "name": "Natalie Brooks",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 24,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 24,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 108.0,
+      "chol": 160.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 198.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Collegiate athlete baseline physical screening",
+      "secondary_action": "Inspect 3D heart chamber anatomy",
+      "completion_status": "Success",
+      "time_on_task_sec": 85.0
+    },
+    "observed_pain_points": [
+      "PP-UX-01",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "As a collegiate swimmer, my resting metrics are excellent, and the app confirmed my 0.5% risk. The visual presentation is top-notch, though I had to ask our athletic trainer what 'oldpeak' represented.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-036",
+    "name": "Carlos Vega",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 46,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 46,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 124.0,
+      "chol": 205.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 168.0,
+      "exang": 0,
+      "oldpeak": 0.2,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Annual executive physical risk stratification",
+      "secondary_action": "Review ROC-AUC curves in Model Lab",
+      "completion_status": "Success",
+      "time_on_task_sec": 115.0
+    },
+    "observed_pain_points": [
+      "PP-UX-04",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 5,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The Model Lab tab showing ROC curves and calibration metrics provides great scientific credibility. Adding a branded export option for executive health clients would complete the enterprise package.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-037",
+    "name": "William Bradford",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 52,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 52,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 125.0,
+      "chol": 210.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 165.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Executive screening with coronary calcium inquiry",
+      "secondary_action": "Request advanced lipid particle breakdown",
+      "completion_status": "Success",
+      "time_on_task_sec": 95.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-03",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "While my baseline risk is low, my concierge physician ordered Apolipoprotein B and an Agatston CAC scan. CardioSense has no fields for modern atherogenic particles or calcium scoring, which limits its utility for advanced preventative cardiology.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-038",
+    "name": "Angela Davis-Price",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 44,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 44,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 118.0,
+      "chol": 190.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 175.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Executive screening and preventative longevity review",
+      "secondary_action": "Cross-reference hs-CRP inflammation score",
+      "completion_status": "Success",
+      "time_on_task_sec": 90.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-03",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "My risk came back under 2%, which is comforting. But in modern cardiovascular prevention, High-Sensitivity C-Reactive Protein (hs-CRP) is critical for measuring arterial inflammation, and it is missing from this system.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-039",
+    "name": "Richard Sterling",
+    "archetype": "Patient: Routine Executive Screen (Low Risk)",
+    "demographics": {
+      "age": 62,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 62,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 126.0,
+      "chol": 200.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 160.0,
+      "exang": 0,
+      "oldpeak": 0.3,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Retirement wellness checkup and cardiovascular scan",
+      "secondary_action": "Inspect Lipoprotein(a) genetic marker options",
+      "completion_status": "Success",
+      "time_on_task_sec": 100.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-03",
+      "PP-MOD-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The platform delivers a smooth user experience. However, since my brother had early bypass surgery, my cardiologist checked my Lipoprotein(a). CardioSense cannot incorporate Lp(a), missing an independent causal risk factor.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-040",
+    "name": "Sarah Jenkins-Ross",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 52,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 52,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 138.0,
+      "chol": 235.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 152.0,
+      "exang": 1,
+      "oldpeak": 1.4,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Upload clinical consultation note PDF",
+      "secondary_action": "Verify detection of atypical angina symptoms",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 240.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-03",
+      "PP-BUG-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "My heart problems manifest as severe back fatigue, nausea, and shortness of breath, not classic chest pressure. When I uploaded my clinical note, the parser mistook my body temperature of 98.6 F for my sex because of a sloppy single-letter regex match, forcing my sex to male!",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-041",
+    "name": "Maria Hernandez-Cruz",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 48,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 48,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 134.0,
+      "chol": 240.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 156.0,
+      "exang": 1,
+      "oldpeak": 1.2,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Drop Spanish/English bilingual clinic summary into dropzone",
+      "secondary_action": "Check automated symptom extraction",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 225.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-03",
+      "PP-BUG-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "The lab parser completely crashed on our bilingual clinic PDF. When the nurse tried re-running it, the regex matched the letter 'F' in our vitals temperature line and corrupted my patient profile, altering the risk calculation.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-042",
+    "name": "Tanya Washington",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 54,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 54,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 142.0,
+      "chol": 255.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 148.0,
+      "exang": 1,
+      "oldpeak": 1.5,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Paste EHR notes from Women's Heart Clinic",
+      "secondary_action": "Verify negation parsing on 'denies chest pressure'",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 210.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-04",
+      "PP-BUG-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "My medical record explicitly stated 'patient denies crushing chest pressure, reports jaw ache and exhaustion'. The parser ignored 'denies' and evaluated my symptoms as typical angina. Medical software must understand clinical negations.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-043",
+    "name": "Grace Kim",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 46,
+      "sex": 0,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 46,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 130.0,
+      "chol": 225.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 160.0,
+      "exang": 1,
+      "oldpeak": 1.1,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Upload cardiology consultation summary PDF",
+      "secondary_action": "Verify extraction of microvascular stress test results",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 190.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The parser failed on the PDF file structure, and upon inspecting the client JavaScript, I discovered the regex /\\bf\\b/ matches any temperature reading ending in Fahrenheit. This is an elementary regex defect that flips patient sex.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-044",
+    "name": "Winona Blackwood",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 58,
+      "sex": 0,
+      "ethnicity": "Native American/Multiracial",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 58,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 145.0,
+      "chol": 260.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 142.0,
+      "exang": 1,
+      "oldpeak": 1.6,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Upload rural clinic consultation note",
+      "secondary_action": "Check atypical symptom classification",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 260.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-04",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "In our rural clinic, women's heart symptoms are too often dismissed as stress or anxiety. Having the automated intake tool fail and assign generic fallback numbers made me lose confidence in the system before I even saw the doctor.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-045",
+    "name": "Diane Albright",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 64,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 64,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 140.0,
+      "chol": 245.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 145.0,
+      "exang": 1,
+      "oldpeak": 1.3,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Review microvascular ischemia probability output",
+      "secondary_action": "Inquire about angiogram-negative CAD",
+      "completion_status": "Success",
+      "time_on_task_sec": 180.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "My invasive catheterization showed clean epicardial arteries (ca=0), yet my stress perfusion test was abnormal. Because the Cleveland model is heavily weighted on fluoroscopy calcium and male obstructive patterns, it categorized me as moderate-low risk, downplaying my microvascular ischemia.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-046",
+    "name": "Jacqueline Taylor",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 56,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 56,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 146.0,
+      "chol": 250.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 140.0,
+      "exang": 1,
+      "oldpeak": 1.5,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Evaluate ischemic risk in specialized Women's Heart clinic",
+      "secondary_action": "Inspect coronary perfusion map",
+      "completion_status": "Success",
+      "time_on_task_sec": 165.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-GAP-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The model is clearly calibrated on male heart attack patterns from forty years ago. For women with coronary microvascular dysfunction (INOCA), coronary calcium is often zero, meaning the algorithm under-predicts our true cardiovascular risk.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-047",
+    "name": "Sylvia Rodriguez",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 51,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 51,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 136.0,
+      "chol": 230.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 154.0,
+      "exang": 1,
+      "oldpeak": 1.2,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Post-stress test cardiovascular risk evaluation",
+      "secondary_action": "Review atypical symptom weightings",
+      "completion_status": "Success",
+      "time_on_task_sec": 150.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "My atypical pain (chest tightness with extreme nausea) is classic for female microvascular disease. The platform gives too much reassurance when major vessels have no calcium. The training cohort needs more diverse women with microvascular dysfunction.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-048",
+    "name": "Mei-Ling Zhou",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 43,
+      "sex": 0,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 43,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 128.0,
+      "chol": 220.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 162.0,
+      "exang": 1,
+      "oldpeak": 1.0,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Cross-validate risk model with myocardial perfusion MRI",
+      "secondary_action": "Review feature correlation deltas",
+      "completion_status": "Success",
+      "time_on_task_sec": 140.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "CardioSense has beautiful ergonomics, but its statistical foundation reflects the 1988 Cleveland cohort (nearly 70% male). In women under 55 presenting with MINOCA, it fails to provide conformal confidence intervals to acknowledge its prediction uncertainty.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-049",
+    "name": "Eileen Murphy",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 67,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 67,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 148.0,
+      "chol": 265.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 138.0,
+      "exang": 1,
+      "oldpeak": 1.7,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Review post-menopausal ischemic risk profile",
+      "secondary_action": "Inspect 3D perfusion deficit shading",
+      "completion_status": "Success",
+      "time_on_task_sec": 170.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-03",
+      "PP-MOD-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "Post-menopausal women present with diffuse coronary disease rather than focal blockages. The 3D heart was helpful to visualize ischemia, but the model's reliance on large-vessel calcium scores means it underestimates diffuse female CAD.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-050",
+    "name": "Patricia Watkins",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 70,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 70,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 150.0,
+      "chol": 240.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 132.0,
+      "exang": 1,
+      "oldpeak": 1.6,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Review cardiac symptoms during rural telemedicine visit",
+      "secondary_action": "Review plain-language summary",
+      "completion_status": "Success",
+      "time_on_task_sec": 190.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-03",
+      "PP-MOD-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "At 70, my symptoms are breathlessness and intense fatigue. The system gave me a 48% risk score, but the doctor had to explain that the software's training data was mostly middle-aged men from Ohio in the 1980s, which didn't give me much comfort.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-051",
+    "name": "Rebecca Goldstein",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 57,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 57,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 135.0,
+      "chol": 230.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 150.0,
+      "exang": 1,
+      "oldpeak": 1.3,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Telehealth evaluation of atypical exertional dyspnea",
+      "secondary_action": "Check uncertainty confidence intervals",
+      "completion_status": "Success",
+      "time_on_task_sec": 135.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "As a healthcare executive who suffered microvascular ischemia, I appreciate the zero-cloud egress privacy. However, the model needs to explicitly report confidence intervals for atypical female presentations rather than a single deterministic probability point.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-052",
+    "name": "Valeria Santos",
+    "archetype": "Patient: Female Atypical Microvascular Angina",
+    "demographics": {
+      "age": 61,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 61,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 142.0,
+      "chol": 248.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 144.0,
+      "exang": 1,
+      "oldpeak": 1.4,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Remote cardiovascular monitoring consultation",
+      "secondary_action": "Inspect exercise ST-slope impact",
+      "completion_status": "Success",
+      "time_on_task_sec": 155.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-04",
+      "PP-MOD-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The remote portal works smoothly on my home computer. But my cardiologist pointed out that my normal coronary angiogram caused the score to drop significantly, even though my microvascular resistance test was severely abnormal.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-053",
+    "name": "Harold Fitzpatrick",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 84,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 84,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 172.0,
+      "chol": 240.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 105.0,
+      "exang": 1,
+      "oldpeak": 3.0,
+      "slope": 3,
+      "ca": 3,
+      "thal": 6,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Geriatric cardiovascular triage on clinic iPad",
+      "secondary_action": "Attempt slider adjustments with arthritic tremor",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 310.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 2,
+      "verbatim_quote": "I am 84 and tried using this on my daughter's tablet. The slider handles for blood pressure are way too small for my arthritic hands to adjust, and the text is tiny grey on black. When I tilted the screen, the blue box jumped over the input buttons. I had to give up.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-054",
+    "name": "Mildred Abernathy",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 88,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 88,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 185.0,
+      "chol": 220.0,
+      "fbs": 0,
+      "restecg": 2,
+      "thalach": 95.0,
+      "exang": 1,
+      "oldpeak": 2.6,
+      "slope": 2,
+      "ca": 2,
+      "thal": 6,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Assisted nursing home cardiovascular review",
+      "secondary_action": "View high-contrast display settings",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 340.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 2,
+      "verbatim_quote": "At 88 with cataracts, the low contrast on the dark background made reading the numbers impossible. The nurse tried to help me tap the blood pressure slider, but the touch target was so tiny it kept clicking the wrong option.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-055",
+    "name": "Ezekiel Washington",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 82,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 82,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 178.0,
+      "chol": 230.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 102.0,
+      "exang": 1,
+      "oldpeak": 2.8,
+      "slope": 3,
+      "ca": 3,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Inpatient geriatric ward discharge risk review",
+      "secondary_action": "Inspect 3D heart with visiting family",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 280.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 2,
+      "verbatim_quote": "The screen looked very busy and confusing. When the tablet switched to vertical mode, the 3D heart covered the bottom controls and we couldn't scroll down to see the final results. My son had to call the nurse to finish it.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-056",
+    "name": "Lucia DeLuca",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 81,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 81,
+      "sex": 0,
+      "cp": 4,
+      "trestbps": 168.0,
+      "chol": 250.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 108.0,
+      "exang": 1,
+      "oldpeak": 2.4,
+      "slope": 2,
+      "ca": 2,
+      "thal": 6,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Rural health center geriatric cardiology screen",
+      "secondary_action": "Adjust input sliders with assistance",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 295.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "The text labels like trestbps and thalach mean nothing to an 81-year-old grandmother. Without plain English labels and larger buttons that don't jump around when you touch the screen, older patients cannot use this independently.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-057",
+    "name": "Chen-Wei Lin",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 86,
+      "sex": 1,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 86,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 175.0,
+      "chol": 215.0,
+      "fbs": 0,
+      "restecg": 2,
+      "thalach": 98.0,
+      "exang": 1,
+      "oldpeak": 2.5,
+      "slope": 2,
+      "ca": 3,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Home telehealth vital sign submission on iPad",
+      "secondary_action": "Review coronary stenosis visualization",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 320.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "On my tablet, the bottom telemetry HUD overlapped the risk gauge, making it impossible to read the final percentage. The 3D heart graphics are very good, but the responsive layout breaks down completely on mobile and tablet screens.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-058",
+    "name": "Guadalupe Ramirez",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 83,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 83,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 170.0,
+      "chol": 235.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 104.0,
+      "exang": 1,
+      "oldpeak": 2.2,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Bedside geriatric assessment before discharge",
+      "secondary_action": "Review medication adjustment guidance",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 305.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 2,
+      "verbatim_quote": "My vision is impaired and the grey-on-black lettering caused severe eye strain. When the nurse attempted to hand me the tablet, the controls were too cramped for my trembling fingers to select the right cholesterol range.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-059",
+    "name": "Clarence Jackson",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 80,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Uninsured/Safety-Net",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 80,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 166.0,
+      "chol": 260.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 110.0,
+      "exang": 1,
+      "oldpeak": 2.7,
+      "slope": 3,
+      "ca": 2,
+      "thal": 6,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Community health clinic comprehensive screen",
+      "secondary_action": "Inspect cardiac risk attribution chart",
+      "completion_status": "Abandoned Due to UX Confusion",
+      "time_on_task_sec": 270.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-GAP-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "The screen showed red alerts, but I couldn't understand what caused it. More importantly, my doctor noted that for an 80-year-old with chronic kidney disease, omitting my creatinine and GFR makes the whole assessment questionable.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-060",
+    "name": "Beatrice Holloway",
+    "archetype": "Patient: Geriatric Multi-Morbidity",
+    "demographics": {
+      "age": 91,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 91,
+      "sex": 0,
+      "cp": 4,
+      "trestbps": 180.0,
+      "chol": 210.0,
+      "fbs": 0,
+      "restecg": 2,
+      "thalach": 92.0,
+      "exang": 1,
+      "oldpeak": 2.5,
+      "slope": 2,
+      "ca": 3,
+      "thal": 6,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Assisted home telehealth consultation at age 91",
+      "secondary_action": "Review severe CAD risk profile with family",
+      "completion_status": "Success",
+      "time_on_task_sec": 380.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-GAP-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "With my grandson operating the mouse on a large desktop monitor, we were able to complete the test. The 98% risk score accurately reflected my severe coronary calcification, but the interface was completely inaccessible on smaller devices.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-061",
+    "name": "Dr. Elena Rostova, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 47,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 47,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 142.0,
+      "chol": 235.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 138.0,
+      "exang": 1,
+      "oldpeak": 2.2,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Cath lab pre-PCI hemodynamic interrogation (Angiogram & FFR HUD)",
+      "secondary_action": "Verify FFR pressure gradient calculation",
+      "completion_status": "Success",
+      "time_on_task_sec": 120.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-02",
+      "PP-BUG-06"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "Visually, the coronary arterial tree in fluoroscopy mode is outstanding for patient education. But clinically, your Fractional Flow Reserve (FFR) calculation is pure fiction. Subtracting 0.11 per vessel from 1.0 is not FFR\u2014FFR is an invasive hyperemic pressure ratio (Pd/Pa). Presenting fabricated hemodynamic numbers in a clinical tool exposes physicians to unacceptable liability.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-062",
+    "name": "Dr. Tariq Al-Hassan, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 55,
+      "sex": 1,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 55,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 150.0,
+      "chol": 260.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 130.0,
+      "exang": 1,
+      "oldpeak": 2.5,
+      "slope": 2,
+      "ca": 3,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Interrogate 3D LAD bifurcation stenosis model",
+      "secondary_action": "Inspect coronary perfusion shader mode",
+      "completion_status": "Success",
+      "time_on_task_sec": 145.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-02",
+      "PP-BUG-06"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The anatomical 4-chamber heart with apical tilt and dynamic stenosis rings is beautifully rendered. However, calculating FFR via linear arithmetic subtraction without computational fluid dynamics or lesion geometry undermines the tool's clinical credibility in catheterization labs.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-063",
+    "name": "Dr. Kimberly Vance, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 44,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 44,
+      "sex": 0,
+      "cp": 4,
+      "trestbps": 138.0,
+      "chol": 220.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 142.0,
+      "exang": 1,
+      "oldpeak": 1.8,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Pre-procedure consultation with acute coronary patient",
+      "secondary_action": "Verify model weights parity with Python core",
+      "completion_status": "Success",
+      "time_on_task_sec": 130.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-02",
+      "PP-BUG-06"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "I compared the JavaScript prediction against the Python scikit-learn weights. The browser code completely discards fasting glucose and resting ECG, and computes a crude hand-crafted logit. Clinicians cannot trust a tool whose web implementation diverges from its validated core.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-064",
+    "name": "Dr. David O'Malley, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 61,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 61,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 160.0,
+      "chol": 275.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 122.0,
+      "exang": 1,
+      "oldpeak": 2.8,
+      "slope": 3,
+      "ca": 3,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Evaluate multi-vessel CAD lesion severity",
+      "secondary_action": "Inspect fluoroscopic angiogram projection",
+      "completion_status": "Success",
+      "time_on_task_sec": 160.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-04",
+      "PP-MOD-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The fluoroscopy shader projection accurately mimics our Phillips cath lab c-arm imaging. But treating categorical chest pain (1 to 4) as a linear integer multiplier in the client logit is mathematically unsound. Categorical variables must be one-hot encoded.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-065",
+    "name": "Dr. Winona Begay, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 51,
+      "sex": 0,
+      "ethnicity": "Native American/Multiracial",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 51,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 145.0,
+      "chol": 250.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 135.0,
+      "exang": 1,
+      "oldpeak": 2.1,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Inspect AHA 17-segment myocardial perfusion map",
+      "secondary_action": "Verify lesion placement along coronary conduits",
+      "completion_status": "Success",
+      "time_on_task_sec": 140.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-02",
+      "PP-BUG-06"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The AHA 17-segment Bullseye perfusion mapping is impressive. Still, placing stenosis rings randomly along coronary conduits rather than at anatomically defined bifurcation landmarks (proximal LAD, ostial LCx) needs refinement before we can use this for surgical planning.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-066",
+    "name": "Dr. Marcus Thorne, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 68,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 68,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 165.0,
+      "chol": 280.0,
+      "fbs": 1,
+      "restecg": 2,
+      "thalach": 118.0,
+      "exang": 1,
+      "oldpeak": 3.0,
+      "slope": 3,
+      "ca": 3,
+      "thal": 6,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Audit clinical hemodynamic simulation accuracy",
+      "secondary_action": "Cross-examine FFR index labeling",
+      "completion_status": "Success",
+      "time_on_task_sec": 155.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-02",
+      "PP-MOD-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "If you are going to display an FFR value to a cardiologist, it must either be derived from true pressure differentials or explicitly disclaimed as a 'Synthetic Ischemic Index'. Calling a linear calculation 'FFR' in a clinical application is a serious regulatory hazard.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-067",
+    "name": "Dr. Andrea Gomez, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 58,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 58,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 152.0,
+      "chol": 245.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 128.0,
+      "exang": 1,
+      "oldpeak": 2.4,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Cath lab triage and revascularization review",
+      "secondary_action": "Inspect client-side WebGL performance under load",
+      "completion_status": "Success",
+      "time_on_task_sec": 135.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-02",
+      "PP-BUG-06"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The Three.js rendering runs at a solid 60 FPS even on integrated graphics, which is excellent for hospital workstations. But the algorithmic drift between model_weights.json and portal.js must be resolved immediately before clinical pilot deployment.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-068",
+    "name": "Dr. Sterling Hayes, MD",
+    "archetype": "Clinician: Interventional Cardiologist",
+    "demographics": {
+      "age": 65,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 65,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 158.0,
+      "chol": 270.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 125.0,
+      "exang": 1,
+      "oldpeak": 2.6,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Assess coronary calcium ring scaling with fluoroscopy ca",
+      "secondary_action": "Evaluate Lead-II ECG ST-segment deflection",
+      "completion_status": "Success",
+      "time_on_task_sec": 150.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-02",
+      "PP-BUG-06"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The Lead-II ECG drawing loop modulating with oldpeak ST-depression is a stroke of engineering genius. However, until the linear FFR subtraction is replaced with a validated physiological formula, interventional cardiologists will not endorse this platform.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-069",
+    "name": "Dr. Jonathan Reed, MD",
+    "archetype": "Clinician: Emergency Department Attending",
+    "demographics": {
+      "age": 45,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 45,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 162.0,
+      "chol": 255.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 130.0,
+      "exang": 1,
+      "oldpeak": 2.2,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Rapid EHR triage ingestion in acute resuscitation bay",
+      "secondary_action": "Check time-to-decision risk output",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 110.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "In an acute resuscitation bay, I have less than 10 minutes to rule out STEMI or NSTE-ACS. When I dropped our Epic EHR summary PDF into the ingestion box, it crashed on binary encoding and defaulted my 28-year-old costochondritis patient to Class 1 Typical Angina with 1 vessel occlusion. An unhandled fallback that defaults healthy patients to severe disease is dangerous.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-070",
+    "name": "Dr. Allison Brooks, MD",
+    "archetype": "Clinician: Emergency Department Attending",
+    "demographics": {
+      "age": 42,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 42,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 158.0,
+      "chol": 270.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 135.0,
+      "exang": 1,
+      "oldpeak": 2.4,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "EHR triage note batch upload during ED surge",
+      "secondary_action": "Verify emergency triage score accuracy",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 125.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "During Saturday night ED volume surges, automated triage tools must be bulletproof. Having the lab report ingestion fail on standard PDF discharge notes and default unextracted fields to ca=1 and oldpeak=1.2 mm generates dangerous false-alarm cascades in the emergency room.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-071",
+    "name": "Dr. Carlos Delgado, MD",
+    "archetype": "Clinician: Emergency Department Attending",
+    "demographics": {
+      "age": 49,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 49,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 165.0,
+      "chol": 260.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 128.0,
+      "exang": 1,
+      "oldpeak": 2.6,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#lab-ingestion",
+      "primary_task": "Upload emergency ambulance transfer sheet PDF",
+      "secondary_action": "Inspect automated biomarker extraction",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 135.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-02",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The parser's failure to handle PDF formatting is an immediate deal-breaker for emergency medicine. In emergency departments, 95% of outside records arrive as PDFs. Defaulting missing data to high-risk CAD creates catastrophic clinical workflow disruption.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-072",
+    "name": "Dr. Meera Patel, MD",
+    "archetype": "Clinician: Emergency Department Attending",
+    "demographics": {
+      "age": 36,
+      "sex": 0,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 36,
+      "sex": 0,
+      "cp": 1,
+      "trestbps": 150.0,
+      "chol": 240.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 142.0,
+      "exang": 1,
+      "oldpeak": 2.0,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Evaluate acute chest pain risk stratification",
+      "secondary_action": "Review high-sensitivity troponin requirements",
+      "completion_status": "Success",
+      "time_on_task_sec": 90.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-GAP-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The visual risk gauge and 3D heart provide rapid situational awareness. But in modern emergency cardiology, we cannot discharge or admit chest pain patients without high-sensitivity cardiac troponin (hs-cTnI) and BNP. Omitting troponin prevents this from being an actionable emergency tool.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-073",
+    "name": "Dr. William Fitzpatrick, MD",
+    "archetype": "Clinician: Emergency Department Attending",
+    "demographics": {
+      "age": 53,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 53,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 168.0,
+      "chol": 280.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 122.0,
+      "exang": 1,
+      "oldpeak": 2.5,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Emergency department NSTE-ACS rapid rule-out flow",
+      "secondary_action": "Inspect feature occlusion impact",
+      "completion_status": "Success",
+      "time_on_task_sec": 85.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The occlusion attribution chart showing how each biomarker contributes to the risk score is fantastic for rapid clinical verification. However, emergency departments live and die by troponin curves; integrating hs-cTnI is non-negotiable for acute triage.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-074",
+    "name": "Dr. Stephanie Chen, MD",
+    "archetype": "Clinician: Emergency Department Attending",
+    "demographics": {
+      "age": 62,
+      "sex": 0,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 62,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 148.0,
+      "chol": 250.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 138.0,
+      "exang": 1,
+      "oldpeak": 1.8,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Triage female atypical chest pain in Level 1 ED",
+      "secondary_action": "Cross-reference acute ischemia markers",
+      "completion_status": "Success",
+      "time_on_task_sec": 95.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-01",
+      "PP-MOD-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "Female emergency patients presenting with atypical symptoms are frequently misclassified by older models. CardioSense accurately caught ischemia when stress data was entered, but incorporating hs-cTnT and modern ESC 0/1h algorithms is essential.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-075",
+    "name": "Dr. Robert Langley, MD",
+    "archetype": "Clinician: Primary Care Physician (PCP)",
+    "demographics": {
+      "age": 48,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 48,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 135.0,
+      "chol": 240.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 148.0,
+      "exang": 0,
+      "oldpeak": 0.8,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Ambulatory preventative cardiovascular counseling",
+      "secondary_action": "Generate patient consultation take-home summary",
+      "completion_status": "Success",
+      "time_on_task_sec": 150.0
+    },
+    "observed_pain_points": [
+      "PP-UX-04",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The occlusion risk attribution waterfall in Tab 1 is fantastic for patient counselling\u2014it clearly shows my patient how dropping their LDL from 240 to 130 reduces their cardiac risk. However, I need an automated button to generate a clean, printable PDF take-home plan for my clinic visits.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-076",
+    "name": "Dr. Aisha Farooq, MD",
+    "archetype": "Clinician: Primary Care Physician (PCP)",
+    "demographics": {
+      "age": 44,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 44,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 140.0,
+      "chol": 260.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 142.0,
+      "exang": 0,
+      "oldpeak": 1.0,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Primary prevention assessment for hypertensive patient",
+      "secondary_action": "Review risk band transitions with lifestyle change",
+      "completion_status": "Success",
+      "time_on_task_sec": 165.0
+    },
+    "observed_pain_points": [
+      "PP-UX-04",
+      "PP-GAP-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "Being able to demonstrate interactive lifestyle modifications on the risk gauge motivates patients far better than dry charts. But without a direct print/export feature to attach to our electronic health record, documentation is unnecessarily tedious.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-077",
+    "name": "Dr. Hector Alvarez, MD",
+    "archetype": "Clinician: Primary Care Physician (PCP)",
+    "demographics": {
+      "age": 54,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 54,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 142.0,
+      "chol": 250.0,
+      "fbs": 1,
+      "restecg": 0,
+      "thalach": 136.0,
+      "exang": 0,
+      "oldpeak": 0.9,
+      "slope": 1,
+      "ca": 1,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Rural outpatient cardiovascular screening",
+      "secondary_action": "Review 10-year risk curve against Framingham",
+      "completion_status": "Success",
+      "time_on_task_sec": 175.0
+    },
+    "observed_pain_points": [
+      "PP-UX-04",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "In our rural clinic, having an on-premise AI tool that requires no internet connection is huge. Still, primary care doctors need a 1-page patient education printout summarizing the 3D heart image and personalized risk factors to hand to the patient.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-078",
+    "name": "Dr. Linda Sterling, MD",
+    "archetype": "Clinician: Primary Care Physician (PCP)",
+    "demographics": {
+      "age": 61,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 61,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 138.0,
+      "chol": 245.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 150.0,
+      "exang": 0,
+      "oldpeak": 0.7,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Routine Medicare annual wellness visit risk assessment",
+      "secondary_action": "Inspect Model Lab cross-validation statistics",
+      "completion_status": "Success",
+      "time_on_task_sec": 140.0
+    },
+    "observed_pain_points": [
+      "PP-UX-04",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The cross-validation metrics in Tab 2 show solid discrimination. However, busy outpatient practices need instant export capabilities to our Athena and Epic systems, as well as clearer layperson tooltips for elderly patients looking at the screen.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-079",
+    "name": "Dr. Wei-Ting Huang, MD",
+    "archetype": "Clinician: Primary Care Physician (PCP)",
+    "demographics": {
+      "age": 38,
+      "sex": 1,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 38,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 130.0,
+      "chol": 230.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 155.0,
+      "exang": 0,
+      "oldpeak": 0.6,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Young executive preventative cardiovascular workup",
+      "secondary_action": "Review feature sensitivity sliders",
+      "completion_status": "Success",
+      "time_on_task_sec": 130.0
+    },
+    "observed_pain_points": [
+      "PP-UX-04",
+      "PP-UX-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The real-time updates as you move the sliders are very responsive. My only critique is ergonomics: clinical visits are only 15 minutes long, and lacking an export summary button forces me to copy numbers into clinical notes by hand.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-080",
+    "name": "Dr. Brenda Jenkins, MD",
+    "archetype": "Clinician: Primary Care Physician (PCP)",
+    "demographics": {
+      "age": 66,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 66,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 145.0,
+      "chol": 275.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 138.0,
+      "exang": 1,
+      "oldpeak": 1.2,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Complex geriatric outpatient risk stratification",
+      "secondary_action": "Evaluate contemporary biomarker integration",
+      "completion_status": "Success",
+      "time_on_task_sec": 190.0
+    },
+    "observed_pain_points": [
+      "PP-GAP-03",
+      "PP-GAP-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "CardioSense provides great visual support for patient counseling. However, for complete outpatient risk management, primary care physicians need Lipoprotein(a), hs-CRP, and eGFR to guide statin and SGLT2 inhibitor prescribing decisions.",
+      "dissected_category": "Biomarker Data Gap"
+    }
+  },
+  {
+    "persona_id": "PERS-081",
+    "name": "Jessica Reynolds, DNP",
+    "archetype": "Clinician: Cardiac Care Nurse Practitioner",
+    "demographics": {
+      "age": 42,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Basic/Screen-Reader"
+    },
+    "clinical_profile": {
+      "age": 42,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 136.0,
+      "chol": 230.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 140.0,
+      "exang": 0,
+      "oldpeak": 1.0,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_security",
+      "primary_task": "Pre-discharge verification of patient cryptographic seal in Tab 5",
+      "secondary_action": "Verify FIPS 140-2 compliance seal",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 90.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-01",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "During floor rounds, I opened Tab 5 to verify the cryptographic audit seal before discharging our post-CABG patient. The application instantly crashed with a Python NameError on 'age'. A fatal software crash in a clinical discharge workflow is unacceptable.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-082",
+    "name": "Amanda Castillo, MSN",
+    "archetype": "Clinician: Cardiac Care Nurse Practitioner",
+    "demographics": {
+      "age": 34,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 34,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 128.0,
+      "chol": 215.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 150.0,
+      "exang": 0,
+      "oldpeak": 0.8,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_security",
+      "primary_task": "Review patient audit record and tamper seal in Tab 5",
+      "secondary_action": "Verify zero-cloud egress status",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 80.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-01",
+      "PP-UX-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 2,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "I clicked on 'Security & Compliance Checkup' to review the audit parameters for our hospital compliance audit. The entire page crashed with an unhandled exception because variables like 'age' and 'prob' were never defined in local code.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-083",
+    "name": "Tyrone Washington, DNP",
+    "archetype": "Clinician: Cardiac Care Nurse Practitioner",
+    "demographics": {
+      "age": 47,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 47,
+      "sex": 1,
+      "cp": 2,
+      "trestbps": 142.0,
+      "chol": 240.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 135.0,
+      "exang": 0,
+      "oldpeak": 1.2,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Bedside nurse education using Web Audio stethoscope",
+      "secondary_action": "Review S1/S2 heart sound modulation",
+      "completion_status": "Success",
+      "time_on_task_sec": 115.0
+    },
+    "observed_pain_points": [
+      "PP-UX-03",
+      "PP-UX-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The Web Audio simulation of normal S1 and S2 heart sounds is wonderful for bedside nurse training. However, having options for systolic murmurs, S3 gallop, or friction rubs would make this tool exponentially more valuable for clinical nursing education.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-084",
+    "name": "Megan O'Donnell, MSN",
+    "archetype": "Clinician: Cardiac Care Nurse Practitioner",
+    "demographics": {
+      "age": 52,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 52,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 132.0,
+      "chol": 225.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 145.0,
+      "exang": 0,
+      "oldpeak": 0.9,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#live-workstation",
+      "primary_task": "Post-PCI patient discharge education session",
+      "secondary_action": "Inspect 3D heart with mobile tablet",
+      "completion_status": "Success",
+      "time_on_task_sec": 125.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 3,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "Using the 3D heart to show patients where their stent was placed works wonderfully. But on our hospital iPads, the controls feel cramped, and the audio starts playing automatically unless you quickly hunt down the sound toggle.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-085",
+    "name": "Rachel Morales, DNP",
+    "archetype": "Clinician: Cardiac Care Nurse Practitioner",
+    "demographics": {
+      "age": 60,
+      "sex": 0,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 60,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 138.0,
+      "chol": 235.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 138.0,
+      "exang": 0,
+      "oldpeak": 1.1,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_pred",
+      "primary_task": "Longitudinal telemetry follow-up in heart failure clinic",
+      "secondary_action": "Review medication response on risk gauge",
+      "completion_status": "Success",
+      "time_on_task_sec": 135.0
+    },
+    "observed_pain_points": [
+      "PP-UX-02",
+      "PP-UX-04"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 4,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The risk badge and interactive gauge give patients tangible proof of progress when their blood pressure improves. Providing a clean printout function for our clinic folders would save nursing staff ten minutes of manual documentation per visit.",
+      "dissected_category": "UI/UX Friction"
+    }
+  },
+  {
+    "persona_id": "PERS-086",
+    "name": "Dr. Alexander Wright, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 65,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 65,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 145.0,
+      "chol": 250.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 135.0,
+      "exang": 1,
+      "oldpeak": 1.8,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#regulatory-compliance",
+      "primary_task": "Audit platform for FDA Non-Device CDS qualification (21 CFR \u00a7 880.6310)",
+      "secondary_action": "Review clinical liability disclosures",
+      "completion_status": "Success",
+      "time_on_task_sec": 240.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "From a clinical governance perspective, CardioSense AI has enormous potential as an on-premise zero-egress platform. However, training exclusively on 303 patients from Cleveland Clinic in 1988 creates unacceptable demographic and legal risk. Before we can approve hospital-wide deployment, we require prospective multi-center validation on modern diverse cohorts and clear conformal prediction error bounds.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-087",
+    "name": "Dr. Evelyn Montgomery, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 61,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 61,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 140.0,
+      "chol": 240.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 142.0,
+      "exang": 0,
+      "oldpeak": 1.2,
+      "slope": 2,
+      "ca": 1,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#regulatory-compliance",
+      "primary_task": "Evaluate health system enterprise clinical safety",
+      "secondary_action": "Inspect model bias mitigation documentation",
+      "completion_status": "Success",
+      "time_on_task_sec": 260.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "Our hospital system cannot assume liability for clinical AI tools trained on single-center historical cohorts. The lack of demographic diversity in the 1988 dataset creates serious diagnostic blind spots for women and minority patients. We mandate multi-center pooling before production clearance.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-088",
+    "name": "Dr. Arthur Vance, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 69,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Academic Medical Center",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 69,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 150.0,
+      "chol": 260.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 128.0,
+      "exang": 1,
+      "oldpeak": 2.0,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_about",
+      "primary_task": "Review clinical decision support methodology & formulas",
+      "secondary_action": "Audit explainability and occlusion logic",
+      "completion_status": "Success",
+      "time_on_task_sec": 280.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-02"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The occlusion attribution mechanism adheres well to FDA explainability guidelines. However, displaying a fabricated linear FFR metric without physiological basis violates our institutional clinical standards and would fail any external FDA CDS audit.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-089",
+    "name": "Dr. Fatima Al-Mansoor, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 54,
+      "sex": 0,
+      "ethnicity": "Asian/Pacific Islander",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 54,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 138.0,
+      "chol": 230.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 145.0,
+      "exang": 0,
+      "oldpeak": 1.0,
+      "slope": 2,
+      "ca": 0,
+      "thal": 7,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#regulatory-compliance",
+      "primary_task": "Examine CDS 21st Century Cures Act \u00a7 520(o)(1)(E) exemption",
+      "secondary_action": "Inspect independent clinical verification pathways",
+      "completion_status": "Success",
+      "time_on_task_sec": 250.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "To qualify as a Non-Device CDS under FDA 21 CFR \u00a7 880.6310, the platform must allow physicians to independently review the basis of its recommendations. Disclosing the model weights is a great step, but conformal prediction intervals are essential to prevent false-alarm fatigue.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-090",
+    "name": "Dr. Charles Sterling, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 72,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Community Hospital",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 72,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 155.0,
+      "chol": 255.0,
+      "fbs": 0,
+      "restecg": 2,
+      "thalach": 120.0,
+      "exang": 1,
+      "oldpeak": 2.2,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#regulatory-compliance",
+      "primary_task": "Audit malpractice liability and diagnostic edge cases",
+      "secondary_action": "Review lab NLP ingestion fallback risks",
+      "completion_status": "Success",
+      "time_on_task_sec": 310.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-BUG-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 2,
+      "visual_clarity_score": 4,
+      "verbatim_quote": "The NLP parser defaulting healthy patients to typical angina and severe disease assumptions is an extreme clinical safety hazard. In an emergency setting, this could trigger inappropriate invasive catheterizations, exposing our health system to catastrophic malpractice liability.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-091",
+    "name": "Dr. Naomi Jackson, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 57,
+      "sex": 0,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 57,
+      "sex": 0,
+      "cp": 2,
+      "trestbps": 142.0,
+      "chol": 245.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 135.0,
+      "exang": 0,
+      "oldpeak": 1.4,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#regulatory-compliance",
+      "primary_task": "Health equity and racial bias audit of clinical algorithm",
+      "secondary_action": "Evaluate African American subcohort performance",
+      "completion_status": "Success",
+      "time_on_task_sec": 290.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "Cardiovascular disease disparities in minority communities are well documented. Relying on an algorithm trained predominantly on white males in 1988 exacerbates systemic diagnostic bias. CardioSense must pool contemporary multi-ethnic cohorts before institutional procurement.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-092",
+    "name": "Dr. Kenneth Reynolds, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 63,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Low",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 63,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 148.0,
+      "chol": 250.0,
+      "fbs": 0,
+      "restecg": 1,
+      "thalach": 130.0,
+      "exang": 1,
+      "oldpeak": 1.9,
+      "slope": 2,
+      "ca": 1,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_about",
+      "primary_task": "Review model calibration and Brier scores",
+      "secondary_action": "Evaluate prospective clinical trial protocols",
+      "completion_status": "Success",
+      "time_on_task_sec": 270.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "The logistic regression calibration curve shows reasonable fidelity on the test split. However, before deploying across our tertiary care network, we require a formal prospective multi-center randomized validation trial comparing CardioSense against standard ASCVD calculators.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-093",
+    "name": "Dr. Raymond Scott, MD",
+    "archetype": "Administrator: Chief Medical Officer (CMO)",
+    "demographics": {
+      "age": 67,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 67,
+      "sex": 1,
+      "cp": 1,
+      "trestbps": 152.0,
+      "chol": 260.0,
+      "fbs": 1,
+      "restecg": 1,
+      "thalach": 125.0,
+      "exang": 1,
+      "oldpeak": 2.1,
+      "slope": 2,
+      "ca": 2,
+      "thal": 7,
+      "ground_truth_cad": 1
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#regulatory-compliance",
+      "primary_task": "Clinical governance signoff and executive risk appraisal",
+      "secondary_action": "Inspect model generalizability constraints",
+      "completion_status": "Success",
+      "time_on_task_sec": 300.0
+    },
+    "observed_pain_points": [
+      "PP-MOD-01",
+      "PP-MOD-03"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 4,
+      "clinical_trust_score": 3,
+      "visual_clarity_score": 5,
+      "verbatim_quote": "CardioSense has the best visual presentation of any cardiac decision support tool I have seen. But clinical governance requires that the underlying machine learning models match the visual fidelity. Expanding training data and providing uncertainty bounds are our non-negotiable prerequisites.",
+      "dissected_category": "Model Generalization Concern"
+    }
+  },
+  {
+    "persona_id": "PERS-094",
+    "name": "Sarah Jenkins, CISA, CISSP",
+    "archetype": "Administrator: Hospital IT Security & HIPAA Officer",
+    "demographics": {
+      "age": 43,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 43,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 120.0,
+      "chol": 185.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 165.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_security",
+      "primary_task": "Pre-procurement vulnerability scan & HIPAA zero-egress audit in Tab 5",
+      "secondary_action": "Inspect client portal source code for credentials",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 60.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-01",
+      "PP-BUG-07",
+      "PP-UX-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "We initiated our pre-procurement vulnerability scan on CardioSense. Clicking the 'Security & Compliance Checkup' tab produced a fatal NameError: name 'age' is not defined. Inspecting the client portal code revealed the admin password 'CardioSense2026!' exposed in plaintext HTML. Worst of all, all 18 downloadable packages are dummy text files filled with repeated padding strings. This application fails enterprise security onboarding.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-095",
+    "name": "David Henderson, CISSP",
+    "archetype": "Administrator: Hospital IT Security & HIPAA Officer",
+    "demographics": {
+      "age": 34,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "High",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 34,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 118.0,
+      "chol": 190.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 170.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#verifier",
+      "primary_task": "Audit client-side WebCrypto SHA-256 package verifier",
+      "secondary_action": "Download distribution packages to verify SHA-256 digests",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 75.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-07",
+      "PP-BUG-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "The WebCrypto SHA-256 verifier tool is technically sound in concept. However, when I downloaded the actual DMG and Windows packages, they turned out to be identical 665 KB text files filled with dummy padding text! Distributing mock binaries while claiming FIPS 140-2 compliance is a severe compliance violation.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-096",
+    "name": "Marcus Brody, CISM",
+    "archetype": "Administrator: Hospital IT Security & HIPAA Officer",
+    "demographics": {
+      "age": 47,
+      "sex": 1,
+      "ethnicity": "African American",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Outpatient Cardiology Practice",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 47,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 122.0,
+      "chol": 195.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 160.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_security",
+      "primary_task": "Penetration test on Streamlit desktop launcher",
+      "secondary_action": "Check CSRF and CORS configuration",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 90.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-01",
+      "PP-UX-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "Our penetration test identified multiple critical security findings: Tab 5 crashed immediately on unbound variables, desktop_launcher.py has CORS and CSRF protections disabled by default, and serve_portal.py was configured with wildcard Access-Control-Allow-Origin headers.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-097",
+    "name": "Elena Rostova-Smith, CISSP",
+    "archetype": "Administrator: Hospital IT Security & HIPAA Officer",
+    "demographics": {
+      "age": 31,
+      "sex": 0,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 31,
+      "sex": 0,
+      "cp": 3,
+      "trestbps": 115.0,
+      "chol": 180.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 175.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#security-checkup",
+      "primary_task": "Verify zero-cloud-egress network isolation",
+      "secondary_action": "Inspect Content Security Policy in vercel.json",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 85.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-08",
+      "PP-BUG-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 3,
+      "verbatim_quote": "Network packet sniffing confirmed that the client portal makes no external API calls for prediction, which satisfies zero-cloud-egress HIPAA mandates. However, the production CSP in vercel.json omits cdn.jsdelivr.net, breaking camera controls, and the Tab 5 crash halts compliance sign-off.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-098",
+    "name": "Victor Sterling, CISA",
+    "archetype": "Administrator: Hospital IT Security & HIPAA Officer",
+    "demographics": {
+      "age": 29,
+      "sex": 1,
+      "ethnicity": "Caucasian",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Advanced Power User"
+    },
+    "clinical_profile": {
+      "age": 29,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 116.0,
+      "chol": 175.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 180.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_security",
+      "primary_task": "Audit ephemeral cryptographic seal calculation",
+      "secondary_action": "Inspect PyInstaller packaging spec files",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 100.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-01",
+      "PP-BUG-07"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 2,
+      "verbatim_quote": "The cryptographic seal calculation in Tab 5 is broken due to unbound variables. Furthermore, reviewing CardioSense-mac.spec revealed that cgi_heart.py and portal/ are missing from datas, meaning packaged desktop binaries cannot run without throwing ModuleNotFoundError.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-099",
+    "name": "Carlos Mendez, CISSP",
+    "archetype": "Administrator: Hospital IT Security & HIPAA Officer",
+    "demographics": {
+      "age": 62,
+      "sex": 1,
+      "ethnicity": "Hispanic/Latino",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Home/Remote Telehealth",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 62,
+      "sex": 1,
+      "cp": 3,
+      "trestbps": 124.0,
+      "chol": 200.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 155.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "portal/index.html#it-deployment",
+      "primary_task": "Evaluate enterprise silent deployment scripts",
+      "secondary_action": "Inspect build_mac_dmg.sh packaging script",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 110.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-07",
+      "PP-BUG-01"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 2,
+      "verbatim_quote": "The enterprise deployment documentation includes MDM flags, which is helpful. But build_mac_dmg.sh copies desktop_launcher.py directly into MacOS/CardioSense without an executable shebang, resulting in a non-functional Mac app bundle.",
+      "dissected_category": "Software Bug"
+    }
+  },
+  {
+    "persona_id": "PERS-100",
+    "name": "Nathaniel Yazzie, CISM",
+    "archetype": "Administrator: Hospital IT Security & HIPAA Officer",
+    "demographics": {
+      "age": 64,
+      "sex": 1,
+      "ethnicity": "Native American/Multiracial",
+      "socioeconomic_tier": "Middle",
+      "clinical_setting": "Rural Critical Access Clinic",
+      "digital_health_literacy": "Intermediate"
+    },
+    "clinical_profile": {
+      "age": 64,
+      "sex": 1,
+      "cp": 4,
+      "trestbps": 125.0,
+      "chol": 205.0,
+      "fbs": 0,
+      "restecg": 0,
+      "thalach": 158.0,
+      "exang": 0,
+      "oldpeak": 0.0,
+      "slope": 1,
+      "ca": 0,
+      "thal": 3,
+      "ground_truth_cad": 0
+    },
+    "user_journey": {
+      "entry_point": "app.py:tab_security",
+      "primary_task": "Final security readiness signoff for clinical deployment",
+      "secondary_action": "Attempt end-to-end security audit seal verification",
+      "completion_status": "Blocked by Bug",
+      "time_on_task_sec": 95.0
+    },
+    "observed_pain_points": [
+      "PP-BUG-01",
+      "PP-BUG-07",
+      "PP-UX-05"
+    ],
+    "feedback_evaluation": {
+      "usability_score": 1,
+      "clinical_trust_score": 1,
+      "visual_clarity_score": 2,
+      "verbatim_quote": "CardioSense cannot be granted security clearance for hospital workstations until three critical flaws are remediated: 1) Fix the Tab 5 NameError crash; 2) Remove hardcoded credentials from HTML markup; 3) Replace dummy text files with authentic, signed release packages.",
+      "dissected_category": "Software Bug"
+    }
+  }
+]

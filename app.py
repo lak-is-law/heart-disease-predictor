@@ -21,63 +21,176 @@ st.set_page_config(page_title="CardioSense AI | Cardiac Hemodynamics & Decision 
 # ------------------------------------------------------------------------------ style
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-html, body, [class*="css"], .stApp { font-family: 'Inter', sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+html, body, [class*="css"], .stApp {
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Institutional Clinical Dark Palette */
 .stApp {
   background:
-    radial-gradient(900px 500px at 8% -5%, rgba(0,111,207,.18), transparent 60%),
-    radial-gradient(800px 500px at 100% 0%, rgba(15,23,42,.18), transparent 60%),
-    radial-gradient(700px 600px at 50% 110%, rgba(20,184,166,.10), transparent 60%),
-    #060913;
-  color: #e2e8f0;
+    radial-gradient(1200px 600px at 15% -10%, rgba(0, 111, 207, 0.14), transparent 70%),
+    radial-gradient(1000px 600px at 85% 10%, rgba(15, 23, 42, 0.35), transparent 70%),
+    #070C18;
+  color: #F1F5F9;
 }
+
 #MainMenu, footer { visibility: hidden; }
 header[data-testid="stHeader"] { background: transparent; }
-.block-container { padding-top: 1.6rem; max-width: 1280px; }
+.block-container {
+  padding-top: 1.5rem;
+  max-width: 1400px;
+}
 
-/* hero */
-.hero { position: relative; overflow: hidden; padding: 34px 38px 26px; border-radius: 26px;
-  background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.015));
-  border: 1px solid rgba(255,255,255,.09); backdrop-filter: blur(20px); margin-bottom: 18px; }
-.hero h1 { margin: 0; font-size: 2.7rem; font-weight: 800; letter-spacing: -1.2px;
-  background: linear-gradient(90deg,#fff 10%,#38bdf8 55%,#60a5fa 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero p { margin: 8px 0 0; color: #94a3b8; font-size: 1.02rem; max-width: 640px; }
-.pill { display:inline-block; font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
-  color:#38bdf8; background:rgba(0,111,207,.15); border:1px solid rgba(0,111,207,.35);
-  padding:4px 12px; border-radius:999px; margin-bottom:14px; }
+/* Institutional Clinical Hero (Zero Generic AI Text Gradients!) */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 32px 36px 24px;
+  border-radius: 16px;
+  background: #0B1325;
+  border: 1px solid #1E2D4A;
+  box-shadow: 0 8px 32px rgba(0, 23, 90, 0.25);
+  margin-bottom: 20px;
+}
+.hero h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: #FFFFFF;
+}
+.hero p {
+  margin: 8px 0 0;
+  color: #94A3B8;
+  font-size: 1.05rem;
+  max-width: 700px;
+  line-height: 1.5;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
 .ecg { position:absolute; left:0; right:0; bottom:0; width:100%; height:54px; opacity:.85; }
 .ecg path { fill:none; stroke:#006FCF; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
   stroke-dasharray:1300; stroke-dashoffset:1300; animation: draw 3.6s linear infinite;
   filter: drop-shadow(0 0 6px rgba(0,111,207,.9)); }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
-/* cards */
-.glass { background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.015));
-  border:1px solid rgba(255,255,255,.08); border-radius:22px; padding:22px 24px; backdrop-filter: blur(18px);
-  box-shadow: 0 10px 40px rgba(0,0,0,.35); }
-.section { font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#94a3b8; margin:6px 0 10px; }
+/* Clinical High-Contrast Cards */
+.glass {
+  background: #0E172A;
+  border: 1px solid #1E2D4A;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.section {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94A3B8;
+  margin: 8px 0 12px;
+}
 .stat { text-align:left; }
-.stat .v { font-size:2rem; font-weight:800; letter-spacing:-1px; color:#fff; }
-.stat .l { font-size:.74rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em; margin-top:2px; }
-.badge { display:inline-block; padding:7px 18px; border-radius:999px; font-weight:700; font-size:.95rem; border:1px solid; }
-.badge.low { color:#6ee7b7; background:rgba(52,211,153,.12); border-color:rgba(52,211,153,.4); }
-.badge.mid { color:#fcd34d; background:rgba(251,191,36,.12); border-color:rgba(251,191,36,.4); }
-.badge.high{ color:#fda4af; background:rgba(244,63,94,.14); border-color:rgba(244,63,94,.45); }
+.stat .v {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+.stat .l {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 3px;
+}
+
+/* High-Contrast Badges */
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: 1px solid;
+}
+.badge.low {
+  color: #34D399;
+  background: rgba(52, 211, 153, 0.14);
+  border-color: #34D399;
+}
+.badge.mid {
+  color: #FBBF24;
+  background: rgba(251, 191, 36, 0.14);
+  border-color: #FBBF24;
+}
+.badge.high {
+  color: #F87171;
+  background: rgba(248, 113, 113, 0.16);
+  border-color: #F87171;
+}
 .note { color:#94a3b8; font-size:.86rem; line-height:1.55; }
 .warn { margin-top:14px; padding:12px 14px; border-radius:14px; font-size:.8rem; color:#fcd34d;
   background:rgba(251,191,36,.07); border:1px solid rgba(251,191,36,.22); }
 
-/* widgets */
-div.stButton > button { border-radius:12px; border:1px solid rgba(255,255,255,.12); color:#e2e8f0;
-  background: rgba(255,255,255,.05); font-weight:600; transition: all .2s; }
-div.stButton > button:hover { border-color:#006FCF; color:#fff; background:rgba(0,111,207,.2); transform:translateY(-1px); }
-.stTabs [data-baseweb="tab-list"] { gap:6px; background:rgba(255,255,255,.04); padding:5px; border-radius:14px; width:fit-content; }
-.stTabs [data-baseweb="tab"] { height:40px; border-radius:10px; padding:0 18px; color:#94a3b8; font-weight:600; }
-.stTabs [aria-selected="true"] { background:linear-gradient(135deg,#006FCF,#0284C7); color:#fff !important; }
+/* High-Contrast Interactive Widgets */
+div.stButton > button {
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  color: #F1F5F9;
+  background: #1E293B;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+div.stButton > button:hover {
+  border-color: #006FCF;
+  color: #FFFFFF;
+  background: #0056A3;
+}
+.stTabs [data-baseweb="tab-list"] {
+  gap: 8px;
+  background: #0E172A;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #1E2D4A;
+}
+.stTabs [data-baseweb="tab"] {
+  height: 42px;
+  border-radius: 6px;
+  padding: 0 18px;
+  color: #94A3B8;
+  font-weight: 600;
+}
+.stTabs [aria-selected="true"] {
+  background: #006FCF !important;
+  color: #FFFFFF !important;
+}
 .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] { display:none; }
-[data-testid="stSidebar"] { background: rgba(8,12,24,.85); border-right:1px solid rgba(255,255,255,.06); }
-[data-baseweb="select"] > div { background: rgba(255,255,255,.05) !important; border-color: rgba(255,255,255,.1) !important; border-radius:12px !important; }
+[data-testid="stSidebar"] { background: #0A1020; border-right:1px solid #1E2D4A; }
+[data-baseweb="select"] > div { background: #0E172A !important; border-color: #1E2D4A !important; border-radius:8px !important; }
+
+/* High-Contrast Tables */
+table th {
+  color: #CBD5E1 !important;
+  font-weight: 700 !important;
+}
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
@@ -680,7 +793,7 @@ with tab_security:
             f"""
         <table style="width:100%; border-collapse:collapse; margin-top:8px;">
             <thead>
-                <tr style="text-align:left; color:#64748b; font-size:0.75rem; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.12);">
+                <tr style="text-align:left; color:#CBD5E1; font-size:0.75rem; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.12);">
                     <th style="padding:8px;">Security Control</th>
                     <th style="padding:8px;">Status</th>
                     <th style="padding:8px;">Diagnostic Telemetry</th>
@@ -698,9 +811,16 @@ with tab_security:
         st.markdown('<div class="section">Live Cryptographic Audit Seal</div>', unsafe_allow_html=True)
         # Compute ephemeral cryptographic seal for current patient
         seal_payload = json.dumps({
-            "age": age, "sex": sex, "trestbps": trestbps, "chol": chol, "thalach": thalach,
-            "oldpeak": oldpeak, "ca": ca, "model": model_name, "prob": float(prob)
-        })
+            "age": float(st.session_state.get("age", 54)),
+            "sex": int(st.session_state.get("sex", 1)),
+            "trestbps": float(st.session_state.get("trestbps", 130)),
+            "chol": float(st.session_state.get("chol", 240)),
+            "thalach": float(st.session_state.get("thalach", 150)),
+            "oldpeak": float(st.session_state.get("oldpeak", 1.2)),
+            "ca": int(st.session_state.get("ca", 0)),
+            "model": model_name,
+            "prob": float(p)
+        }, sort_keys=True)
         seal_hash = hashlib.sha256(seal_payload.encode()).hexdigest().upper()
         active_seal = f"CARDIOSENSE-SEAL-{seal_hash[:4]}-{seal_hash[4:8]}"
 
@@ -716,7 +836,7 @@ with tab_security:
             </p>
             <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:10px; font-family:monospace; font-size:0.75rem; color:#6ee7b7; line-height:1.5;">
                 • Model: {model_name}<br>
-                • Output Risk: {prob*100:.1f}% ({band})<br>
+                • Output Risk: {p*100:.1f}% ({band})<br>
                 • Egress Packets: 0 (RAM-only)<br>
                 • Security Level: FIPS 140-2 Level 3
             </div>

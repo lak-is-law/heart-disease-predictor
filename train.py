@@ -84,6 +84,29 @@ def main() -> None:
     (out / "metrics.json").write_text(json.dumps(
         {"best": best, "metrics": metrics, "meta": bundle["meta"]}, indent=2))
 
+    # Auto-export Logistic Regression weights to portal/model_weights.json
+    lr_pipe = models["Logistic Regression"]
+    prep = lr_pipe.named_steps["prep"]
+    scaler = prep.named_transformers_["num"].named_steps["sc"]
+    ohe = prep.named_transformers_["cat"].named_steps["oh"]
+    clf = lr_pipe.named_steps["clf"]
+
+    portal_weights = {
+        "features": FEATURES,
+        "baseline": baseline,
+        "numeric": NUMERIC,
+        "categorical": CATEGORICAL,
+        "intercept": float(clf.intercept_[0]),
+        "coef": [float(c) for c in clf.coef_[0]],
+        "num_mean": [float(m) for m in scaler.mean_],
+        "num_scale": [float(s) for s in scaler.scale_],
+        "cat_categories": [[float(c) for c in cat_arr] for cat_arr in ohe.categories_],
+        "metrics": metrics
+    }
+    portal_weights_path = ROOT / "portal" / "model_weights.json"
+    if portal_weights_path.parent.exists():
+        portal_weights_path.write_text(json.dumps(portal_weights, indent=2))
+
     print(f"\n{'Model':<22}{'CV AUC':>8}{'Acc':>8}{'Prec':>8}{'Recall':>8}{'F1':>8}{'AUC':>8}")
     for n, m in metrics.items():
         star = " *" if n == best else ""

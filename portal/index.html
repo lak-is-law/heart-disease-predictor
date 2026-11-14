@@ -6,9 +6,68 @@
   <title>CardioSense AI — Clinical Decision Support & Cardiac Hemodynamics Workstation</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23006FCF'/><path d='M22 52 L38 52 L46 26 L56 76 L66 42 L72 52 L82 52' stroke='white' stroke-width='9' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
-  <!-- Three.js + OrbitControls for Anatomical Telemetry -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <!-- Offline-First Vendor Libraries with Seamless CDN Fallback -->
+  <script src="vendor/three.min.js"></script>
+  <script>
+    if (typeof THREE === 'undefined') {
+      console.warn('[CardioSense] Local three.min.js missing; falling back to CDN.');
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+    }
+  </script>
+  <script src="vendor/OrbitControls.js"></script>
+  <script>
+    if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls === 'undefined') {
+      console.warn('[CardioSense] Local OrbitControls.js missing; falling back to CDN.');
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+    }
+  </script>
+  <style>
+    .sound-btn {
+      background: transparent;
+      color: #94A3B8;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      min-height: 40px;
+      min-width: 40px;
+    }
+    .sound-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .sound-btn.active {
+      color: #34D399;
+      background: rgba(52, 211, 153, 0.15);
+      border-color: #34D399;
+    }
+    .context-recovery-badge {
+      display: none;
+      position: absolute;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid #F59E0B;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      color: #F59E0B;
+      z-index: 25;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(8px);
+    }
+  </style>
 </head>
 <body>
 
@@ -253,33 +312,33 @@
           <div style="font-size:0.8125rem; font-weight:700; color:var(--color-text-headline); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">
             Or Load Validated Hospital Case Studies (1-Click Verification)
           </div>
-          <div class="case-study-list">
+          <div class="case-study-list" role="radiogroup" aria-label="Validated Hospital Clinical Case Studies">
             <!-- Case 1: High Risk ACS -->
-            <div class="case-study-card selected" id="case-btn-acs" onclick="loadClinicalCase('acs')">
+            <button type="button" class="case-study-card selected" id="case-btn-acs" role="radio" aria-checked="true" onclick="loadClinicalCase('acs')">
               <div class="case-info">
                 <h4>Case 1: Acute Coronary Syndrome (Anterior STEMI)</h4>
                 <p>62M · BP 168/104 · Chol 288 mg/dL · Max HR 128 · ExAngina: Yes · ST Dep: -3.2 mm · 3 Major Vessels Calcified</p>
               </div>
               <span class="case-severity-badge critical">Critical Ischemic</span>
-            </div>
+            </button>
 
             <!-- Case 2: Moderate Diabetic CAD -->
-            <div class="case-study-card" id="case-btn-diabetic" onclick="loadClinicalCase('diabetic')">
+            <button type="button" class="case-study-card" id="case-btn-diabetic" role="radio" aria-checked="false" onclick="loadClinicalCase('diabetic')">
               <div class="case-info">
                 <h4>Case 2: Diabetic Multi-Vessel CAD Screening</h4>
                 <p>57F · BP 142/88 · Chol 245 mg/dL · Max HR 142 · Atypical Angina · ST Dep: -1.4 mm · 2 Major Vessels</p>
               </div>
               <span class="case-severity-badge moderate">Moderate Risk</span>
-            </div>
+            </button>
 
             <!-- Case 3: Low Risk Baseline -->
-            <div class="case-study-card" id="case-btn-wellness" onclick="loadClinicalCase('wellness')">
+            <button type="button" class="case-study-card" id="case-btn-wellness" role="radio" aria-checked="false" onclick="loadClinicalCase('wellness')">
               <div class="case-info">
                 <h4>Case 3: Asymptomatic Executive Cardiovascular Screen</h4>
                 <p>42M · BP 118/76 · Chol 175 mg/dL · Max HR 178 · No Angina · ST Dep: 0.0 mm (Upsloping) · 0 Occluded Vessels</p>
               </div>
               <span class="case-severity-badge baseline">Baseline Normal</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -335,56 +394,107 @@
 
           <div class="form-paired-grid">
             <div class="form-group">
-              <div class="form-label-row">
-                <span>Patient Age</span>
-                <span class="form-value-tag" id="val-age">62 yrs</span>
+              <label class="form-label-row" for="inp-age">
+                <span class="label-primary">Patient Age</span>
+                <span class="label-sub clinical-acronym" title="Patient chronological age in years">(age · 20-90 yrs)</span>
+                <span class="form-value-tag" id="val-age" aria-live="polite">62 yrs</span>
+              </label>
+              <div class="clinical-slider-wrapper">
+                <input type="range" class="clinical-slider" id="inp-age" min="20" max="90" value="62"
+                       aria-valuemin="20" aria-valuemax="90" aria-valuenow="62" aria-label="Patient Age in years"
+                       oninput="updatePortalPrediction()">
               </div>
-              <input type="range" class="clinical-slider" id="inp-age" min="20" max="90" value="62" oninput="updatePortalPrediction()">
             </div>
 
             <div class="form-group">
-              <div class="form-label-row"><span>Biological Sex</span></div>
+              <label class="form-label-row" for="inp-sex">
+                <span class="label-primary">Biological Sex</span>
+                <span class="label-sub clinical-acronym" title="Biological sex at birth">(sex · 1=M, 0=F)</span>
+              </label>
               <select class="clinical-select" id="inp-sex" onchange="updatePortalPrediction()">
-                <option value="1" selected>Male</option>
-                <option value="0">Female</option>
+                <option value="1" selected>Male (1)</option>
+                <option value="0">Female (0)</option>
               </select>
             </div>
           </div>
 
           <div class="form-paired-grid">
             <div class="form-group">
-              <div class="form-label-row">
-                <span>Resting Blood Pressure</span>
-                <span class="form-value-tag" id="val-trestbps">168 mmHg</span>
+              <label class="form-label-row" for="inp-trestbps">
+                <span class="label-primary">Resting Blood Pressure</span>
+                <span class="label-sub clinical-acronym" title="Systolic resting blood pressure upon hospital intake in mmHg">(trestbps · normal &lt; 120)</span>
+                <span class="form-value-tag" id="val-trestbps" aria-live="polite">168 mmHg</span>
+              </label>
+              <div class="clinical-slider-wrapper">
+                <input type="range" class="clinical-slider" id="inp-trestbps" min="80" max="220" value="168"
+                       aria-valuemin="80" aria-valuemax="220" aria-valuenow="168" aria-label="Resting Blood Pressure in mmHg"
+                       oninput="updatePortalPrediction()">
               </div>
-              <input type="range" class="clinical-slider" id="inp-trestbps" min="80" max="220" value="168" oninput="updatePortalPrediction()">
             </div>
 
             <div class="form-group">
-              <div class="form-label-row">
-                <span>Serum Cholesterol</span>
-                <span class="form-value-tag" id="val-chol">288 mg/dl</span>
+              <label class="form-label-row" for="inp-chol">
+                <span class="label-primary">Serum Total Cholesterol</span>
+                <span class="label-sub clinical-acronym" title="Total serum fasting cholesterol in mg/dL">(chol · normal &lt; 200)</span>
+                <span class="form-value-tag" id="val-chol" aria-live="polite">288 mg/dl</span>
+              </label>
+              <div class="clinical-slider-wrapper">
+                <input type="range" class="clinical-slider" id="inp-chol" min="100" max="550" value="288"
+                       aria-valuemin="100" aria-valuemax="550" aria-valuenow="288" aria-label="Serum Total Cholesterol in mg/dL"
+                       oninput="updatePortalPrediction()">
               </div>
-              <input type="range" class="clinical-slider" id="inp-chol" min="100" max="550" value="288" oninput="updatePortalPrediction()">
             </div>
           </div>
 
           <div class="form-paired-grid">
             <div class="form-group">
-              <div class="form-label-row">
-                <span>Max Heart Rate</span>
-                <span class="form-value-tag" id="val-thalach">128 BPM</span>
-              </div>
-              <input type="range" class="clinical-slider" id="inp-thalach" min="60" max="210" value="128" oninput="updatePortalPrediction()">
+              <label class="form-label-row" for="inp-fbs">
+                <span class="label-primary">Fasting Blood Sugar</span>
+                <span class="label-sub clinical-acronym" title="Fasting blood sugar > 120 mg/dL diabetic threshold">(fbs · normal &le; 120)</span>
+              </label>
+              <select class="clinical-select" id="inp-fbs" onchange="updatePortalPrediction()">
+                <option value="0">0: Normal (&le; 120 mg/dL)</option>
+                <option value="1" selected>1: Diabetic / Elevated (&gt; 120 mg/dL)</option>
+              </select>
             </div>
 
             <div class="form-group">
-              <div class="form-label-row"><span>Chest Pain Presentation</span></div>
+              <label class="form-label-row" for="inp-restecg">
+                <span class="label-primary">Resting Electrocardiogram</span>
+                <span class="label-sub clinical-acronym" title="Resting 12-lead electrocardiographic waveform findings">(restecg · 0-2)</span>
+              </label>
+              <select class="clinical-select" id="inp-restecg" onchange="updatePortalPrediction()">
+                <option value="0">0: Normal Sinus Rhythm</option>
+                <option value="1" selected>1: ST-T Wave Abnormality</option>
+                <option value="2">2: Left Ventricular Hypertrophy (LVH)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-paired-grid">
+            <div class="form-group">
+              <label class="form-label-row" for="inp-thalach">
+                <span class="label-primary">Maximum Heart Rate</span>
+                <span class="label-sub clinical-acronym" title="Maximum heart rate achieved during peak exercise stress in BPM">(thalach · normal 120-200)</span>
+                <span class="form-value-tag" id="val-thalach" aria-live="polite">128 BPM</span>
+              </label>
+              <div class="clinical-slider-wrapper">
+                <input type="range" class="clinical-slider" id="inp-thalach" min="60" max="210" value="128"
+                       aria-valuemin="60" aria-valuemax="210" aria-valuenow="128" aria-label="Maximum Heart Rate in BPM"
+                       oninput="updatePortalPrediction()">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label-row" for="inp-cp">
+                <span class="label-primary">Chest Pain Presentation</span>
+                <span class="label-sub clinical-acronym" title="Angina symptom characterization (Classes 1-4)">(cp · Type 1-4)</span>
+              </label>
               <select class="clinical-select" id="inp-cp" onchange="updatePortalPrediction()">
-                <option value="1">Typical Angina (Type 1)</option>
-                <option value="2">Atypical Angina (Type 2)</option>
-                <option value="3">Non-Anginal Discomfort (Type 3)</option>
-                <option value="4" selected>Asymptomatic Ischemia (Type 4 · Highest Risk)</option>
+                <option value="1" selected>Class 1: Typical Angina</option>
+                <option value="2">Class 2: Atypical Angina</option>
+                <option value="3">Class 3: Non-Anginal Discomfort</option>
+                <option value="4">Class 4: Asymptomatic Ischemia</option>
               </select>
             </div>
           </div>
@@ -393,57 +503,80 @@
 
           <div class="form-paired-grid">
             <div class="form-group">
-              <div class="form-label-row"><span>Exercise-Induced Angina</span></div>
+              <label class="form-label-row" for="inp-exang">
+                <span class="label-primary">Exercise-Induced Angina</span>
+                <span class="label-sub clinical-acronym" title="Chest pain provoked by treadmill stress testing">(exang · 0/1)</span>
+              </label>
               <select class="clinical-select" id="inp-exang" onchange="updatePortalPrediction()">
-                <option value="0">No Exercise Induced Angina</option>
-                <option value="1" selected>Yes · Positive Stress Angina</option>
+                <option value="0">0: Negative (No Angina)</option>
+                <option value="1" selected>1: Positive (Exertional Angina)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <div class="form-label-row"><span>Peak Exercise ST Slope</span></div>
+              <label class="form-label-row" for="inp-slope">
+                <span class="label-primary">Peak Exercise ST Slope</span>
+                <span class="label-sub clinical-acronym" title="Slope of ST segment at peak exercise relative to isoelectric baseline">(slope · 1-3)</span>
+              </label>
               <select class="clinical-select" id="inp-slope" onchange="updatePortalPrediction()">
                 <option value="1">1: Upsloping (Physiologic / Normal)</option>
-                <option value="2">2: Horizontal Flat (Ischemic)</option>
+                <option value="2">2: Horizontal Flat (Ischemia)</option>
                 <option value="3" selected>3: Downsloping (Severe Transmural Ischemia)</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <div class="form-label-row">
-              <span>ST Segment Depression (Oldpeak)</span>
-              <span class="form-value-tag" id="val-oldpeak">3.2 mm</span>
+            <label class="form-label-row" for="inp-oldpeak">
+              <span class="label-primary">ST Segment Depression</span>
+              <span class="label-sub clinical-acronym" title="ST segment depression induced by exercise relative to rest in millimeters">(oldpeak · normal 0.0 mm)</span>
+              <span class="form-value-tag" id="val-oldpeak" aria-live="polite">3.2 mm</span>
+            </label>
+            <div class="clinical-slider-wrapper">
+              <input type="range" class="clinical-slider" id="inp-oldpeak" min="0" max="6.0" step="0.1" value="3.2"
+                     aria-valuemin="0" aria-valuemax="6.0" aria-valuenow="3.2" aria-label="ST Segment Depression in millimeters"
+                     oninput="updatePortalPrediction()">
             </div>
-            <input type="range" class="clinical-slider" id="inp-oldpeak" min="0" max="6.0" step="0.1" value="3.2" oninput="updatePortalPrediction()">
           </div>
 
           <div class="form-paired-grid">
             <div class="form-group">
-              <div class="form-label-row"><span>Fluoroscopy Major Vessels</span></div>
+              <label class="form-label-row" for="inp-ca">
+                <span class="label-primary">Calcified Major Vessels</span>
+                <span class="label-sub clinical-acronym" title="Number of major coronary vessels with calcified stenosis on fluoroscopy">(ca · 0-3 vessels)</span>
+              </label>
               <select class="clinical-select" id="inp-ca" onchange="updatePortalPrediction()">
-                <option value="0">0 Major Vessels Occluded</option>
-                <option value="1">1 Major Vessel (e.g. LAD Stenosis)</option>
-                <option value="2">2 Major Vessels (e.g. LAD + RCA)</option>
-                <option value="3" selected>3 Major Vessels (Triple Vessel CAD)</option>
+                <option value="0">0: Clean Coronaries (0 Vessels)</option>
+                <option value="1">1: Single-Vessel Disease (1)</option>
+                <option value="2">2: Two-Vessel Disease (2)</option>
+                <option value="3" selected>3: Triple-Vessel Disease (3)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <div class="form-label-row"><span>Myocardial Scintigraphy (Thal)</span></div>
+              <label class="form-label-row" for="inp-thal">
+                <span class="label-primary">Thallium Scintigraphy</span>
+                <span class="label-sub clinical-acronym" title="Nuclear myocardial perfusion scintigraphy status (3=Normal, 6=Fixed, 7=Reversible)">(thal · 3/6/7)</span>
+              </label>
               <select class="clinical-select" id="inp-thal" onchange="updatePortalPrediction()">
-                <option value="3">Normal Perfusion (3)</option>
-                <option value="6">Fixed Myocardial Scar / Infarction (6)</option>
-                <option value="7" selected>Reversible Ischemia Defect (7)</option>
+                <option value="3">3: Normal Perfusion</option>
+                <option value="6">6: Fixed Infarct Scar</option>
+                <option value="7" selected>7: Reversible Ischemic Defect</option>
               </select>
             </div>
           </div>
         </div>
 
         <!-- Right: 3D Diagnostic Cardiac Viewport & Telemetry HUD -->
-        <div>
+        <div class="workstation-sticky-col">
           <div class="telemetry-viewport" id="portal-cgi-viewport">
             <div class="viewport-grid-overlay"></div>
+
+            <!-- WebGL Context Loss Recovery Badge -->
+            <div id="portal-context-recovery-badge" class="context-recovery-badge">
+              <span class="hud-pulse-light" style="background:#F59E0B; box-shadow:0 0 8px #F59E0B;"></span>
+              <span>WebGL GPU Context Suspended — Re-initializing Telemetry...</span>
+            </div>
 
             <!-- Top HUD -->
             <div class="viewport-hud-top">
@@ -468,17 +601,21 @@
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                   CT Angio
                 </button>
-                <button type="button" class="mode-btn" onclick="setPortalMode('perfusion', this)" title="Myocardial Perfusion Map">
+                <button type="button" class="mode-btn" onclick="setPortalMode('perfusion', this)" title="Myocardial Perfusion Map (AHA 17-Segment)">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                   Perfusion
+                </button>
+                <button type="button" class="mode-btn" onclick="setPortalMode('fluoro', this)" title="Fluoroscopic Angiogram with Radiopaque Contrast">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                  Fluoroscopy
                 </button>
                 <button type="button" class="mode-btn" onclick="setPortalMode('ffr', this)" title="Coronary Flow & Fractional Flow Reserve">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                   Coronary FFR
                 </button>
-                <button type="button" class="mode-btn" onclick="setPortalMode('cutaway', this)" title="Multi-Planar Internal Chamber Cutaway">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                  Cutaway
+                <button type="button" class="sound-btn" id="portal-sound-btn" onclick="togglePortalAudio()" title="Acoustic Stethoscope Telemetry (S1/S2 Lub-Dub)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  <span id="portal-sound-icon">[Muted]</span> Sound
                 </button>
               </div>
             </div>
@@ -1232,21 +1369,23 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
   <!-- ==============================================================================
        9. ENTERPRISE AUTHENTICATION & CLINICAL LOGIN MODAL
        ============================================================================== -->
-  <div class="app-modal-backdrop" id="app-auth-modal" style="display:none;" onclick="handleModalBackdropClick(event)">
+  <div class="app-modal-backdrop" id="app-auth-modal" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="auth-modal-title"
+       onclick="handleModalBackdropClick(event)">
     <div class="app-modal-dialog" onclick="event.stopPropagation()">
       <div class="app-modal-header">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div class="brand-mark" style="width:36px; height:36px;">
+          <div class="brand-mark" style="width:36px; height:36px;" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.78L12 20.67l7.65-7.66.77-.78a5.4 5.4 0 0 0 0-7.65z"/>
             </svg>
           </div>
           <div>
-            <h3 style="font-size:1.125rem; color:var(--color-text-headline); font-weight:700; margin:0;">Clinical Workstation Sign In</h3>
+            <h3 id="auth-modal-title" style="font-size:1.125rem; color:var(--color-text-headline); font-weight:700; margin:0;">Clinical Workstation Sign In</h3>
             <p style="font-size:0.75rem; color:var(--color-text-muted); margin:0;">Role-Based Access Control · FIPS 140-2 Level 3</p>
           </div>
         </div>
-        <button type="button" class="app-modal-close" onclick="closeAuthModal()" aria-label="Close Modal">&times;</button>
+        <button type="button" class="app-modal-close" onclick="closeAuthModal()" aria-label="Close Authentication Modal">&times;</button>
       </div>
 
       <div class="app-modal-body">
@@ -1256,16 +1395,22 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
           <button type="button" class="app-tab-btn" onclick="switchAuthTab('roles', this)">Clinical Roles Demo</button>
         </div>
 
-        <!-- Tab 1: Credentials -->
+        <!-- Tab 1: Credentials (Sanitized: Zero Exposed Passwords, Anti-Bot Trap) -->
         <div id="auth-tab-password" class="auth-subview">
-          <form id="clinical-login-form" onsubmit="handleCredentialSubmit(event)">
+          <form id="clinical-login-form" onsubmit="handleCredentialSubmit(event)" autocomplete="off">
+            <!-- Invisible Anti-Bot Honeypot Field -->
+            <div style="position:absolute; left:-9999px; top:-9999px; opacity:0; pointer-events:none;" aria-hidden="true">
+              <label for="clinical_security_hp">Leave this field blank</label>
+              <input type="text" name="clinical_security_hp" id="clinical_security_hp" tabindex="-1" autocomplete="off" value="">
+            </div>
+
             <div class="form-group">
               <label class="form-label-row" for="auth-email">Clinical Workstation ID / Email</label>
-              <input type="email" id="auth-email" class="clinical-select" required value="dr.wright@cardiosense.org" placeholder="physician@hospital.org">
+              <input type="email" id="auth-email" class="clinical-select" required autocomplete="username" value="" placeholder="physician@hospital.org">
             </div>
             <div class="form-group">
               <label class="form-label-row" for="auth-pwd">Password</label>
-              <input type="password" id="auth-pwd" class="clinical-select" required value="CardioSense2026!" placeholder="••••••••••••">
+              <input type="password" id="auth-pwd" class="clinical-select" required autocomplete="current-password" value="" placeholder="••••••••••••">
             </div>
             <div id="mfa-step" style="display:none; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:12px; margin-bottom:14px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -1335,22 +1480,24 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
   <!-- ==============================================================================
        10. CLINICAL REPORT MODAL & PRINT SUMMARY
        ============================================================================== -->
-  <div class="app-modal-backdrop" id="app-report-modal" style="display:none;" onclick="handleModalBackdropClick(event)">
+  <div class="app-modal-backdrop" id="app-report-modal" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="report-modal-title"
+       onclick="handleModalBackdropClick(event)">
     <div class="app-modal-dialog" style="max-width:680px;" onclick="event.stopPropagation()">
       <div class="app-modal-header">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div class="brand-mark" style="width:36px; height:36px;">
+          <div class="brand-mark" style="width:36px; height:36px;" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
             </svg>
           </div>
           <div>
-            <h3 style="font-size:1.125rem; color:var(--color-text-headline); font-weight:700; margin:0;">Clinical Diagnostic Summary Report</h3>
+            <h3 id="report-modal-title" style="font-size:1.125rem; color:var(--color-text-headline); font-weight:700; margin:0;">Clinical Diagnostic Summary Report</h3>
             <p style="font-size:0.75rem; color:var(--color-text-muted); margin:0;">CardioSense Decision Support · Cleveland Validation Calibration</p>
           </div>
         </div>
-        <button type="button" class="app-modal-close" onclick="closeReportModal()" aria-label="Close Modal">&times;</button>
+        <button type="button" class="app-modal-close" onclick="closeReportModal()" aria-label="Close Diagnostic Report Modal">&times;</button>
       </div>
 
       <div class="app-modal-body" id="report-modal-content">
