@@ -16,7 +16,7 @@
        1. CLINICAL UTILITY RIBBON
        ============================================================================== -->
   <div class="app-utility-ribbon">
-    <div class="app-utility-container">
+    <div class="app-utility-container container-lock">
       <div class="app-utility-left">
         <a href="#lab-ingestion">Clinical Document Ingestion</a>
         <a href="#live-workstation" class="active">Cardiac Hemodynamics Workstation</a>
@@ -44,7 +44,7 @@
        2. MAIN HEADER & BRAND BLOCK
        ============================================================================== -->
   <header class="app-header">
-    <div class="app-header-container">
+    <div class="app-header-container container-lock">
       <a href="#live-workstation" class="app-brand-block">
         <div class="brand-mark" aria-label="CardioSense AI Mark">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -59,7 +59,7 @@
       </a>
 
       <nav>
-        <ul class="app-nav-menu">
+        <ul class="app-nav-menu" id="app-nav-menu">
           <li class="app-nav-item"><a href="#lab-ingestion">Lab Ingestion</a></li>
           <li class="app-nav-item active"><a href="#live-workstation">Hemodynamics Lab</a></li>
           <li class="app-nav-item"><a href="#matrix">Architecture Matrix</a></li>
@@ -78,6 +78,13 @@
           </svg>
           Get Release 2.4.0
         </a>
+        <button type="button" class="app-mobile-nav-toggle" id="btn-mobile-nav" onclick="toggleMobileNav()" aria-label="Toggle Navigation Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
       </div>
     </div>
   </header>
@@ -86,7 +93,7 @@
        3. BREADCRUMBS
        ============================================================================== -->
   <div class="app-breadcrumb-bar">
-    <div class="app-breadcrumb-container">
+    <div class="app-breadcrumb-container container-lock">
       <a href="#">CardioSense Clinical Platform</a>
       <span class="app-breadcrumb-separator">/</span>
       <a href="#live-workstation">Cardiovascular Analytics</a>
@@ -99,7 +106,7 @@
        4. CLINICAL WORKSTATION HERO
        ============================================================================== -->
   <section class="app-hero">
-    <div class="app-hero-container">
+    <div class="app-hero-container container-lock">
       <div class="app-badge-accredited">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
@@ -140,7 +147,7 @@
   <!-- ==============================================================================
        5. MAIN CONTENT
        ============================================================================== -->
-  <main class="app-main">
+  <main class="app-main container-lock">
 
     <!-- SMART CLIENT HARDWARE AUTO-DETECTION CARD -->
     <section class="app-detection-card" id="smart-recommendation-card">
@@ -326,64 +333,81 @@
         <div class="clinical-input-panel">
           <div class="clinical-subhead">Patient Demographics & Vitals</div>
 
-          <div class="form-group">
-            <div class="form-label-row">
-              <span>Patient Age</span>
-              <span class="form-value-tag" id="val-age">62 yrs</span>
+          <div class="form-paired-grid">
+            <div class="form-group">
+              <div class="form-label-row">
+                <span>Patient Age</span>
+                <span class="form-value-tag" id="val-age">62 yrs</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-age" min="20" max="90" value="62" oninput="updatePortalPrediction()">
             </div>
-            <input type="range" class="clinical-slider" id="inp-age" min="20" max="90" value="62" oninput="updatePortalPrediction()">
+
+            <div class="form-group">
+              <div class="form-label-row"><span>Biological Sex</span></div>
+              <select class="clinical-select" id="inp-sex" onchange="updatePortalPrediction()">
+                <option value="1" selected>Male</option>
+                <option value="0">Female</option>
+              </select>
+            </div>
           </div>
 
-          <div class="form-group">
-            <div class="form-label-row"><span>Biological Sex</span></div>
-            <select class="clinical-select" id="inp-sex" onchange="updatePortalPrediction()">
-              <option value="1" selected>Male</option>
-              <option value="0">Female</option>
-            </select>
+          <div class="form-paired-grid">
+            <div class="form-group">
+              <div class="form-label-row">
+                <span>Resting Blood Pressure</span>
+                <span class="form-value-tag" id="val-trestbps">168 mmHg</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-trestbps" min="80" max="220" value="168" oninput="updatePortalPrediction()">
+            </div>
+
+            <div class="form-group">
+              <div class="form-label-row">
+                <span>Serum Cholesterol</span>
+                <span class="form-value-tag" id="val-chol">288 mg/dl</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-chol" min="100" max="550" value="288" oninput="updatePortalPrediction()">
+            </div>
           </div>
 
-          <div class="form-group">
-            <div class="form-label-row">
-              <span>Resting Blood Pressure</span>
-              <span class="form-value-tag" id="val-trestbps">168 mmHg</span>
+          <div class="form-paired-grid">
+            <div class="form-group">
+              <div class="form-label-row">
+                <span>Max Heart Rate</span>
+                <span class="form-value-tag" id="val-thalach">128 BPM</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-thalach" min="60" max="210" value="128" oninput="updatePortalPrediction()">
             </div>
-            <input type="range" class="clinical-slider" id="inp-trestbps" min="80" max="220" value="168" oninput="updatePortalPrediction()">
-          </div>
 
-          <div class="form-group">
-            <div class="form-label-row">
-              <span>Serum Cholesterol</span>
-              <span class="form-value-tag" id="val-chol">288 mg/dl</span>
+            <div class="form-group">
+              <div class="form-label-row"><span>Chest Pain Presentation</span></div>
+              <select class="clinical-select" id="inp-cp" onchange="updatePortalPrediction()">
+                <option value="1">Typical Angina (Type 1)</option>
+                <option value="2">Atypical Angina (Type 2)</option>
+                <option value="3">Non-Anginal Discomfort (Type 3)</option>
+                <option value="4" selected>Asymptomatic Ischemia (Type 4 · Highest Risk)</option>
+              </select>
             </div>
-            <input type="range" class="clinical-slider" id="inp-chol" min="100" max="550" value="288" oninput="updatePortalPrediction()">
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row">
-              <span>Max Heart Rate</span>
-              <span class="form-value-tag" id="val-thalach">128 BPM</span>
-            </div>
-            <input type="range" class="clinical-slider" id="inp-thalach" min="60" max="210" value="128" oninput="updatePortalPrediction()">
           </div>
 
           <div class="clinical-subhead">Coronary Symptoms & Electrocardiography</div>
 
-          <div class="form-group">
-            <div class="form-label-row"><span>Chest Pain Presentation</span></div>
-            <select class="clinical-select" id="inp-cp" onchange="updatePortalPrediction()">
-              <option value="1">Typical Angina (Type 1)</option>
-              <option value="2">Atypical Angina (Type 2)</option>
-              <option value="3">Non-Anginal Discomfort (Type 3)</option>
-              <option value="4" selected>Asymptomatic Ischemia (Type 4 · Highest Risk)</option>
-            </select>
-          </div>
+          <div class="form-paired-grid">
+            <div class="form-group">
+              <div class="form-label-row"><span>Exercise-Induced Angina</span></div>
+              <select class="clinical-select" id="inp-exang" onchange="updatePortalPrediction()">
+                <option value="0">No Exercise Induced Angina</option>
+                <option value="1" selected>Yes · Positive Stress Angina</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <div class="form-label-row"><span>Exercise-Induced Angina</span></div>
-            <select class="clinical-select" id="inp-exang" onchange="updatePortalPrediction()">
-              <option value="0">No Exercise Induced Angina</option>
-              <option value="1" selected>Yes · Positive Stress Angina</option>
-            </select>
+            <div class="form-group">
+              <div class="form-label-row"><span>Peak Exercise ST Slope</span></div>
+              <select class="clinical-select" id="inp-slope" onchange="updatePortalPrediction()">
+                <option value="1">1: Upsloping (Physiologic / Normal)</option>
+                <option value="2">2: Horizontal Flat (Ischemic)</option>
+                <option value="3" selected>3: Downsloping (Severe Transmural Ischemia)</option>
+              </select>
+            </div>
           </div>
 
           <div class="form-group">
@@ -394,32 +418,25 @@
             <input type="range" class="clinical-slider" id="inp-oldpeak" min="0" max="6.0" step="0.1" value="3.2" oninput="updatePortalPrediction()">
           </div>
 
-          <div class="form-group">
-            <div class="form-label-row"><span>Peak Exercise ST Slope</span></div>
-            <select class="clinical-select" id="inp-slope" onchange="updatePortalPrediction()">
-              <option value="1">1: Upsloping (Physiologic / Normal)</option>
-              <option value="2">2: Horizontal Flat (Ischemic)</option>
-              <option value="3" selected>3: Downsloping (Severe Transmural Ischemia)</option>
-            </select>
-          </div>
+          <div class="form-paired-grid">
+            <div class="form-group">
+              <div class="form-label-row"><span>Fluoroscopy Major Vessels</span></div>
+              <select class="clinical-select" id="inp-ca" onchange="updatePortalPrediction()">
+                <option value="0">0 Major Vessels Occluded</option>
+                <option value="1">1 Major Vessel (e.g. LAD Stenosis)</option>
+                <option value="2">2 Major Vessels (e.g. LAD + RCA)</option>
+                <option value="3" selected>3 Major Vessels (Triple Vessel CAD)</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <div class="form-label-row"><span>Fluoroscopy Major Vessels Calcified</span></div>
-            <select class="clinical-select" id="inp-ca" onchange="updatePortalPrediction()">
-              <option value="0">0 Major Vessels Occluded</option>
-              <option value="1">1 Major Vessel (e.g. LAD Stenosis)</option>
-              <option value="2">2 Major Vessels (e.g. LAD + RCA)</option>
-              <option value="3" selected>3 Major Vessels (Triple Vessel CAD)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row"><span>Myocardial Scintigraphy (Thal)</span></div>
-            <select class="clinical-select" id="inp-thal" onchange="updatePortalPrediction()">
-              <option value="3">Normal Perfusion (3)</option>
-              <option value="6">Fixed Myocardial Scar / Infarction (6)</option>
-              <option value="7" selected>Reversible Ischemia Defect (7)</option>
-            </select>
+            <div class="form-group">
+              <div class="form-label-row"><span>Myocardial Scintigraphy (Thal)</span></div>
+              <select class="clinical-select" id="inp-thal" onchange="updatePortalPrediction()">
+                <option value="3">Normal Perfusion (3)</option>
+                <option value="6">Fixed Myocardial Scar / Infarction (6)</option>
+                <option value="7" selected>Reversible Ischemia Defect (7)</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -600,6 +617,14 @@
       <div id="tab-macos" class="app-tab-content">
         <div class="table-responsive-wrapper">
           <table class="matrix-table">
+            <colgroup>
+              <col class="col-pkg">
+              <col class="col-arch">
+              <col class="col-os">
+              <col class="col-size">
+              <col class="col-hash">
+              <col class="col-act">
+            </colgroup>
             <thead>
               <tr>
                 <th>Package Distribution</th>
@@ -621,6 +646,14 @@
       <div id="tab-windows" class="app-tab-content" style="display:none;">
         <div class="table-responsive-wrapper">
           <table class="matrix-table">
+            <colgroup>
+              <col class="col-pkg">
+              <col class="col-arch">
+              <col class="col-os">
+              <col class="col-size">
+              <col class="col-hash">
+              <col class="col-act">
+            </colgroup>
             <thead>
               <tr>
                 <th>Package Distribution</th>
@@ -642,6 +675,14 @@
       <div id="tab-linux" class="app-tab-content" style="display:none;">
         <div class="table-responsive-wrapper">
           <table class="matrix-table">
+            <colgroup>
+              <col class="col-pkg">
+              <col class="col-arch">
+              <col class="col-os">
+              <col class="col-size">
+              <col class="col-hash">
+              <col class="col-act">
+            </colgroup>
             <thead>
               <tr>
                 <th>Package Distribution</th>
@@ -663,6 +704,14 @@
       <div id="tab-all" class="app-tab-content" style="display:none;">
         <div class="table-responsive-wrapper">
           <table class="matrix-table">
+            <colgroup>
+              <col class="col-pkg">
+              <col class="col-arch">
+              <col class="col-os">
+              <col class="col-size">
+              <col class="col-hash">
+              <col class="col-act">
+            </colgroup>
             <thead>
               <tr>
                 <th>Package Distribution</th>
@@ -1104,7 +1153,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
        8. CORPORATE WORKSTATION FOOTER
        ============================================================================== -->
   <footer class="app-footer">
-    <div class="app-footer-container">
+    <div class="app-footer-container container-lock">
       <div class="app-footer-grid">
         <div class="app-footer-col">
           <h4>Client Downloads</h4>

@@ -103,6 +103,7 @@ const BRAND_SVGS = {
 // Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', async () => {
   await loadManifest();
+  initMobileNav();
   initLabIngestion();
   detectClientHardware();
   renderMatrixTables();
@@ -385,6 +386,33 @@ function initTabNavigation() {
       if (targetContent) targetContent.style.display = 'block';
     });
   });
+}
+
+/**
+ * Mobile Navigation Drawer
+ */
+function initMobileNav() {
+  const menu = document.getElementById('app-nav-menu');
+  if (!menu) return;
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.remove('open');
+    });
+  });
+}
+
+function toggleMobileNav() {
+  const menu = document.getElementById('app-nav-menu');
+  if (menu) {
+    menu.classList.toggle('open');
+  }
+}
+
+function closeMobileNav() {
+  const menu = document.getElementById('app-nav-menu');
+  if (menu) {
+    menu.classList.remove('open');
+  }
 }
 
 /**
@@ -844,6 +872,12 @@ function initPortal3DHeart() {
   pCoronaryVessels.push(lcxMesh);
 
   window.addEventListener('resize', onPortalResize);
+  if (window.ResizeObserver && container) {
+    const ro = new ResizeObserver(() => {
+      onPortalResize();
+    });
+    ro.observe(container);
+  }
   requestAnimationFrame(animatePortalHeart);
 }
 
@@ -969,12 +1003,38 @@ function animatePortalHeart() {
   }
 }
 
+let ecgDisplayWidth = 320;
+let ecgDisplayHeight = 48;
+
+function resizePortalECG() {
+  if (!ecgCanvas || !ecgCtx) return;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = ecgCanvas.getBoundingClientRect();
+  ecgDisplayWidth = rect.width || ecgCanvas.clientWidth || 320;
+  ecgDisplayHeight = rect.height || ecgCanvas.clientHeight || 48;
+
+  ecgCanvas.width = Math.floor(ecgDisplayWidth * dpr);
+  ecgCanvas.height = Math.floor(ecgDisplayHeight * dpr);
+  if (ecgCtx.resetTransform) {
+    ecgCtx.resetTransform();
+  } else {
+    ecgCtx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  ecgCtx.scale(dpr, dpr);
+  renderECGBackground();
+}
+
 function onPortalResize() {
   const container = document.getElementById('portal-cgi-viewport');
   if (!container || !pCamera || !pRenderer) return;
-  pCamera.aspect = container.clientWidth / container.clientHeight;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  if (!w || !h) return;
+  pCamera.aspect = w / h;
   pCamera.updateProjectionMatrix();
-  pRenderer.setSize(container.clientWidth, container.clientHeight);
+  pRenderer.setSize(w, h);
+  pRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  resizePortalECG();
 }
 
 /**
@@ -986,9 +1046,8 @@ function initPortalECG() {
   ecgCanvas = document.getElementById('portal-ecg-canvas');
   if (!ecgCanvas) return;
   ecgCtx = ecgCanvas.getContext('2d');
-  ecgCanvas.width = ecgCanvas.clientWidth || 320;
-  ecgCanvas.height = ecgCanvas.clientHeight || 48;
-  ecgLastY = ecgCanvas.height / 2;
+  resizePortalECG();
+  ecgLastY = ecgDisplayHeight / 2;
   renderECGBackground();
   requestAnimationFrame(animateECG);
 }
@@ -996,15 +1055,15 @@ function initPortalECG() {
 function renderECGBackground() {
   if (!ecgCtx || !ecgCanvas) return;
   ecgCtx.fillStyle = '#0B1325';
-  ecgCtx.fillRect(0, 0, ecgCanvas.width, ecgCanvas.height);
+  ecgCtx.fillRect(0, 0, ecgDisplayWidth, ecgDisplayHeight);
 }
 
 function animateECG() {
   requestAnimationFrame(animateECG);
   if (!ecgCtx || !ecgCanvas) return;
 
-  const w = ecgCanvas.width;
-  const h = ecgCanvas.height;
+  const w = ecgDisplayWidth;
+  const h = ecgDisplayHeight;
   const midY = h * 0.55;
 
   // Sweep line
