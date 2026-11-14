@@ -37,3 +37,4 @@ dist/
 # Streamlit secrets
 .streamlit/secrets.toml
 .vercel
+.env*
