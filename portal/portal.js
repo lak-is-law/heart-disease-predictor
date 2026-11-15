@@ -1252,6 +1252,56 @@ function updatePortalPrediction() {
     }
   }
 
+  // Update Radial Coronary Occlusion Risk Gauge & Hemodynamics
+  const radialCircle = document.getElementById('portal-radial-gauge-circle');
+  const radialPct = document.getElementById('portal-radial-gauge-pct');
+  const radialBand = document.getElementById('portal-radial-gauge-band');
+  const pulsePressureEl = document.getElementById('portal-pulse-pressure');
+  const rppEl = document.getElementById('portal-rpp-val');
+
+  if (radialCircle) {
+    // Circumference for r=54 is 2 * PI * 54 = 339.292
+    const circumference = 339.292;
+    const clampedRisk = Math.min(1.0, Math.max(0.0, pTargetRisk));
+    const offset = circumference * (1.0 - clampedRisk);
+    radialCircle.style.strokeDashoffset = offset;
+    let strokeColor = '#38BDF8';
+    if (pTargetRisk >= 0.66) strokeColor = '#EF4444';
+    else if (pTargetRisk >= 0.33) strokeColor = '#F59E0B';
+    else strokeColor = '#10B981';
+    radialCircle.setAttribute('stroke', strokeColor);
+  }
+
+  if (radialPct) {
+    radialPct.innerText = `${(pTargetRisk * 100).toFixed(1)}%`;
+  }
+
+  if (radialBand) {
+    if (pTargetRisk >= 0.66) {
+      radialBand.innerText = 'CRITICAL CAD';
+      radialBand.style.color = '#EF4444';
+    } else if (pTargetRisk >= 0.33) {
+      radialBand.innerText = 'MODERATE RISK';
+      radialBand.style.color = '#F59E0B';
+    } else {
+      radialBand.innerText = 'BASELINE NORMAL';
+      radialBand.style.color = '#10B981';
+    }
+  }
+
+  if (pulsePressureEl) {
+    // Pulse Pressure = Systolic - Diastolic (diastolic estimated at 65% of systolic)
+    const estDiastolic = Math.round(trestbps * 0.65);
+    const pp = Math.round(trestbps - estDiastolic);
+    pulsePressureEl.innerText = `PP: ${pp} mmHg`;
+  }
+
+  if (rppEl) {
+    // Rate Pressure Product = HR * SBP
+    const rpp = Math.round(pBPM * trestbps);
+    rppEl.innerText = `RPP: ${rpp.toLocaleString()}`;
+  }
+
   // Render Occlusion Attribution Bars matching core.py
   const explanation = explainClinicalRisk(patient);
   renderAttributionBarsFromDeltas(explanation.deltas);
