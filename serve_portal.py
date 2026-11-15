@@ -45,8 +45,12 @@ class RateLimiter:
         window: float = 60.0,
         max_requests: int | None = None,
         window_seconds: float | None = None,
+        capacity: int | None = None,
     ):
-        self.limit = max_requests if max_requests is not None else limit
+        if capacity is not None:
+            self.limit = int(capacity)
+        else:
+            self.limit = max_requests if max_requests is not None else limit
         self.window = window_seconds if window_seconds is not None else window
         self.max_requests = self.limit
         self.window_seconds = self.window
@@ -107,6 +111,13 @@ SUSPICIOUS_BOT_PATTERN = re.compile(
     r"(curl|python-requests|wget|scrapy|nikto|sqlmap|masscan|wpscan|zgrab|gobuster|dirbuster|acunetix|havij|nmap)",
     re.IGNORECASE,
 )
+
+
+def is_automated_bot(user_agent: str | None) -> bool:
+    """Evaluate whether a User-Agent string belongs to an automated scanner, scraper, or bot."""
+    if not user_agent:
+        return False
+    return bool(SUSPICIOUS_BOT_PATTERN.search(user_agent))
 
 
 class PortalHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):

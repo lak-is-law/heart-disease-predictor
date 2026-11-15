@@ -38,18 +38,18 @@
   --color-gold: #B45309;             /* Darkened Amber (4.8:1 - AA) */
   --color-gold-tint: #FEF3C7;        /* Accreditation Background */
 
-  /* Neutral Canvas & Surfaces */
-  --color-bg-page: #F8FAFC;          /* Clean Neutral Slate Canvas */
-  --color-bg-card: #FFFFFF;          /* Pure White Card */
-  --color-border-card: #CBD5E1;      /* Crisp Card Divider (Slate 300) */
-  --color-border-subtle: #E2E8F0;    /* Subtle Sub-Divider (Slate 200) */
+  /* Neutral Canvas & Surfaces (Clinical Dark Cockpit Theme) */
+  --color-bg-page: #070B14;          /* Deep Dark Medical Canvas */
+  --color-bg-card: #0E1726;          /* Dark Panel Card */
+  --color-border-card: rgba(0, 229, 255, 0.16); /* Clinical Cyan Border */
+  --color-border-subtle: rgba(255, 255, 255, 0.08); /* Subtle Dark Sub-Divider */
   
-  /* High-Contrast Typography Tokens (WCAG 2.1 AAA) */
-  --color-text-headline: #00175A;    /* Primary Headline Midnight (14.8:1 on white) */
-  --color-text-body: #0F172A;        /* Neutral Slate 900 (15.6:1 on white) */
-  --color-text-muted: #334155;       /* Secondary Slate 700 (9.3:1 on white - AAA) */
-  --color-text-tertiary: #475569;    /* Tertiary Slate 600 (7.0:1 on white - AAA) */
-  --color-text-link: #0056A3;        /* Accessible Link Blue (7.4:1 on white) */
+  /* High-Contrast Typography Tokens (WCAG 2.1 AAA on Dark) */
+  --color-text-headline: #F8FAFC;    /* Bright Slate 50 (18:1 on dark) */
+  --color-text-body: #E2E8F0;        /* Light Slate 200 (14:1 on dark) */
+  --color-text-muted: #94A3B8;       /* Medium Slate 400 */
+  --color-text-tertiary: #64748B;    /* Slate 500 */
+  --color-text-link: #38BDF8;        /* Accessible Link Sky Blue */
 
   /* Dark HUD Typography Tokens */
   --color-hud-text-primary: #FFFFFF;   /* 19.8:1 on #0B1325 */
@@ -412,7 +412,7 @@ a:hover {
    4. BREADCRUMBS
    ============================================================================== */
 .app-breadcrumb-bar {
-  background-color: #FFFFFF;
+  background-color: #0B1325;
   border-bottom: 1px solid var(--color-border-subtle);
   font-size: 0.8125rem;
   color: var(--color-text-muted);
@@ -447,7 +447,7 @@ a:hover {
    5. CLINICAL WORKSTATION HERO
    ============================================================================== */
 .app-hero {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
+  background: radial-gradient(circle at 50% 0%, #0F1E3A 0%, #070B14 85%);
   border-bottom: 1px solid var(--color-border-card);
   padding: 40px 0 34px;
 }
@@ -632,16 +632,16 @@ a:hover {
    7. WORKSTATION HARDWARE DETECTION CARD
    ============================================================================== */
 .app-detection-card {
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
-  border-left: 6px solid var(--color-primary);
+  border-left: 6px solid #00E5FF;
   border-radius: var(--radius-md);
   padding: clamp(16px, 3vw, 24px);
   margin-bottom: 36px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--elevation-2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   flex-wrap: wrap;
   gap: 20px;
 }
@@ -658,7 +658,7 @@ a:hover {
   gap: 6px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #38BDF8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 6px;
@@ -705,11 +705,11 @@ a:hover {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--grid-gap);
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-lg);
   padding: 24px;
-  box-shadow: var(--elevation-1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   align-items: stretch;
 }
 
@@ -721,8 +721,8 @@ a:hover {
 
 /* Dropzone column */
 .clinical-dropzone {
-  border: 2px dashed #93C5FD;
-  background: #F8FAFC;
+  border: 2px dashed rgba(0, 229, 255, 0.35);
+  background: #0A1222;
   border-radius: var(--radius-md);
   padding: 28px 20px;
   text-align: center;
@@ -734,18 +734,19 @@ a:hover {
   justify-content: center;
   height: 100%;
   min-height: 240px;
+  color: #E2E8F0;
 }
 .clinical-dropzone:hover, .clinical-dropzone.dragover {
-  border-color: var(--color-primary);
-  background: #EFF6FF;
+  border-color: #00E5FF;
+  background: rgba(0, 229, 255, 0.08);
 }
 
 .dropzone-icon-circle {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #DBEAFE;
-  color: var(--color-primary);
+  background: rgba(0, 229, 255, 0.15);
+  color: #00E5FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -764,8 +765,8 @@ a:hover {
   font-size: 0.6875rem;
   font-weight: 700;
   color: var(--color-text-muted);
-  background: #FFFFFF;
-  border: 1px solid var(--color-border-card);
+  background: #131E36;
+  border: 1px solid var(--color-border-subtle);
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
@@ -781,27 +782,28 @@ a:hover {
 }
 
 .case-study-card {
-  border: 1px solid var(--color-border-card);
-  border-left: 4px solid #CBD5E1;
+  border: 1px solid var(--color-border-subtle);
+  border-left: 4px solid #334155;
   border-radius: var(--radius-md);
   padding: 12px 14px;
-  background: #FFFFFF;
+  background: #131E36;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   transition: all 0.15s ease;
   flex: 1;
+  color: #E2E8F0;
 }
 .case-study-card:hover {
-  border-color: var(--color-primary);
-  background-color: #F8FAFC;
-  box-shadow: 0 2px 6px rgba(0, 111, 207, 0.08);
+  border-color: rgba(0, 229, 255, 0.5);
+  background-color: #19263E;
+  box-shadow: 0 2px 10px rgba(0, 229, 255, 0.1);
 }
 .case-study-card.selected {
-  border-color: var(--color-primary);
-  border-left-color: var(--color-primary);
-  background-color: #EFF6FF;
+  border-color: #00E5FF;
+  border-left-color: #00E5FF;
+  background-color: rgba(0, 229, 255, 0.12);
 }
 
 .case-info h4 {
@@ -828,23 +830,26 @@ a:hover {
   white-space: nowrap;
 }
 .case-severity-badge.critical {
-  color: #B91C1C;
-  background: #FEE2E2;
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 .case-severity-badge.moderate {
-  color: #B45309;
-  background: #FEF3C7;
+  color: #FBBF24;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
 }
 .case-severity-badge.baseline {
-  color: #047857;
-  background: #D1FAE5;
+  color: #34D399;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
 /* Extracted Parameters Card below */
 .extracted-values-box {
   margin-top: 16px;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
+  background: #0A1222;
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
   padding: 16px;
 }
@@ -857,8 +862,8 @@ a:hover {
 }
 
 .extracted-item {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
+  background: #131E36;
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-sm);
   padding: 8px 10px;
 }
@@ -880,7 +885,7 @@ a:hover {
 
 .confidence-indicator {
   font-size: 0.6875rem;
-  color: #059669;
+  color: #34D399;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -917,17 +922,17 @@ a:hover {
 
 /* Left Clinical Input Panel */
 .clinical-input-panel {
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-lg);
   padding: 22px;
-  box-shadow: var(--elevation-1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .clinical-subhead {
   font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--color-text-headline);
+  color: #38BDF8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 1px solid var(--color-border-subtle);
@@ -970,16 +975,16 @@ a:hover {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-primary);
-  background: #EFF6FF;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
-  border: 1px solid #BFDBFE;
+  border: 1px solid rgba(56, 189, 248, 0.3);
   cursor: pointer;
   user-select: none;
 }
 .form-value-tag:hover {
-  background: #DBEAFE;
+  background: rgba(56, 189, 248, 0.22);
 }
 
 /* Accessible Sliders */
@@ -1005,16 +1010,16 @@ a:hover {
   width: 100%;
   height: 6px;
   border-radius: 3px;
-  background: #E2E8F0;
+  background: #19263E;
 }
 .clinical-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--color-primary);
+  background: #00E5FF;
   cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0, 111, 207, 0.4);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
   transition: transform 0.1s ease;
   margin-top: -9px;
 }
@@ -1025,19 +1030,19 @@ a:hover {
 .clinical-select {
   width: 100%;
   padding: 8px 10px;
-  border: 1px solid var(--color-border-card);
+  border: 1px solid rgba(0, 229, 255, 0.2);
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
   font-size: 0.875rem;
-  color: var(--color-text-headline);
-  background-color: #FFFFFF;
+  color: #F8FAFC;
+  background-color: #0A1222;
   outline: none;
   transition: border-color 0.15s ease;
   height: 46px;
 }
 .clinical-select:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(0, 111, 207, 0.15);
+  border-color: #00E5FF;
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.25);
 }
 
 /* Right: Medical Diagnostic Viewport */
@@ -1343,11 +1348,11 @@ a:hover {
 }
 
 .telemetry-card {
-  background: #FFFFFF;
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-md);
   padding: 16px;
-  box-shadow: var(--elevation-1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .attribution-bar-item {
@@ -1363,7 +1368,7 @@ a:hover {
 }
 .attribution-bar-track {
   height: 6px;
-  background: #E2E8F0;
+  background: #19263E;
   border-radius: 3px;
   overflow: hidden;
 }
@@ -1371,6 +1376,103 @@ a:hover {
   height: 100%;
   border-radius: 3px;
   transition: width 0.3s ease;
+}
+
+/* ==============================================================================
+   9b. RADIAL GAUGE & QUICK SCENARIO STRIP (CLINICAL COCKPIT)
+   ============================================================================== */
+.radial-gauge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.radial-gauge-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 10px auto;
+}
+
+.radial-gauge-svg {
+  transform: rotate(-90deg);
+}
+
+.radial-gauge-track {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.radial-gauge-bar {
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease;
+}
+
+.radial-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.radial-gauge-pct {
+  font-size: 1.625rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: #F8FAFC;
+  line-height: 1;
+}
+
+.radial-gauge-band {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.radial-gauge-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  margin-top: 8px;
+  color: #94A3B8;
+}
+
+.quick-scenario-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 6px 0 12px;
+  margin-bottom: 8px;
+}
+
+.quick-scenario-chip {
+  background: rgba(14, 23, 38, 0.9);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  color: #E2E8F0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  min-height: 36px;
+}
+
+.quick-scenario-chip:hover {
+  border-color: #00E5FF;
+  background: rgba(0, 229, 255, 0.1);
+  color: #FFFFFF;
 }
 
 /* ==============================================================================
