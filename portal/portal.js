@@ -193,7 +193,7 @@ function renderAttributionBarsFromDeltas(deltas) {
     const label = FEATURE_LABELS[item.feature] || item.feature;
     const impactPct = Math.min(100, Math.abs(item.delta) * 100);
     const sign = item.delta >= 0 ? '+' : '-';
-    const color = item.delta > 0.05 ? '#DC2626' : (item.delta < -0.05 ? '#059669' : '#0284C7');
+    const color = item.delta >= 0 ? '#00E5FF' : '#38BDF8';
     return `
       <div class="attribution-bar-item">
         <div class="attribution-bar-label">
@@ -1054,8 +1054,8 @@ function loadClinicalCase(caseKey) {
   const statusEl = document.getElementById('header-patient-status');
 
   if (caseKey === 'acs') {
-    if (nameEl) nameEl.textContent = 'Marcus Sterling, 62 yrs';
-    if (idEl) idEl.textContent = 'ID: #ACS-9082';
+    if (nameEl) nameEl.textContent = 'Eleanor Vance, 58 yrs';
+    if (idEl) idEl.textContent = 'ID: #CP-8924';
     if (statusEl) {
       statusEl.textContent = 'Acute STEMI Triage';
       statusEl.className = 'patient-chip-status-badge critical';
@@ -1310,16 +1310,21 @@ function updatePortalPrediction() {
   const rppEl = document.getElementById('portal-rpp-val');
 
   if (radialCircle) {
-    // Circumference for r=54 is 2 * PI * 54 = 339.292
-    const circumference = 339.292;
+    // Circumference for r=58 is 2 * PI * 58 = 364.425
+    const circumference = 364.425;
     const clampedRisk = Math.min(1.0, Math.max(0.0, pTargetRisk));
     const offset = circumference * (1.0 - clampedRisk);
     radialCircle.style.strokeDashoffset = offset;
-    let strokeColor = '#38BDF8';
-    if (pTargetRisk >= 0.66) strokeColor = '#EF4444';
-    else if (pTargetRisk >= 0.33) strokeColor = '#F59E0B';
+    let strokeColor = '#00E5FF';
+    if (pTargetRisk >= 0.66) strokeColor = '#00E5FF';
+    else if (pTargetRisk >= 0.33) strokeColor = '#38BDF8';
     else strokeColor = '#10B981';
     radialCircle.setAttribute('stroke', strokeColor);
+  }
+
+  const stripBpmEl = document.getElementById('portal-ecg-strip-bpm');
+  if (stripBpmEl) {
+    stripBpmEl.innerText = `${pBPM} BPM`;
   }
 
   if (radialPct) {
@@ -1379,10 +1384,11 @@ function updatePortalPrediction() {
     });
   } else if (currentDiagnosticMode === 'cta') {
     if (pVentricleMesh && pVentricleMesh.material && pVentricleMesh.material.color) {
-      const riskColor = pTargetRisk > 0.66 ? 0xB91C1C : (pTargetRisk > 0.33 ? 0xC2410C : 0x9E1C3F);
-      pVentricleMesh.material.color.setHex(riskColor);
+      // Retain natural photorealistic texture and subtle ischemic tone
+      pVentricleMesh.material.color.setHex(0xFFFFFF);
       if (pVentricleMesh.material.emissive) {
-        pVentricleMesh.material.emissive.set(pTargetRisk > 0.5 ? '#e11d48' : '#10b981');
+        pVentricleMesh.material.emissive.set(pTargetRisk > 0.5 ? 0x2A050B : 0x000000);
+        pVentricleMesh.material.emissiveIntensity = 0.25;
       }
     }
   }
@@ -1495,26 +1501,26 @@ function createPhotorealisticHeartTexture() {
   if (ctx.save && ctx.restore) ctx.save();
   if (ctx.createRadialGradient && ctx.ellipse) {
     const sulcusFat = ctx.createRadialGradient(240, 180, 15, 240, 220, 190);
-    sulcusFat.addColorStop(0.0, 'rgba(234, 179, 8, 0.70)');
-    sulcusFat.addColorStop(0.35, 'rgba(250, 204, 21, 0.45)');
-    sulcusFat.addColorStop(0.7, 'rgba(254, 240, 138, 0.18)');
+    sulcusFat.addColorStop(0.0, 'rgba(217, 119, 6, 0.28)');
+    sulcusFat.addColorStop(0.35, 'rgba(245, 158, 11, 0.16)');
+    sulcusFat.addColorStop(0.7, 'rgba(251, 191, 36, 0.06)');
     sulcusFat.addColorStop(1.0, 'rgba(117, 20, 36, 0.0)');
 
     ctx.fillStyle = sulcusFat;
     ctx.beginPath();
-    ctx.ellipse(240, 210, 85, 220, Math.PI / 7, 0, Math.PI * 2);
+    ctx.ellipse(240, 210, 42, 190, Math.PI / 7, 0, Math.PI * 2);
     ctx.fill();
 
     // Transverse atrioventricular groove fat band
     const avFat = ctx.createLinearGradient(60, 90, 440, 140);
-    avFat.addColorStop(0.0, 'rgba(234, 179, 8, 0.0)');
-    avFat.addColorStop(0.2, 'rgba(234, 179, 8, 0.40)');
-    avFat.addColorStop(0.5, 'rgba(254, 240, 138, 0.55)');
-    avFat.addColorStop(0.8, 'rgba(234, 179, 8, 0.35)');
-    avFat.addColorStop(1.0, 'rgba(234, 179, 8, 0.0)');
+    avFat.addColorStop(0.0, 'rgba(217, 119, 6, 0.0)');
+    avFat.addColorStop(0.2, 'rgba(217, 119, 6, 0.18)');
+    avFat.addColorStop(0.5, 'rgba(245, 158, 11, 0.22)');
+    avFat.addColorStop(0.8, 'rgba(217, 119, 6, 0.14)');
+    avFat.addColorStop(1.0, 'rgba(217, 119, 6, 0.0)');
     ctx.fillStyle = avFat;
     ctx.beginPath();
-    ctx.ellipse(250, 115, 180, 28, -Math.PI / 18, 0, Math.PI * 2);
+    ctx.ellipse(250, 115, 180, 24, -Math.PI / 18, 0, Math.PI * 2);
     ctx.fill();
   }
   if (ctx.save && ctx.restore) ctx.restore();
@@ -1572,7 +1578,7 @@ function updateLesionCalloutPosition() {
   if (!_pLesionLocalPos) _pLesionLocalPos = new THREE.Vector3(-0.16, -0.05, 0.92);
   if (!_pScreenPos) _pScreenPos = new THREE.Vector3();
 
-  const container = document.getElementById('portal-viewport-box');
+  const container = document.getElementById('portal-cgi-viewport') || document.getElementById('portal-viewport-box');
   if (!container) return;
 
   _pScreenPos.copy(_pLesionLocalPos);
@@ -1828,8 +1834,8 @@ function initPortal3DHeart() {
   pScene = new THREE.Scene();
   pScene.fog = new THREE.FogExp2(0x060B14, 0.038);
 
-  pCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-  pCamera.position.set(0, 0.5, 4.8);
+  pCamera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
+  pCamera.position.set(0, 0.15, 5.2);
 
   pRenderer = new THREE.WebGLRenderer({
     canvas: canvas,
@@ -1842,13 +1848,16 @@ function initPortal3DHeart() {
   pRenderer.toneMapping = THREE.ACESFilmicToneMapping;
   pRenderer.toneMappingExposure = 1.35;
 
-  pControls = new THREE.OrbitControls(pCamera, pRenderer.domElement);
-  pControls.enableDamping = true;
-  pControls.dampingFactor = 0.05;
-  pControls.minDistance = 2.0;
-  pControls.maxDistance = 7.5;
-  pControls.autoRotate = true;
-  pControls.autoRotateSpeed = 0.6;
+  if (typeof THREE.OrbitControls !== 'undefined') {
+    pControls = new THREE.OrbitControls(pCamera, pRenderer.domElement);
+    pControls.enableDamping = true;
+    pControls.dampingFactor = 0.05;
+    pControls.minDistance = 2.0;
+    pControls.maxDistance = 7.5;
+    if (pControls.target) pControls.target.set(0, 0.05, 0);
+    pControls.autoRotate = true;
+    pControls.autoRotateSpeed = 0.5;
+  }
 
   // Lighting
   const ambLight = new THREE.AmbientLight(0x1E293B, 1.4);
@@ -1863,6 +1872,8 @@ function initPortal3DHeart() {
   pScene.add(fillLight);
 
   pHeartGroup = new THREE.Group();
+  pHeartGroup.scale.set(0.82, 0.82, 0.82);
+  pHeartGroup.position.set(0, -0.05, 0);
   pScene.add(pHeartGroup);
 
   // --------------------------------------------------------------------------
@@ -2074,7 +2085,7 @@ function initPortal3DHeart() {
     new THREE.Vector3(-0.44, -1.15, 0.32),
     new THREE.Vector3(-0.42, -1.25, 0.10)
   ]);
-  const ladMesh = new THREE.Mesh(new THREE.TubeGeometry(ladCurve, 48, 0.044, 16, false), getDiagnosticMaterial('coronary'));
+  const ladMesh = new THREE.Mesh(new THREE.TubeGeometry(ladCurve, 48, 0.020, 16, false), getDiagnosticMaterial('coronary'));
   pHeartGroup.add(ladMesh);
   pCoronaryVessels.push(ladMesh);
 
@@ -2085,7 +2096,7 @@ function initPortal3DHeart() {
     new THREE.Vector3(-0.52, -0.22, 0.68),
     new THREE.Vector3(-0.60, -0.52, 0.48)
   ]);
-  const d1Mesh = new THREE.Mesh(new THREE.TubeGeometry(d1Curve, 24, 0.030, 12, false), getDiagnosticMaterial('coronary'));
+  const d1Mesh = new THREE.Mesh(new THREE.TubeGeometry(d1Curve, 24, 0.015, 12, false), getDiagnosticMaterial('coronary'));
   pHeartGroup.add(d1Mesh);
   pCoronaryVessels.push(d1Mesh);
 
@@ -2098,7 +2109,7 @@ function initPortal3DHeart() {
     new THREE.Vector3(-0.80, 0.05, -0.22),
     new THREE.Vector3(-0.68, -0.22, -0.38)
   ]);
-  const lcxMesh = new THREE.Mesh(new THREE.TubeGeometry(lcxCurve, 36, 0.038, 14, false), getDiagnosticMaterial('coronary'));
+  const lcxMesh = new THREE.Mesh(new THREE.TubeGeometry(lcxCurve, 36, 0.018, 14, false), getDiagnosticMaterial('coronary'));
   pHeartGroup.add(lcxMesh);
   pCoronaryVessels.push(lcxMesh);
 
@@ -2109,7 +2120,7 @@ function initPortal3DHeart() {
     new THREE.Vector3(-0.78, -0.36, 0.18),
     new THREE.Vector3(-0.68, -0.70, 0.12)
   ]);
-  const om1Mesh = new THREE.Mesh(new THREE.TubeGeometry(om1Curve, 24, 0.028, 12, false), getDiagnosticMaterial('coronary'));
+  const om1Mesh = new THREE.Mesh(new THREE.TubeGeometry(om1Curve, 24, 0.014, 12, false), getDiagnosticMaterial('coronary'));
   pHeartGroup.add(om1Mesh);
   pCoronaryVessels.push(om1Mesh);
 
@@ -2123,7 +2134,7 @@ function initPortal3DHeart() {
     new THREE.Vector3(0.62, -0.62, 0.12),
     new THREE.Vector3(0.32, -0.78, -0.15)
   ]);
-  const rcaMesh = new THREE.Mesh(new THREE.TubeGeometry(rcaCurve, 48, 0.042, 16, false), getDiagnosticMaterial('coronary'));
+  const rcaMesh = new THREE.Mesh(new THREE.TubeGeometry(rcaCurve, 48, 0.020, 16, false), getDiagnosticMaterial('coronary'));
   pHeartGroup.add(rcaMesh);
   pCoronaryVessels.push(rcaMesh);
 
@@ -2134,7 +2145,7 @@ function initPortal3DHeart() {
     new THREE.Vector3(0.55, -0.58, 0.45),
     new THREE.Vector3(0.28, -0.75, 0.38)
   ]);
-  const amMesh = new THREE.Mesh(new THREE.TubeGeometry(amCurve, 24, 0.026, 12, false), getDiagnosticMaterial('coronary'));
+  const amMesh = new THREE.Mesh(new THREE.TubeGeometry(amCurve, 24, 0.014, 12, false), getDiagnosticMaterial('coronary'));
   pHeartGroup.add(amMesh);
   pCoronaryVessels.push(amMesh);
 
@@ -2145,7 +2156,7 @@ function initPortal3DHeart() {
     new THREE.Vector3(-0.12, -1.08, 0.08),
     new THREE.Vector3(-0.32, -1.20, 0.15)
   ]);
-  const pdaMesh = new THREE.Mesh(new THREE.TubeGeometry(pdaCurve, 28, 0.030, 12, false), getDiagnosticMaterial('coronary'));
+  const pdaMesh = new THREE.Mesh(new THREE.TubeGeometry(pdaCurve, 28, 0.015, 12, false), getDiagnosticMaterial('coronary'));
   pHeartGroup.add(pdaMesh);
   pCoronaryVessels.push(pdaMesh);
 
@@ -2175,12 +2186,11 @@ function getDiagnosticMaterial(type) {
   // MODE 1: CONTRAST CT ANGIOGRAM (CTA)
   if (currentDiagnosticMode === 'cta') {
     if (type === 'ventricle') {
-      const riskColor = pTargetRisk > 0.66 ? 0xC53030 : (pTargetRisk > 0.33 ? 0xB84228 : 0x9E2A4A);
       return new THREE.MeshPhysicalMaterial({
-        color: riskColor,
+        color: 0xFFFFFF,
         map: createPhotorealisticHeartTexture(),
         bumpMap: createMyocardialBumpMap(),
-        bumpScale: 0.035,
+        bumpScale: 0.003,
         roughness: 0.28,
         metalness: 0.04,
         clearcoat: 1.0,
@@ -2202,32 +2212,32 @@ function getDiagnosticMaterial(type) {
     }
     if (type === 'aorta') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0xB91C1C,
-        emissive: 0x450A0A,
-        emissiveIntensity: 0.25,
-        roughness: 0.24,
-        metalness: 0.12,
+        color: 0x991B1B,
+        emissive: 0x330808,
+        emissiveIntensity: 0.20,
+        roughness: 0.26,
+        metalness: 0.10,
         clearcoat: 0.95,
         clearcoatRoughness: 0.10
       });
     }
     if (type === 'pulmonary') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0x1D4ED8,
-        emissive: 0x172554,
+        color: 0x33557A,
+        emissive: 0x0E1F30,
         emissiveIntensity: 0.20,
-        roughness: 0.25,
-        metalness: 0.12,
+        roughness: 0.28,
+        metalness: 0.08,
         clearcoat: 0.95,
         clearcoatRoughness: 0.10
       });
     }
     if (type === 'coronary') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0xEF4444,
-        emissive: 0x991B1B,
-        emissiveIntensity: 0.40,
-        roughness: 0.18,
+        color: 0xE11D48,
+        emissive: 0x881337,
+        emissiveIntensity: 0.35,
+        roughness: 0.20,
         metalness: 0.20,
         clearcoat: 1.0,
         clearcoatRoughness: 0.08
@@ -2562,6 +2572,35 @@ function drawMedicalGrid() {
   for (let y = 0; y < h; y += (mm * 5)) { ecgCtx.moveTo(0, y); ecgCtx.lineTo(w, y); }
   ecgCtx.stroke();
 }
+
+let isECGPaused = false;
+function toggleECGPause() { isECGPaused = !isECGPaused; }
+function resumeECG() { isECGPaused = false; }
+window.toggleECGPause = toggleECGPause;
+window.resumeECG = resumeECG;
+
+function zoomInHeart() {
+  if (pCamera) pCamera.position.z = Math.max(2.5, pCamera.position.z - 0.5);
+}
+function zoomOutHeart() {
+  if (pCamera) pCamera.position.z = Math.min(7.5, pCamera.position.z + 0.5);
+}
+function resetHeartView() {
+  if (pCamera) pCamera.position.set(0, 0.15, 5.2);
+  if (pControls) {
+    if (pControls.target) pControls.target.set(0, 0.05, 0);
+    if (pControls.update) pControls.update();
+  }
+}
+function cycleDiagnosticMode() {
+  const modes = ['cta', 'perfusion', 'fluoro', 'ffr'];
+  const nextIdx = (modes.indexOf(currentDiagnosticMode) + 1) % modes.length;
+  setPortalMode(modes[nextIdx]);
+}
+window.zoomInHeart = zoomInHeart;
+window.zoomOutHeart = zoomOutHeart;
+window.resetHeartView = resetHeartView;
+window.cycleDiagnosticMode = cycleDiagnosticMode;
 
 function initPortalECG() {
   ecgCanvas = document.getElementById('portal-ecg-canvas');

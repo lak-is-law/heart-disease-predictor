@@ -423,6 +423,28 @@ a:hover {
   display: none !important;
 }
 
+.app-utility-ribbon {
+  display: none !important;
+}
+
+.app-section-header {
+  display: none !important;
+}
+
+.app-nav {
+  display: none !important;
+}
+
+.app-header nav,
+.app-nav-menu,
+.app-mobile-nav-toggle {
+  display: none !important;
+}
+
+.app-header-actions {
+  display: none !important;
+}
+
 .app-badge-accredited {
   display: inline-flex;
   align-items: center;
@@ -1324,6 +1346,21 @@ a:hover {
   grid-template-columns: 1fr 1fr;
   gap: var(--grid-gap);
   margin-top: 18px;
+}
+
+@media (min-width: 1200px) {
+  .workstation-sticky-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1.75fr) minmax(280px, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  .telemetry-summary-row {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 640px) {
@@ -2247,6 +2284,7 @@ a:hover {
 
 .lesion-leader-svg {
   overflow: visible;
+  width: 42px;
 }
 
 .lesion-badge {
@@ -2255,15 +2293,15 @@ a:hover {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 4px;
-  padding: 4px 10px;
+  padding: 3px 8px;
   color: #F8FAFC;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 229, 255, 0.2);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   white-space: nowrap;
 }
 
@@ -2315,4 +2353,997 @@ a:hover {
   background: rgba(0, 229, 255, 0.12);
   border-color: #00E5FF;
   color: #00E5FF;
+}
+
+/* ==============================================================================
+   COCKPIT MEDICAL WORKSTATION DESIGN (EXACT MATCH TO SPEC MOCKUP)
+   ============================================================================== */
+
+/* Master Cockpit Layout */
+.app-cockpit-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #070B14;
+}
+
+/* 1. Left Vertical Icon Dock */
+.cockpit-dock {
+  width: 58px;
+  background-color: #0A111F;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  gap: 20px;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.dock-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dock-icon-btn:hover {
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dock-icon-btn.active {
+  color: #00E5FF;
+  background: rgba(0, 229, 255, 0.14);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+
+.dock-avatar {
+  margin-top: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid #00E5FF;
+  object-fit: cover;
+}
+
+/* 2. Cockpit Main Container */
+.cockpit-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: #070B14;
+}
+
+/* 3. Sleek Cockpit Header */
+.app-header {
+  height: 56px;
+  min-height: 56px;
+  background: #0B1322;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.header-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-brand-title {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #F8FAFC;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-brand-pulse-icon {
+  color: #00E5FF;
+}
+
+.header-patient-context-text {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94A3B8;
+  margin-left: 24px;
+  padding-left: 20px;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.header-patient-context-text strong {
+  color: #F8FAFC;
+}
+
+.header-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-save-btn {
+  background: #00E5FF;
+  color: #05101E;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.header-save-btn:hover {
+  background: #38BDF8;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+}
+
+/* 4. Biomarkers Panel */
+.biomarkers-cockpit-panel {
+  background: #0D1626;
+  border: 1px solid rgba(0, 229, 255, 0.14);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.biomarkers-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.biomarkers-headline {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  margin: 0;
+}
+
+.btn-new-biomarker {
+  background: transparent;
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: #00E5FF;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-new-biomarker:hover {
+  background: rgba(0, 229, 255, 0.12);
+}
+
+/* Biomarker Cards Grid */
+.biomarkers-cockpit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.bmc-card {
+  background: #131E33;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.bmc-card:hover, .bmc-card:focus-within {
+  border-color: rgba(0, 229, 255, 0.35);
+  background: #16243D;
+}
+
+.bmc-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bmc-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94A3B8;
+}
+
+.bmc-acronym {
+  font-size: 0.625rem;
+  color: #64748B;
+  white-space: nowrap;
+}
+
+.bmc-value-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.bmc-val-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #F8FAFC;
+  font-feature-settings: 'tnum' on;
+}
+
+.bmc-sparkline-svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* 5. Center-Right Subgrid Layout */
+.cockpit-subgrid-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(260px, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 1279px) {
+  .cockpit-subgrid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cockpit-middle-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cockpit-middle-top-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 12px;
+  height: 340px;
+}
+
+@media (max-width: 900px) {
+  .cockpit-middle-top-row {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+/* Card Shell */
+.cockpit-card-shell {
+  background: #0D1626;
+  border: 1px solid rgba(0, 229, 255, 0.14);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+}
+
+.cockpit-card-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(11, 19, 34, 0.6);
+  flex-shrink: 0;
+}
+
+.cockpit-card-title-text {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #E2E8F0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 3D Heart Card Viewport */
+.cockpit-viewport-card {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.cockpit-viewport-card #portal-viewport-box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.cockpit-viewport-card canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Floating Toolbar on 3D Viewport */
+.viewport-floating-toolbar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+}
+
+.floating-tool-btn {
+  width: 28px;
+  height: 28px;
+  background: rgba(14, 23, 40, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  color: #CBD5E1;
+  font-size: 0.875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(6px);
+}
+
+.floating-tool-btn:hover {
+  color: #00E5FF;
+  border-color: #00E5FF;
+  background: rgba(0, 229, 255, 0.15);
+}
+
+.floating-search-btn {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  width: 28px;
+  height: 28px;
+  background: rgba(14, 23, 40, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  color: #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  backdrop-filter: blur(6px);
+}
+
+/* ECG Telemetry Oscilloscope Card */
+.cockpit-telemetry-card {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.telemetry-oscilloscope-viewport {
+  flex: 1;
+  position: relative;
+  background: #060B14;
+  min-height: 0;
+}
+
+.telemetry-oscilloscope-viewport canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.telemetry-bottom-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(11, 19, 34, 0.8);
+  font-size: 0.75rem;
+  color: #94A3B8;
+  flex-shrink: 0;
+}
+
+/* ECG Lead-II Rhythm Strip */
+.cockpit-rhythm-strip-card {
+  height: 120px;
+  min-height: 120px;
+}
+
+.rhythm-strip-viewport {
+  flex: 1;
+  position: relative;
+  background: #060B14;
+}
+
+.rhythm-strip-viewport canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Right Diagnostic Panel Column */
+.cockpit-right-diagnostics-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cockpit-diag-panel {
+  background: #0D1626;
+  border: 1px solid rgba(0, 229, 255, 0.14);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+}
+
+.diag-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.diag-title-text {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #E2E8F0;
+}
+
+/* Radial Risk Gauge */
+.radial-risk-circle-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 6px 0;
+}
+
+.gauge-center-readout {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-pct-text {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #F8FAFC;
+  line-height: 1;
+}
+
+.gauge-category-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #F43F5E;
+  margin-top: 3px;
+}
+
+/* SHAP Feature Contribution Bars */
+.shap-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.shap-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shap-bar-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: #94A3B8;
+}
+
+.shap-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.shap-fill {
+  height: 100%;
+  background: #00E5FF;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.shap-axis-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.625rem;
+  color: #64748B;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+/* Clinical Recommendation */
+.rec-narrative-text {
+  font-size: 0.78rem;
+  color: #CBD5E1;
+  line-height: 1.5;
+  margin: 6px 0 10px;
+}
+
+.rec-urgency-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rec-urgency-fill {
+  height: 100%;
+  background: #00E5FF;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ==============================================================================
+   COCKPIT HARMONIZATION & 1-TO-1 MOCKUP ALIGNMENT
+   ============================================================================== */
+.cockpit-dock {
+  height: 100vh !important;
+  position: sticky !important;
+  top: 0 !important;
+  justify-content: space-between !important;
+}
+
+.dock-top-group, .dock-bottom-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.cockpit-card {
+  background: #0B111A;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.cockpit-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.cockpit-card-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #E2E8F0;
+  letter-spacing: 0.2px;
+  margin: 0;
+}
+
+.cockpit-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cockpit-icon-btn {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cockpit-icon-btn:hover {
+  color: #00E5FF;
+}
+
+.cockpit-new-btn {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  color: #00E5FF;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cockpit-new-btn:hover {
+  background: rgba(0, 229, 255, 0.25);
+}
+
+/* 3D Heart Viewport Container */
+.heart-model-card {
+  margin-bottom: 12px;
+}
+
+.heart-model-card .telemetry-viewport {
+  height: 380px !important;
+  background: radial-gradient(circle at 50% 45%, #0B1526 0%, #050912 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.12) !important;
+  border-radius: 8px !important;
+}
+
+.floating-controls-cluster {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 25;
+}
+
+.floating-tool-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  background: rgba(11, 19, 35, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.floating-tool-btn:hover {
+  color: #00E5FF;
+  border-color: #00E5FF;
+  background: rgba(0, 229, 255, 0.15);
+}
+
+.floating-bottom-tool {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 25;
+}
+
+/* ECG Rhythm Strip Card */
+.ecg-strip-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.cockpit-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ecg-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #10B981;
+}
+
+.ecg-playback-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.ecg-ctrl-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #94A3B8;
+  font-size: 0.6875rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ecg-ctrl-btn:hover, .ecg-ctrl-btn.active {
+  color: #10B981;
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.ecg-wide-canvas-container {
+  width: 100%;
+  height: 85px;
+  background: #060B12;
+  border: 1px solid rgba(56, 189, 248, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  background-image:
+    linear-gradient(rgba(16, 185, 129, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+#portal-ecg-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Right Column: Diagnostics */
+.cockpit-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cockpit-card-menu-btn {
+  color: #64748B;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.radial-gauge-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 6px auto 10px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radial-gauge-svg {
+  transform: rotate(-90deg);
+}
+
+.radial-gauge-track {
+  stroke: rgba(255, 255, 255, 0.06);
+}
+
+.radial-gauge-bar {
+  transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
+}
+
+.radial-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.radial-gauge-pct {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: #F8FAFC;
+  line-height: 1.1;
+}
+
+.radial-gauge-band {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.radial-gauge-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: #94A3B8;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.clinical-risk-blurb {
+  font-size: 0.725rem;
+  color: #CBD5E1;
+  line-height: 1.45;
+  margin-top: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 6px;
+  padding: 8px 10px;
+  border-left: 3px solid #00E5FF;
+  text-align: left;
+}
+
+.shap-attribution-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.shap-tornado-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attribution-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.attribution-bar-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: #94A3B8;
+}
+
+.attribution-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.attribution-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.shap-scale-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.625rem;
+  color: #64748B;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  margin-top: 8px;
+}
+
+.recommendation-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendation-text {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.recommendation-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.recommendation-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00E5FF, #38BDF8);
+  border-radius: 2px;
+}
+
+/* 2-Column Biomarkers Grid */
+.biomarkers-cockpit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.bmc-card {
+  background: #0E1624;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 86px;
+  position: relative;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.bmc-card:hover {
+  border-color: rgba(0, 229, 255, 0.35);
+  background-color: #111B2C;
+}
+
+.bmc-card-wide {
+  grid-column: span 2;
+}
+
+.bmc-card .form-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.bmc-card .label-primary {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.bmc-card .label-sub {
+  font-size: 0.65rem;
+  color: #64748B;
+}
+
+.bmc-card .form-value-tag {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.bmc-card .clinical-slider-wrapper {
+  position: relative;
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bmc-card .mini-sparkline {
+  width: 100%;
+  height: 14px;
+  margin-bottom: 2px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.bmc-card .clinical-select {
+  height: 38px;
+  padding: 4px 8px;
+  font-size: 0.8125rem;
+  margin-top: 4px;
+}
+
+.bmc-card .clinical-slider {
+  height: 4px;
+  margin: 6px 0;
+}
+
+.bmc-card .clinical-slider::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
 }
