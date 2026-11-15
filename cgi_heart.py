@@ -1284,55 +1284,80 @@ function getMaterial(part) {{
   // MODE 1: CONTRAST-ENHANCED CT ANGIOGRAM (CTA)
   if (currentMode === 'cta' || currentMode === 'cinematic') {{
     if (part === 'lv' || part === 'rv') {{
-      const riskColor = CONFIG.risk_score > 0.66 ? 0xB91C1C : (CONFIG.risk_score > 0.33 ? 0xC2410C : 0x9E1C3F);
       return new THREE.MeshPhysicalMaterial({{
-        color: riskColor,
-        emissive: new THREE.Color(CONFIG.glow_color || '#10b981'),
-        emissiveIntensity: 0.10,
-        roughness: 0.38,
-        metalness: 0.08,
-        clearcoat: 0.80,
-        clearcoatRoughness: 0.18,
-        transmission: 0.08,
-        ior: 1.40,
+        color: 0x184A78,
+        emissive: new THREE.Color(CONFIG.risk_score > 0.66 ? 0x2A0D15 : 0x051B33),
+        emissiveIntensity: 0.40,
+        roughness: 0.14,
+        metalness: 0.06,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.08,
+        transmission: 0.72,
+        ior: 1.38,
+        thickness: 1.8,
+        transparent: true,
+        opacity: 0.90,
+        depthWrite: false,
         bumpMap: createMyocardialBumpMap(),
-        bumpScale: 0.025
+        bumpScale: 0.002
       }});
     }}
     if (part === 'la' || part === 'ra') {{
       return new THREE.MeshPhysicalMaterial({{
-        color: 0x9F1239,
-        roughness: 0.42,
-        clearcoat: 0.65
+        color: 0x1E3A5F,
+        emissive: 0x06182B,
+        emissiveIntensity: 0.35,
+        roughness: 0.16,
+        metalness: 0.05,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.10,
+        transmission: 0.70,
+        ior: 1.36,
+        thickness: 1.5,
+        transparent: true,
+        opacity: 0.88,
+        depthWrite: false
       }});
     }}
     if (part === 'aorta') {{
       return new THREE.MeshPhysicalMaterial({{
         color: 0xDC2626,
         emissive: 0x7F1D1D,
-        emissiveIntensity: 0.35,
+        emissiveIntensity: 0.65,
         roughness: 0.22,
-        metalness: 0.18,
-        clearcoat: 0.90
+        metalness: 0.15,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.10,
+        transmission: 0.40,
+        ior: 1.35,
+        thickness: 1.2,
+        transparent: true,
+        opacity: 0.92
       }});
     }}
     if (part === 'pulmonary' || part === 'vena_cava' || part === 'pulmonary_vein') {{
       return new THREE.MeshPhysicalMaterial({{
         color: 0x1D4ED8,
         emissive: 0x1E3A8A,
-        emissiveIntensity: 0.25,
-        roughness: 0.28,
-        metalness: 0.12,
-        clearcoat: 0.75
+        emissiveIntensity: 0.55,
+        roughness: 0.22,
+        metalness: 0.15,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.10,
+        transmission: 0.45,
+        ior: 1.35,
+        thickness: 1.2,
+        transparent: true,
+        opacity: 0.90
       }});
     }}
     if (part === 'coronary') {{
       return new THREE.MeshStandardMaterial({{
-        color: 0xFF0044,
-        emissive: 0xFF0033,
-        emissiveIntensity: 0.50,
-        roughness: 0.18,
-        metalness: 0.40
+        color: 0xFF1744,
+        emissive: 0xFF1744,
+        emissiveIntensity: 2.4,
+        roughness: 0.10,
+        metalness: 0.20
       }});
     }}
   }}

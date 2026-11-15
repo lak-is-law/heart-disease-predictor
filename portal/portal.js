@@ -1860,10 +1860,10 @@ function initPortal3DHeart() {
   }
 
   // Lighting
-  const ambLight = new THREE.AmbientLight(0x1E293B, 1.4);
+  const ambLight = new THREE.AmbientLight(0x0A192F, 1.2);
   pScene.add(ambLight);
 
-  const keyLight = new THREE.DirectionalLight(0xFFFFFF, 2.2);
+  const keyLight = new THREE.DirectionalLight(0xFFFFFF, 2.0);
   keyLight.position.set(5, 8, 6);
   pScene.add(keyLight);
 
@@ -1871,10 +1871,55 @@ function initPortal3DHeart() {
   fillLight.position.set(-6, -2, -4);
   pScene.add(fillLight);
 
+  const rimLight = new THREE.DirectionalLight(0x38BDF8, 3.2);
+  rimLight.position.set(0, 3, -6);
+  pScene.add(rimLight);
+
   pHeartGroup = new THREE.Group();
   pHeartGroup.scale.set(0.82, 0.82, 0.82);
   pHeartGroup.position.set(0, -0.05, 0);
   pScene.add(pHeartGroup);
+
+  const internalGlow = new THREE.PointLight(0x0284C7, 2.5, 4.0);
+  internalGlow.position.set(0, 0.1, 0.2);
+  pHeartGroup.add(internalGlow);
+
+  // Thoracic rib cage anatomical frame
+  const ribCageGroup = new THREE.Group();
+  const ribMat = new THREE.MeshStandardMaterial({
+    color: 0x38BDF8,
+    transparent: true,
+    opacity: 0.14,
+    roughness: 0.35,
+    metalness: 0.10,
+    depthWrite: false
+  });
+  for (let r = 0; r < 6; r++) {
+    const yOff = 1.3 - r * 0.48;
+    const radX = 1.6 + r * 0.14;
+    const radZ = 1.1 + r * 0.08;
+    const rPts = [
+      new THREE.Vector3(0.2, yOff + 0.18, -radZ * 0.8),
+      new THREE.Vector3(radX * 0.9, yOff + 0.05, -radZ * 0.4),
+      new THREE.Vector3(radX, yOff - 0.10, 0.1),
+      new THREE.Vector3(radX * 0.7, yOff - 0.25, radZ * 0.7),
+      new THREE.Vector3(0.35, yOff - 0.35, radZ * 0.85)
+    ];
+    const rRib = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rPts), 24, 0.045, 8, false), ribMat);
+    ribCageGroup.add(rRib);
+
+    const lPts = [
+      new THREE.Vector3(-0.2, yOff + 0.18, -radZ * 0.8),
+      new THREE.Vector3(-radX * 0.9, yOff + 0.05, -radZ * 0.4),
+      new THREE.Vector3(-radX, yOff - 0.10, 0.1),
+      new THREE.Vector3(-radX * 0.7, yOff - 0.25, radZ * 0.7),
+      new THREE.Vector3(-0.35, yOff - 0.35, radZ * 0.85)
+    ];
+    const lRib = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(lPts), 24, 0.045, 8, false), ribMat);
+    ribCageGroup.add(lRib);
+  }
+  ribCageGroup.position.set(0, -0.1, -0.3);
+  pScene.add(ribCageGroup);
 
   // --------------------------------------------------------------------------
   // A. LEFT VENTRICLE (LV) - Conical wringing apex, 45° tilt, interventricular sulcus
@@ -2160,6 +2205,50 @@ function initPortal3DHeart() {
   pHeartGroup.add(pdaMesh);
   pCoronaryVessels.push(pdaMesh);
 
+  // D2 Diagonal Branch (LAD Arborization)
+  const d2Curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.28, -0.32, 0.88),
+    new THREE.Vector3(-0.46, -0.52, 0.72),
+    new THREE.Vector3(-0.58, -0.72, 0.50),
+    new THREE.Vector3(-0.62, -0.90, 0.28)
+  ]);
+  const d2Mesh = new THREE.Mesh(new THREE.TubeGeometry(d2Curve, 20, 0.013, 10, false), getDiagnosticMaterial('coronary'));
+  pHeartGroup.add(d2Mesh);
+  pCoronaryVessels.push(d2Mesh);
+
+  // S1 Septal Perforator (Anterior Wall Perfusion)
+  const s1Curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.21, 0.08, 0.93),
+    new THREE.Vector3(-0.06, -0.06, 0.85),
+    new THREE.Vector3(0.06, -0.22, 0.72),
+    new THREE.Vector3(0.12, -0.42, 0.55)
+  ]);
+  const s1Mesh = new THREE.Mesh(new THREE.TubeGeometry(s1Curve, 20, 0.012, 10, false), getDiagnosticMaterial('coronary'));
+  pHeartGroup.add(s1Mesh);
+  pCoronaryVessels.push(s1Mesh);
+
+  // OM2 Obtuse Marginal 2 (LCx Arborization)
+  const om2Curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.62, 0.54, 0.25),
+    new THREE.Vector3(-0.72, 0.32, 0.32),
+    new THREE.Vector3(-0.76, 0.02, 0.35),
+    new THREE.Vector3(-0.70, -0.25, 0.30)
+  ]);
+  const om2Mesh = new THREE.Mesh(new THREE.TubeGeometry(om2Curve, 20, 0.013, 10, false), getDiagnosticMaterial('coronary'));
+  pHeartGroup.add(om2Mesh);
+  pCoronaryVessels.push(om2Mesh);
+
+  // AM2 Acute Marginal 2 (RCA Arborization)
+  const am2Curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.72, 0.42, 0.48),
+    new THREE.Vector3(0.68, 0.15, 0.58),
+    new THREE.Vector3(0.50, -0.15, 0.56),
+    new THREE.Vector3(0.36, -0.42, 0.48)
+  ]);
+  const am2Mesh = new THREE.Mesh(new THREE.TubeGeometry(am2Curve, 20, 0.013, 10, false), getDiagnosticMaterial('coronary'));
+  pHeartGroup.add(am2Mesh);
+  pCoronaryVessels.push(am2Mesh);
+
   window.pCoronaryCurves = { lad: ladCurve, rca: rcaCurve, lcx: lcxCurve };
 
   updateStenosisMarkers(currentPatientCa, currentPatientOldpeak);
@@ -2183,64 +2272,83 @@ function initPortal3DHeart() {
  * 4 Standard Diagnostic Shader Modes
  */
 function getDiagnosticMaterial(type) {
-  // MODE 1: CONTRAST CT ANGIOGRAM (CTA)
+  // MODE 1: CONTRAST CT ANGIOGRAM (CTA) / CINEMATIC TRANSLUCENT SAPPHIRE
   if (currentDiagnosticMode === 'cta') {
     if (type === 'ventricle') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0xFFFFFF,
-        map: createPhotorealisticHeartTexture(),
+        color: 0x184A78,
         bumpMap: createMyocardialBumpMap(),
-        bumpScale: 0.003,
-        roughness: 0.28,
-        metalness: 0.04,
+        bumpScale: 0.002,
+        roughness: 0.14,
+        metalness: 0.06,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.12,
-        ior: 1.45,
-        emissive: new THREE.Color(pTargetRisk > 0.6 ? 0x2A050B : 0x000000),
-        emissiveIntensity: 0.25
+        clearcoatRoughness: 0.08,
+        transmission: 0.72,
+        ior: 1.38,
+        thickness: 1.8,
+        transparent: true,
+        opacity: 0.90,
+        depthWrite: false,
+        emissive: new THREE.Color(pTargetRisk > 0.6 ? 0x2A0D15 : 0x051B33),
+        emissiveIntensity: 0.40
       });
     }
     if (type === 'atrium') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0x8B1E3F,
-        map: createPhotorealisticHeartTexture(),
-        roughness: 0.35,
+        color: 0x1E3A5F,
+        roughness: 0.16,
         metalness: 0.05,
-        clearcoat: 0.90,
-        clearcoatRoughness: 0.15
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.10,
+        transmission: 0.70,
+        ior: 1.36,
+        thickness: 1.5,
+        transparent: true,
+        opacity: 0.88,
+        depthWrite: false,
+        emissive: 0x06182B,
+        emissiveIntensity: 0.35
       });
     }
     if (type === 'aorta') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0x991B1B,
-        emissive: 0x330808,
-        emissiveIntensity: 0.20,
-        roughness: 0.26,
-        metalness: 0.10,
-        clearcoat: 0.95,
-        clearcoatRoughness: 0.10
+        color: 0xDC2626,
+        emissive: 0x7F1D1D,
+        emissiveIntensity: 0.65,
+        roughness: 0.22,
+        metalness: 0.15,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.10,
+        transmission: 0.40,
+        ior: 1.35,
+        thickness: 1.2,
+        transparent: true,
+        opacity: 0.92
       });
     }
     if (type === 'pulmonary') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0x33557A,
-        emissive: 0x0E1F30,
-        emissiveIntensity: 0.20,
-        roughness: 0.28,
-        metalness: 0.08,
-        clearcoat: 0.95,
-        clearcoatRoughness: 0.10
+        color: 0x1D4ED8,
+        emissive: 0x1E3A8A,
+        emissiveIntensity: 0.55,
+        roughness: 0.22,
+        metalness: 0.15,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.10,
+        transmission: 0.45,
+        ior: 1.35,
+        thickness: 1.2,
+        transparent: true,
+        opacity: 0.90
       });
     }
     if (type === 'coronary') {
-      return new THREE.MeshPhysicalMaterial({
-        color: 0xE11D48,
-        emissive: 0x881337,
-        emissiveIntensity: 0.35,
-        roughness: 0.20,
-        metalness: 0.20,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.08
+      return new THREE.MeshStandardMaterial({
+        color: 0xFF1744,
+        emissive: 0xFF1744,
+        emissiveIntensity: 2.4,
+        roughness: 0.10,
+        metalness: 0.20
       });
     }
   }
