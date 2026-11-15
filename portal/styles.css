@@ -1491,10 +1491,12 @@ a:hover {
   min-height: 36px;
 }
 
-.quick-scenario-chip:hover {
+.quick-scenario-chip:hover,
+.quick-scenario-chip.active {
   border-color: #00E5FF;
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(0, 229, 255, 0.18);
   color: #FFFFFF;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.25);
 }
 
 /* ==============================================================================

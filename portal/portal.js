@@ -1048,6 +1048,13 @@ function loadClinicalCase(caseKey) {
     if (activeBtn.setAttribute) activeBtn.setAttribute('aria-checked', 'true');
   }
 
+  // Synchronize Quick Scenario Chips
+  document.querySelectorAll('.quick-scenario-chip').forEach(chip => {
+    chip.classList.remove('active');
+  });
+  const chipTarget = document.querySelector(`.quick-scenario-chip[onclick*="${caseKey}"]`);
+  if (chipTarget) chipTarget.classList.add('active');
+
   // Synchronize Top Header Patient Chip with active clinical profile
   const nameEl = document.getElementById('header-patient-name');
   const idEl = document.getElementById('header-patient-id');
@@ -1088,6 +1095,11 @@ function switchCockpitView(viewName) {
 
   const activeBtn = document.getElementById(`tab-btn-${viewName}`);
   if (activeBtn) activeBtn.classList.add('active');
+
+  const dockBtns = document.querySelectorAll('.dock-icon-btn');
+  dockBtns.forEach(btn => btn.classList.remove('active'));
+  const activeDockBtn = document.querySelector(`.dock-icon-btn[onclick*="${viewName}"]`);
+  if (activeDockBtn) activeDockBtn.classList.add('active');
 
   let targetId = 'live-workstation';
   if (viewName === 'lab') targetId = 'lab-ingestion';
@@ -1355,6 +1367,31 @@ function updatePortalPrediction() {
     // Rate Pressure Product = HR * SBP
     const rpp = Math.round(pBPM * trestbps);
     rppEl.innerText = `RPP: ${rpp.toLocaleString()}`;
+  }
+
+  // Update Dynamic FFR Value on Risk Assessment Card
+  const cockpitFfrEl = document.getElementById('portal-cockpit-ffr-val');
+  if (cockpitFfrEl) {
+    cockpitFfrEl.textContent = pFFR.toFixed(2);
+    cockpitFfrEl.style.color = pFFR < 0.75 ? '#F43F5E' : (pFFR < 0.80 ? '#F59E0B' : '#00E5FF');
+  }
+
+  // Update Dynamic Clinical Recommendation Card & Progress Fill
+  const recEl = document.getElementById('portal-cockpit-recommendation');
+  const recBar = document.getElementById('portal-cockpit-rec-bar');
+  if (recEl && recBar) {
+    const riskPct = Math.round(pTargetRisk * 100);
+    recBar.style.width = `${Math.min(100, Math.max(8, riskPct))}%`;
+    if (pTargetRisk >= 0.66) {
+      recEl.textContent = `Clinical recommendation: High probability obstructive coronary disease with ${ca > 0 ? ca + '-vessel calcification' : 'hemodynamic ischemia'}. Immediate diagnostic catheterization and clinical evaluation indicated.`;
+      recBar.style.backgroundColor = '#F43F5E';
+    } else if (pTargetRisk >= 0.33) {
+      recEl.textContent = 'Clinical recommendation: Moderate intermediate probability of CAD. Stress echocardiography or CCTA recommended with medical therapy optimization.';
+      recBar.style.backgroundColor = '#F59E0B';
+    } else {
+      recEl.textContent = 'Clinical recommendation: Low acute coronary disease probability. Outpatient follow-up, lifestyle management, and primary prevention recommended.';
+      recBar.style.backgroundColor = '#10B981';
+    }
   }
 
   // Render Occlusion Attribution Bars matching core.py
@@ -2682,8 +2719,18 @@ function drawMedicalGrid() {
 }
 
 let isECGPaused = false;
-function toggleECGPause() { isECGPaused = !isECGPaused; }
-function resumeECG() { isECGPaused = false; }
+function toggleECGPause() {
+  isECGPaused = true;
+  document.querySelectorAll('.ecg-ctrl-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('.ecg-ctrl-btn[onclick*="toggleECGPause"]');
+  if (btn) btn.classList.add('active');
+}
+function resumeECG() {
+  isECGPaused = false;
+  document.querySelectorAll('.ecg-ctrl-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('.ecg-ctrl-btn[onclick*="resumeECG"]');
+  if (btn) btn.classList.add('active');
+}
 window.toggleECGPause = toggleECGPause;
 window.resumeECG = resumeECG;
 
@@ -2722,7 +2769,7 @@ function initPortalECG() {
 
 function animateECG(timestamp) {
   requestAnimationFrame(animateECG);
-  if (!ecgCtx || !ecgCanvas) return;
+  if (!ecgCtx || !ecgCanvas || isECGPaused) return;
 
   const dt = lastEcgTimestamp ? Math.min(0.1, (timestamp - lastEcgTimestamp) / 1000.0) : 0.016;
   lastEcgTimestamp = timestamp;

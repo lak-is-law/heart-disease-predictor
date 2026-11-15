@@ -155,7 +155,7 @@
           <span>Eleanor Vance, 58 yrs | ID: #CP-8924</span>
           <span class="patient-chip-status-badge critical" id="header-patient-status" style="margin-left:8px;">Acute STEMI Triage</span>
         </div>
-        <button type="button" class="header-save-btn" onclick="showToast('Patient Telemetry Context Saved')" style="background:#00E5FF; color:#06101E; font-weight:700; font-size:0.8125rem; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+        <button type="button" class="header-save-btn" onclick="exportDiagnosticSummaryReport()" style="background:#00E5FF; color:#06101E; font-weight:700; font-size:0.8125rem; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save ▾
         </button>
@@ -597,7 +597,7 @@
                 <span>·</span>
                 <span id="portal-rpp-val" title="Rate Pressure Product (RPP = HR × SBP)">RPP: 21,504</span>
                 <span>·</span>
-                <span title="Fractional Flow Reserve">FFR: <strong style="color:#00E5FF;">0.48</strong></span>
+                <span title="Fractional Flow Reserve">FFR: <strong id="portal-cockpit-ffr-val" style="color:#00E5FF;">0.48</strong></span>
               </div>
               <div id="portal-risk-blurb" class="clinical-risk-blurb">
                 Critical Ischemic Risk: Multi-vessel coronary calcification with hemodynamic depression requiring urgent cardiology review.
@@ -632,11 +632,11 @@
                   <span class="cockpit-card-menu-btn" title="Options">⋮</span>
                 </div>
               </div>
-              <div class="recommendation-text">
+              <div class="recommendation-text" id="portal-cockpit-recommendation">
                 Clinical recommendation: High probability obstructive coronary disease with LAD involvement. Immediate diagnostic catheterization and clinical evaluation indicated.
               </div>
               <div class="recommendation-bar-track">
-                <div class="recommendation-bar-fill" style="width: 82%;"></div>
+                <div class="recommendation-bar-fill" id="portal-cockpit-rec-bar" style="width: 82%;"></div>
               </div>
             </div>
           </div>
