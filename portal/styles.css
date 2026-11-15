@@ -409,63 +409,34 @@ a:hover {
 }
 
 /* ==============================================================================
-   4. BREADCRUMBS
+   4. BREADCRUMBS & MARKETING BANNER COLLAPSE (CLINICAL COCKPIT FOCUS)
    ============================================================================== */
+.app-top-notification-bar {
+  display: none !important;
+}
+
 .app-breadcrumb-bar {
-  background-color: #0B1325;
-  border-bottom: 1px solid var(--color-border-subtle);
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
+  display: none !important;
 }
 
-.app-breadcrumb-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.app-breadcrumb-container a {
-  color: var(--color-text-muted);
-  font-weight: 500;
-}
-.app-breadcrumb-container a:hover {
-  color: var(--color-primary);
-}
-.app-breadcrumb-separator {
-  color: #64748B;
-}
-.app-breadcrumb-current {
-  color: var(--color-text-headline);
-  font-weight: 600;
-}
-
-/* ==============================================================================
-   5. CLINICAL WORKSTATION HERO
-   ============================================================================== */
 .app-hero {
-  background: radial-gradient(circle at 50% 0%, #0F1E3A 0%, #070B14 85%);
-  border-bottom: 1px solid var(--color-border-card);
-  padding: 40px 0 34px;
+  display: none !important;
 }
 
 .app-badge-accredited {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--color-gold-tint);
-  color: #78350F;
-  border: 1px solid rgba(197, 160, 89, 0.4);
+  background-color: rgba(0, 229, 255, 0.12);
+  color: #38BDF8;
+  border: 1px solid rgba(0, 229, 255, 0.3);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 4px 10px;
   border-radius: var(--radius-sm);
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .app-hero h1 {
@@ -964,11 +935,23 @@ a:hover {
 .form-label-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
+  align-items: baseline;
+  margin-bottom: 6px;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--color-text-headline);
+  width: 100%;
+}
+
+.label-primary {
+  font-weight: 700;
+  color: #F8FAFC;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+.label-sub.clinical-acronym {
+  display: none !important; /* Hide cluttered acronym strings like (trestbps · normal < 120) from inline view to eliminate uneven multi-line row wrapping */
 }
 
 .form-value-tag {
@@ -977,11 +960,13 @@ a:hover {
   font-weight: 700;
   color: #38BDF8;
   background: rgba(56, 189, 248, 0.12);
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(56, 189, 248, 0.3);
   cursor: pointer;
   user-select: none;
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 .form-value-tag:hover {
   background: rgba(56, 189, 248, 0.22);
@@ -2156,4 +2141,178 @@ a:hover {
 .app-toast.visible {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* ==============================================================================
+   14. COCKPIT PATIENT CHIP, 3D LESION PIN & WORKSPACE SWITCHER
+   ============================================================================== */
+
+/* Header Patient Chip */
+.header-patient-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14, 23, 38, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.8125rem;
+  color: #E2E8F0;
+  margin-left: 16px;
+}
+
+@media (max-width: 900px) {
+  .header-patient-chip {
+    display: none;
+  }
+}
+
+.patient-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34D399;
+  box-shadow: 0 0 8px #34D399;
+}
+
+.patient-name {
+  font-weight: 700;
+  color: #F8FAFC;
+}
+
+.patient-sep {
+  color: #475569;
+}
+
+.patient-id {
+  font-family: var(--font-mono);
+  color: #38BDF8;
+}
+
+.patient-protocol {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* 3D Viewport Interactive Lesion Callout */
+.viewport-lesion-callout {
+  position: absolute;
+  pointer-events: none;
+  z-index: 15;
+  display: flex;
+  align-items: flex-start;
+  transform: translate(-10px, -20px);
+  transition: opacity 0.2s ease;
+}
+
+.lesion-beacon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.beacon-core {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00E5FF;
+  box-shadow: 0 0 10px #00E5FF, 0 0 20px rgba(0, 229, 255, 0.8);
+}
+
+.beacon-pulse-ring {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #00E5FF;
+  animation: beaconPulse 1.8s infinite ease-out;
+}
+
+@keyframes beaconPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.lesion-leader-group {
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+  margin-top: -6px;
+}
+
+.lesion-leader-svg {
+  overflow: visible;
+}
+
+.lesion-badge {
+  background: rgba(14, 23, 38, 0.92);
+  border: 1px solid #00E5FF;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 4px;
+  padding: 4px 10px;
+  color: #F8FAFC;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 229, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.lesion-badge-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #EF4444;
+  box-shadow: 0 0 6px #EF4444;
+}
+
+/* Cockpit View Switcher Nav Bar */
+.cockpit-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(14, 23, 38, 0.8);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--radius-md);
+  margin-top: 24px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.cockpit-nav-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94A3B8;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.cockpit-nav-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cockpit-nav-btn.active {
+  background: rgba(0, 229, 255, 0.12);
+  border-color: #00E5FF;
+  color: #00E5FF;
 }

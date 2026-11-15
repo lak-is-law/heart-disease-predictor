@@ -1048,8 +1048,58 @@ function loadClinicalCase(caseKey) {
     if (activeBtn.setAttribute) activeBtn.setAttribute('aria-checked', 'true');
   }
 
+  // Synchronize Top Header Patient Chip with active clinical profile
+  const nameEl = document.getElementById('header-patient-name');
+  const idEl = document.getElementById('header-patient-id');
+  const statusEl = document.getElementById('header-patient-status');
+
+  if (caseKey === 'acs') {
+    if (nameEl) nameEl.textContent = 'Marcus Sterling, 62 yrs';
+    if (idEl) idEl.textContent = 'ID: #ACS-9082';
+    if (statusEl) {
+      statusEl.textContent = 'Acute STEMI Triage';
+      statusEl.className = 'patient-chip-status-badge critical';
+    }
+  } else if (caseKey === 'diabetic') {
+    if (nameEl) nameEl.textContent = 'Elena Gomez, 57 yrs';
+    if (idEl) idEl.textContent = 'ID: #DIA-4410';
+    if (statusEl) {
+      statusEl.textContent = 'Multi-Vessel CAD';
+      statusEl.className = 'patient-chip-status-badge warning';
+    }
+  } else if (caseKey === 'wellness') {
+    if (nameEl) nameEl.textContent = 'David Vance, 42 yrs';
+    if (idEl) idEl.textContent = 'ID: #EXE-1029';
+    if (statusEl) {
+      statusEl.textContent = 'Screening Normal';
+      statusEl.className = 'patient-chip-status-badge stable';
+    }
+  }
+
   applyVitalsToInterface(c.vitals, `${c.title} (${c.source})`);
 }
+
+/**
+ * 4-Tab Clinical Cockpit Navigation Controller
+ */
+function switchCockpitView(viewName) {
+  const navBtns = document.querySelectorAll('.cockpit-nav-btn');
+  navBtns.forEach(btn => btn.classList.remove('active'));
+
+  const activeBtn = document.getElementById(`tab-btn-${viewName}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  let targetId = 'live-workstation';
+  if (viewName === 'lab') targetId = 'lab-ingestion';
+  else if (viewName === 'deploy') targetId = 'smart-recommendation-card';
+  else if (viewName === 'security') targetId = 'security-audit';
+
+  const targetEl = document.getElementById(targetId);
+  if (targetEl) {
+    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+window.switchCockpitView = switchCockpitView;
 
 function applyVitalsToInterface(vitals, sourceLabel, meta = {}, missing = [], extractedCount = 13) {
   if (vitals.age !== undefined && document.getElementById('inp-age')) document.getElementById('inp-age').value = vitals.age;
@@ -1372,11 +1422,13 @@ function renderAttributionBars(v) {
 let _pMyocardialBumpTex = null;
 function createMyocardialBumpMap() {
   if (_pMyocardialBumpTex) return _pMyocardialBumpTex;
-  if (typeof document === 'undefined') return null;
+  if (typeof document === 'undefined' || typeof THREE === 'undefined' || !THREE.CanvasTexture) return null;
   const canvas = document.createElement('canvas');
+  if (!canvas || !canvas.getContext) return null;
+  const ctx = canvas.getContext('2d');
+  if (!ctx || !ctx.fillRect) return null;
   canvas.width = 256;
   canvas.height = 256;
-  const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#808080';
   ctx.fillRect(0, 0, 256, 256);
   ctx.lineWidth = 1.5;
@@ -1396,6 +1448,166 @@ function createMyocardialBumpMap() {
   _pMyocardialBumpTex.wrapT = THREE.RepeatWrapping;
   _pMyocardialBumpTex.repeat.set(4, 8);
   return _pMyocardialBumpTex;
+}
+
+// Procedural high-fidelity photorealistic myocardium and subepicardial fat sulcus texture
+let _pPhotorealisticHeartTex = null;
+function createPhotorealisticHeartTexture() {
+  if (_pPhotorealisticHeartTex) return _pPhotorealisticHeartTex;
+  if (typeof document === 'undefined' || typeof THREE === 'undefined' || !THREE.CanvasTexture) return null;
+
+  const canvas = document.createElement('canvas');
+  if (!canvas || !canvas.getContext) return null;
+  const ctx = canvas.getContext('2d');
+  if (!ctx || !ctx.createLinearGradient || !ctx.fillRect) return null;
+
+  canvas.width = 512;
+  canvas.height = 512;
+
+  // 1. Base myocardial muscle tone: deep rich cardiac crimson/burgundy
+  const baseGrad = ctx.createLinearGradient(0, 0, 512, 512);
+  baseGrad.addColorStop(0.0, '#4A0D17');
+  baseGrad.addColorStop(0.3, '#751424');
+  baseGrad.addColorStop(0.7, '#881326');
+  baseGrad.addColorStop(1.0, '#380912');
+  ctx.fillStyle = baseGrad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  // 2. Fine myocardial muscle striations (helical myofibrils)
+  if (ctx.save && ctx.restore) ctx.save();
+  for (let i = 0; i < 180; i++) {
+    const y = (i * 3.2) % 512;
+    const alpha = 0.08 + (Math.sin(i * 0.45) * 0.05);
+    ctx.strokeStyle = i % 2 === 0 ? `rgba(165, 28, 48, ${alpha})` : `rgba(40, 6, 12, ${alpha})`;
+    ctx.lineWidth = 1.0 + (i % 3) * 0.6;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    if (ctx.bezierCurveTo) {
+      ctx.bezierCurveTo(170, y + 25, 340, y - 20, 512, y + 10);
+    } else {
+      ctx.lineTo(512, y);
+    }
+    ctx.stroke();
+  }
+  if (ctx.save && ctx.restore) ctx.restore();
+
+  // 3. Subepicardial fat deposits along anterior interventricular sulcus and AV groove
+  if (ctx.save && ctx.restore) ctx.save();
+  if (ctx.createRadialGradient && ctx.ellipse) {
+    const sulcusFat = ctx.createRadialGradient(240, 180, 15, 240, 220, 190);
+    sulcusFat.addColorStop(0.0, 'rgba(234, 179, 8, 0.70)');
+    sulcusFat.addColorStop(0.35, 'rgba(250, 204, 21, 0.45)');
+    sulcusFat.addColorStop(0.7, 'rgba(254, 240, 138, 0.18)');
+    sulcusFat.addColorStop(1.0, 'rgba(117, 20, 36, 0.0)');
+
+    ctx.fillStyle = sulcusFat;
+    ctx.beginPath();
+    ctx.ellipse(240, 210, 85, 220, Math.PI / 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Transverse atrioventricular groove fat band
+    const avFat = ctx.createLinearGradient(60, 90, 440, 140);
+    avFat.addColorStop(0.0, 'rgba(234, 179, 8, 0.0)');
+    avFat.addColorStop(0.2, 'rgba(234, 179, 8, 0.40)');
+    avFat.addColorStop(0.5, 'rgba(254, 240, 138, 0.55)');
+    avFat.addColorStop(0.8, 'rgba(234, 179, 8, 0.35)');
+    avFat.addColorStop(1.0, 'rgba(234, 179, 8, 0.0)');
+    ctx.fillStyle = avFat;
+    ctx.beginPath();
+    ctx.ellipse(250, 115, 180, 28, -Math.PI / 18, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  if (ctx.save && ctx.restore) ctx.restore();
+
+  // 4. Branching microvascular arterioles & venules
+  if (ctx.save && ctx.restore) ctx.save();
+  if (ctx.bezierCurveTo && ctx.quadraticCurveTo) {
+    ctx.strokeStyle = 'rgba(220, 38, 38, 0.65)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(220, 110);
+    ctx.bezierCurveTo(230, 200, 245, 280, 255, 380);
+    ctx.bezierCurveTo(260, 420, 250, 460, 240, 490);
+    ctx.stroke();
+
+    const branches = [
+      [230, 190, 160, 240],
+      [232, 210, 310, 250],
+      [242, 270, 170, 330],
+      [245, 300, 320, 340],
+      [252, 350, 190, 410],
+      [255, 380, 300, 420]
+    ];
+    ctx.lineWidth = 1.1;
+    branches.forEach(([x1, y1, x2, y2]) => {
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.quadraticCurveTo((x1 + x2) / 2 + 10, (y1 + y2) / 2 - 10, x2, y2);
+      ctx.stroke();
+    });
+
+    ctx.strokeStyle = 'rgba(59, 130, 246, 0.42)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(215, 115);
+    ctx.bezierCurveTo(224, 205, 238, 285, 248, 385);
+    ctx.stroke();
+  }
+  if (ctx.save && ctx.restore) ctx.restore();
+
+  _pPhotorealisticHeartTex = new THREE.CanvasTexture(canvas);
+  _pPhotorealisticHeartTex.wrapS = THREE.ClampToEdgeWrapping;
+  _pPhotorealisticHeartTex.wrapT = THREE.ClampToEdgeWrapping;
+  return _pPhotorealisticHeartTex;
+}
+
+// 3D Screen Projection for Coronary Lesion Callout Pin
+let _pLesionLocalPos = null;
+let _pScreenPos = null;
+
+function updateLesionCalloutPosition() {
+  const callout = document.getElementById('portal-lesion-callout');
+  if (!callout || !pHeartGroup || !pCamera || typeof THREE === 'undefined') return;
+
+  if (!_pLesionLocalPos) _pLesionLocalPos = new THREE.Vector3(-0.16, -0.05, 0.92);
+  if (!_pScreenPos) _pScreenPos = new THREE.Vector3();
+
+  const container = document.getElementById('portal-viewport-box');
+  if (!container) return;
+
+  _pScreenPos.copy(_pLesionLocalPos);
+  _pScreenPos.applyMatrix4(pHeartGroup.matrixWorld);
+  _pScreenPos.project(pCamera);
+
+  // Check if position is facing the camera
+  if (_pScreenPos.z > 1.0) {
+    callout.style.opacity = '0';
+    callout.style.pointerEvents = 'none';
+    return;
+  }
+
+  const rect = container.getBoundingClientRect ? container.getBoundingClientRect() : { width: container.clientWidth || 400, height: container.clientHeight || 400 };
+  const width = rect.width || container.clientWidth || 400;
+  const height = rect.height || container.clientHeight || 400;
+
+  const x = Math.round((_pScreenPos.x * 0.5 + 0.5) * width);
+  const y = Math.round((-_pScreenPos.y * 0.5 + 0.5) * height);
+
+  callout.style.opacity = '1';
+  callout.style.left = `${x}px`;
+  callout.style.top = `${y}px`;
+
+  // Dynamically synchronize badge description with diagnostic prediction
+  const lesionText = document.getElementById('portal-lesion-text');
+  if (lesionText) {
+    if (pTargetRisk >= 0.65) {
+      lesionText.textContent = 'Coronary ischemia (LAD)';
+    } else if (pTargetRisk >= 0.35) {
+      lesionText.textContent = 'Moderate Hypoperfusion';
+    } else {
+      lesionText.textContent = 'Normal Perfusion';
+    }
+  }
 }
 
 /**
@@ -1963,55 +2175,62 @@ function getDiagnosticMaterial(type) {
   // MODE 1: CONTRAST CT ANGIOGRAM (CTA)
   if (currentDiagnosticMode === 'cta') {
     if (type === 'ventricle') {
-      const riskColor = pTargetRisk > 0.66 ? 0xB91C1C : (pTargetRisk > 0.33 ? 0xC2410C : 0x9E1C3F);
+      const riskColor = pTargetRisk > 0.66 ? 0xC53030 : (pTargetRisk > 0.33 ? 0xB84228 : 0x9E2A4A);
       return new THREE.MeshPhysicalMaterial({
         color: riskColor,
-        emissive: new THREE.Color(pTargetRisk > 0.5 ? '#e11d48' : '#10b981'),
-        emissiveIntensity: 0.10,
-        roughness: 0.38,
-        metalness: 0.08,
-        clearcoat: 0.80,
-        clearcoatRoughness: 0.18,
-        transmission: 0.08,
-        ior: 1.40,
+        map: createPhotorealisticHeartTexture(),
         bumpMap: createMyocardialBumpMap(),
-        bumpScale: 0.025
+        bumpScale: 0.035,
+        roughness: 0.28,
+        metalness: 0.04,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.12,
+        ior: 1.45,
+        emissive: new THREE.Color(pTargetRisk > 0.6 ? 0x2A050B : 0x000000),
+        emissiveIntensity: 0.25
       });
     }
     if (type === 'atrium') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0x9F1239,
-        roughness: 0.42,
-        clearcoat: 0.65
+        color: 0x8B1E3F,
+        map: createPhotorealisticHeartTexture(),
+        roughness: 0.35,
+        metalness: 0.05,
+        clearcoat: 0.90,
+        clearcoatRoughness: 0.15
       });
     }
     if (type === 'aorta') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0xDC2626,
-        emissive: 0x7F1D1D,
-        emissiveIntensity: 0.35,
-        roughness: 0.22,
-        metalness: 0.18,
-        clearcoat: 0.90
+        color: 0xB91C1C,
+        emissive: 0x450A0A,
+        emissiveIntensity: 0.25,
+        roughness: 0.24,
+        metalness: 0.12,
+        clearcoat: 0.95,
+        clearcoatRoughness: 0.10
       });
     }
     if (type === 'pulmonary') {
       return new THREE.MeshPhysicalMaterial({
         color: 0x1D4ED8,
-        emissive: 0x1E3A8A,
-        emissiveIntensity: 0.25,
-        roughness: 0.28,
+        emissive: 0x172554,
+        emissiveIntensity: 0.20,
+        roughness: 0.25,
         metalness: 0.12,
-        clearcoat: 0.75
+        clearcoat: 0.95,
+        clearcoatRoughness: 0.10
       });
     }
     if (type === 'coronary') {
-      return new THREE.MeshStandardMaterial({
-        color: 0xFF0044,
-        emissive: 0xFF0033,
-        emissiveIntensity: 0.50,
+      return new THREE.MeshPhysicalMaterial({
+        color: 0xEF4444,
+        emissive: 0x991B1B,
+        emissiveIntensity: 0.40,
         roughness: 0.18,
-        metalness: 0.40
+        metalness: 0.20,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.08
       });
     }
   }
@@ -2265,6 +2484,9 @@ function animatePortalHeart(timestamp) {
   if (pCardiacSynth) {
     pCardiacSynth.update(pBPM, pTargetRisk, currentPatientRestecg);
   }
+
+  // 3D screen projection for Coronary Ischemia Leader Callout
+  updateLesionCalloutPosition();
 
   if (pControls) pControls.update();
   if (pRenderer && pScene && pCamera) {

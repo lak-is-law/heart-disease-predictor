@@ -117,6 +117,16 @@
         </div>
       </a>
 
+      <!-- Active Patient Telemetry Chip (Mockup Alignment) -->
+      <div class="header-patient-chip" id="header-patient-chip">
+        <span class="patient-status-dot"></span>
+        <span class="patient-name" id="header-patient-name">Marcus Sterling, 64 yrs</span>
+        <span class="patient-sep">|</span>
+        <span class="patient-id" id="header-patient-id">ID: #CS-0104</span>
+        <span class="patient-sep">|</span>
+        <span class="patient-protocol" id="header-patient-status">Acute STEMI Triage</span>
+      </div>
+
       <nav>
         <ul class="app-nav-menu" id="app-nav-menu">
           <li class="app-nav-item"><a href="#lab-ingestion">Lab Ingestion</a></li>
@@ -481,6 +491,24 @@
               Click & Drag to Rotate 360° · Scroll to Zoom Multi-Planar Views
             </div>
 
+            <!-- 3D Interactive Coronary Ischemia Pin (Matches Clinical Mockup) -->
+            <div class="viewport-lesion-callout" id="portal-lesion-callout">
+              <div class="lesion-beacon">
+                <div class="beacon-pulse-ring"></div>
+                <div class="beacon-core"></div>
+              </div>
+              <div class="lesion-leader-group">
+                <svg class="lesion-leader-svg" width="64" height="42" viewBox="0 0 64 42">
+                  <polyline points="0,40 28,12 60,12" fill="none" stroke="#00E5FF" stroke-width="1.8" stroke-dasharray="3 3"/>
+                  <circle cx="0" cy="40" r="3" fill="#00E5FF"/>
+                </svg>
+                <div class="lesion-badge" id="portal-lesion-badge">
+                  <span class="lesion-badge-icon"></span>
+                  <span class="lesion-badge-text" id="portal-lesion-text">Coronary ischemia</span>
+                </div>
+              </div>
+            </div>
+
             <!-- Bottom HUD with Calibrated 25 mm/s Lead II ECG -->
             <div class="viewport-hud-bottom">
               <div class="ecg-monitor-card">
@@ -546,6 +574,26 @@
         </div>
       </div>
     </section>
+
+    <!-- Cockpit Workspace Sub-Navigation (Focus Mode vs Full Enterprise Tools) -->
+    <nav class="cockpit-nav-bar" role="tablist" aria-label="Workstation View Modes">
+      <button type="button" class="cockpit-nav-btn active" id="tab-btn-cockpit" onclick="switchCockpitView('cockpit')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Diagnostic Cockpit (Active)
+      </button>
+      <button type="button" class="cockpit-nav-btn" id="tab-btn-lab" onclick="switchCockpitView('lab')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        EHR & Lab Report Ingestion
+      </button>
+      <button type="button" class="cockpit-nav-btn" id="tab-btn-deploy" onclick="switchCockpitView('deploy')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+        Desktop Packages (18 Architectures)
+      </button>
+      <button type="button" class="cockpit-nav-btn" id="tab-btn-security" onclick="switchCockpitView('security')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Security & HIPAA Audit
+      </button>
+    </nav>
 
     <!-- ==============================================================================
          SECTION 1: CLINICAL LAB REPORT & DOCTOR FILE INGESTION
