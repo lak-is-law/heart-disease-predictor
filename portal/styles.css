@@ -1522,15 +1522,15 @@ a:hover {
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px 14px;
-  background: #FFFFFF;
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-md);
   margin-bottom: 16px;
 }
 
 .gen-filter-btn {
-  background: #F1F5F9;
-  border: 1px solid transparent;
+  background: #131E36;
+  border: 1px solid var(--color-border-subtle);
   color: var(--color-text-body);
   font-family: var(--font-sans);
   font-size: 0.75rem;
@@ -1545,19 +1545,21 @@ a:hover {
   min-height: 40px;
 }
 .gen-filter-btn:hover {
-  background: #E2E8F0;
+  background: #1E2D4A;
+  border-color: rgba(0, 229, 255, 0.4);
 }
 .gen-filter-btn.active {
   background: var(--color-primary);
   color: #FFFFFF;
+  border-color: #00E5FF;
 }
 
 .table-responsive-wrapper {
-  background: #FFFFFF;
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-md);
   overflow-x: auto;
-  box-shadow: var(--elevation-1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Mathematically Locked Column Table */
@@ -1578,7 +1580,7 @@ a:hover {
 .col-act   { width: 10%; }
 
 .matrix-table thead th {
-  background-color: #F8FAFC;
+  background-color: #0B1325;
   color: var(--color-text-headline);
   font-weight: 700;
   padding: 12px 14px;
@@ -1591,7 +1593,7 @@ a:hover {
   transition: background-color 0.12s ease;
 }
 .matrix-table tbody tr:hover {
-  background-color: #F8FAFC;
+  background-color: rgba(0, 229, 255, 0.05);
 }
 .matrix-table tbody tr:last-child {
   border-bottom: none;
@@ -1617,19 +1619,19 @@ a:hover {
   white-space: nowrap;
 }
 .chip-badge.modern {
-  background: #ECFDF5;
-  color: #047857;
-  border-color: #A7F3D0;
+  background: rgba(16, 185, 129, 0.2);
+  color: #34D399;
+  border-color: rgba(16, 185, 129, 0.4);
 }
 .chip-badge.standard {
-  background: #EFF6FF;
-  color: #1D4ED8;
-  border-color: #BFDBFE;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.35);
 }
 .chip-badge.legacy {
-  background: #F1F5F9;
-  color: #475569;
-  border-color: #CBD5E1;
+  background: rgba(148, 163, 184, 0.15);
+  color: #94A3B8;
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
 .hash-cell {
@@ -1648,7 +1650,7 @@ a:hover {
    11. LIVE SECURITY AUDIT & HEALTH CHECKUP (4x2 GRID)
    ============================================================================== */
 .sec-overview-banner {
-  background: #FFFFFF;
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
   border-left: 6px solid var(--color-success);
   border-radius: var(--radius-md);
@@ -1659,7 +1661,7 @@ a:hover {
   margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 16px;
-  box-shadow: var(--elevation-1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .sec-overview-left {
@@ -1672,8 +1674,8 @@ a:hover {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md);
-  background: var(--color-success-bg);
-  color: var(--color-success);
+  background: rgba(16, 185, 129, 0.2);
+  color: #34D399;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1696,11 +1698,11 @@ a:hover {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-midnight);
-  background: #F1F5F9;
+  color: #00E5FF;
+  background: #131E36;
   padding: 4px 10px;
   border-radius: var(--radius-sm);
-  border: 1px solid #CBD5E1;
+  border: 1px solid rgba(0, 229, 255, 0.3);
 }
 
 /* Strict 4-Column Diagnostic Grid */
@@ -1723,11 +1725,11 @@ a:hover {
 }
 
 .sec-diag-card {
-  background: #FFFFFF;
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-md);
   padding: 16px;
-  box-shadow: var(--elevation-1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
