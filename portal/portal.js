@@ -1859,20 +1859,20 @@ function initPortal3DHeart() {
     pControls.autoRotateSpeed = 0.5;
   }
 
-  // Lighting
-  const ambLight = new THREE.AmbientLight(0x0A192F, 1.2);
+  // Lighting: High-contrast cinematic backlight & rim light
+  const ambLight = new THREE.AmbientLight(0x061528, 1.0);
   pScene.add(ambLight);
 
-  const keyLight = new THREE.DirectionalLight(0xFFFFFF, 2.0);
-  keyLight.position.set(5, 8, 6);
+  const keyLight = new THREE.DirectionalLight(0x93C5FD, 1.2);
+  keyLight.position.set(4, 6, 5);
   pScene.add(keyLight);
 
-  const fillLight = new THREE.DirectionalLight(0x0284C7, 1.8);
-  fillLight.position.set(-6, -2, -4);
+  const fillLight = new THREE.DirectionalLight(0x0284C7, 1.6);
+  fillLight.position.set(-6, -2, -3);
   pScene.add(fillLight);
 
-  const rimLight = new THREE.DirectionalLight(0x38BDF8, 3.2);
-  rimLight.position.set(0, 3, -6);
+  const rimLight = new THREE.DirectionalLight(0x38BDF8, 3.8);
+  rimLight.position.set(-2, 3, -6);
   pScene.add(rimLight);
 
   pHeartGroup = new THREE.Group();
@@ -2276,18 +2276,18 @@ function getDiagnosticMaterial(type) {
   if (currentDiagnosticMode === 'cta') {
     if (type === 'ventricle') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0x184A78,
+        color: 0x143D66,
         bumpMap: createMyocardialBumpMap(),
         bumpScale: 0.002,
-        roughness: 0.14,
-        metalness: 0.06,
+        roughness: 0.12,
+        metalness: 0.08,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.08,
-        transmission: 0.72,
+        clearcoatRoughness: 0.06,
+        transmission: 0.76,
         ior: 1.38,
-        thickness: 1.8,
+        thickness: 2.0,
         transparent: true,
-        opacity: 0.90,
+        opacity: 0.88,
         depthWrite: false,
         emissive: new THREE.Color(pTargetRisk > 0.6 ? 0x2A0D15 : 0x051B33),
         emissiveIntensity: 0.40
@@ -2295,16 +2295,16 @@ function getDiagnosticMaterial(type) {
     }
     if (type === 'atrium') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0x1E3A5F,
-        roughness: 0.16,
-        metalness: 0.05,
+        color: 0x163452,
+        roughness: 0.15,
+        metalness: 0.06,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.10,
-        transmission: 0.70,
+        clearcoatRoughness: 0.08,
+        transmission: 0.74,
         ior: 1.36,
-        thickness: 1.5,
+        thickness: 1.6,
         transparent: true,
-        opacity: 0.88,
+        opacity: 0.86,
         depthWrite: false,
         emissive: 0x06182B,
         emissiveIntensity: 0.35
@@ -2312,13 +2312,13 @@ function getDiagnosticMaterial(type) {
     }
     if (type === 'aorta') {
       return new THREE.MeshPhysicalMaterial({
-        color: 0xDC2626,
-        emissive: 0x7F1D1D,
-        emissiveIntensity: 0.65,
-        roughness: 0.22,
+        color: 0xE11D48,
+        emissive: 0x9F1239,
+        emissiveIntensity: 0.70,
+        roughness: 0.20,
         metalness: 0.15,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.10,
+        clearcoatRoughness: 0.08,
         transmission: 0.40,
         ior: 1.35,
         thickness: 1.2,
@@ -2330,11 +2330,11 @@ function getDiagnosticMaterial(type) {
       return new THREE.MeshPhysicalMaterial({
         color: 0x1D4ED8,
         emissive: 0x1E3A8A,
-        emissiveIntensity: 0.55,
-        roughness: 0.22,
+        emissiveIntensity: 0.60,
+        roughness: 0.20,
         metalness: 0.15,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.10,
+        clearcoatRoughness: 0.08,
         transmission: 0.45,
         ior: 1.35,
         thickness: 1.2,
@@ -2344,11 +2344,11 @@ function getDiagnosticMaterial(type) {
     }
     if (type === 'coronary') {
       return new THREE.MeshStandardMaterial({
-        color: 0xFF1744,
-        emissive: 0xFF1744,
-        emissiveIntensity: 2.4,
-        roughness: 0.10,
-        metalness: 0.20
+        color: 0xFF0038,
+        emissive: 0xFF0038,
+        emissiveIntensity: 2.8,
+        roughness: 0.15,
+        metalness: 0.05
       });
     }
   }
