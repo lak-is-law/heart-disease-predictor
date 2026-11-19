@@ -341,9 +341,9 @@ def render_cgi_heart(
 
   .mode-btn.active {{
     color: #ffffff;
-    background: rgba(0, 111, 207, 0.4);
-    border-color: #006FCF;
-    box-shadow: 0 0 12px rgba(0, 111, 207, 0.4);
+    background: rgba(13, 148, 136, 0.4);
+    border-color: #2DD4BF;
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
   }}
 
   /* Stethoscope Sound Toggle */

@@ -445,19 +445,138 @@ class ClinicalLabReportParser:
                 return res
             return self.parse_text(text)
 
-        if lower_name.endswith(".json"):
+        if lower_name.endswith(".json") or raw_bytes.strip().startswith((b"{", b"[")):
             try:
                 data = json.loads(raw_bytes.decode("utf-8", errors="ignore"))
-                # If structured biomarker object:
                 if isinstance(data, dict):
-                    # Check if keys match biomarkers
+                    obj = data.get("biomarkers") or data.get("vitals") or data
                     vitals = {}
                     for k in SAFE_SCREENING_DEFAULTS:
-                        if k in data:
-                            vitals[k] = float(data[k])
+                        if k in obj:
+                            val = obj[k]
+                            if k == "sex" and isinstance(val, str):
+                                vitals[k] = 0.0 if re.match(r'^(?:female|woman|f)$', val, re.I) else 1.0
+                            else:
+                                vitals[k] = float(val)
                     if len(vitals) >= self.min_extracted:
-                        text_repr = "\n".join(f"{k}: {v}" for k, v in vitals.items())
-                        return self.parse_text(text_repr)
+                        metadata = {}
+                        for k in SAFE_SCREENING_DEFAULTS:
+                            if k in vitals:
+                                val = vitals[k]
+                                if k in ("age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "slope", "ca", "thal"):
+                                    val = int(val)
+                                metadata[k] = BiomarkerExtraction(val, True, 1.0, f"structured_{k}")
+                            else:
+                                metadata[k] = BiomarkerExtraction(SAFE_SCREENING_DEFAULTS[k], False, 0.0, f"imputed_{SAFE_SCREENING_DEFAULTS[k]}")
+                        ext_count = sum(1 for v in metadata.values() if v.extracted)
+                        return ClinicalParseResult(
+                            biomarkers={k: v.value for k, v in metadata.items()},
+                            metadata=metadata,
+                            extracted_count=ext_count,
+                            total_count=13,
+                            confidence_score=1.0,
+                            missing_fields=[k for k, v in metadata.items() if not v.extracted],
+                            warnings=[],
+                            safe_to_predict=True,
+                        )
+            except Exception:
+                pass
+
+        if lower_name.endswith(".csv"):
+            try:
+                csv_text = raw_bytes.decode("utf-8", errors="ignore").strip()
+                lines = [l.strip() for l in csv_text.splitlines() if l.strip()]
+                vitals = {}
+                if len(lines) >= 2:
+                    headers = [h.strip().lower() for h in re.split(r'[,;\t]', lines[0])]
+                    values = [v.strip() for v in re.split(r'[,;\t]', lines[1])]
+                    for idx, h in enumerate(headers):
+                        if h in SAFE_SCREENING_DEFAULTS and idx < len(values):
+                            try:
+                                vitals[h] = float(values[idx])
+                            except ValueError:
+                                pass
+                    if len(vitals) < self.min_extracted:
+                        for line in lines:
+                            parts = [p.strip() for p in re.split(r'[,;\t]', line)]
+                            if len(parts) >= 2:
+                                k = parts[0].lower()
+                                v_str = parts[1]
+                                for canonical in SAFE_SCREENING_DEFAULTS:
+                                    if canonical == k or canonical in k:
+                                        try:
+                                            v_clean = re.search(r'[-+]?[0-9]*\.?[0-9]+', v_str)
+                                            if v_clean:
+                                                vitals[canonical] = float(v_clean.group(0))
+                                        except Exception:
+                                            pass
+                if len(vitals) >= self.min_extracted:
+                    metadata = {}
+                    for k in SAFE_SCREENING_DEFAULTS:
+                        if k in vitals:
+                            val = vitals[k]
+                            if k in ("age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "slope", "ca", "thal"):
+                                val = int(val)
+                            metadata[k] = BiomarkerExtraction(val, True, 1.0, f"structured_{k}")
+                        else:
+                            metadata[k] = BiomarkerExtraction(SAFE_SCREENING_DEFAULTS[k], False, 0.0, f"imputed_{SAFE_SCREENING_DEFAULTS[k]}")
+                    ext_count = sum(1 for v in metadata.values() if v.extracted)
+                    return ClinicalParseResult(
+                        biomarkers={k: v.value for k, v in metadata.items()},
+                        metadata=metadata,
+                        extracted_count=ext_count,
+                        total_count=13,
+                        confidence_score=1.0,
+                        missing_fields=[k for k, v in metadata.items() if not v.extracted],
+                        warnings=[],
+                        safe_to_predict=True,
+                    )
+            except Exception:
+                pass
+
+        if lower_name.endswith(".hl7") or b"MSH|" in raw_bytes or b"OBX|" in raw_bytes:
+            try:
+                hl7_text = raw_bytes.decode("utf-8", errors="ignore")
+                lines = hl7_text.splitlines()
+                vitals = {}
+                for line in lines:
+                    if line.startswith("OBX|"):
+                        parts = line.split("|")
+                        if len(parts) >= 6:
+                            id_f = parts[3].lower()
+                            val_f = parts[5].strip()
+                            for canonical in SAFE_SCREENING_DEFAULTS:
+                                if canonical in id_f:
+                                    try:
+                                        if canonical == "sex":
+                                            vitals[canonical] = 0.0 if re.match(r'^(?:female|woman|f|0)$', val_f, re.I) else 1.0
+                                        else:
+                                            m_num = re.search(r'[-+]?[0-9]*\.?[0-9]+', val_f)
+                                            if m_num:
+                                                vitals[canonical] = float(m_num.group(0))
+                                    except Exception:
+                                        pass
+                if len(vitals) >= self.min_extracted:
+                    metadata = {}
+                    for k in SAFE_SCREENING_DEFAULTS:
+                        if k in vitals:
+                            val = vitals[k]
+                            if k in ("age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "slope", "ca", "thal"):
+                                val = int(val)
+                            metadata[k] = BiomarkerExtraction(val, True, 1.0, f"hl7_{k}")
+                        else:
+                            metadata[k] = BiomarkerExtraction(SAFE_SCREENING_DEFAULTS[k], False, 0.0, f"imputed_{SAFE_SCREENING_DEFAULTS[k]}")
+                    ext_count = sum(1 for v in metadata.values() if v.extracted)
+                    return ClinicalParseResult(
+                        biomarkers={k: v.value for k, v in metadata.items()},
+                        metadata=metadata,
+                        extracted_count=ext_count,
+                        total_count=13,
+                        confidence_score=1.0,
+                        missing_fields=[k for k, v in metadata.items() if not v.extracted],
+                        warnings=[],
+                        safe_to_predict=True,
+                    )
             except Exception:
                 pass
 

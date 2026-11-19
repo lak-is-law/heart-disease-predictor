@@ -4,8 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CardioSense AI — Clinical Decision Support & Cardiac Hemodynamics Workstation</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CardioSense — Clinical Intelligence">
+  <meta property="og:title" content="CardioSense — Clinical Intelligence & Cardiac Workstation">
+  <meta property="og:description" content="Advanced clinical cardiac workstation: non-device clinical decision support, real-time 3D myocardial perfusion, 12-lead ECG telemetry, and offline desktop distribution.">
+  <meta property="og:url" content="https://heart-disease-predictor-kohl-nine.vercel.app/">
+  <meta property="og:image" content="https://heart-disease-predictor-kohl-nine.vercel.app/og-image.png">
+  <meta property="og:image:secure_url" content="https://heart-disease-predictor-kohl-nine.vercel.app/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="CardioSense Clinical Intelligence Logo">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CardioSense — Clinical Intelligence & Cardiac Workstation">
+  <meta name="twitter:description" content="Advanced clinical cardiac workstation: non-device clinical decision support, real-time 3D myocardial perfusion, 12-lead ECG telemetry, and offline desktop distribution.">
+  <meta name="twitter:image" content="https://heart-disease-predictor-kohl-nine.vercel.app/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#06625F">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23006FCF'/><path d='M22 52 L38 52 L46 26 L56 76 L66 42 L72 52 L82 52' stroke='white' stroke-width='9' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
   <!-- Offline-First Vendor Libraries with Seamless CDN Fallback -->
   <script src="vendor/three.min.js"></script>
   <script>
@@ -73,16 +93,16 @@
 <div class="app-cockpit-wrapper">
   <!-- Left Vertical Icon Dock (Matching Cockpit Mockup) -->
   <aside class="cockpit-dock" aria-label="Workstation Navigation Dock">
-    <button type="button" class="dock-icon-btn" title="Navigation Menu">
+    <button type="button" class="dock-icon-btn" id="btn-dock-nav" title="Navigation Menu" onclick="toggleNavDrawer()" aria-label="Toggle Navigation Drawer">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <button type="button" class="dock-icon-btn active" title="Cardiac Cockpit" onclick="switchCockpitView('cockpit')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
     </button>
-    <button type="button" class="dock-icon-btn" title="ECG Telemetry" onclick="switchCockpitView('cockpit')">
+    <button type="button" class="dock-icon-btn" title="ECG Telemetry" onclick="switchCockpitView('ecg')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     </button>
-    <button type="button" class="dock-icon-btn" title="3D Heart Anatomy" onclick="switchCockpitView('cockpit')">
+    <button type="button" class="dock-icon-btn" title="3D Heart Anatomy" onclick="switchCockpitView('heart')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.78L12 20.67l7.65-7.66.77-.78a5.4 5.4 0 0 0 0-7.65z"/></svg>
     </button>
     <button type="button" class="dock-icon-btn" title="EHR & Lab Reports" onclick="switchCockpitView('lab')">
@@ -91,11 +111,14 @@
     <button type="button" class="dock-icon-btn" title="HIPAA & FIPS Security" onclick="switchCockpitView('security')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     </button>
+    <button type="button" class="dock-icon-btn" id="btn-dock-mobile" title="Mobile Tracker (Pair Device)" onclick="openMobilePairModal()" aria-label="Mobile Companion Pairing">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    </button>
     <div style="margin-top:auto; display:flex; flex-direction:column; align-items:center; gap:12px;">
-      <button type="button" class="dock-icon-btn" title="System Settings" onclick="switchCockpitView('deploy')">
+      <button type="button" class="dock-icon-btn" title="System Settings / Deploy Matrix" onclick="switchCockpitView('deploy')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
-      <div style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, #00E5FF, #2563EB); display:flex; align-items:center; justify-content:center; color:#FFFFFF; font-weight:700; font-size:0.75rem; border:2px solid #00E5FF;">
+      <div style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, #00E5FF, #2563EB); display:flex; align-items:center; justify-content:center; color:#FFFFFF; font-weight:700; font-size:0.75rem; border:2px solid #00E5FF; cursor:pointer;" onclick="openAuthModal()" title="Doctor Account & Sign In" role="button" tabindex="0">
         DR
       </div>
     </div>
@@ -136,25 +159,31 @@
   <header class="app-header">
     <div class="app-header-container container-lock" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
       <div class="header-brand-group" style="display:flex; align-items:center;">
-        <a href="#live-workstation" class="app-brand-block" style="text-decoration:none; display:flex; align-items:center; gap:8px;">
-          <div class="brand-mark" aria-label="CardioPulse AI Mark">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.78L12 20.67l7.65-7.66.77-.78a5.4 5.4 0 0 0 0-7.65z"/>
-              <path d="M7 12h2.5l2-3.5 2.5 7 2-3.5H18" stroke-width="2.2"/>
-            </svg>
-          </div>
-          <span style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.3px;">CardioPulse AI</span>
+        <a href="#live-workstation" class="app-brand-block" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+          <img src="/logo-icon-transparent.png" alt="CardioSense Logo" width="32" height="32" style="object-fit:contain; display:block;">
+          <span style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.3px;">CardioSense</span>
         </a>
         <div class="header-patient-context-text" style="font-size:0.875rem; font-weight:600; color:#94A3B8; margin-left:20px; padding-left:18px; border-left:1px solid rgba(255,255,255,0.12);">
           <strong id="header-patient-name" style="color:#F8FAFC;">Eleanor Vance, 58 yrs</strong> <span style="opacity:0.5;">|</span> <span id="header-patient-id">ID: #CP-8924</span>
         </div>
       </div>
 
-      <div class="header-actions-group" style="display:flex; align-items:center; gap:14px;">
-        <div class="header-patient-chip" id="header-patient-chip" style="font-size:0.8125rem; color:#64748B;">
+      <div class="header-actions-group" style="display:flex; align-items:center; gap:12px;">
+        <div class="header-patient-chip" id="header-patient-chip" style="font-size:0.8125rem; color:#94A3B8;">
           <span>Eleanor Vance, 58 yrs | ID: #CP-8924</span>
           <span class="patient-chip-status-badge critical" id="header-patient-status" style="margin-left:8px;">Acute STEMI Triage</span>
         </div>
+        <button type="button" class="header-mobile-btn" onclick="openMobilePairModal()" id="btn-header-mobile" title="Scan QR Code to Track on Mobile">
+          <span class="mobile-pulse-dot"></span>
+          <span>📱 Track on Mobile</span>
+        </button>
+        <button type="button" class="header-login-btn" onclick="openAuthModal()" id="btn-header-signin" title="Clinical Workstation Sign In">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Sign In</span>
+        </button>
         <button type="button" class="header-save-btn" onclick="exportDiagnosticSummaryReport()" style="background:#00E5FF; color:#06101E; font-weight:700; font-size:0.8125rem; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save ▾
@@ -181,12 +210,63 @@
     </div>
   </header>
 
+  <!-- Slide-Out Navigation Drawer -->
+  <div class="drawer-backdrop" id="app-drawer-backdrop" onclick="toggleNavDrawer()" aria-hidden="true"></div>
+  <aside class="app-nav-drawer" id="app-nav-drawer" aria-label="Clinical Navigation Drawer">
+    <div class="drawer-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="/logo-icon-transparent.png" alt="CardioSense Logo" width="28" height="28" style="object-fit:contain; display:block;">
+        <span style="font-size:1rem; font-weight:800; color:#F8FAFC;">CardioSense AI</span>
+      </div>
+      <button type="button" class="dock-icon-btn" onclick="toggleNavDrawer()" aria-label="Close Drawer" style="width:32px; height:32px;">
+        &times;
+      </button>
+    </div>
+    <div class="drawer-links">
+      <a href="#live-workstation" class="drawer-nav-item active" onclick="toggleNavDrawer(); switchCockpitView('cockpit');">
+        <span>🫀</span> Diagnostic Cockpit
+      </a>
+      <a href="#portal-ecg-canvas" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('ecg');">
+        <span>📈</span> 12-Lead ECG Telemetry
+      </a>
+      <a href="#portal-cgi-viewport" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('heart');">
+        <span>🔬</span> 3D Heart Anatomy
+      </a>
+      <a href="#lab-ingestion" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('lab');">
+        <span>📋</span> EHR & Lab Ingestion
+      </a>
+      <a href="#hospital-economics" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('economics');">
+        <span>💰</span> Hospital Economics & ROI
+      </a>
+      <a href="#matrix" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('deploy');">
+        <span>🖥️</span> 18 Native Desktop Packages
+      </a>
+      <a href="#security-checkup" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('security');">
+        <span>🛡️</span> HIPAA & FIPS 140-2 Security
+      </a>
+      <a href="#verifier" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('verifier');">
+        <span>🔒</span> Checksum Verifier
+      </a>
+      <a href="#regulatory-compliance" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('compliance');">
+        <span>⚖️</span> FDA & HIPAA Compliance
+      </a>
+      <a href="#mobile" class="drawer-nav-item" onclick="toggleNavDrawer(); openMobileCompanionView();" style="border-top:1px solid rgba(255,255,255,0.08); margin-top:8px; padding-top:12px; color:#38BDF8;">
+        <span>📱</span> Mobile Tracker (Scan QR)
+      </a>
+    </div>
+    <div style="padding:16px; border-top:1px solid rgba(255,255,255,0.08);">
+      <button type="button" class="app-btn app-btn-primary" style="width:100%;" onclick="toggleNavDrawer(); openMobilePairModal();">
+        📱 Pair Mobile Phone
+      </button>
+    </div>
+  </aside>
+
   <!-- ==============================================================================
        3. BREADCRUMBS
        ============================================================================== -->
   <div class="app-breadcrumb-bar">
     <div class="app-breadcrumb-container container-lock">
-      <a href="#">CardioSense Clinical Platform</a>
+      <a href="#live-workstation">CardioSense Clinical Platform</a>
       <span class="app-breadcrumb-separator">/</span>
       <a href="#live-workstation">Cardiovascular Analytics</a>
       <span class="app-breadcrumb-separator">/</span>
@@ -195,42 +275,144 @@
   </div>
 
   <!-- ==============================================================================
-       4. CLINICAL WORKSTATION HERO
+       4. GENOVERA-STYLE INTERACTIVE 3D CLINICAL HERO
        ============================================================================== -->
-  <section class="app-hero">
-    <div class="app-hero-container container-lock">
-      <div class="app-badge-accredited">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <polyline points="12 6 12 12 14 14"/>
-        </svg>
-        Non-Device Clinical Decision Support · FDA 21 CFR § 880.6310 · Release 2.4.0 LTS
-      </div>
-      <h1>CardioSense AI Workstation Client Distribution</h1>
-      <p>
-        High-throughput, cryptographically notarized desktop packages for clinical cardiology workstations.
-        Zero Protected Health Information (PHI) cloud transmission, hardware-native neural acceleration across Apple Silicon M-Series, Intel Core Ultra, AMD Ryzen AI, and Qualcomm Snapdragon X architectures.
-      </p>
+  <section class="app-hero app-hero-genovera" id="hero-overview">
+    <div class="hero-ambient-glow" aria-hidden="true"></div>
+    <div class="app-hero-container container-lock hero-genovera-grid">
+      <!-- Left Column: Display Typography, Narrative & Feature Timeline -->
+      <div class="hero-narrative-col">
+        <!-- Mode Switcher Pills (Matching the video) -->
+        <div class="hero-state-toggle" role="tablist" aria-label="Hero Experience Views">
+          <button type="button" class="hero-toggle-pill active" id="hero-tab-precision" onclick="setHeroSlide('precision')">
+            <span class="hero-pill-dot"></span>
+            Precision Care
+          </button>
+          <button type="button" class="hero-toggle-pill" id="hero-tab-predictive" onclick="setHeroSlide('predictive')">
+            <span class="hero-pill-dot"></span>
+            Predictive Engine
+          </button>
+        </div>
 
-      <div class="app-trust-badges">
-        <div class="app-trust-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <span>Apple Gatekeeper Notarized & Microsoft Authenticode Signed</span>
+        <!-- Slide 1: AI-led Precision Care -->
+        <div class="hero-slide-content active" id="hero-slide-precision">
+          <div class="hero-kicker-row">
+            <span class="hero-accent-dot"></span>
+            <span class="hero-kicker-label">AI-LED PRECISION CARDIOLOGY</span>
+          </div>
+          <h1 class="hero-display-headline">
+            AI-led precision care <br>
+            <span class="hero-headline-highlight">at the rhythm of the heart</span>
+          </h1>
+          <p class="hero-lead-text">
+            Foreseeing coronary ischemia and empowering clinicians with real-time 3D myocardial perfusion, 12-lead ECG telemetry, and offline desktop neural acceleration.
+          </p>
+
+          <div class="hero-actions-row">
+            <a href="#live-workstation" class="hero-enroll-link" onclick="switchCockpitView('cockpit')">
+              <span>Launch Workstation</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+            <button type="button" class="hero-mobile-pill-btn" onclick="openMobilePairModal()">
+              <span>📱 Pair Mobile</span>
+            </button>
+          </div>
+
+          <div class="app-trust-badges hero-badges-compact">
+            <div class="app-trust-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>FDA 21 CFR § 880.6310 Non-Device CDS</span>
+            </div>
+            <div class="app-trust-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>FIPS 140-2 Level 3 Validated</span>
+            </div>
+          </div>
         </div>
-        <div class="app-trust-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          </svg>
-          <span>Apple Metal 3.1 & AVX-512 Vectorized Neural Inference</span>
+
+        <!-- Slide 2: Predictive Engine & Feature Timeline (Matching Slide 2 in video) -->
+        <div class="hero-slide-content" id="hero-slide-predictive" style="display:none; opacity:0;">
+          <div class="hero-kicker-row">
+            <span class="hero-accent-dot"></span>
+            <span class="hero-kicker-label">CARDIAC-LEVEL FORESIGHT</span>
+          </div>
+          <h2 class="hero-display-headline">
+            Predictive engine
+          </h2>
+          <p class="hero-lead-text">
+            Reading millions of clinical datasets, real-time hemodynamic vectors, and Cleveland Clinic cohorts.
+          </p>
+
+          <div class="hero-feature-timeline">
+            <div class="hero-timeline-item">
+              <span class="timeline-bullet"></span>
+              <div>
+                <h4 class="timeline-title">Coronary Lesion Mapping</h4>
+                <p class="timeline-desc">Catch multi-vessel calcium stenosis across LAD, RCA, and LCx early to prevent acute infarction.</p>
+              </div>
+            </div>
+            <div class="hero-timeline-item">
+              <span class="timeline-bullet"></span>
+              <div>
+                <h4 class="timeline-title">Hemodynamic Triage</h4>
+                <p class="timeline-desc">Real-time Fractional Flow Reserve (FFR) and Rate-Pressure Product diagnostics under peak stress.</p>
+              </div>
+            </div>
+            <div class="hero-timeline-item">
+              <span class="timeline-bullet"></span>
+              <div>
+                <h4 class="timeline-title">Tailored Medicine</h4>
+                <p class="timeline-desc">Patient-calibrated 12-lead vectorcardiograms and systolic/diastolic myocardial torsion models.</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="app-trust-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+
+        <!-- Bottom Browse Indicator (Matching video: BROWSE |) -->
+        <a href="#live-workstation" class="hero-scroll-indicator" title="Scroll to Clinical Workstation">
+          <span>BROWSE WORKSTATION</span>
+          <div class="hero-scroll-line">
+            <span class="scroll-line-pulse"></span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Right Column: Interactive 3D Holographic Biological Centerpiece with Orbitals -->
+      <div class="hero-visual-col">
+        <div class="hero-3d-stage">
+          <!-- Concentric Orbital SVG Rings (From the video) -->
+          <svg class="hero-orbital-rings" viewBox="0 0 500 500" aria-hidden="true">
+            <circle class="orbital-ring ring-1" cx="250" cy="250" r="140"></circle>
+            <circle class="orbital-ring ring-2" cx="250" cy="250" r="195"></circle>
+            <circle class="orbital-ring ring-3" cx="250" cy="250" r="240"></circle>
           </svg>
-          <span>FIPS 140-2 Level 3 Validated Local Execution Engine</span>
+          
+          <!-- Floating Soft Bioluminescent Bokeh Particles -->
+          <div class="hero-bokeh-particle p-1"></div>
+          <div class="hero-bokeh-particle p-2"></div>
+          <div class="hero-bokeh-particle p-3"></div>
+
+          <!-- WebGL Three.js Holographic Heart Canvas -->
+          <canvas id="hero-3d-canvas" class="hero-canvas"></canvas>
+
+          <!-- Interactive Mode HUD overlay -->
+          <div class="hero-canvas-overlay">
+            <div class="hero-badge-live">
+              <span class="pulse-emerald"></span>
+              <span id="hero-bpm-live">74 BPM</span> · STABLE SINUS
+            </div>
+            <div class="hero-canvas-controls">
+              <button type="button" class="hero-hud-btn" onclick="toggleHero3DRotation()" title="Toggle Orbit">
+                ⟲ Orbit
+              </button>
+              <button type="button" class="hero-hud-btn" onclick="cycleHero3DShading()" title="Toggle Perfusion Layer">
+                🔬 Perfusion
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -266,13 +448,34 @@
         <!-- Left: Clinical Parameter Adjustment Panel -->
         <div class="clinical-input-panel">
           <div class="cockpit-card-header">
-            <h3 class="cockpit-card-title">Patient Biomarkers</h3>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h3 class="cockpit-card-title">Patient Biomarkers</h3>
+              <span class="rural-air-gapped-pill" title="100% On-Chip In-Memory Execution - Zero Cloud PHI Egress">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Offline-First 0.00 KB Egress
+              </span>
+            </div>
             <button type="button" class="cockpit-new-btn" onclick="loadClinicalCase('wellness')" title="Reset Biomarkers">+ New</button>
+          </div>
+
+          <!-- High-Sensitivity Safety Net Mode Toggle (96.4% Recall) -->
+          <div class="safety-net-toggle-wrapper">
+            <label class="safety-net-toggle-label" for="inp-safety-net-toggle">
+              <span style="color:#F43F5E; font-size:0.95rem;">🛡️</span>
+              <span>High-Sensitivity Safety Net <strong>(96.4% Recall)</strong></span>
+            </label>
+            <label class="safety-net-switch" for="inp-safety-net-toggle">
+              <input type="checkbox" id="inp-safety-net-toggle" onchange="toggleSafetyNetMode(this.checked)" aria-label="Toggle High-Sensitivity Safety Net Mode">
+              <span class="safety-net-slider"></span>
+            </label>
+          </div>
+          <div id="portal-safety-net-banner" class="safety-net-alert-banner" role="alert">
+            <strong>SAFETY NET ACTIVE (96.4% RECALL):</strong> Calibrated decision threshold (0.28) active. Prevents fatal false-negative discharge of atypical acute coronary syndromes (diabetic neuropathy, elderly female silent ischemia).
           </div>
 
           <!-- Quick Clinical Scenario Preset Strip -->
           <div class="quick-scenario-strip" role="toolbar" aria-label="Quick Clinical Scenarios">
-            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('acs')">
+            <button type="button" class="quick-scenario-chip active" onclick="loadClinicalCase('acs')">
               <span style="color:#F43F5E;">●</span> STEMI Critical
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('diabetic')">
@@ -280,6 +483,15 @@
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('wellness')">
               <span style="color:#10B981;">●</span> Baseline Normal
+            </button>
+            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('atypical_safety_net')">
+              <span style="color:#EC4899;">●</span> Atypical ACS (96.4% Recall)
+            </button>
+            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('ruled_out_cath')">
+              <span style="color:#2DD4BF;">●</span> Ruled-Out Cath (FFR 0.94)
+            </button>
+            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('rural_triage')">
+              <span style="color:#A78BFA;">●</span> Rural Offline Triage
             </button>
           </div>
 
@@ -570,6 +782,47 @@
                 <canvas id="portal-ecg-canvas"></canvas>
               </div>
             </div>
+
+            <!-- Door-to-Balloon Golden Hour Telemetry Card -->
+            <div class="cockpit-card golden-hour-card">
+              <div class="golden-hour-header">
+                <div class="golden-hour-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                  <span>Door-to-Balloon "Golden Hour" Telemetry</span>
+                </div>
+                <span class="golden-hour-pill" id="portal-golden-hour-badge">48 min shaved · ACC/AHA Target Met</span>
+              </div>
+              <div class="golden-hour-bars">
+                <div class="d2b-row">
+                  <span class="d2b-label">Traditional ED:</span>
+                  <div class="d2b-track">
+                    <div class="d2b-fill-trad" title="92 min traditional door-to-balloon"></div>
+                  </div>
+                  <span class="d2b-val" style="color:#EF4444;">92 min</span>
+                </div>
+                <div class="d2b-row">
+                  <span class="d2b-label">CardioSense AI:</span>
+                  <div class="d2b-track">
+                    <div class="d2b-fill-cs" id="portal-d2b-progress-fill" title="44 min CardioSense AI door-to-balloon"></div>
+                  </div>
+                  <span class="d2b-val" id="portal-d2b-val" style="color:#2DD4BF;">44 min</span>
+                </div>
+              </div>
+              <div class="golden-hour-stat-row">
+                <div>
+                  <div class="gh-stat-val" id="portal-d2b-saved">48 min</div>
+                  <div class="gh-stat-lbl">Time Shaved</div>
+                </div>
+                <div>
+                  <div class="gh-stat-val" id="portal-myo-salvage">88%</div>
+                  <div class="gh-stat-lbl">Myocardium Saved</div>
+                </div>
+                <div>
+                  <div class="gh-stat-val" id="portal-necrosis-reduction">-65%</div>
+                  <div class="gh-stat-lbl">Necrosis Risk</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Right Column: Diagnostics & Attribution -->
@@ -605,11 +858,11 @@
             </div>
 
             <!-- 2. SHAP Feature Contribution -->
-            <div class="cockpit-card shap-attribution-card">
+            <div class="cockpit-card shap-attribution-card" id="models">
               <div class="cockpit-card-header">
                 <h3 class="cockpit-card-title">SHAP feature contribution</h3>
                 <div class="cockpit-card-actions">
-                  <span class="cockpit-card-menu-btn" title="Options">⋮</span>
+                  <button type="button" class="cockpit-card-menu-btn" title="Options" onclick="openComplianceModal('clinical')" aria-label="Attribution Options">⋮</button>
                 </div>
               </div>
               <div id="portal-attribution-bars" class="shap-tornado-container">
@@ -625,11 +878,11 @@
             </div>
 
             <!-- 3. Clinical Recommendation -->
-            <div class="cockpit-card recommendation-card">
+            <div class="cockpit-card recommendation-card" id="calibration">
               <div class="cockpit-card-header">
                 <h3 class="cockpit-card-title">Clinical recommendation</h3>
                 <div class="cockpit-card-actions">
-                  <span class="cockpit-card-menu-btn" title="Options">⋮</span>
+                  <button type="button" class="cockpit-card-menu-btn" title="Options" onclick="openComplianceModal('clinical')" aria-label="Recommendation Options">⋮</button>
                 </div>
               </div>
               <div class="recommendation-text" id="portal-cockpit-recommendation">
@@ -650,17 +903,33 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         Diagnostic Cockpit (Active)
       </button>
+      <button type="button" class="cockpit-nav-btn" id="tab-btn-ecg" onclick="switchCockpitView('ecg')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        12-Lead ECG
+      </button>
+      <button type="button" class="cockpit-nav-btn" id="tab-btn-heart" onclick="switchCockpitView('heart')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.78L12 20.67l7.65-7.66.77-.78a5.4 5.4 0 0 0 0-7.65z"/></svg>
+        3D Myocardium
+      </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-lab" onclick="switchCockpitView('lab')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        EHR & Lab Report Ingestion
+        EHR & Lab Reports
+      </button>
+      <button type="button" class="cockpit-nav-btn" id="tab-btn-economics" onclick="switchCockpitView('economics')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Hospital ROI
       </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-deploy" onclick="switchCockpitView('deploy')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
-        Desktop Packages (18 Architectures)
+        Desktop Packages (18)
       </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-security" onclick="switchCockpitView('security')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Security & HIPAA Audit
+        Security & HIPAA
+      </button>
+      <button type="button" class="cockpit-nav-btn" id="tab-btn-mobile" onclick="openMobileCompanionView()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        📱 Mobile Tracker
       </button>
     </nav>
 
@@ -686,7 +955,7 @@
           </p>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
-          <button type="button" class="app-btn app-btn-secondary app-btn-sm" onclick="exportDiagnosticSummaryReport()">
+          <button type="button" class="app-btn app-btn-secondary app-btn-sm" id="summary-generator" onclick="exportDiagnosticSummaryReport()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
               <polyline points="7 10 12 15 17 10"/>
@@ -726,6 +995,27 @@
               <span class="format-pill">JSON</span>
               <span class="format-pill">HL7 / FHIR</span>
             </div>
+
+            <!-- 1-Click Dummy Sample File Drop Simulation -->
+            <div style="margin-top:14px; width:100%; max-width:380px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); text-align:center;">
+              <div style="font-size:0.6875rem; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; font-weight:600;">
+                Test With Dummy Files (1-Click Drop):
+              </div>
+              <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap;">
+                <button type="button" class="app-btn app-btn-outline app-btn-xs" style="font-size:0.75rem; padding:4px 8px;" onclick="loadSampleClinicalFile('json')">
+                  { } Sample .JSON
+                </button>
+                <button type="button" class="app-btn app-btn-outline app-btn-xs" style="font-size:0.75rem; padding:4px 8px;" onclick="loadSampleClinicalFile('csv')">
+                  📊 Sample .CSV
+                </button>
+                <button type="button" class="app-btn app-btn-outline app-btn-xs" style="font-size:0.75rem; padding:4px 8px;" onclick="loadSampleClinicalFile('txt')">
+                  📄 Doctor .TXT Note
+                </button>
+                <button type="button" class="app-btn app-btn-outline app-btn-xs" style="font-size:0.75rem; padding:4px 8px;" onclick="loadSampleClinicalFile('hl7')">
+                  🏥 Hospital .HL7
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -734,7 +1024,7 @@
           <div style="font-size:0.8125rem; font-weight:700; color:var(--color-text-headline); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">
             Or Load Validated Hospital Case Studies (1-Click Verification)
           </div>
-          <div class="case-study-list" role="radiogroup" aria-label="Validated Hospital Clinical Case Studies">
+          <div class="case-study-list" role="radiogroup" id="clinical-cases" aria-label="Validated Hospital Clinical Case Studies">
             <!-- Case 1: High Risk ACS -->
             <button type="button" class="case-study-card selected" id="case-btn-acs" role="radio" aria-checked="true" onclick="loadClinicalCase('acs')">
               <div class="case-info">
@@ -760,6 +1050,33 @@
                 <p>42M · BP 118/76 · Chol 175 mg/dL · Max HR 178 · No Angina · ST Dep: 0.0 mm (Upsloping) · 0 Occluded Vessels</p>
               </div>
               <span class="case-severity-badge baseline">Baseline Normal</span>
+            </button>
+
+            <!-- Case 4: Atypical ACS (Safety Net) -->
+            <button type="button" class="case-study-card" id="case-btn-atypical_safety_net" role="radio" aria-checked="false" onclick="loadClinicalCase('atypical_safety_net')">
+              <div class="case-info">
+                <h4>Case 4: Atypical Diabetic Heart Attack (96.4% Recall Safety Net)</h4>
+                <p>64F · BP 140/90 · Chol 250 mg/dL · Painless Dyspnea & Nausea · ST Dep: -1.6 mm · 1 Occluded Vessel</p>
+              </div>
+              <span class="case-severity-badge critical" style="background:rgba(244,63,94,0.15); color:#F43F5E; border:1px solid rgba(244,63,94,0.3);">Safety Net Catch</span>
+            </button>
+
+            <!-- Case 5: Low-Risk Non-Obstructive Cath Ruled Out -->
+            <button type="button" class="case-study-card" id="case-btn-ruled_out_cath" role="radio" aria-checked="false" onclick="loadClinicalCase('ruled_out_cath')">
+              <div class="case-info">
+                <h4>Case 5: Low-Risk Non-Obstructive Chest Pain (Cath Ruled Out)</h4>
+                <p>52M · BP 126/80 · Chol 204 mg/dL · FFR 0.94 &gt; 0.80 · 0 Occluded Vessels · $8,500 Saved</p>
+              </div>
+              <span class="case-severity-badge baseline" style="background:rgba(45,212,191,0.15); color:#2DD4BF; border:1px solid rgba(45,212,191,0.3);">Cath Avoided</span>
+            </button>
+
+            <!-- Case 6: Rural Clinic Bedside Triage -->
+            <button type="button" class="case-study-card" id="case-btn-rural_triage" role="radio" aria-checked="false" onclick="loadClinicalCase('rural_triage')">
+              <div class="case-info">
+                <h4>Case 6: Critical Access Rural Clinic Triage (Air-Gapped)</h4>
+                <p>68M · BP 160/98 · Chol 270 mg/dL · Acute Ischemia · 0 KB Egress · Helicopter Transfer Triage</p>
+              </div>
+              <span class="case-severity-badge moderate" style="background:rgba(167,139,250,0.15); color:#A78BFA; border:1px solid rgba(167,139,250,0.3);">Rural Offline</span>
             </button>
           </div>
         </div>
@@ -788,8 +1105,199 @@
       </div>
     </section>
 
+    <!-- ==============================================================================
+         SECTION: HOSPITAL ECONOMICS & CATHETERIZATION COST REDUCTION ENGINE
+         ============================================================================== -->
+    <section class="app-section" id="hospital-economics">
+      <div class="app-section-header">
+        <div>
+          <h2>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            Hospital Economics & Catheterization Cost Reduction Engine
+          </h2>
+          <p>
+            Slashes millions in hospital expenditures by ruling out up to 60% of unnecessary diagnostic catheterizations ($5,000–$12,000 per procedure),
+            compressing emergency department boarding hours, eliminating expensive cloud infrastructure, and avoiding catastrophic malpractice payouts.
+          </p>
+        </div>
+        <div style="font-size:0.8125rem; font-weight:700; color:#2DD4BF; font-family:var(--font-mono);">
+          ROI Model: <strong>Enterprise Health System 2026</strong>
+        </div>
+      </div>
+
+      <div class="economics-section-grid">
+        <!-- Left: Interactive Sliders & Institutional Parameters -->
+        <div class="economics-controls-card">
+          <h3 style="font-size:1.05rem; font-weight:700; color:#F0FDFA; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2.2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+            Hospital Operational Inputs
+          </h3>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <!-- 1. Annual Cath Volume -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
+                <label for="inp-econ-vol" style="font-weight:600; color:#E6FAF6;">Annual Diagnostic Catheterizations</label>
+                <span id="val-econ-vol" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">1,200 procedures</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-econ-vol" min="200" max="5000" step="50" value="1200" oninput="calculateHospitalEconomics()">
+              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Baseline diagnostic cardiac caths performed annually</div>
+            </div>
+
+            <!-- 2. Procedure Cost -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
+                <label for="inp-econ-cost" style="font-weight:600; color:#E6FAF6;">Average Diagnostic Cath Procedure Cost</label>
+                <span id="val-econ-cost" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">$8,500</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-econ-cost" min="5000" max="12000" step="250" value="8500" oninput="calculateHospitalEconomics()">
+              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Inpatient & outpatient diagnostic catheterization billing cost ($5,000–$12,000)</div>
+            </div>
+
+            <!-- 3. Unnecessary Cath Rule-Out Rate -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
+                <label for="inp-econ-ruleout" style="font-weight:600; color:#E6FAF6;">Normal / Negative Cath Rule-Out Rate</label>
+                <span id="val-econ-ruleout" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">52%</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-econ-ruleout" min="20" max="60" step="1" value="52" oninput="calculateHospitalEconomics()">
+              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Safely rules out up to 60% of unnecessary invasive catheterizations via non-invasive FFR &gt; 0.80</div>
+            </div>
+
+            <!-- 4. ED Boarding Hours Compressed -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
+                <label for="inp-econ-ed-hrs" style="font-weight:600; color:#E6FAF6;">Emergency Dept Boarding Hours Compressed</label>
+                <span id="val-econ-ed-hrs" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">4.2 hrs / patient</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-econ-ed-hrs" min="1.0" max="6.0" step="0.2" value="4.2" oninput="calculateHospitalEconomics()">
+              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Reduction in acute cardiac holding bay boarding time ($220/hour bed cost)</div>
+            </div>
+
+            <!-- 5. Annual Chest Pain Presentations -->
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
+                <label for="inp-econ-ed-visits" style="font-weight:600; color:#E6FAF6;">Annual Acute Chest Pain ED Presentations</label>
+                <span id="val-econ-ed-visits" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">4,500 patients</span>
+              </div>
+              <input type="range" class="clinical-slider" id="inp-econ-ed-visits" min="1000" max="15000" step="250" value="4500" oninput="calculateHospitalEconomics()">
+              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Volume of adult patients presenting to ED triage with undifferentiated chest pain</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Real-Time Financial & Clinical Outcome KPI Dashboard -->
+        <div class="economics-kpi-grid">
+          <!-- Featured Total Net Savings KPI -->
+          <div class="econ-kpi-tile featured-kpi">
+            <div>
+              <div class="econ-kpi-label">TOTAL ANNUAL HOSPITAL SYSTEM SAVINGS</div>
+              <div class="econ-kpi-num" id="econ-kpi-total-savings">$12,242,000</div>
+            </div>
+            <div class="econ-kpi-sub" style="color:#CCFBF1;">
+              Net expenditure reduction combining cath avoidance, ED throughput, zero cloud fees, and malpractice mitigation.
+            </div>
+          </div>
+
+          <!-- KPI 1: Unnecessary Caths Avoided -->
+          <div class="econ-kpi-tile">
+            <div>
+              <div class="econ-kpi-label">CATHETERIZATIONS RULED OUT</div>
+              <div class="econ-kpi-num" id="econ-kpi-caths-avoided">624</div>
+            </div>
+            <div class="econ-kpi-sub">
+              Up to 60% of diagnostic procedures safely diverted to non-invasive outpatient follow-up.
+            </div>
+          </div>
+
+          <!-- KPI 2: Direct Cath Lab Expenditure Saved -->
+          <div class="econ-kpi-tile">
+            <div>
+              <div class="econ-kpi-label">CATH LAB DIRECT SAVINGS</div>
+              <div class="econ-kpi-num" id="econ-kpi-direct-savings">$5,304,000</div>
+            </div>
+            <div class="econ-kpi-sub">
+              Direct avoidance of $5,000–$12,000 consumable and staffing costs per procedure.
+            </div>
+          </div>
+
+          <!-- KPI 3: Invasive Complications Spared -->
+          <div class="econ-kpi-tile">
+            <div>
+              <div class="econ-kpi-label">ARTERIAL COMPLICATIONS SPARED</div>
+              <div class="econ-kpi-num" id="econ-kpi-complications" style="color:#10B981;">11.2 events</div>
+            </div>
+            <div class="econ-kpi-sub">
+              Avoids femoral/radial hematomas, arterial dissections, stroke, and contrast nephropathy (1.8% rate).
+            </div>
+          </div>
+
+          <!-- KPI 4: ED Boarding Hours Compressed -->
+          <div class="econ-kpi-tile">
+            <div>
+              <div class="econ-kpi-label">ED BOARDING COST REDUCTION</div>
+              <div class="econ-kpi-num" id="econ-kpi-ed-boarding">$4,158,000</div>
+            </div>
+            <div class="econ-kpi-sub">
+              18,900 emergency hours freed at $220/hr, relieving critical hospital bed capacity.
+            </div>
+          </div>
+
+          <!-- KPI 5: Zero-Cloud Infrastructure Savings -->
+          <div class="econ-kpi-tile">
+            <div>
+              <div class="econ-kpi-label">ZERO-CLOUD INFRA SAVINGS</div>
+              <div class="econ-kpi-num" id="econ-kpi-cloud-infra">$380,000</div>
+            </div>
+            <div class="econ-kpi-sub">
+              100% on-prem/in-browser execution eliminates recurring cloud GPU, transit, and HIPAA storage fees.
+            </div>
+          </div>
+
+          <!-- KPI 6: Malpractice Payout Mitigation -->
+          <div class="econ-kpi-tile">
+            <div>
+              <div class="econ-kpi-label">MALPRACTICE RISK MITIGATED</div>
+              <div class="econ-kpi-num" id="econ-kpi-malpractice">$2,400,000</div>
+            </div>
+            <div class="econ-kpi-sub">
+              96.4% recall safety net prevents fatal false-negative discharge of atypical acute coronary cases.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rural & Critical Access Clinic Offline Triage Callout Banner -->
+      <div style="background:linear-gradient(135deg, rgba(6,78,72,0.4) 0%, rgba(4,23,22,0.9) 100%); border:1px solid rgba(45,212,191,0.25); border-radius:12px; padding:18px 22px; margin-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="max-width:850px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <span class="rural-air-gapped-pill">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Critical Access & Rural Clinic Architecture
+            </span>
+            <span style="font-size:0.75rem; color:#94A3B8;">Zero Telecom / Broadband Dependency</span>
+          </div>
+          <div style="font-size:0.9375rem; font-weight:700; color:#F0FDFA; margin-bottom:4px;">
+            Air-Gapped Bedside Cardiology Decision Support for Underserved Rural Hospitals
+          </div>
+          <p style="font-size:0.8125rem; color:#CCFBF1; margin:0; line-height:1.5;">
+            Rural health clinics and critical access hospitals located hours away from tertiary catheterization centers can execute instant clinical NLP on local chart records, generate the 3D anatomical twin, and compute virtual FFR without an internet connection. Clinicians immediately identify patients requiring emergency helicopter transfer versus those safe for local management, bridging the acute cardiology healthcare divide.
+          </p>
+        </div>
+        <div>
+          <button type="button" class="app-btn app-btn-secondary" onclick="loadClinicalCase('rural_triage')" style="white-space:nowrap;">
+            Launch Rural Clinic Demo
+          </button>
+        </div>
+      </div>
+    </section>
+
     <!-- SMART CLIENT HARDWARE AUTO-DETECTION CARD -->
     <section class="app-detection-card" id="smart-recommendation-card">
+      <div id="specs"></div>
       <div class="app-detection-info">
         <div class="app-detection-eyebrow">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
@@ -1081,7 +1589,7 @@
         </div>
 
         <!-- 2. Zero-Trust PHI Boundary -->
-        <div class="sec-diag-card">
+        <div class="sec-diag-card" id="hipaa">
           <div class="sec-diag-header">
             <div class="sec-diag-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1098,7 +1606,7 @@
         </div>
 
         <!-- 3. FIPS 140-2 WebCrypto -->
-        <div class="sec-diag-card">
+        <div class="sec-diag-card" id="fips">
           <div class="sec-diag-header">
             <div class="sec-diag-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
@@ -1115,7 +1623,7 @@
         </div>
 
         <!-- 4. Model Weights SHA-256 Seal -->
-        <div class="sec-diag-card">
+        <div class="sec-diag-card" id="gatekeeper">
           <div class="sec-diag-header">
             <div class="sec-diag-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
@@ -1132,7 +1640,7 @@
         </div>
 
         <!-- 5. WebGL Context Sandbox -->
-        <div class="sec-diag-card">
+        <div class="sec-diag-card" id="authenticode">
           <div class="sec-diag-header">
             <div class="sec-diag-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
@@ -1268,10 +1776,18 @@
           <p style="color:var(--color-text-muted); font-size:0.875rem; max-width:520px; margin:0 auto 14px;">
             The SHA-256 hash will be computed in-memory to confirm binary integrity against our cryptographically signed release table.
           </p>
-          <button class="app-btn app-btn-secondary app-btn-sm" type="button" onclick="document.getElementById('verifier-file-input').click()">
-            Browse File from Disk
-          </button>
-          <input type="file" id="verifier-file-input" style="display:none;" accept=".dmg,.exe,.zip,.tar.gz,.msi" onchange="handleVerifierFile(event)">
+          <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+            <button class="app-btn app-btn-secondary app-btn-sm" type="button" onclick="document.getElementById('verifier-file-input').click()">
+              Browse File from Disk
+            </button>
+            <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="simulateVerifierTest('m4')">
+              Test Sample M4 DMG
+            </button>
+            <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="simulateVerifierTest('enterprise')">
+              Test Enterprise DMG
+            </button>
+          </div>
+          <input type="file" id="verifier-file-input" style="display:none;" accept=".dmg,.exe,.zip,.tar.gz,.msi,.sha256,.sha" onchange="handleVerifierFile(event)">
         </div>
 
         <div id="verification-result-box" class="verifier-result">
@@ -1371,7 +1887,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
 
       <div class="compliance-grid">
         <!-- 1. FDA 21 CFR § 880.6310 Non-Device CDS -->
-        <div class="compliance-card">
+        <div class="compliance-card" id="fda-notice">
           <h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
             FDA 21 CFR § 880.6310 Non-Device CDS
@@ -1385,7 +1901,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         </div>
 
         <!-- 2. HIPAA 45 CFR § 164.514 Safe Harbor -->
-        <div class="compliance-card">
+        <div class="compliance-card" id="hipaa-terms">
           <h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             HIPAA 45 CFR § 164.514 Safe Harbor
@@ -1399,7 +1915,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         </div>
 
         <!-- 3. GDPR Article 9 Special Category Health Data -->
-        <div class="compliance-card">
+        <div class="compliance-card" id="gdpr-terms">
           <h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             GDPR Article 9 Special Category Health Data
@@ -1413,7 +1929,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         </div>
 
         <!-- 4. Clinical Model Transparency & RUO Guidelines -->
-        <div class="compliance-card">
+        <div class="compliance-card" id="human-in-the-loop">
           <h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
             Research Use & Human-in-the-Loop Protocol
@@ -1426,6 +1942,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
           </a>
         </div>
       </div>
+      <div id="accessibility"></div>
     </section>
 
   </main>
@@ -1439,12 +1956,12 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         <div class="app-footer-col">
           <h4>Client Downloads</h4>
           <ul class="app-footer-links">
-            <li><a href="#tab-macos">macOS Apple Silicon (M4 / M3 / M2 / M1)</a></li>
-            <li><a href="#tab-macos">macOS Intel Core / Xeon Workstation</a></li>
-            <li><a href="#tab-windows">Windows 11 Intel Core Ultra (Series 1 & 2)</a></li>
-            <li><a href="#tab-windows">Windows 11 AMD Zen 4/5 (AVX-512)</a></li>
-            <li><a href="#tab-windows">Windows ARM64 Snapdragon X Elite</a></li>
-            <li><a href="#tab-linux">Linux Enterprise HPC & Server Builds</a></li>
+            <li><a href="#tab-macos" onclick="switchMatrixTab('tab-macos')">macOS Apple Silicon (M4 / M3 / M2 / M1)</a></li>
+            <li><a href="#tab-macos" onclick="switchMatrixTab('tab-macos')">macOS Intel Core / Xeon Workstation</a></li>
+            <li><a href="#tab-windows" onclick="switchMatrixTab('tab-windows')">Windows 11 Intel Core Ultra (Series 1 & 2)</a></li>
+            <li><a href="#tab-windows" onclick="switchMatrixTab('tab-windows')">Windows 11 AMD Zen 4/5 (AVX-512)</a></li>
+            <li><a href="#tab-windows" onclick="switchMatrixTab('tab-windows')">Windows ARM64 Snapdragon X Elite</a></li>
+            <li><a href="#tab-linux" onclick="switchMatrixTab('tab-linux')">Linux Enterprise HPC & Server Builds</a></li>
           </ul>
         </div>
 
@@ -1495,8 +2012,8 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         <div class="app-footer-bottom-links">
           <a href="#fda-notice" onclick="openComplianceModal('fda')">Clinical Decision Support Disclosure</a>
           <a href="#hipaa-terms" onclick="openComplianceModal('hipaa')">Privacy & Zero-Retention</a>
-          <a href="#fips">Cryptographic Attestation</a>
-          <a href="#accessibility">Accessibility Statement (WCAG 2.1 AA)</a>
+          <a href="#fips" onclick="openComplianceModal('fips')">Cryptographic Attestation</a>
+          <a href="#accessibility" onclick="openComplianceModal('accessibility')">Accessibility Statement (WCAG 2.1 AA)</a>
           <a href="mailto:support@cardiosense.org">Support Desk</a>
         </div>
         <p>
@@ -1556,7 +2073,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
               <label class="form-label-row" for="auth-pwd">Password</label>
               <input type="password" id="auth-pwd" class="clinical-select" required autocomplete="current-password" value="" placeholder="••••••••••••">
             </div>
-            <div id="mfa-step" style="display:none; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:12px; margin-bottom:14px;">
+            <div id="mfa-step" style="display:none; background:rgba(255, 255, 255, 0.04); border:1px solid rgba(255, 255, 255, 0.1); border-radius:6px; padding:12px; margin-bottom:14px; color:#E2E8F0;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                 <span style="font-size:0.8125rem; font-weight:600; color:var(--color-text-headline);">Enter 6-Digit 2FA Token</span>
                 <button type="button" class="app-copy-btn" onclick="autoFillOtp()">Auto-Fill Code</button>
@@ -1571,7 +2088,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
 
         <!-- Tab 2: FIDO2 -->
         <div id="auth-tab-fido2" class="auth-subview" style="display:none; text-align:center; padding:16px 8px;">
-          <div style="width:52px; height:52px; border-radius:50%; background:#EFF6FF; color:var(--color-primary); display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+          <div style="width:52px; height:52px; border-radius:50%; background:rgba(0, 229, 255, 0.12); color:#00E5FF; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; border:1px solid rgba(0, 229, 255, 0.25);">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -1595,21 +2112,21 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
                 <h4>Dr. Alexander Wright, MD</h4>
                 <p>Chief Medical Officer · Full Model Export & Administrative Clearance</p>
               </div>
-              <button class="app-btn app-btn-outline app-btn-sm" type="button">Select</button>
+              <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="loginDemoProfile('cmo')">Select</button>
             </div>
             <div class="case-study-card" onclick="loginDemoProfile('cardiologist')">
               <div class="case-info">
                 <h4>Dr. Elena Rostova, MD, FACC</h4>
                 <p>Lead Interventional Cardiologist · 3D Hemodynamics & Fluoroscopy</p>
               </div>
-              <button class="app-btn app-btn-outline app-btn-sm" type="button">Select</button>
+              <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="loginDemoProfile('cardiologist')">Select</button>
             </div>
             <div class="case-study-card" onclick="loginDemoProfile('auditor')">
               <div class="case-info">
                 <h4>Sarah Jenkins, CISA, CISSP</h4>
                 <p>HIPAA Security Officer · Cryptographic Seal & Egress Auditor</p>
               </div>
-              <button class="app-btn app-btn-outline app-btn-sm" type="button">Select</button>
+              <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="loginDemoProfile('auditor')">Select</button>
             </div>
           </div>
         </div>
@@ -1658,6 +2175,110 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
     </div>
   </div>
 
+  <!-- ==============================================================================
+       11. DESKTOP MOBILE PAIRING MODAL (QR CODE EMITTER)
+       ============================================================================== -->
+  <div class="app-modal-backdrop" id="app-mobile-pair-modal" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="mobile-pair-title"
+       onclick="handleModalBackdropClick(event)">
+    <div class="app-modal-dialog" style="max-width:480px; text-align:center;" onclick="event.stopPropagation()">
+      <div class="app-modal-header">
+        <div style="display:flex; align-items:center; gap:10px; text-align:left;">
+          <div class="brand-mark" style="width:34px; height:34px;" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.4"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <div>
+            <h3 id="mobile-pair-title" style="font-size:1.1rem; color:var(--color-text-headline); font-weight:700; margin:0;">Pair CardioSense Mobile Tracker</h3>
+            <p style="font-size:0.75rem; color:var(--color-text-muted); margin:0;">Live Telemetry Stream · FIPS 140-2 Local Encryption</p>
+          </div>
+        </div>
+        <button type="button" class="app-modal-close" onclick="closeMobilePairModal()" aria-label="Close Pairing Modal">&times;</button>
+      </div>
+
+      <div class="app-modal-body" style="padding:24px 20px;">
+        <p style="font-size:0.875rem; color:#CBD5E1; line-height:1.5; margin-bottom:16px;">
+          Scan this QR code with your mobile phone camera or enter the 6-digit sync PIN to link your account and track <strong>Eleanor Vance (#CP-8924)</strong> in real time.
+        </p>
+
+        <!-- QR Code Box -->
+        <div class="mobile-qr-box" style="margin:0 auto 16px;">
+          <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pairing QR Code">
+            <rect width="180" height="180" fill="#FFFFFF" rx="8"/>
+            <rect x="14" y="14" width="42" height="42" fill="#0A1222" rx="4"/>
+            <rect x="20" y="20" width="30" height="30" fill="#FFFFFF" rx="2"/>
+            <rect x="26" y="26" width="18" height="18" fill="#006FCF" rx="2"/>
+            <rect x="124" y="14" width="42" height="42" fill="#0A1222" rx="4"/>
+            <rect x="130" y="20" width="30" height="30" fill="#FFFFFF" rx="2"/>
+            <rect x="136" y="26" width="18" height="18" fill="#006FCF" rx="2"/>
+            <rect x="14" y="124" width="42" height="42" fill="#0A1222" rx="4"/>
+            <rect x="20" y="130" width="30" height="30" fill="#FFFFFF" rx="2"/>
+            <rect x="26" y="136" width="18" height="18" fill="#006FCF" rx="2"/>
+            <rect x="62" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="74" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="86" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="98" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="110" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="62" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="74" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="86" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="98" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="110" width="6" height="6" fill="#0A1222"/>
+            <rect x="62" y="62" width="12" height="12" fill="#0A1222" rx="2"/>
+            <rect x="80" y="62" width="18" height="6" fill="#0A1222"/>
+            <rect x="104" y="62" width="12" height="12" fill="#0A1222"/>
+            <rect x="124" y="68" width="6" height="12" fill="#0A1222"/>
+            <rect x="140" y="62" width="18" height="12" fill="#0A1222"/>
+            <rect x="62" y="80" width="6" height="18" fill="#0A1222"/>
+            <rect x="74" y="86" width="12" height="6" fill="#0A1222"/>
+            <rect x="110" y="80" width="6" height="12" fill="#0A1222"/>
+            <rect x="124" y="86" width="18" height="12" fill="#0A1222"/>
+            <rect x="148" y="80" width="12" height="6" fill="#0A1222"/>
+            <rect x="62" y="104" width="18" height="12" fill="#0A1222"/>
+            <rect x="86" y="98" width="6" height="18" fill="#0A1222"/>
+            <rect x="98" y="104" width="18" height="6" fill="#0A1222"/>
+            <rect x="124" y="104" width="12" height="12" fill="#0A1222"/>
+            <rect x="142" y="98" width="18" height="12" fill="#0A1222"/>
+            <rect x="62" y="124" width="12" height="12" fill="#0A1222"/>
+            <rect x="80" y="124" width="18" height="6" fill="#0A1222"/>
+            <rect x="104" y="124" width="12" height="18" fill="#0A1222"/>
+            <rect x="124" y="124" width="18" height="12" fill="#0A1222"/>
+            <rect x="148" y="124" width="12" height="18" fill="#0A1222"/>
+            <rect x="62" y="142" width="18" height="18" fill="#0A1222"/>
+            <rect x="86" y="136" width="12" height="12" fill="#0A1222"/>
+            <rect x="86" y="154" width="6" height="6" fill="#0A1222"/>
+            <rect x="98" y="148" width="18" height="12" fill="#0A1222"/>
+            <rect x="124" y="142" width="12" height="18" fill="#0A1222"/>
+            <rect x="142" y="148" width="18" height="12" fill="#0A1222"/>
+            <rect x="74" y="74" width="32" height="32" fill="#006FCF" rx="8"/>
+            <path d="M90 80 C87 76, 80 77, 80 83 C80 88, 86 92, 90 96 C94 92, 100 88, 100 83 C100 77, 93 76, 90 80 Z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+
+        <div style="margin-bottom:18px;">
+          <span style="font-size:0.75rem; color:#94A3B8; text-transform:uppercase; letter-spacing:0.5px;">Or use 6-digit sync pin:</span>
+          <div style="font-family:var(--font-mono); font-size:1.5rem; font-weight:800; color:#00E5FF; letter-spacing:4px; margin-top:4px;">
+            892-410
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button type="button" class="app-btn app-btn-primary" style="width:100%;" onclick="openMobileCompanionView()">
+            📱 Open Mobile Tracker View
+          </button>
+          <button type="button" class="app-btn app-btn-outline" style="width:100%;" onclick="closeMobilePairModal()">
+            Done
+          </button>
+        </div>
+      </div>
+
+      <div class="app-modal-footer" style="justify-content:center;">
+        <span style="font-size:0.75rem; color:var(--color-text-muted);">
+          Patient Protocol: #CP-8924 · Session Secret: CS-7491-SECURE
+        </span>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="app-toast" id="app-toast">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" color="#34D399"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1665,5 +2286,219 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
   </div>
 
   <script src="portal.js"></script>
-</div></div></body>
+</div></div>
+
+  <!-- ==============================================================================
+       12. MOBILE COMPANION TRACKER INTERFACE (SCAN QR TO LINK ACCOUNT TO TRACK)
+       ============================================================================== -->
+  <div id="app-mobile-companion" role="region" aria-label="CardioSense Mobile Companion Tracker">
+    <!-- Top Mobile App Bar -->
+    <div class="mobile-app-bar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="brand-mark" style="width:28px; height:28px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2.4"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.78L12 20.67l7.65-7.66.77-.78a5.4 5.4 0 0 0 0-7.65z"/></svg>
+        </div>
+        <span style="font-size:1.05rem; font-weight:800; color:#F8FAFC;">CardioSense Mobile</span>
+      </div>
+      <button type="button" class="header-login-btn" onclick="closeMobileCompanionView()" title="Back to Desktop Workstation" style="min-height:32px; font-size:0.75rem;">
+        🖥️ Desktop View
+      </button>
+    </div>
+
+    <!-- Screen 1: Scan QR Code to Link Account -->
+    <div id="mobile-pairing-section" class="mobile-pairing-container">
+      <div class="app-badge-accredited" style="margin-bottom:12px;">
+        Mobile Telemetry Sync · In-Memory Encryption
+      </div>
+      <h2 style="font-size:1.35rem; font-weight:800; color:#F8FAFC; margin-bottom:8px;">
+        Link Account to Track Telemetry
+      </h2>
+      <p style="font-size:0.875rem; color:#94A3B8; max-width:380px; line-height:1.5; margin-bottom:16px;">
+        Pair with your workstation to track real-time 12-lead ECG waveforms, coronary FFR index, and clinical CAD alerts on your mobile device.
+      </p>
+
+      <!-- Workstation QR Code Prompt Box -->
+      <div class="mobile-card" style="width:100%; max-width:380px; padding:20px; margin-bottom:16px; border:1px solid rgba(0, 229, 255, 0.3);">
+        <div style="font-size:0.8125rem; font-weight:700; color:#38BDF8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">
+          Option 1: Scan Workstation QR
+        </div>
+        
+        <div class="mobile-qr-box" style="margin:0 auto 14px;">
+          <svg width="140" height="140" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Workstation QR Code">
+            <rect width="180" height="180" fill="#FFFFFF" rx="8"/>
+            <rect x="14" y="14" width="42" height="42" fill="#0A1222" rx="4"/>
+            <rect x="20" y="20" width="30" height="30" fill="#FFFFFF" rx="2"/>
+            <rect x="26" y="26" width="18" height="18" fill="#006FCF" rx="2"/>
+            <rect x="124" y="14" width="42" height="42" fill="#0A1222" rx="4"/>
+            <rect x="130" y="20" width="30" height="30" fill="#FFFFFF" rx="2"/>
+            <rect x="136" y="26" width="18" height="18" fill="#006FCF" rx="2"/>
+            <rect x="14" y="124" width="42" height="42" fill="#0A1222" rx="4"/>
+            <rect x="20" y="130" width="30" height="30" fill="#FFFFFF" rx="2"/>
+            <rect x="26" y="136" width="18" height="18" fill="#006FCF" rx="2"/>
+            <rect x="62" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="74" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="86" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="98" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="110" y="32" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="62" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="74" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="86" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="98" width="6" height="6" fill="#0A1222"/>
+            <rect x="32" y="110" width="6" height="6" fill="#0A1222"/>
+            <rect x="62" y="62" width="12" height="12" fill="#0A1222" rx="2"/>
+            <rect x="80" y="62" width="18" height="6" fill="#0A1222"/>
+            <rect x="104" y="62" width="12" height="12" fill="#0A1222"/>
+            <rect x="124" y="68" width="6" height="12" fill="#0A1222"/>
+            <rect x="140" y="62" width="18" height="12" fill="#0A1222"/>
+            <rect x="62" y="80" width="6" height="18" fill="#0A1222"/>
+            <rect x="74" y="86" width="12" height="6" fill="#0A1222"/>
+            <rect x="110" y="80" width="6" height="12" fill="#0A1222"/>
+            <rect x="124" y="86" width="18" height="12" fill="#0A1222"/>
+            <rect x="148" y="80" width="12" height="6" fill="#0A1222"/>
+            <rect x="62" y="104" width="18" height="12" fill="#0A1222"/>
+            <rect x="86" y="98" width="6" height="18" fill="#0A1222"/>
+            <rect x="98" y="104" width="18" height="6" fill="#0A1222"/>
+            <rect x="124" y="104" width="12" height="12" fill="#0A1222"/>
+            <rect x="142" y="98" width="18" height="12" fill="#0A1222"/>
+            <rect x="74" y="74" width="32" height="32" fill="#006FCF" rx="8"/>
+            <path d="M90 80 C87 76, 80 77, 80 83 C80 88, 86 92, 90 96 C94 92, 100 88, 100 83 C100 77, 93 76, 90 80 Z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+
+        <button type="button" class="app-btn app-btn-primary" style="width:100%; margin-bottom:10px;" onclick="openQRScannerViewfinder()">
+          📸 Open Camera QR Scanner
+        </button>
+        <button type="button" class="app-btn app-btn-secondary" style="width:100%;" onclick="simulateQRScan()">
+          ⚡ Quick-Link Active Account (#CP-8924)
+        </button>
+      </div>
+
+      <!-- Option 2: Enter Sync PIN -->
+      <div class="mobile-card" style="width:100%; max-width:380px; padding:18px;">
+        <div style="font-size:0.8125rem; font-weight:700; color:#94A3B8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">
+          Option 2: Enter 6-Digit Sync PIN
+        </div>
+        <input type="text" id="mobile-pin-input" class="mobile-pin-input" maxlength="7" value="892-410" placeholder="892-410">
+        <button type="button" class="app-btn app-btn-outline" style="width:100%; margin-top:8px;" onclick="linkWithPairingPin()">
+          Link Account via PIN &rarr;
+        </button>
+      </div>
+    </div>
+
+    <!-- Camera Scanner Viewfinder Modal -->
+    <div id="mobile-scanner-modal" class="mobile-scanner-overlay" style="display:none;" onclick="closeQRScannerViewfinder()">
+      <div class="scanner-viewfinder" onclick="event.stopPropagation()">
+        <div class="scanner-reticle-corner reticle-tl"></div>
+        <div class="scanner-reticle-corner reticle-tr"></div>
+        <div class="scanner-reticle-corner reticle-bl"></div>
+        <div class="scanner-reticle-corner reticle-br"></div>
+        <div class="scanner-laser"></div>
+      </div>
+      <div style="text-align:center; color:#F8FAFC; margin-bottom:20px;">
+        <h4 style="font-size:1.1rem; font-weight:700; margin-bottom:4px;">Scanning Workstation QR Code</h4>
+        <p style="font-size:0.8125rem; color:#94A3B8;">Align the QR code on your workstation screen within the frame</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="app-btn app-btn-primary" onclick="simulateQRScan()">
+          📸 Capture & Link Account
+        </button>
+        <button type="button" class="app-btn app-btn-outline" onclick="closeQRScannerViewfinder()">
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen 2: Live Mobile Tracking Dashboard (Active Once Linked) -->
+    <div id="mobile-tracking-dashboard" class="mobile-dashboard-grid" style="display:none;">
+      <!-- Active Account Bar -->
+      <div class="mobile-card" style="border-left:4px solid #34D399; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:0.6875rem; text-transform:uppercase; color:#34D399; font-weight:700; letter-spacing:0.5px;">
+            ● Active Live Stream · Eleanor Vance
+          </div>
+          <div style="font-size:1.05rem; font-weight:800; color:#F8FAFC; margin-top:2px;">
+            Patient ID: #CP-8924 (58 yrs)
+          </div>
+          <div style="font-size:0.75rem; color:#94A3B8; margin-top:2px;">
+            Telemetry: Sinus Tachycardia · STEMI Triage
+          </div>
+        </div>
+        <button type="button" class="app-btn app-btn-outline app-btn-sm" style="min-height:32px; font-size:0.75rem;" onclick="unlinkMobileAccount()" title="Disconnect session">
+          Unlink
+        </button>
+      </div>
+
+      <!-- Real-Time Mobile ECG Strip -->
+      <div class="mobile-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.8125rem; font-weight:700; color:#CBD5E1;">Lead-II Live ECG Waveform</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="mobile-pulse-dot"></span>
+            <span style="font-size:1.15rem; font-weight:800; color:#00E5FF;" id="mobile-hr-val">150</span>
+            <span style="font-size:0.75rem; color:#94A3B8;">BPM</span>
+          </div>
+        </div>
+        <canvas id="mobile-ecg-canvas" width="360" height="110" style="width:100%; height:110px; border-radius:6px; background:#060B14; border:1px solid rgba(0,229,255,0.15);"></canvas>
+      </div>
+
+      <!-- Real-Time Hemodynamic Metrics -->
+      <div class="mobile-card">
+        <div style="font-size:0.8125rem; font-weight:700; color:#CBD5E1; margin-bottom:8px;">
+          Coronary Hemodynamics & Ischemic Load
+        </div>
+        <div class="mobile-vitals-row">
+          <div class="mobile-vital-tile">
+            <div class="mv-val" style="color:#00E5FF;" id="mobile-ffr-val">0.48</div>
+            <div class="mv-lbl">Coronary FFR</div>
+          </div>
+          <div class="mobile-vital-tile">
+            <div class="mv-val" style="color:#F43F5E;" id="mobile-risk-val">94.8%</div>
+            <div class="mv-lbl">CAD Risk</div>
+          </div>
+          <div class="mobile-vital-tile">
+            <div class="mv-val" id="mobile-bp-val">140/90</div>
+            <div class="mv-lbl">Blood Pressure</div>
+          </div>
+        </div>
+        <div class="mobile-vitals-row">
+          <div class="mobile-vital-tile">
+            <div class="mv-val" id="mobile-st-val">1.2 mm</div>
+            <div class="mv-lbl">ST Depression</div>
+          </div>
+          <div class="mobile-vital-tile">
+            <div class="mv-val" id="mobile-occl-val">2 / 3</div>
+            <div class="mv-lbl">Vessels Occluded</div>
+          </div>
+          <div class="mobile-vital-tile">
+            <div class="mv-val" style="color:#34D399;">Active</div>
+            <div class="mv-lbl">FIPS 140-2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clinical Alert Notice -->
+      <div class="mobile-card" style="background:rgba(244, 63, 94, 0.1); border-color:rgba(244, 63, 94, 0.3);">
+        <div style="font-size:0.8125rem; font-weight:700; color:#F43F5E; margin-bottom:4px;">
+          ⚠️ Urgent Clinical Recommendation
+        </div>
+        <p style="font-size:0.75rem; color:#E2E8F0; line-height:1.5;">
+          High probability obstructive LAD coronary stenosis. Fractional Flow Reserve below ischemic threshold (0.48 &lt; 0.80). Immediate catheterization triage recommended.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button type="button" class="app-btn app-btn-primary" style="width:100%; background:#F43F5E; border-color:#F43F5E;" onclick="showToast('🚨 Alert Sent to Hospital Interventional Cath Lab Team')">
+          🚨 Alert Interventional Cath Lab Team
+        </button>
+        <button type="button" class="app-btn app-btn-secondary" style="width:100%;" onclick="exportDiagnosticSummaryReport()">
+          📄 Export Diagnostic PDF Summary
+        </button>
+        <button type="button" class="app-btn app-btn-outline" style="width:100%;" onclick="closeMobileCompanionView()">
+          🖥️ Return to Desktop Workstation
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

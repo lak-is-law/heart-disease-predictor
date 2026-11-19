@@ -1,0 +1,27 @@
+{
+  "patient_id": "CP-8924",
+  "name": "Eleanor Vance",
+  "clinical_study": "Severe Multivessel CAD with Anterior STEMI",
+  "admission_date": "2026-11-15",
+  "biomarkers": {
+    "age": 62,
+    "sex": 0,
+    "cp": 1,
+    "trestbps": 168,
+    "chol": 288,
+    "fbs": 1,
+    "restecg": 2,
+    "thalach": 128,
+    "exang": 1,
+    "oldpeak": 3.2,
+    "slope": 3,
+    "ca": 3,
+    "thal": 7
+  },
+  "clinical_narrative": "62-year-old female presenting with severe substernal crushing chest pressure on minimal exertion. Emergency coronary angiography demonstrates severe 3-vessel calcification with LAD 95% stenosis.",
+  "hemodynamics": {
+    "ffr": 0.71,
+    "resting_hr": 84,
+    "ejection_fraction": 42
+  }
+}

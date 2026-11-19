@@ -1,0 +1,21 @@
+{
+  "patient_id": "CP-4102",
+  "name": "Sarah Lin",
+  "clinical_study": "Low Risk Outpatient Cardiology Screening",
+  "biomarkers": {
+    "age": 42,
+    "sex": 0,
+    "cp": 4,
+    "trestbps": 118,
+    "chol": 172,
+    "fbs": 0,
+    "restecg": 0,
+    "thalach": 168,
+    "exang": 0,
+    "oldpeak": 0.0,
+    "slope": 1,
+    "ca": 0,
+    "thal": 3
+  },
+  "clinical_narrative": "42-year-old female presenting for routine executive health evaluation. Asymptomatic, no exertional chest discomfort. Baseline ECG normal, normal treadmill exercise tolerance without ST changes."
+}

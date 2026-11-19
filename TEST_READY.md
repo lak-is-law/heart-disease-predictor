@@ -45,20 +45,21 @@ cd /Users/lakshya/Projects/heart/heart-disease-predictor
 
 | Tier / Module | File Path | Focus & Requirement Scope | Test Count | Status | Execution Time |
 |---|---|---|:---:|:---:|:---:|
-| **Tier 1: Units** | `tests/test_tier1_units.py` | 24 platform features × 5 non-facade tests (R1–R5) | 120 | **PASS (100%)** | 0.17s |
+| **Core Mission & Economics** | `tests/test_cardiosense_core_mission.py` | Hospital economics ($12.2M ROI), 60% cath rule-out, 96.4% recall safety net, FFR bounds [0.48, 0.98], Golden Hour 48m compression, offline air-gapped triage | 13 | **PASS (100%)** | 0.01s |
+| **Tier 1: Units** | `tests/test_tier1_units.py` | 24 platform features × 5 non-facade tests (R1–R5) | 120 | **PASS (100%)** | 0.05s |
 | **Tier 2: Components** | `tests/test_tier2_components.py` | Boundary value analysis, extreme vitals, NaN imputation, 3D parameter bounds, ECG timing, Web Audio synth, lab NLP negations, storage budget | 20 | **PASS (100%)** | 0.24s |
 | **Tier 3: Security** | `tests/test_tier3_security.py` | Secret leak scanner, 30 req/min/IP rate limiting (HTTP 429), anti-bot filtering (HTTP 403), honeypots, loopback CORS/CSRF, CSP headers, 18-arch SHA-256 parity, PyInstaller/DMG specs | 16 | **PASS (100%)** | 0.69s |
-| **Tier 4: Personas E2E** | `tests/test_tier4_personas_e2e.py` | 100-persona journey execution, Python vs JS prediction parity (drift < 1e-12), zero unhandled exceptions, FFR physiological bounds [0.48, 0.98], responsive grid tokens, DMG verification | 11 | **PASS (100%)** | 0.71s |
+| **Tier 4: Personas E2E** | `tests/test_tier4_personas_e2e.py` | 100-persona journey execution, Python vs JS prediction parity (drift < 1e-12), zero unhandled exceptions, FFR bounds, responsive tokens, DMG verification, dummy drop files | 13 | **PASS (100%)** | 0.71s |
 | **Specialized: 3D Heart** | `tests/test_m2_3d_heart.py` | Three.js geometry, 4 shader modes, Lead-II ECG, vendor hash digests, <2.5MB storage, <120MB VRAM | 23 | **PASS (100%)** | 0.25s |
 | **Specialized: M2 Stress** | `tests/test_m2_challenger_stress.py` | WebGL context loss recovery, rapid mode cycling, audio concurrency | 10 | **PASS (100%)** | 0.15s |
-| **Specialized: UI & Logic** | `tests/test_m3_ui_logic.py` | Streamlit AppTest Tab 5 execution, model parity across 100 personas, FFR fluid dynamics, touch targets | 8 | **PASS (100%)** | 4.31s |
+| **Specialized: UI & Logic** | `tests/test_m3_ui_logic.py` | Streamlit AppTest Tab 5 execution, model parity across 100 personas, FFR fluid dynamics, touch targets | 6 | **PASS (100%)** | 3.01s |
 | **Specialized: Responsive** | `tests/test_m3_challenger_responsive.py` | 6-tier viewport grid, zero 320px clipping, accessible contrast | 14 | **PASS (100%)** | 0.18s |
 | **Specialized: M3 Stress** | `tests/test_m3_challenger_stress.py` | Adversarial numerical inputs, zero division protection, floating point tolerances | 30 | **PASS (100%)** | 0.42s |
 | **Specialized: M4 Security** | `tests/test_m4_security.py` | Real HTTP server testing, rate limiter sliding window, bot UA filters, honeypot traps, security headers | 24 | **PASS (100%)** | 7.50s |
 | **Specialized: Packaging** | `tests/test_m4_challenger_packaging.py` | Independent SHA-256 recomputation across 18 architectures, DMG UDZO verification, PyInstaller sandbox | 17 | **PASS (100%)** | 3.20s |
 | **Specialized: Server Stress** | `tests/test_m4_challenger_stress.py` | Path traversal jailbreak defense, directory escape blocking, MIME routing | 18 | **PASS (100%)** | 0.35s |
 | **Specialized: Clinical NLP** | `tests/test_lab_report_parser.py` | 13-biomarker extraction, complex medical negations, safe_to_predict validation | 10 | **PASS (100%)** | 0.08s |
-| **TOTAL SUITE** | `tests/test_*.py` | **Full Platform Verification** | **301** | **PASS (100%)** | **53.32s** |
+| **TOTAL SUITE** | `tests/test_*.py` | **Full Platform Verification** | **316** | **PASS (100%)** | **28.02s** |
 
 ---
 

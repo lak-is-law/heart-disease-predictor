@@ -1,0 +1,31 @@
+================================================================================
+ST. JUDE CARDIAC CARE CENTER · CLINICAL CONSULTATION NOTE
+================================================================================
+PATIENT ID:       #CP-8924
+PATIENT NAME:     Eleanor Vance
+ADMISSION:        2026-11-15 08:30 EST
+ATTENDING:        Marcus Thorne, MD, FACC
+
+CHIEF COMPLAINT:
+Severe substernal crushing chest pressure radiating to left arm and jaw on minimal exertion.
+
+PATIENT VITALS & DEMOGRAPHICS:
+- Patient Age: 62 years old (62 yo female)
+- Sex / Gender: Female
+- Resting Blood Pressure: 168/104 mmHg (trestbps: 168)
+- Total Serum Cholesterol: 288 mg/dL
+- Fasting Blood Sugar: 138 mg/dL (diabetic, FBS > 120 mg/dL: Yes)
+
+CARDIAC TELEMETRY & DIAGNOSTICS:
+- Resting ECG: Left ventricular hypertrophy with marked ST-T strain pattern (LVH, restecg: 2)
+- Stress Test Maximum Heart Rate: 128 bpm (thalach: 128)
+- Exercise-Induced Angina: Present on treadmill stage 2 (exang: 1 / Yes)
+- ST Depression: 3.2 mm downsloping during peak exercise (oldpeak: 3.2)
+- ST Slope: Downsloping ST-segment depression (slope: 3)
+
+CORONARY ANGIOGRAPHY & NUCLEAR IMAGING:
+- Fluoroscopy: Severe calcification in 3 major coronary vessels (LAD, LCx, RCA) (ca: 3)
+- Myocardial Scintigraphy: Extensive reversible perfusion defect in anterior and apical myocardium (thal: 7)
+
+ASSESSMENT & PLAN:
+High-probability multivessel ischemic coronary artery disease with critical ischemia (FFR 0.71). Urgent surgical revascularization (CABG x3) recommended.

@@ -1,0 +1,14 @@
+Biomarker,Clinical_Value,Normal_Reference
+age,54,20-90
+sex,1,Male
+cp,2,Atypical Angina
+trestbps,138,90-140 mmHg
+chol,242,120-200 mg/dL
+fbs,0,Fasting Sugar <= 120
+restecg,1,ST-T Wave Abnormality
+thalach,144,60-180 bpm
+exang,1,Exercise Angina Yes
+oldpeak,1.6,0.0-4.0 mm
+slope,2,Flat ST Slope
+ca,1,1 Major Vessel Calcified
+thal,3,Normal Perfusion

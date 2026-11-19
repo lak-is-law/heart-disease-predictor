@@ -193,7 +193,7 @@ class TestTier4AmexDLSResponsiveLayout(unittest.TestCase):
 
 
 class TestTier4DistributionPackaging(unittest.TestCase):
-    """Verifies packaging scripts and distribution assets."""
+    """Verifies packaging scripts, dummy files drop ingestion, and distribution assets."""
 
     def test_mac_dmg_builder_script_exists_and_valid(self):
         """Verify build_mac_dmg.sh exists, contains UDZO compression format and bash safety flags."""
@@ -203,6 +203,33 @@ class TestTier4DistributionPackaging(unittest.TestCase):
         self.assertIn("#!/usr/bin/env bash", content)
         self.assertIn("set -euo pipefail", content)
         self.assertIn("UDZO", content)
+
+    def test_dummy_clinical_drop_files_exist_and_parse(self):
+        """Verify dummy test files in portal/sample_data/ exist and extract all 13 biomarkers."""
+        sample_dir = PORTAL_DIR / "sample_data"
+        self.assertTrue(sample_dir.is_dir(), f"Missing sample directory: {sample_dir}")
+        sample_files = list(sample_dir.glob("*.*"))
+        self.assertGreaterEqual(len(sample_files), 4, "Expected at least 4 sample clinical dummy files")
+
+        from components.lab_report_parser import ClinicalLabReportParser
+        parser = ClinicalLabReportParser()
+
+        for sf in sample_files:
+            res = parser.parse_file(sf, sf.name)
+            self.assertEqual(
+                res.extracted_count, 13,
+                f"Sample dummy file {sf.name} failed to extract 13 biomarkers (got {res.extracted_count})"
+            )
+            self.assertTrue(res.safe_to_predict, f"Sample file {sf.name} not safe to predict")
+
+    def test_mac_dmg_verification_and_integrity(self):
+        """Verify built DMG in dist/ is valid UDZO Apple Disk Image if present."""
+        dist_dmg = REPO_ROOT / "dist" / "CardioSense-Enterprise-2.4.0-macos-arm64.dmg"
+        if dist_dmg.exists():
+            import subprocess
+            verify_res = subprocess.run(["hdiutil", "verify", str(dist_dmg)], capture_output=True, text=True)
+            self.assertEqual(verify_res.returncode, 0, f"hdiutil verify failed: {verify_res.stderr}")
+
 
 
 if __name__ == "__main__":

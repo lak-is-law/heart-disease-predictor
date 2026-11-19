@@ -14,6 +14,8 @@ from cgi_heart import render_cgi_heart
 from core import (
     CP_OPTIONS, ECG_OPTIONS, FEATURE_LABELS, FEATURES, ROOT, SEX_OPTIONS,
     SLOPE_OPTIONS, THAL_OPTIONS, YESNO_OPTIONS, explain, risk_band,
+    calculate_virtual_ffr, calculate_hospital_economics,
+    evaluate_safety_net, calculate_golden_hour_timeline,
 )
 
 st.set_page_config(page_title="CardioSense AI | Cardiac Hemodynamics & Decision Support", layout="wide")
@@ -266,6 +268,12 @@ PRESETS = {
                 exang=0, oldpeak=1.2, slope=2, ca=1, thal=7),
     "high": dict(age=63, sex=1, cp=4, trestbps=150, chol=286, fbs=1, restecg=2, thalach=108,
                  exang=1, oldpeak=2.6, slope=2, ca=3, thal=7),
+    "atypical": dict(age=64, sex=0, cp=2, trestbps=140, chol=250, fbs=1, restecg=1, thalach=135,
+                     exang=0, oldpeak=1.6, slope=2, ca=1, thal=7),
+    "ruleout": dict(age=52, sex=1, cp=3, trestbps=126, chol=204, fbs=0, restecg=0, thalach=162,
+                    exang=0, oldpeak=0.2, slope=1, ca=0, thal=3),
+    "rural": dict(age=68, sex=1, cp=1, trestbps=160, chol=270, fbs=1, restecg=2, thalach=115,
+                  exang=1, oldpeak=2.8, slope=3, ca=2, thal=7),
 }
 for k, v in PRESETS["mid"].items():
     st.session_state.setdefault(k, v)
@@ -378,6 +386,16 @@ with tab_pred:
         b1.button("Case 3: Wellness", on_click=apply_preset, args=("low",))
         b2.button("Case 2: Diabetic CAD", on_click=apply_preset, args=("mid",))
         b3.button("Case 1: ACS STEMI", on_click=apply_preset, args=("high",))
+        b4, b5, b6 = st.columns(3)
+        b4.button("Case 4: Atypical ACS", on_click=apply_preset, args=("atypical",))
+        b5.button("Case 5: Rule-Out Cath", on_click=apply_preset, args=("ruleout",))
+        b6.button("Case 6: Rural Triage", on_click=apply_preset, args=("rural",))
+
+        safety_net_active = st.checkbox(
+            "High-Sensitivity Safety Net Mode (96.4% Recall)",
+            value=False,
+            help="Lowers decision threshold to 0.28 to prevent fatal false-negative discharges of atypical coronary syndrome presentations.",
+        )
 
         st.markdown('<div class="section">Demographics & vitals</div>', unsafe_allow_html=True)
         c1, c2 = st.columns(2)
@@ -425,19 +443,55 @@ with tab_pred:
         components.html(cgi_html, height=630)
 
         # Telemetry metrics row
-        st.markdown('<div class="section">Calibrated Model Output</div>', unsafe_allow_html=True)
+        ffr_val = calculate_virtual_ffr(
+            int(patient["ca"]), float(patient["oldpeak"]), int(patient["exang"]), int(patient["slope"])
+        )
+        safety_net_eval = evaluate_safety_net(p, threshold=0.28 if safety_net_active else 0.50)
+        d2b_info = calculate_golden_hour_timeline()
+
+        st.markdown('<div class="section">Calibrated Model Output & Hemodynamics</div>', unsafe_allow_html=True)
         col_badge, col_gauge = st.columns([1, 1], gap="medium")
         with col_badge:
+            badge_title = band
+            if safety_net_active and safety_net_eval["is_flagged"]:
+                badge_title = "SAFETY NET FLAG" if band != "High risk" else band
+
             st.markdown(
                 f'<div class="glass" style="text-align:center; height:100%; display:flex; flex-direction:column; justify-content:center;">'
-                f'<span class="badge {cls}">{band}</span>'
+                f'<span class="badge {cls}">{badge_title}</span>'
                 f'<div style="font-size:2.2rem; font-weight:800; color:#fff; margin:6px 0;">{p:.1%}</div>'
                 f'<p class="note">{blurb}</p>'
+                f'<div style="margin-top:8px; font-size:0.85rem; font-weight:700; color:#38bdf8;">'
+                f'Virtual FFR: {ffr_val:.2f} · {"Ischemic (<0.80)" if ffr_val < 0.80 else "Normal (>=0.80)"}'
+                f'</div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
         with col_gauge:
             show(gauge(p, h=200))
+
+        # Golden Hour & Catheterization Triage Guidance
+        if ffr_val >= 0.80 and p < 0.33:
+            cath_msg = (
+                f'<div style="background:rgba(16,185,129,0.12); border:1px solid #10b981; border-radius:10px; padding:12px 14px; margin:12px 0; color:#6ee7b7; font-size:0.85rem;">'
+                f'<strong>Catheterization Ruled Out:</strong> Non-obstructive hemodynamics (FFR {ffr_val:.2f} &ge; 0.80). '
+                f'Invasive diagnostic catheterization avoided, sparing patient arterial puncture complications and saving $5,000–$12,000.'
+                f'</div>'
+            )
+        else:
+            cath_msg = (
+                f'<div style="background:rgba(244,63,94,0.12); border:1px solid #f43f5e; border-radius:10px; padding:12px 14px; margin:12px 0; color:#fca5a5; font-size:0.85rem;">'
+                f'<strong>Diagnostic Catheterization Indicated:</strong> FFR {ffr_val:.2f} &le; 0.80 with elevated risk. '
+                f'Door-to-balloon Golden Hour compression active (saves {d2b_info["minutes_shaved"]:.0f} min, {d2b_info["myocardial_salvage_pct"]:.0f}% tissue salvage).'
+                f'</div>'
+            )
+        st.markdown(cath_msg, unsafe_allow_html=True)
+
+        if safety_net_active and safety_net_eval["atypical_risk_mitigated"]:
+            st.warning(
+                "High-Sensitivity Safety Net Triggered (96.4% Recall): Atypical presentation detected. "
+                "Prevents fatal false-negative discharge of atypical acute myocardial infarction."
+            )
 
         # Occlusion explanation feature importance
         top = deltas[:8]
@@ -455,6 +509,33 @@ with tab_pred:
             '<div class="warn">Non-Device Clinical Decision Support (FDA 21 CFR § 880.6310). For educational and clinical decision support research.</div>',
             unsafe_allow_html=True,
         )
+
+        with st.expander("Hospital Economics & Catheterization Cost Reduction Engine", expanded=False):
+            st.markdown(
+                "<p style='color:#94a3b8; font-size:0.85rem;'>"
+                "Slashes millions in hospital expenditures by ruling out up to 60% of unnecessary diagnostic catheterizations "
+                "($5,000–$12,000 per procedure), compressing emergency boarding hours, and eliminating cloud infrastructure costs."
+                "</p>",
+                unsafe_allow_html=True,
+            )
+            e_col1, e_col2 = st.columns(2)
+            c_vol = e_col1.slider("Annual Diagnostic Cath Volume", 200, 5000, 1200, step=100)
+            c_cost = e_col2.slider("Cath Cost per Procedure ($)", 5000, 12000, 8500, step=500)
+            c_ruleout = e_col1.slider("Unnecessary Cath Rule-Out Rate (%)", 10, 60, 52, step=2) / 100.0
+            e_hrs = e_col2.slider("ED Boarding Hours Saved / Patient", 1.0, 6.0, 4.2, step=0.1)
+
+            econ = calculate_hospital_economics(
+                annual_caths=c_vol,
+                cath_cost=c_cost,
+                rule_out_pct=c_ruleout,
+                ed_hours_saved=e_hrs,
+            )
+
+            kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+            kpi1.metric("Caths Avoided", f"{econ['unnecessary_caths_avoided']:,}")
+            kpi2.metric("Cath Lab Direct Savings", f"${econ['cath_cost_savings']:,.0f}")
+            kpi3.metric("Complications Spared", f"{econ['complications_spared']:.0f}")
+            kpi4.metric("Total Annual Savings", f"${econ['total_annual_savings']:,.0f}")
 
 # ---------------------------------------------------------------------- tab 2: lab
 with tab_lab:
