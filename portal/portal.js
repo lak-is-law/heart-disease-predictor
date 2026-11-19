@@ -4149,7 +4149,7 @@ function initMobileECGStream() {
 }
 
 // ==============================================================================
-// 19. GENOVERA-STYLE INTERACTIVE 3D HERO VISUALIZER & SLIDER
+// 19. LAKSHYA CULTURE 3D CARDIAC VISUALIZER & CYBERNETIC ENGINE
 // ==============================================================================
 let hero3DScene, hero3DCamera, hero3DRenderer, hero3DHeartMesh, hero3DParticles;
 let hero3DAnimId = null;
@@ -4160,61 +4160,124 @@ let heroTargetRotY = 0;
 let heroCurrentRotX = 0;
 let heroCurrentRotY = 0;
 
-function setHeroSlide(slideName) {
-  const tabPrecision = document.getElementById('hero-tab-precision');
-  const tabPredictive = document.getElementById('hero-tab-predictive');
-  const slidePrecision = document.getElementById('hero-slide-precision');
-  const slidePredictive = document.getElementById('hero-slide-predictive');
+// Safe legacy compatibility wrappers
+function setHeroSlide(_slideName) {}
+function toggleHero3DRotation() { hero3DRotating = !hero3DRotating; }
+function cycleHero3DShading() {}
 
-  if (!slidePrecision || !slidePredictive) return;
+// ==============================================================================
+// 20. LAKSHYA CULTURE ZERO-ASSET PROCEDURAL AUDIO ENGINE
+// Real-time audio haptics synthesized in browser with zero external assets
+// ==============================================================================
+class LakshyaAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.isMuted = false;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem('cs_arcade_muted');
+        this.isMuted = stored === 'true';
+      } catch (_e) {}
+    }
+  }
 
-  if (slideName === 'precision') {
-    if (tabPrecision) tabPrecision.classList.add('active');
-    if (tabPredictive) tabPredictive.classList.remove('active');
-    slidePredictive.style.opacity = '0';
-    setTimeout(() => {
-      slidePredictive.style.display = 'none';
-      slidePrecision.style.display = 'block';
-      setTimeout(() => {
-        slidePrecision.style.opacity = '1';
-      }, 20);
-    }, 180);
-  } else {
-    if (tabPredictive) tabPredictive.classList.add('active');
-    if (tabPrecision) tabPrecision.classList.remove('active');
-    slidePrecision.style.opacity = '0';
-    setTimeout(() => {
-      slidePrecision.style.display = 'none';
-      slidePredictive.style.display = 'block';
-      setTimeout(() => {
-        slidePredictive.style.opacity = '1';
-      }, 20);
-    }, 180);
+  initContext() {
+    if (typeof window === 'undefined') return null;
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+    return this.ctx;
+  }
+
+  toggleMute() {
+    this.isMuted = !this.isMuted;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem('cs_arcade_muted', String(this.isMuted));
+      } catch (_e) {}
+    }
+    return this.isMuted;
+  }
+
+  getMuted() {
+    return this.isMuted;
+  }
+
+  playHover() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const now = ctx.currentTime;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1400, now);
+      osc.frequency.exponentialRampToValueAtTime(800, now + 0.025);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.03);
+    } catch (_e) {}
+  }
+
+  playClick() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const now = ctx.currentTime;
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(480, now);
+      osc.frequency.exponentialRampToValueAtTime(240, now + 0.035);
+      gain.gain.setValueAtTime(0.07, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    } catch (_e) {}
+  }
+
+  playPrediction() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const now = ctx.currentTime;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(640, now + 0.12);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } catch (_e) {}
   }
 }
 
-function toggleHero3DRotation() {
-  hero3DRotating = !hero3DRotating;
-}
+const lakshyaAudio = new LakshyaAudioEngine();
 
-function cycleHero3DShading() {
-  if (!hero3DHeartMesh) return;
-  if (hero3DShadingMode === 'perfusion') {
-    hero3DShadingMode = 'wireframe';
-    hero3DHeartMesh.material.wireframe = true;
-    hero3DHeartMesh.material.color.setHex(0x2DD4BF);
-  } else if (hero3DShadingMode === 'wireframe') {
-    hero3DShadingMode = 'angiogram';
-    hero3DHeartMesh.material.wireframe = false;
-    hero3DHeartMesh.material.color.setHex(0x064E48);
-    hero3DHeartMesh.material.emissive.setHex(0x0D9488);
-    hero3DHeartMesh.material.emissiveIntensity = 0.6;
-  } else {
-    hero3DShadingMode = 'perfusion';
-    hero3DHeartMesh.material.wireframe = false;
-    hero3DHeartMesh.material.color.setHex(0x06625F);
-    hero3DHeartMesh.material.emissive.setHex(0x042C29);
-    hero3DHeartMesh.material.emissiveIntensity = 0.35;
+function toggleArcadeAudio() {
+  const isMuted = lakshyaAudio.toggleMute();
+  const label = document.getElementById('audio-btn-label');
+  if (label) {
+    label.textContent = isMuted ? '🔇 Audio Haptics: OFF' : '🔊 Audio Haptics: ON';
+  }
+  if (!isMuted) {
+    lakshyaAudio.playClick();
   }
 }
 
@@ -4235,14 +4298,14 @@ function initHero3DVisualizer() {
     hero3DRenderer.setSize(width, height);
     hero3DRenderer.setPixelRatio(Math.min((typeof window !== 'undefined' && window.devicePixelRatio) || 1, 2));
 
-    const ambLight = new THREE.AmbientLight(0x0D9488, 0.8);
+    const ambLight = new THREE.AmbientLight(0x06B6D4, 0.75);
     hero3DScene.add(ambLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xE2FFFF, 1.2);
+    const dirLight1 = new THREE.DirectionalLight(0xE0F2FE, 1.4);
     dirLight1.position.set(5, 8, 5);
     hero3DScene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0x2DD4BF, 0.9);
+    const dirLight2 = new THREE.DirectionalLight(0x00F0FF, 1.0);
     dirLight2.position.set(-5, -4, -3);
     hero3DScene.add(dirLight2);
 
@@ -4267,11 +4330,11 @@ function initHero3DVisualizer() {
     heartGeo.computeVertexNormals();
 
     const heartMat = new THREE.MeshStandardMaterial({
-      color: 0x06625F,
-      roughness: 0.35,
-      metalness: 0.15,
-      emissive: 0x042C29,
-      emissiveIntensity: 0.35
+      color: 0x071526,
+      roughness: 0.25,
+      metalness: 0.85,
+      emissive: 0x020B14,
+      emissiveIntensity: 0.4
     });
     hero3DHeartMesh = new THREE.Mesh(heartGeo, heartMat);
     heartGroup.add(hero3DHeartMesh);
@@ -4284,7 +4347,7 @@ function initHero3DVisualizer() {
       new THREE.Vector3(0.1, -1.5, 0.4)
     ]);
     const tubeGeo1 = new THREE.TubeGeometry(curve1, 36, 0.065, 8, false);
-    const coronaryMat = new THREE.MeshBasicMaterial({ color: 0x2DD4BF });
+    const coronaryMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF });
     const coronaryMesh1 = new THREE.Mesh(tubeGeo1, coronaryMat);
     heartGroup.add(coronaryMesh1);
 
@@ -4299,7 +4362,7 @@ function initHero3DVisualizer() {
     heartGroup.add(coronaryMesh2);
 
     const nodeGeo = new THREE.SphereGeometry(0.09, 12, 12);
-    const nodeMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF });
+    const nodeMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
     const nodePositions = [
       new THREE.Vector3(-0.4, 0.8, 1.4),
       new THREE.Vector3(-0.1, 0.0, 1.55),
@@ -4313,7 +4376,7 @@ function initHero3DVisualizer() {
     });
 
     const ringGeo = new THREE.TorusGeometry(2.8, 0.012, 8, 80);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x2DD4BF, transparent: true, opacity: 0.28 });
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF, transparent: true, opacity: 0.22 });
     const ring3D = new THREE.Mesh(ringGeo, ringMat);
     ring3D.rotation.x = Math.PI / 3;
     ring3D.rotation.y = Math.PI / 6;
@@ -4331,7 +4394,7 @@ function initHero3DVisualizer() {
       partPositions[i * 3 + 2] = radius * Math.cos(phi);
     }
     partGeo.setAttribute('position', new THREE.BufferAttribute(partPositions, 3));
-    const partMat = new THREE.PointsMaterial({ color: 0x2DD4BF, size: 0.06, transparent: true, opacity: 0.65 });
+    const partMat = new THREE.PointsMaterial({ color: 0x38BDF8, size: 0.05, transparent: true, opacity: 0.6 });
     hero3DParticles = new THREE.Points(partGeo, partMat);
     heartGroup.add(hero3DParticles);
 
@@ -4434,11 +4497,23 @@ function initHero3DVisualizer() {
   }
 }
 
-// Check URL hash for direct mobile view activation and initialize Hero
+function attachLakshyaHaptics() {
+  if (typeof document === 'undefined') return;
+  try {
+    const clickables = document.querySelectorAll('button, a, .cockpit-tab-pill, .scenario-chip, .app-btn, .lakshya-btn, .dock-item, .dock-icon-btn, .stepper-btn, .case-chip');
+    clickables.forEach(el => {
+      el.addEventListener('mouseenter', () => { lakshyaAudio.playHover(); });
+      el.addEventListener('click', () => { lakshyaAudio.playClick(); });
+    });
+  } catch (_e) {}
+}
+
+// Check URL hash for direct mobile view activation, initialize Hero, and attach audio haptics
 if (typeof window !== 'undefined' && window.addEventListener) {
   window.addEventListener('DOMContentLoaded', () => {
     try {
       initHero3DVisualizer();
+      attachLakshyaHaptics();
       if (typeof window !== 'undefined' && window.location) {
         const hash = window.location.hash || '';
         const search = window.location.search || '';

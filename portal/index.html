@@ -275,143 +275,97 @@
   </div>
 
   <!-- ==============================================================================
-       4. GENOVERA-STYLE INTERACTIVE 3D CLINICAL HERO
+       4. LAKSHYA CULTURE CLINICAL AI HERO
        ============================================================================== -->
-  <section class="app-hero app-hero-genovera" id="hero-overview">
+  <section class="app-hero app-hero-lakshya" id="hero-overview">
     <div class="hero-ambient-glow" aria-hidden="true"></div>
-    <div class="app-hero-container container-lock hero-genovera-grid">
-      <!-- Left Column: Display Typography, Narrative & Feature Timeline -->
+    <div class="app-hero-container container-lock hero-lakshya-grid">
+      <!-- Left Column: Display Typography, Telemetry Grid & Action Controls -->
       <div class="hero-narrative-col">
-        <!-- Mode Switcher Pills (Matching the video) -->
-        <div class="hero-state-toggle" role="tablist" aria-label="Hero Experience Views">
-          <button type="button" class="hero-toggle-pill active" id="hero-tab-precision" onclick="setHeroSlide('precision')">
-            <span class="hero-pill-dot"></span>
-            Precision Care
+        <div class="lakshya-hero-kicker">
+          <span class="hero-kicker-num">01 // PRECISION CARDIOLOGY</span>
+          <span class="hero-kicker-bar"></span>
+          <span class="hero-live-status"><span class="pulse-emerald"></span> NEURAL ENGINE 60 FPS</span>
+        </div>
+
+        <h1 class="hero-display-headline">
+          Cardiovascular intelligence <br>
+          <span class="hero-headline-highlight">engineered with clinical rigor.</span>
+        </h1>
+
+        <p class="hero-lead-text">
+          Operating at the intersection of clinical cardiology, hemodynamic vectors, and machine intelligence. Foreseeing coronary ischemia with 96.4% recall, real-time 3D myocardial perfusion, and offline desktop neural acceleration.
+        </p>
+
+        <!-- Lakshya Signature Telemetry Spec Grid -->
+        <div class="hero-spec-grid">
+          <div class="hero-spec-card">
+            <div class="spec-num text-cyan">96.4%</div>
+            <div class="spec-label">Cleveland Recall</div>
+          </div>
+          <div class="hero-spec-card">
+            <div class="spec-num text-sky">&lt; 42ms</div>
+            <div class="spec-label">Inference Latency</div>
+          </div>
+          <div class="hero-spec-card">
+            <div class="spec-num text-emerald">18 ARCH</div>
+            <div class="spec-label">Native Binaries</div>
+          </div>
+          <div class="hero-spec-card">
+            <div class="spec-num text-amber">0 KB</div>
+            <div class="spec-label">Zero-Asset Audio</div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="hero-actions-row">
+          <a href="#live-workstation" class="lakshya-btn primary" onclick="switchCockpitView('cockpit')">
+            <span>Launch Workstation</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <span class="btn-shimmer" aria-hidden="true"></span>
+          </a>
+          <button type="button" class="lakshya-btn secondary" onclick="openMobilePairModal()">
+            <span>📱 Mobile Sync (QR)</span>
           </button>
-          <button type="button" class="hero-toggle-pill" id="hero-tab-predictive" onclick="setHeroSlide('predictive')">
-            <span class="hero-pill-dot"></span>
-            Predictive Engine
+          <button type="button" class="lakshya-btn ghost" id="lakshya-audio-toggle" onclick="toggleArcadeAudio()">
+            <span id="audio-btn-label">🔊 Audio Haptics: ON</span>
           </button>
         </div>
 
-        <!-- Slide 1: AI-led Precision Care -->
-        <div class="hero-slide-content active" id="hero-slide-precision">
-          <div class="hero-kicker-row">
-            <span class="hero-accent-dot"></span>
-            <span class="hero-kicker-label">AI-LED PRECISION CARDIOLOGY</span>
+        <!-- Clinical Accreditation Badges -->
+        <div class="app-trust-badges hero-badges-compact">
+          <div class="app-trust-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>FDA 21 CFR § 880.6310 Non-Device CDS</span>
           </div>
-          <h1 class="hero-display-headline">
-            AI-led precision care <br>
-            <span class="hero-headline-highlight">at the rhythm of the heart</span>
-          </h1>
-          <p class="hero-lead-text">
-            Foreseeing coronary ischemia and empowering clinicians with real-time 3D myocardial perfusion, 12-lead ECG telemetry, and offline desktop neural acceleration.
-          </p>
-
-          <div class="hero-actions-row">
-            <a href="#live-workstation" class="hero-enroll-link" onclick="switchCockpitView('cockpit')">
-              <span>Launch Workstation</span>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-            <button type="button" class="hero-mobile-pill-btn" onclick="openMobilePairModal()">
-              <span>📱 Pair Mobile</span>
-            </button>
-          </div>
-
-          <div class="app-trust-badges hero-badges-compact">
-            <div class="app-trust-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span>FDA 21 CFR § 880.6310 Non-Device CDS</span>
-            </div>
-            <div class="app-trust-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <span>FIPS 140-2 Level 3 Validated</span>
-            </div>
+          <div class="app-trust-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>FIPS 140-2 Level 3 Validated</span>
           </div>
         </div>
-
-        <!-- Slide 2: Predictive Engine & Feature Timeline (Matching Slide 2 in video) -->
-        <div class="hero-slide-content" id="hero-slide-predictive" style="display:none; opacity:0;">
-          <div class="hero-kicker-row">
-            <span class="hero-accent-dot"></span>
-            <span class="hero-kicker-label">CARDIAC-LEVEL FORESIGHT</span>
-          </div>
-          <h2 class="hero-display-headline">
-            Predictive engine
-          </h2>
-          <p class="hero-lead-text">
-            Reading millions of clinical datasets, real-time hemodynamic vectors, and Cleveland Clinic cohorts.
-          </p>
-
-          <div class="hero-feature-timeline">
-            <div class="hero-timeline-item">
-              <span class="timeline-bullet"></span>
-              <div>
-                <h4 class="timeline-title">Coronary Lesion Mapping</h4>
-                <p class="timeline-desc">Catch multi-vessel calcium stenosis across LAD, RCA, and LCx early to prevent acute infarction.</p>
-              </div>
-            </div>
-            <div class="hero-timeline-item">
-              <span class="timeline-bullet"></span>
-              <div>
-                <h4 class="timeline-title">Hemodynamic Triage</h4>
-                <p class="timeline-desc">Real-time Fractional Flow Reserve (FFR) and Rate-Pressure Product diagnostics under peak stress.</p>
-              </div>
-            </div>
-            <div class="hero-timeline-item">
-              <span class="timeline-bullet"></span>
-              <div>
-                <h4 class="timeline-title">Tailored Medicine</h4>
-                <p class="timeline-desc">Patient-calibrated 12-lead vectorcardiograms and systolic/diastolic myocardial torsion models.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottom Browse Indicator (Matching video: BROWSE |) -->
-        <a href="#live-workstation" class="hero-scroll-indicator" title="Scroll to Clinical Workstation">
-          <span>BROWSE WORKSTATION</span>
-          <div class="hero-scroll-line">
-            <span class="scroll-line-pulse"></span>
-          </div>
-        </a>
       </div>
 
-      <!-- Right Column: Interactive 3D Holographic Biological Centerpiece with Orbitals -->
+      <!-- Right Column: Cinematic 3D Cardiac Visualizer & HUD Telemetry -->
       <div class="hero-visual-col">
         <div class="hero-3d-stage">
-          <!-- Concentric Orbital SVG Rings (From the video) -->
-          <svg class="hero-orbital-rings" viewBox="0 0 500 500" aria-hidden="true">
-            <circle class="orbital-ring ring-1" cx="250" cy="250" r="140"></circle>
-            <circle class="orbital-ring ring-2" cx="250" cy="250" r="195"></circle>
-            <circle class="orbital-ring ring-3" cx="250" cy="250" r="240"></circle>
-          </svg>
-          
-          <!-- Floating Soft Bioluminescent Bokeh Particles -->
-          <div class="hero-bokeh-particle p-1"></div>
-          <div class="hero-bokeh-particle p-2"></div>
-          <div class="hero-bokeh-particle p-3"></div>
-
-          <!-- WebGL Three.js Holographic Heart Canvas -->
           <canvas id="hero-3d-canvas" class="hero-canvas"></canvas>
 
-          <!-- Interactive Mode HUD overlay -->
-          <div class="hero-canvas-overlay">
-            <div class="hero-badge-live">
-              <span class="pulse-emerald"></span>
-              <span id="hero-bpm-live">74 BPM</span> · STABLE SINUS
-            </div>
-            <div class="hero-canvas-controls">
-              <button type="button" class="hero-hud-btn" onclick="toggleHero3DRotation()" title="Toggle Orbit">
-                ⟲ Orbit
-              </button>
-              <button type="button" class="hero-hud-btn" onclick="cycleHero3DShading()" title="Toggle Perfusion Layer">
-                🔬 Perfusion
-              </button>
-            </div>
+          <!-- 4-Corner HUD Telemetry Overlay -->
+          <div class="hero-hud-tl">
+            <span class="hud-indicator pulse-cyan"></span>
+            <span class="hud-text">HR: <strong id="hero-bpm-live">72 BPM</strong> [SINUS]</span>
+          </div>
+          <div class="hero-hud-tr">
+            <span class="hud-text">VIRTUAL FFR: <strong class="text-emerald">0.88</strong> [PATENT]</span>
+          </div>
+          <div class="hero-hud-bl">
+            <span class="hud-text">PERFUSION: <strong class="text-cyan">98.4%</strong> [OPTIMAL]</span>
+          </div>
+          <div class="hero-hud-br">
+            <span class="hud-text">LEAD II ECG: <strong>NORMAL</strong></span>
           </div>
         </div>
       </div>
