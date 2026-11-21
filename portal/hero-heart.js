@@ -15,7 +15,7 @@
     return span > 0 ? Math.min(Math.max(-r.top / span, 0), 1) : 0;
   }
   function updateBeats() {
-    var p = heroProgress(), b = p < 0.16 ? 0 : (p < 0.52 ? 1 : (p < 0.86 ? 2 : 3));
+    var p = heroProgress(), b = p < 0.16 ? 0 : (p < 0.48 ? 1 : (p < 0.74 ? 2 : 3));
     if (b === beatNow) return;
     beatNow = b;
     for (var i = 0; i < beats.length; i++) {
@@ -195,19 +195,22 @@
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var res = 1, w = 0, h = 0, slow = 0, visible = true, last = performance.now();
-  var cur = { rot: 0.5, cut: 3, zoom: 1, p: 0 }, tgt = { rot: 0.5, cut: 3, zoom: 1, p: 0 };
+  var k0 = keys(0), cur = { rot: k0.rot, cut: k0.cut, zoom: k0.zoom, p: 0 }, tgt = { rot: k0.rot, cut: k0.cut, zoom: k0.zoom, p: 0 };
   var debug = window.__heartDebug || null;
 
   // Scroll progress through the hero (0 at the top, 1 when the hero scrolls away).
   // The heart turns, opens along the four-chamber plane, then closes again.
   var ease = function (k) { return k * k * (3 - 2 * k); };
+  // The heart turns continuously with scroll. It slows as it comes face-on, and the four-chamber
+  // cut opens only while it faces the viewer, so turning and opening are one gesture.
   function keys(p) {
-    var TAU = Math.PI * 2, rot, cut, zoom = 1, k;
-    if (p < 0.16) { rot = 0.5 + p * 2.0; cut = 3; }                                       // closed, slow turn
-    else if (p < 0.56) { k = ease((p - 0.16) / 0.40); rot = 0.82 + (TAU - 0.82) * k; cut = 3 - 3 * k; zoom = 1 - 0.04 * k; }   // spin face-on while opening
-    else if (p < 0.84) { rot = TAU + (p - 0.56) * 0.12; cut = 0; zoom = 0.96; }           // held open: four chambers
-    else { k = ease((p - 0.84) / 0.16); rot = TAU + 0.034 + k * 1.1; cut = 3 * k; zoom = 0.96 + 0.04 * k; }   // close again
-    return { rot: rot, cut: cut, zoom: zoom };
+    var TAU = Math.PI * 2, K = 9, A = 0.22, x = p - 0.6, ax = Math.abs(x), g;
+    g = ax < A ? K * (0.3 * ax + 0.7 * ax * ax * ax / (3 * A * A))
+               : K * (0.3 * A + 0.7 * A / 3 + (ax - A));
+    var rot = TAU + (x < 0 ? -g : g);
+    var d = Math.abs(rot - TAU), t = Math.min(Math.max((d - 0.35) / 0.65, 0), 1);
+    var cut = 3 * t * t * (3 - 2 * t);
+    return { rot: rot, cut: cut, zoom: 0.9 - 0.03 * (1 - cut / 3) };
   }
   function progress() {
     var r = hero.getBoundingClientRect(), span = hero.offsetHeight - window.innerHeight;
@@ -239,7 +242,7 @@
 
   function layout(p, cut) {
     var H = canvas.clientHeight, cw = canvas.clientWidth, cx = canvas.offsetLeft + cw / 2;
-    var on = Math.max(0, Math.min(1, (0.55 - cut) / 0.55)) * (p < 0.86 ? 1 : 0);
+    var on = Math.max(0, Math.min(1, (0.55 - cut) / 0.55)) * 1;
     tagEls.forEach(function (el, i) {
       var d = TAGS[i];
       el.style.left = (cx + (d.x - 0.5) * H * cur.zoom) + 'px';
