@@ -1,0 +1,135 @@
+/* CardioSense theme layer.
+   Loaded after styles.css. Palette comes from favicon.svg: obsidian navy, white, ECG cyan.
+   Flattens glow, glass and motion, and styles the hero, account, sign-in, downloads and footer. */
+
+:root {
+  --hx-bg: #07090E;
+  --hx-bg-2: #0E1726;
+  --hx-line: rgba(255, 255, 255, 0.10);
+  --hx-text: #F5F7FA;
+  --hx-dim: #9AA6B8;
+  --hx-cyan: #00F0FF;
+  --hx-sky: #38BDF8;
+  --hx-head: 64px;
+  --hx-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--hx-font); background: var(--hx-bg); -webkit-font-smoothing: antialiased; }
+
+/* ---- flatten: no glows, no glass, no decorative motion ---- */
+.app-header, .app-modal-backdrop, .app-card, .app-section-header {
+  -webkit-backdrop-filter: none;
+}
+.app-header {
+  background: rgba(7, 9, 14, 0.82);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid var(--hx-line);
+  box-shadow: none;
+}
+.app-card, .app-modal-dialog { box-shadow: none; }
+.app-btn, .header-login-btn, .header-save-btn { box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---- header account control ---- */
+.hx-account { display: flex; align-items: center; gap: 12px; }
+.hx-who { font-size: 0.8125rem; color: var(--hx-dim); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hx-account button { cursor: pointer; }
+
+/* ---- hero ---- */
+.hx { position: relative; height: 300vh; background: var(--hx-bg); }
+.hx-sticky {
+  position: sticky; top: var(--hx-head); height: calc(100vh - var(--hx-head)); min-height: 520px;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 78% 40%, #0E1726 0%, #07090E 62%);
+}
+.hx-canvas {
+  position: absolute; top: 0; right: 0; width: 62%; height: 100%;
+  opacity: 0; transition: opacity 0.8s ease;
+}
+.hx-canvas.ready { opacity: 1; }
+.hx-copy {
+  position: absolute; left: max(24px, 6vw); top: 50%; width: min(520px, 42vw);
+  transform: translateY(-46%); opacity: 0; pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.hx-copy.is-on { opacity: 1; transform: translateY(-50%); pointer-events: auto; }
+.hx-copy h1, .hx-copy h2 {
+  margin: 0 0 18px; color: var(--hx-text); font-weight: 600;
+  font-size: clamp(2.25rem, 4.6vw, 4.25rem); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance;
+}
+.hx-copy h2 { font-size: clamp(2rem, 3.8vw, 3.5rem); }
+.hx-copy p { margin: 0 0 28px; color: var(--hx-dim); font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.5; max-width: 30em; }
+.hx-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.hx-btn {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 980px;
+  background: var(--hx-cyan); color: #04121A; font-weight: 600; font-size: 0.9375rem; text-decoration: none;
+}
+.hx-btn:hover { background: #5CF6FF; }
+.hx-link { color: var(--hx-sky); font-size: 0.9375rem; text-decoration: none; }
+.hx-link:hover { text-decoration: underline; }
+.hx-btn:focus-visible, .hx-link:focus-visible { outline: 2px solid var(--hx-cyan); outline-offset: 3px; }
+.hx-note { position: absolute; left: max(24px, 6vw); bottom: 20px; margin: 0; color: #66728A; font-size: 0.75rem; }
+
+@media (max-width: 820px) {
+  .hx-sticky { min-height: 560px; }
+  .hx-canvas { width: 100%; height: 58%; top: auto; bottom: 0; }
+  .hx-copy { top: 28px; transform: translateY(-10px); width: auto; right: 24px; left: 24px; }
+  .hx-copy.is-on { transform: none; }
+  .hx-copy h1 { font-size: 2.25rem; }
+  .hx-copy h2 { font-size: 2rem; }
+  .hx-copy p { font-size: 1rem; margin-bottom: 18px; }
+  .hx-note { left: 24px; bottom: 12px; }
+  .hx { height: 260vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hx { height: auto; }
+  .hx-sticky { position: relative; top: 0; height: auto; min-height: 640px; }
+}
+
+/* ---- sign-in modal ---- */
+.hx-auth { max-width: 400px; background: var(--hx-bg-2); border: 1px solid var(--hx-line); border-radius: 18px; }
+.hx-auth-lede { margin: 0 0 18px; color: var(--hx-dim); font-size: 0.9375rem; }
+.hx-auth label { display: block; margin: 14px 0 6px; font-size: 0.8125rem; color: var(--hx-dim); }
+.hx-auth input[type="email"], .hx-auth input[type="password"] {
+  width: 100%; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 1rem;
+  background: var(--hx-bg); color: var(--hx-text); border: 1px solid var(--hx-line);
+}
+.hx-auth input:focus { outline: 2px solid var(--hx-cyan); outline-offset: 1px; border-color: transparent; }
+.hx-hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.hx-error { min-height: 1.25em; margin: 12px 0 0; color: #FF8A80; font-size: 0.875rem; }
+.hx-block { width: 100%; margin-top: 12px; justify-content: center; }
+
+/* ---- downloads ---- */
+.dl-version { color: var(--hx-dim); font-size: 0.9375rem; margin: 0 0 20px; }
+.dl-list { display: flex; flex-direction: column; border-top: 1px solid var(--hx-line); }
+.dl-group { margin-top: 28px; padding-bottom: 8px; color: var(--hx-dim); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; }
+.dl-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 18px 0; border-bottom: 1px solid var(--hx-line);
+}
+.dl-name { color: var(--hx-text); font-size: 1.0625rem; font-weight: 500; }
+.dl-tag { margin-left: 10px; padding: 2px 10px; border-radius: 980px; background: rgba(0, 240, 255, 0.12); color: var(--hx-cyan); font-size: 0.75rem; font-weight: 500; }
+.dl-meta { color: var(--hx-dim); font-size: 0.8125rem; margin-top: 4px; word-break: break-all; }
+.dl-note { color: var(--hx-dim); font-size: 0.875rem; margin-top: 18px; }
+.dl-row .app-btn { min-width: 44px; }
+
+/* ---- footer ---- */
+.hx-footer { background: var(--hx-bg); border-top: 1px solid var(--hx-line); padding: 40px 0 48px; }
+.hx-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.hx-footer-brand { color: var(--hx-text); font-weight: 600; }
+.hx-footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.hx-footer-links a { color: var(--hx-dim); font-size: 0.875rem; text-decoration: none; }
+.hx-footer-links a:hover { color: var(--hx-text); }
+.hx-footer-legal { margin: 20px 0 0; max-width: 60em; color: #66728A; font-size: 0.75rem; line-height: 1.55; }
+
+/* landing view: keep the header to brand, account and the two real actions */
+.header-patient-chip, .header-patient-context-text { display: none !important; }
+
+/* solid buttons, no gradients */
+.app-btn-primary, .app-btn.app-btn-primary { background: var(--hx-cyan); background-image: none; color: #04121A; border-color: transparent; }
+.app-btn-primary:hover { background: #5CF6FF; background-image: none; }

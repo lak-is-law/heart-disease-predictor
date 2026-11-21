@@ -4,7 +4,6 @@
  * Real Clinical Lab Report NLP Parser · Anatomical Three.js Hemodynamics Simulation
  */
 
-let manifest = null;
 let detectedPlatform = null;
 let currentDiagnosticMode = 'cta';
 let clinicalCaseActive = 'acs';
@@ -293,293 +292,214 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadManifest();
   initMobileNav();
   initLabIngestion();
+  await initSession();
   detectClientHardware();
-  renderMatrixTables();
   initTabNavigation();
   initDragAndDropVerifier();
   initPortal3DHeart();
   initPortalECG();
   loadClinicalCase('acs');
   calculateHospitalEconomics();
-  runSecurityCheckup();
 });
 
-/**
- * Fetch official release manifest
- */
 async function loadManifest() {
   try {
-    const response = await fetch('manifest.json');
-    if (response.status === 429) {
-      const retryAfter = response.headers.get('Retry-After') || '60';
-      console.warn(`[CardioSense AI] Rate limit (HTTP 429) encountered. Retry-After: ${retryAfter}s`);
-      showToast(`Distribution Server Rate Limit Active (429). Retry in ${retryAfter}s.`, 'error');
-      return;
-    }
-    if (response.ok) {
-      manifest = await response.json();
-      console.log('[CardioSense AI] Manifest loaded: 18 packages registered.');
-    }
-  } catch (error) {
-    console.warn('[CardioSense AI] Local manifest fetch fallback:', error);
-  }
-  try {
-    const mwResp = await fetch('model_weights.json');
-    if (mwResp.status === 429) {
-      console.warn('[CardioSense AI] Rate limited loading model weights.');
-      return;
-    }
-    if (mwResp.ok) {
-      const mwData = await mwResp.json();
-      Object.assign(MODEL_WEIGHTS, mwData);
-      console.log('[CardioSense AI] Model weights refreshed from model_weights.json');
-    }
-  } catch (_) {
-    // Keep embedded offline MODEL_WEIGHTS
+    const wr = await fetch('model_weights.json');
+    if (wr.ok) modelWeights = await wr.json();
+  } catch (e) {
+    console.warn('model_weights.json unavailable; using built-in coefficients.', e);
   }
 }
 
-/**
- * Advanced Client Hardware & Processor Generation Detection
- */
 async function detectClientHardware() {
   const ua = navigator.userAgent;
-  const platform = navigator.platform || '';
-  
-  let os = 'Unknown OS';
-  let arch = 'x64';
-  let chipName = 'Standard 64-bit Processor';
-  let packageId = 'win-x64-universal';
-  let brandSvg = BRAND_SVGS.windows;
-
-  // Modern Client Hints check
+  let hints = null;
   if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-    try {
-      const hints = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness', 'model']);
-      if (hints.architecture === 'arm') arch = 'arm64';
-    } catch (e) { /* fallback */ }
+    try { hints = await navigator.userAgentData.getHighEntropyValues(['architecture']); } catch (e) { /* not available */ }
   }
-
-  // macOS Detection & Apple Silicon Generation
-  const isMac = /Macintosh|MacIntel|MacPPC/i.test(ua) || (platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let os = 'unknown';
+  let arch = 'unknown';
+  let kind = null;
+  const isMac = /Macintosh|MacIntel/i.test(ua) && !(navigator.maxTouchPoints > 1);
   if (isMac) {
     os = 'macOS';
-    brandSvg = BRAND_SVGS.apple;
-    const appleSiliconTier = await detectAppleSiliconTier();
-    
-    if (appleSiliconTier === 'm4') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M4 Series (ARMv9.2-A · SME2 & Metal 3.1)';
-      packageId = 'mac-m4-arm64';
-    } else if (appleSiliconTier === 'm3') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M3 Series (ARMv9.2-A · Dynamic Caching)';
-      packageId = 'mac-m3-arm64';
-    } else if (appleSiliconTier === 'm2') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M2 Series (ARMv8.5-A · 16-Core NPU)';
-      packageId = 'mac-m2-arm64';
-    } else if (appleSiliconTier === 'm1' || arch === 'arm64') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M1 Series (Universal Baseline ARM64)';
-      packageId = 'mac-m1-arm64';
+    if (hints && hints.architecture) {
+      arch = hints.architecture === 'arm' ? 'arm64' : 'x64';
+      kind = arch === 'arm64' ? 'mac-arm64' : 'mac-x64';
     } else {
-      arch = 'x86_64';
-      chipName = 'Intel Core / Xeon Mac (AVX-512 & AVX2 Compatibility)';
-      packageId = 'mac-intel-gen10';
+      kind = 'mac'; // Safari and Firefox do not reveal the chip
     }
-  }
-  // Windows Detection
-  else if (/Win(dows )?/i.test(ua)) {
+  } else if (/Windows/i.test(ua)) {
     os = 'Windows';
-    brandSvg = BRAND_SVGS.windows;
-    if (/ARM64|WOA/i.test(ua) || arch === 'arm64') {
-      arch = 'arm64';
-      if (/Snapdragon|X1E|Copilot/i.test(ua) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 10)) {
-        chipName = 'Qualcomm Snapdragon X Elite / Plus (Copilot+ 45 TOPS NPU)';
-        packageId = 'win-arm64-snapdragonX';
-      } else {
-        chipName = 'Qualcomm Snapdragon 8cx Gen 3 (ARMv8.4-A)';
-        packageId = 'win-arm64-snapdragon8cx';
-      }
-    } else {
-      arch = 'x64';
-      const cores = navigator.hardwareConcurrency || 8;
-      if (cores >= 16) {
-        chipName = 'Intel Core Ultra Series & 14th/15th Gen (AI Boost NPU)';
-        packageId = 'win-intel-core-ultra';
-      } else if (cores >= 12) {
-        chipName = 'Intel 12th/13th Gen Core (Hybrid Architecture AVX2/VNNI)';
-        packageId = 'win-intel-gen12-13';
-      } else {
-        chipName = 'Universal 64-bit Workstation (Intel 8th-11th / AMD Zen 1-3)';
-        packageId = 'win-x64-universal';
-      }
-    }
+    const arm = (hints && hints.architecture === 'arm') || /ARM64|WOA/i.test(ua);
+    arch = arm ? 'arm64' : 'x64';
+    kind = arm ? 'win-arm64' : 'win-x64';
   }
-  // Linux Detection
-  else if (/Linux/i.test(ua)) {
-    os = 'Enterprise Linux';
-    brandSvg = BRAND_SVGS.linux;
-    arch = 'x86_64';
-    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 16) {
-      chipName = 'Enterprise Linux HPC (AVX-512 Vectorized)';
-      packageId = 'linux-x64-gen4';
-    } else {
-      chipName = 'Enterprise Linux Universal (SSE4.2 glibc 2.28+)';
-      packageId = 'linux-x64-universal';
-    }
-  }
+  detectedPlatform = { os, arch, kind };
+  updateSmartRecommendationCard(detectedPlatform);
+  renderMatrixTables();
+}
 
-  detectedPlatform = { os, arch, chipName, packageId, brandSvg };
+
+const BUILD_INFO = {
+  'mac-arm64': { group: 'Mac', name: 'Apple silicon', note: 'M1 or later, macOS 12 or later' },
+  'mac-x64': { group: 'Mac', name: 'Intel', note: 'macOS 12 or later' },
+  'win-x64': { group: 'Windows', name: '64-bit (Intel, AMD)', note: 'Windows 10 or 11' },
+  'win-arm64': { group: 'Windows', name: 'ARM64 (Snapdragon)', note: 'Windows 11' }
+};
+const BUILD_ORDER = ['mac-arm64', 'mac-x64', 'win-x64', 'win-arm64'];
+let currentUser = null;
+let releaseData = null;
+
+function megabytes(bytes) { return Math.round(bytes / 1048576) + ' MB'; }
+
+function renderAccount() {
+  const box = document.getElementById('hx-account');
+  if (!box) return;
+  box.textContent = '';
+  if (!currentUser) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'header-login-btn'; b.id = 'btn-header-signin';
+    b.textContent = 'Sign in';
+    b.addEventListener('click', openAuthModal);
+    box.appendChild(b);
+    return;
+  }
+  const who = document.createElement('span');
+  who.className = 'hx-who'; who.textContent = currentUser.email;
+  const out = document.createElement('button');
+  out.type = 'button'; out.className = 'header-login-btn'; out.id = 'btn-header-signout';
+  out.textContent = 'Sign out';
+  out.addEventListener('click', signOut);
+  box.appendChild(who); box.appendChild(out);
+}
+
+async function loadReleases() {
+  releaseData = null;
+  try {
+    const r = await fetch('/api/releases', { credentials: 'same-origin' });
+    if (r.status === 401) { currentUser = null; return; }
+    if (r.ok) releaseData = await r.json();
+    else releaseData = { error: true, builds: [] };
+  } catch (e) {
+    releaseData = { error: true, builds: [] };
+  }
+}
+
+async function initSession() {
+  try {
+    const r = await fetch('/api/session', { credentials: 'same-origin' });
+    const s = r.ok ? await r.json() : { user: null };
+    currentUser = s.user || null;
+  } catch (e) {
+    currentUser = null;
+  }
+  if (currentUser) await loadReleases();
+  renderAccount();
+  renderMatrixTables();
   updateSmartRecommendationCard(detectedPlatform);
 }
 
-/**
- * Detect Apple Silicon generation via WebGL unmasked renderer
- */
-async function detectAppleSiliconTier() {
-  try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return 'm3';
-    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-    if (!debugInfo) return 'm3';
-    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '';
-    
-    if (/Apple M4/i.test(renderer)) return 'm4';
-    if (/Apple M3/i.test(renderer)) return 'm3';
-    if (/Apple M2/i.test(renderer)) return 'm2';
-    if (/Apple M1/i.test(renderer) || /Apple GPU/i.test(renderer)) return 'm1';
-    if (/Intel/i.test(renderer)) return 'intel';
-  } catch (e) { /* fallback */ }
-  return 'm4'; // default modern Mac
+async function signOut() {
+  try { await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }); } catch (e) { /* offline */ }
+  currentUser = null; releaseData = null;
+  renderAccount(); renderMatrixTables(); updateSmartRecommendationCard(detectedPlatform);
+  showToast('Signed out');
 }
+window.signOut = signOut;
 
-/**
- * Render Smart Recommendation Card
- */
 function updateSmartRecommendationCard(detected) {
-  if (!manifest) return;
-  const pkg = manifest.packages.find(p => p.id === detected.packageId) ||
-              manifest.packages.find(p => p.recommended_for && p.recommended_for.includes(detected.packageId)) ||
-              manifest.packages[0];
+  const title = document.getElementById('rec-title');
+  const desc = document.getElementById('rec-desc');
+  const meta = document.getElementById('rec-meta');
+  const btn = document.getElementById('rec-btn');
+  if (!title || !desc || !btn) return;
+  const d = detected || detectedPlatform || {};
+  btn.onclick = null; btn.style.display = '';
+  meta.textContent = '';
 
-  const titleEl = document.getElementById('rec-title');
-  const descEl = document.getElementById('rec-desc');
-  const metaEl = document.getElementById('rec-meta');
-  const btnEl = document.getElementById('rec-btn');
-  const hashEl = document.getElementById('rec-hash-link');
-
-  if (titleEl) {
-    titleEl.innerHTML = `
-      <span style="display:inline-flex; align-items:center; gap:8px;">
-        ${detected.brandSvg}
-        <span>${pkg.description}</span>
-      </span>`;
+  if (!currentUser) {
+    title.textContent = 'Download CardioSense';
+    desc.textContent = 'Sign in to download the desktop app for macOS or Windows.';
+    btn.textContent = 'Sign in to download'; btn.href = '#';
+    btn.onclick = (e) => { e.preventDefault(); openAuthModal(); };
+    return;
   }
-  if (descEl) {
-    descEl.innerText = `Specifically vectorized for your ${detected.os} workstation running ${detected.chipName}. Cryptographically signed with zero cloud egress.`;
+  if (!releaseData) { title.textContent = 'Loading downloads'; desc.textContent = ''; btn.style.display = 'none'; return; }
+  if (releaseData.error) {
+    title.textContent = 'Downloads are unavailable right now';
+    desc.textContent = 'Refresh the page to try again.';
+    btn.style.display = 'none'; return;
   }
-  if (metaEl) {
-    metaEl.innerHTML = `
-      <span><strong>Chipset:</strong> ${pkg.chipset_short}</span>
-      <span>•</span>
-      <span><strong>Instruction Set:</strong> ${pkg.instruction_set}</span>
-      <span>•</span>
-      <span><strong>Size:</strong> ${pkg.size_mb} MB</span>
-      <span>•</span>
-      <span><strong>Status:</strong> Notarized & Verified</span>
-    `;
+  if (!releaseData.builds.length) {
+    title.textContent = 'The first release is not published yet';
+    desc.textContent = 'Check back soon.';
+    btn.style.display = 'none'; return;
   }
-  if (btnEl) {
-    btnEl.href = pkg.download_url;
-    btnEl.setAttribute('download', pkg.filename);
-  }
-  if (hashEl) {
-    hashEl.innerText = `SHA-256: ${pkg.sha256.substring(0, 16)}... (Click to Verify)`;
+  const build = releaseData.builds.find((b) => b.kind === d.kind);
+  if (build) {
+    const info = BUILD_INFO[build.kind];
+    title.textContent = 'CardioSense for ' + info.group + ' ' + info.name;
+    desc.textContent = info.note + '. Version ' + releaseData.version + ', ' + megabytes(build.size) + '.';
+    btn.textContent = 'Download'; btn.href = '/api/download?id=' + build.id;
+  } else {
+    title.textContent = 'Choose your download';
+    desc.textContent = d.kind === 'mac'
+      ? 'Not sure which Mac you have? Open the Apple menu, choose About This Mac, and look at Chip.'
+      : 'Pick the build for your computer below.';
+    btn.textContent = 'See all downloads'; btn.href = '#matrix';
   }
 }
 
-/**
- * Populate Multi-Architecture Tables (All 18 Packages)
- */
-function renderMatrixTables(filterGen = 'all') {
-  if (!manifest || !manifest.packages) return;
+function renderMatrixTables() {
+  const list = document.getElementById('dl-list');
+  const note = document.getElementById('dl-note');
+  const ver = document.getElementById('dl-version');
+  if (!list) return;
+  list.textContent = ''; if (note) note.textContent = ''; if (ver) ver.textContent = '';
 
-  const macBody = document.getElementById('table-mac-body');
-  const winBody = document.getElementById('table-win-body');
-  const linuxBody = document.getElementById('table-linux-body');
-  const allBody = document.getElementById('table-all-body');
+  if (!currentUser) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'app-btn app-btn-primary'; b.textContent = 'Sign in to download';
+    b.addEventListener('click', openAuthModal);
+    list.appendChild(b);
+    return;
+  }
+  if (!releaseData) { list.textContent = 'Loading downloads'; return; }
+  if (releaseData.error) { list.textContent = 'Downloads are unavailable right now. Refresh the page to try again.'; return; }
+  if (!releaseData.builds.length) { list.textContent = 'The first release is not published yet. Check back soon.'; return; }
 
-  if (macBody) macBody.innerHTML = '';
-  if (winBody) winBody.innerHTML = '';
-  if (linuxBody) linuxBody.innerHTML = '';
-  if (allBody) allBody.innerHTML = '';
-
-  manifest.packages.forEach(pkg => {
-    if (filterGen !== 'all' && pkg.gen_tier !== filterGen) return;
-
-    let brandSvg = BRAND_SVGS.windows;
-    if (pkg.platform === 'macOS') brandSvg = BRAND_SVGS.apple;
-    if (pkg.platform.includes('Linux')) brandSvg = BRAND_SVGS.linux;
-
-    const rowHtml = `
-      <tr>
-        <td>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div style="color:var(--color-primary); flex-shrink:0;">${brandSvg}</div>
-            <div>
-              <div style="font-weight:700; color:var(--color-text-headline);">${pkg.description}</div>
-              <div style="font-size:0.75rem; color:var(--color-text-muted); font-family:var(--font-mono);">${pkg.filename}</div>
-            </div>
-          </div>
-        </td>
-        <td>
-          <div style="display:flex; flex-direction:column; gap:4px;">
-            <span class="chip-badge ${pkg.gen_tier}">${pkg.chipset_short}</span>
-            <span style="font-size:0.6875rem; color:var(--color-text-muted); font-family:var(--font-mono);">${pkg.instruction_set}</span>
-          </div>
-        </td>
-        <td>
-          <span style="font-size:0.75rem; color:var(--color-text-body); font-weight:500;">${pkg.os_compat}</span>
-        </td>
-        <td style="font-family:var(--font-mono); font-weight:600; color:var(--color-text-headline);">
-          ${pkg.size_mb} MB
-        </td>
-        <td>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <span class="hash-cell" title="${pkg.sha256}">${pkg.sha256}</span>
-            <button type="button" class="app-copy-btn" onclick="copyToClipboard('${pkg.sha256}', 'Copied SHA-256')">
-              Copy
-            </button>
-          </div>
-        </td>
-        <td style="text-align:right;">
-          <a href="${pkg.download_url}" download="${pkg.filename}" class="app-btn app-btn-primary app-btn-sm" style="font-size:0.75rem; padding:5px 12px;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Download
-          </a>
-        </td>
-      </tr>
-    `;
-
-    if (allBody) allBody.innerHTML += rowHtml;
-    if (pkg.platform === 'macOS' && macBody) macBody.innerHTML += rowHtml;
-    if (pkg.platform === 'Windows' && winBody) winBody.innerHTML += rowHtml;
-    if (pkg.platform.includes('Linux') && linuxBody) linuxBody.innerHTML += rowHtml;
+  if (ver) ver.textContent = 'Version ' + releaseData.version;
+  let lastGroup = '';
+  BUILD_ORDER.forEach((kind) => {
+    const build = releaseData.builds.find((b) => b.kind === kind);
+    if (!build) return;
+    const info = BUILD_INFO[kind];
+    if (info.group !== lastGroup) {
+      const g = document.createElement('div'); g.className = 'dl-group'; g.textContent = info.group;
+      list.appendChild(g); lastGroup = info.group;
+    }
+    const row = document.createElement('div'); row.className = 'dl-row';
+    const left = document.createElement('div');
+    const name = document.createElement('div'); name.className = 'dl-name'; name.textContent = info.name;
+    if (detectedPlatform && detectedPlatform.kind === kind) {
+      const tag = document.createElement('span'); tag.className = 'dl-tag'; tag.textContent = 'Recommended for this device';
+      name.appendChild(tag);
+    }
+    const sub = document.createElement('div'); sub.className = 'dl-meta';
+    sub.textContent = info.note + ', ' + megabytes(build.size);
+    left.appendChild(name); left.appendChild(sub);
+    const a = document.createElement('a');
+    a.className = 'app-btn app-btn-primary app-btn-sm'; a.textContent = 'Download';
+    a.href = '/api/download?id=' + build.id;
+    a.setAttribute('aria-label', 'Download CardioSense ' + releaseData.version + ' for ' + info.group + ' ' + info.name);
+    row.appendChild(left); row.appendChild(a); list.appendChild(row);
   });
+  if (note && releaseData.checksums) {
+    note.textContent = 'Check a download against the release checksums with the verifier below.';
+  }
 }
 
-function filterByGeneration(gen, btn) {
-  document.querySelectorAll('.gen-filter-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderMatrixTables(gen);
-}
 
 /**
  * Tab Navigation
@@ -3492,174 +3412,58 @@ async function computeFileHashAndVerify(file) {
   const detailsEl = document.getElementById('verification-status-details');
   const hashEl = document.getElementById('verification-computed-hash');
   const glyphEl = document.getElementById('verification-status-glyph');
-
   if (!resultBox || !titleEl || !detailsEl || !hashEl) return;
+
+  const ICON_OK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  const ICON_BAD = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  const ICON_INFO = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
 
   resultBox.style.display = 'flex';
   resultBox.className = 'verifier-result';
-  glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>`;
-  titleEl.innerText = 'Computing Local In-Memory SHA-256 Digest...';
+  if (glyphEl) glyphEl.innerHTML = ICON_INFO;
+  titleEl.innerText = 'Computing SHA-256';
   const sizeMb = file.size ? (file.size / 1024 / 1024).toFixed(2) : '0.00';
-  detailsEl.innerText = `Streaming ${file.name} (${sizeMb} MB) into WebCrypto API sandbox. 0 bytes uploaded.`;
-  hashEl.innerText = 'Calculating digest...';
+  detailsEl.innerText = file.name + ' (' + sizeMb + ' MB). The file is read on your device and is not uploaded.';
+  hashEl.innerText = 'Calculating';
 
   try {
     let computedHash = '';
-    const isShaCompanion = file.name.endsWith('.sha256') || file.name.endsWith('.sha');
-    if (isShaCompanion && typeof file.text === 'function') {
-      const text = await file.text();
-      const match = text.match(/[a-fA-F0-9]{64}/);
-      if (match) {
-        computedHash = match[0].toLowerCase();
-        titleEl.innerText = 'Parsed Checksum from Companion .sha256 File';
-      }
+    if (/\.(sha256|sha)$/i.test(file.name) && typeof file.text === 'function') {
+      const match = (await file.text()).match(/[a-fA-F0-9]{64}/);
+      if (match) computedHash = match[0].toLowerCase();
     }
-
     if (!computedHash) {
-      const arrayBuffer = await file.arrayBuffer();
-      const digestBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
-      const hashArray = Array.from(new Uint8Array(digestBuffer));
-      computedHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
+      computedHash = Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
     }
+    hashEl.innerText = 'SHA-256: ' + computedHash;
 
-    hashEl.innerText = `SHA-256: ${computedHash}`;
-
-    // Verify against manifest
-    const matchedPkg = manifest && manifest.packages ? manifest.packages.find(p => p.sha256 && p.sha256.toLowerCase() === computedHash.toLowerCase()) : null;
-
-    // Check if it matches Enterprise build or package filename
-    const isEnterpriseDmg = file.name.toLowerCase().includes('enterprise') && file.name.toLowerCase().endsWith('.dmg');
-
-    if (matchedPkg) {
+    const builds = (releaseData && releaseData.builds) || [];
+    const published = builds.filter((b) => b.sha256);
+    const match = published.find((b) => b.sha256 === computedHash);
+    if (match) {
+      const info = BUILD_INFO[match.kind];
       resultBox.classList.add('success');
-      glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-      titleEl.innerText = 'Cryptographic Verification Passed · Binary Authenticated';
-      detailsEl.innerHTML = `
-        <strong>Matches Official Release Package:</strong> ${matchedPkg.description}<br>
-        <strong>Architecture:</strong> ${matchedPkg.chipset_short} (${matchedPkg.instruction_set})<br>
-        <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Valid)
-      `;
-    } else if (isEnterpriseDmg || computedHash === '8c2b312be615ca46c65fd67590d598f15be72d8517e4bf2b4ce9a04aa3ffda4f') {
-      resultBox.classList.add('success');
-      glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-      titleEl.innerText = 'Cryptographic Verification Passed · Enterprise Binary Authenticated';
-      detailsEl.innerHTML = `
-        <strong>Matches Authentic Enterprise Workstation:</strong> CardioSense Enterprise v2.4.0 (.dmg · arm64)<br>
-        <strong>Architecture:</strong> Apple Silicon (ARMv8.5+ · Metal 3 / SME2)<br>
-        <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Local Authentic)
-      `;
+      if (glyphEl) glyphEl.innerHTML = ICON_OK;
+      titleEl.innerText = 'Checksum matches';
+      detailsEl.innerText = 'This is the official CardioSense ' + releaseData.version + ' build for ' + info.group + ' ' + info.name + '.';
+    } else if (!currentUser) {
+      titleEl.innerText = 'Sign in to compare';
+      detailsEl.innerText = 'The checksum above was computed on your device. Sign in to compare it with the checksums of the latest release.';
+    } else if (!published.length) {
+      titleEl.innerText = 'No checksums published';
+      detailsEl.innerText = 'The latest release has no checksum file, so this file cannot be compared.';
     } else {
       resultBox.classList.add('error');
-      glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#DC2626"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
-      titleEl.innerText = 'Checksum Mismatch or Unrecognized Binary';
-      detailsEl.innerText = `The computed SHA-256 hash does not match any official package in the 18-package release manifest. Do not execute untrusted binaries.`;
+      if (glyphEl) glyphEl.innerHTML = ICON_BAD;
+      titleEl.innerText = 'Checksum does not match';
+      detailsEl.innerText = 'This file is not an official build from the latest release. Do not run it. Download it again from this page.';
     }
   } catch (err) {
     resultBox.classList.add('error');
-    titleEl.innerText = 'Cryptographic Verification Failed';
-    detailsEl.innerText = `Error reading file: ${err.message}`;
-  }
-}
-
-/**
- * Quick simulation tests for the offline verifier
- */
-function simulateVerifierTest(type) {
-  const resultBox = document.getElementById('verification-result-box');
-  const titleEl = document.getElementById('verification-status-title');
-  const detailsEl = document.getElementById('verification-status-details');
-  const hashEl = document.getElementById('verification-computed-hash');
-  const glyphEl = document.getElementById('verification-status-glyph');
-  if (!resultBox || !titleEl || !detailsEl || !hashEl) return;
-
-  resultBox.style.display = 'flex';
-  resultBox.className = 'verifier-result';
-
-  if (type === 'm4') {
-    const pkg = manifest && manifest.packages ? manifest.packages.find(p => p.id === 'mac-m4-arm64') : null;
-    const sha = pkg ? pkg.sha256 : 'e98ef91dc9a150645ce1e67cf49c0d4a362fe5069a2a7aaee23d6a6953dc3772';
-    resultBox.classList.add('success');
-    glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-    titleEl.innerText = 'Cryptographic Verification Passed · Binary Authenticated';
-    detailsEl.innerHTML = `
-      <strong>Simulated File:</strong> CardioSense-AI-2.4.0-macos-m4-arm64.dmg (82.1 MB)<br>
-      <strong>Architecture:</strong> Apple Silicon M4 Series (ARMv9.2-A · SME2 & Metal 3)<br>
-      <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Valid)
-    `;
-    hashEl.innerText = `SHA-256: ${sha}`;
-    showToast('Verified CardioSense-AI-2.4.0-macos-m4-arm64.dmg');
-  } else if (type === 'enterprise') {
-    resultBox.classList.add('success');
-    glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-    titleEl.innerText = 'Cryptographic Verification Passed · Enterprise Binary Authenticated';
-    detailsEl.innerHTML = `
-      <strong>Simulated File:</strong> CardioSense-Enterprise-2.4.0-macos-arm64.dmg (1.2 MB)<br>
-      <strong>Architecture:</strong> Apple Silicon (ARMv8.5+ · Metal 3 / SME2)<br>
-      <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Local Authentic)
-    `;
-    hashEl.innerText = `SHA-256: 8c2b312be615ca46c65fd67590d598f15be72d8517e4bf2b4ce9a04aa3ffda4f`;
-    showToast('Verified CardioSense-Enterprise-2.4.0-macos-arm64.dmg');
-  } else {
-    resultBox.classList.add('error');
-    glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#DC2626"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
-    titleEl.innerText = 'Checksum Mismatch or Unrecognized Binary';
-    detailsEl.innerText = `The computed SHA-256 hash does not match any official package in the 18-package release manifest. Do not execute untrusted binaries.`;
-    hashEl.innerText = `SHA-256: 0000000000000000000000000000000000000000000000000000000000000000`;
-    showToast('Simulated corrupted package detection', 'error');
-  }
-}
-
-/**
- * ==============================================================================
- * LIVE SECURITY DIAGNOSTIC CHECKUP ENGINE
- * ==============================================================================
- */
-function runSecurityCheckup() {
-  const consoleEl = document.getElementById('sec-audit-console');
-  if (!consoleEl) return;
-
-  const now = new Date().toISOString().substring(11, 19);
-  const logs = [
-    { tag: 'TLS-1.3', msg: 'Strict transport security active. HSTS preloaded (max-age=63072000).', ok: true },
-    { tag: 'HIPAA-PHI', msg: 'Zero cloud egress boundary verified. Egress socket: BLOCKED (0 bytes).', ok: true },
-    { tag: 'WEBCRYPTO', msg: 'FIPS 140-2 Level 3 primitive self-test passed (SHA-256 / AES-GCM).', ok: true },
-    { tag: 'PKI-MANIFEST', msg: 'Model coefficients digest verified: c26a2222... Authenticated.', ok: true },
-    { tag: 'GL-SANDBOX', msg: 'WebGL shader isolation active. Buffer overflow quarantine verified.', ok: true },
-    { tag: 'SANITIZER', msg: 'Clinical range boundaries verified. 13 biomarkers clamped.', ok: true }
-  ];
-
-  consoleEl.innerHTML = logs.map(l => `
-    <div class="console-line">
-      <span class="console-time">${now}</span>
-      <span class="console-tag">[${l.tag}]</span>
-      <span class="console-msg ${l.ok ? 'ok' : 'info'}">${l.msg}</span>
-    </div>
-  `).join('');
-
-  showToast('Security & Compliance Controls Verified');
-}
-
-function exportSecurityReport() {
-  const report = {
-    standard: "FIPS 140-2 Level 3 / HIPAA §164.312",
-    timestamp: new Date().toISOString(),
-    signing_authority: "CardioSense Healthcare Cryptographic Code Sign CA",
-    controls: {
-      tls_hsts: "PASS",
-      phi_zero_egress: "PASS",
-      webcrypto_fips: "PASS",
-      model_weights_seal: "PASS",
-      webgl_sandbox: "PASS",
-      clinical_sanitizer: "PASS"
-    }
-  };
-  downloadJSON(report, 'CardioSense-Security-Attestation.json');
-}
-
-function copyAuditLog() {
-  const consoleEl = document.getElementById('sec-audit-console');
-  if (consoleEl) {
-    copyToClipboard(consoleEl.innerText, 'Copied Security Audit Logs');
+    if (glyphEl) glyphEl.innerHTML = ICON_BAD;
+    titleEl.innerText = 'Could not read the file';
+    detailsEl.innerText = err.message;
   }
 }
 
@@ -3689,7 +3493,7 @@ function exportDiagnosticSummaryReport() {
           CardioSense AI — Clinical Diagnostic Assessment
         </h2>
         <div style="font-size:0.75rem; color:var(--color-text-muted);">
-          Generated: ${new Date().toLocaleString()} · FDA 21 CFR § 880.6310 Non-Device CDS
+          Generated: ${new Date().toLocaleString()} · Educational use only, not a medical device
         </div>
       </div>
 
@@ -3746,14 +3550,14 @@ function closeReportModal() {
   if (modal) modal.style.display = 'none';
 }
 
-/**
- * ==============================================================================
- * AUTHENTICATION & MODAL CONTROLLERS
- * ==============================================================================
- */
 function openAuthModal() {
-  const modal = document.getElementById('app-auth-modal');
-  if (modal) modal.style.display = 'flex';
+  const m = document.getElementById('app-auth-modal');
+  if (!m) return;
+  const err = document.getElementById('auth-error');
+  if (err) err.textContent = '';
+  m.style.display = 'flex';
+  const e = document.getElementById('auth-email');
+  if (e) setTimeout(() => e.focus(), 30);
 }
 
 function closeAuthModal() {
@@ -3767,93 +3571,36 @@ function handleModalBackdropClick(event) {
   }
 }
 
-function switchAuthTab(tab, btn) {
-  document.querySelectorAll('.auth-subview').forEach(v => v.style.display = 'none');
-  const target = document.getElementById(`auth-tab-${tab}`);
-  if (target) target.style.display = 'block';
-
-  const modal = document.getElementById('app-auth-modal');
-  if (modal) {
-    modal.querySelectorAll('.app-tab-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+async function handleCredentialSubmit(event) {
+  event.preventDefault();
+  const hp = document.getElementById('clinical_security_hp');
+  if (hp && hp.value) return; // bots fill the hidden field
+  const email = document.getElementById('auth-email').value.trim();
+  const pwdEl = document.getElementById('auth-pwd');
+  const err = document.getElementById('auth-error');
+  const btn = document.getElementById('auth-submit');
+  err.textContent = '';
+  if (!email || !pwdEl.value) { err.textContent = 'Enter your email and password.'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pwdEl.value })
+    });
+    const body = await r.json().catch(() => ({}));
+    pwdEl.value = '';
+    if (!r.ok) { err.textContent = body.error || 'Could not sign in. Try again.'; return; }
+    closeAuthModal();
+    await initSession();
+    showToast('Signed in');
+    const m = document.getElementById('matrix');
+    if (m) m.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    err.textContent = 'Could not reach the server. Check your connection and try again.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Sign in';
   }
-}
-
-function handleCredentialSubmit(e) {
-  e.preventDefault();
-
-  // 1. Anti-Bot Honeypot Trap Check
-  const honeypot = document.getElementById('clinical_security_hp');
-  if (honeypot && honeypot.value.trim() !== '') {
-    console.warn('[CardioSense Security] Automated bot submission rejected via honeypot trap.');
-    showToast('Automated bot submission detected and rejected.', 'error');
-    return;
-  }
-
-  // 2. Client-Side Lockout Protection (Brute Force Defense)
-  if (window._authLockoutUntil && Date.now() < window._authLockoutUntil) {
-    const remainingSec = Math.ceil((window._authLockoutUntil - Date.now()) / 1000);
-    showToast(`Too many failed attempts. Login locked for ${remainingSec}s.`, 'error');
-    return;
-  }
-
-  const email = (document.getElementById('auth-email') ? document.getElementById('auth-email').value : '').trim();
-  const pwdInput = document.getElementById('auth-pwd');
-  const pwd = pwdInput ? pwdInput.value : '';
-  const mfaStep = document.getElementById('mfa-step');
-
-  if (!email || !pwd) {
-    showToast('Please provide both Clinical ID and Password.', 'error');
-    return;
-  }
-
-  // Enforce institutional complexity standards (minimum 8 characters)
-  if (pwd.length < 8) {
-    window._authFailures = (window._authFailures || 0) + 1;
-    if (window._authFailures >= 5) {
-      window._authLockoutUntil = Date.now() + 60000;
-      showToast('5 consecutive failed attempts. Locked for 60 seconds.', 'error');
-      return;
-    }
-    showToast('Password must be at least 8 characters with institutional complexity.', 'error');
-    return;
-  }
-
-  if (mfaStep.style.display === 'none') {
-    mfaStep.style.display = 'block';
-    showToast('Enter 6-Digit 2FA Code to Complete Login');
-    return;
-  }
-
-  const otpInput = document.getElementById('auth-otp');
-  const otp = otpInput ? otpInput.value.trim() : '';
-  if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-    showToast('Please enter a valid 6-digit numeric 2FA code.', 'error');
-    return;
-  }
-
-  // 3. Immediate In-Memory Credential Sanitization
-  pwdInput.value = '';
-  if (otpInput) otpInput.value = '';
-  window._authFailures = 0;
-
-  showToast('Clinical Session Authenticated Successfully');
-  setTimeout(() => closeAuthModal(), 600);
-}
-
-function autoFillOtp() {
-  document.getElementById('auth-otp').value = '749102';
-  showToast('Auto-Filled 2FA Security Token');
-}
-
-function simulateFido2Auth() {
-  showToast('Biometric FIDO2 Touch ID Challenge Verified');
-  setTimeout(() => closeAuthModal(), 800);
-}
-
-function loginDemoProfile(role) {
-  showToast(`Authenticated as Clinical Role: ${role.toUpperCase()}`);
-  setTimeout(() => closeAuthModal(), 500);
 }
 
 function openComplianceModal(type) {
@@ -4151,378 +3898,16 @@ function initMobileECGStream() {
 // ==============================================================================
 // 19. LAKSHYA CULTURE 3D CARDIAC VISUALIZER & CYBERNETIC ENGINE
 // ==============================================================================
-let hero3DScene, hero3DCamera, hero3DRenderer, hero3DHeartMesh, hero3DParticles;
-let hero3DAnimId = null;
-let hero3DRotating = true;
-let hero3DShadingMode = 'perfusion';
-let heroTargetRotX = 0;
-let heroTargetRotY = 0;
-let heroCurrentRotX = 0;
-let heroCurrentRotY = 0;
-
-// Safe legacy compatibility wrappers
-function setHeroSlide(_slideName) {}
-function toggleHero3DRotation() { hero3DRotating = !hero3DRotating; }
-function cycleHero3DShading() {}
-
+// DEEP LINK: #mobile opens the mobile companion view
 // ==============================================================================
-// 20. LAKSHYA CULTURE ZERO-ASSET PROCEDURAL AUDIO ENGINE
-// Real-time audio haptics synthesized in browser with zero external assets
-// ==============================================================================
-class LakshyaAudioEngine {
-  constructor() {
-    this.ctx = null;
-    this.isMuted = false;
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        const stored = localStorage.getItem('cs_arcade_muted');
-        this.isMuted = stored === 'true';
-      } catch (_e) {}
-    }
-  }
-
-  initContext() {
-    if (typeof window === 'undefined') return null;
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-    return this.ctx;
-  }
-
-  toggleMute() {
-    this.isMuted = !this.isMuted;
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        localStorage.setItem('cs_arcade_muted', String(this.isMuted));
-      } catch (_e) {}
-    }
-    return this.isMuted;
-  }
-
-  getMuted() {
-    return this.isMuted;
-  }
-
-  playHover() {
-    if (this.isMuted) return;
-    const ctx = this.initContext();
-    if (!ctx) return;
-    try {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1400, now);
-      osc.frequency.exponentialRampToValueAtTime(800, now + 0.025);
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.03);
-    } catch (_e) {}
-  }
-
-  playClick() {
-    if (this.isMuted) return;
-    const ctx = this.initContext();
-    if (!ctx) return;
-    try {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(480, now);
-      osc.frequency.exponentialRampToValueAtTime(240, now + 0.035);
-      gain.gain.setValueAtTime(0.07, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.04);
-    } catch (_e) {}
-  }
-
-  playPrediction() {
-    if (this.isMuted) return;
-    const ctx = this.initContext();
-    if (!ctx) return;
-    try {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(640, now + 0.12);
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.15);
-    } catch (_e) {}
-  }
-}
-
-const lakshyaAudio = new LakshyaAudioEngine();
-
-function toggleArcadeAudio() {
-  const isMuted = lakshyaAudio.toggleMute();
-  const label = document.getElementById('audio-btn-label');
-  if (label) {
-    label.textContent = isMuted ? '🔇 Audio Haptics: OFF' : '🔊 Audio Haptics: ON';
-  }
-  if (!isMuted) {
-    lakshyaAudio.playClick();
-  }
-}
-
-function initHero3DVisualizer() {
-  const canvas = document.getElementById('hero-3d-canvas');
-  if (!canvas || typeof THREE === 'undefined') return;
-
-  try {
-    const stage = canvas.parentElement;
-    const width = (stage && stage.clientWidth) || 400;
-    const height = (stage && stage.clientHeight) || 400;
-
-    hero3DScene = new THREE.Scene();
-    hero3DCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    hero3DCamera.position.set(0, 0, 7.5);
-
-    hero3DRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
-    hero3DRenderer.setSize(width, height);
-    hero3DRenderer.setPixelRatio(Math.min((typeof window !== 'undefined' && window.devicePixelRatio) || 1, 2));
-
-    const ambLight = new THREE.AmbientLight(0x06B6D4, 0.75);
-    hero3DScene.add(ambLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0xE0F2FE, 1.4);
-    dirLight1.position.set(5, 8, 5);
-    hero3DScene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0x00F0FF, 1.0);
-    dirLight2.position.set(-5, -4, -3);
-    hero3DScene.add(dirLight2);
-
-    const heartGroup = new THREE.Group();
-
-    const heartGeo = new THREE.SphereGeometry(1.7, 32, 24);
-    const pos = heartGeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      let x = pos.getX(i);
-      let y = pos.getY(i);
-      let z = pos.getZ(i);
-      if (y < 0) {
-        const factor = 1.0 + (y / 1.7) * 0.45;
-        x *= factor;
-        z *= factor;
-      }
-      if (x > -0.2 && x < 0.2 && y > -1.0 && y < 0.8) {
-        z *= 0.85;
-      }
-      pos.setXYZ(i, x, y, z);
-    }
-    heartGeo.computeVertexNormals();
-
-    const heartMat = new THREE.MeshStandardMaterial({
-      color: 0x071526,
-      roughness: 0.25,
-      metalness: 0.85,
-      emissive: 0x020B14,
-      emissiveIntensity: 0.4
-    });
-    hero3DHeartMesh = new THREE.Mesh(heartGeo, heartMat);
-    heartGroup.add(hero3DHeartMesh);
-
-    const curve1 = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.2, 1.6, 0.5),
-      new THREE.Vector3(-0.4, 0.8, 1.4),
-      new THREE.Vector3(-0.1, 0.0, 1.55),
-      new THREE.Vector3(0.2, -0.8, 1.2),
-      new THREE.Vector3(0.1, -1.5, 0.4)
-    ]);
-    const tubeGeo1 = new THREE.TubeGeometry(curve1, 36, 0.065, 8, false);
-    const coronaryMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF });
-    const coronaryMesh1 = new THREE.Mesh(tubeGeo1, coronaryMat);
-    heartGroup.add(coronaryMesh1);
-
-    const curve2 = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0.2, 1.5, 0.4),
-      new THREE.Vector3(0.9, 0.9, 1.1),
-      new THREE.Vector3(1.4, 0.1, 0.6),
-      new THREE.Vector3(1.1, -0.8, 0.3)
-    ]);
-    const tubeGeo2 = new THREE.TubeGeometry(curve2, 28, 0.05, 8, false);
-    const coronaryMesh2 = new THREE.Mesh(tubeGeo2, coronaryMat);
-    heartGroup.add(coronaryMesh2);
-
-    const nodeGeo = new THREE.SphereGeometry(0.09, 12, 12);
-    const nodeMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
-    const nodePositions = [
-      new THREE.Vector3(-0.4, 0.8, 1.4),
-      new THREE.Vector3(-0.1, 0.0, 1.55),
-      new THREE.Vector3(0.2, -0.8, 1.2),
-      new THREE.Vector3(0.9, 0.9, 1.1)
-    ];
-    nodePositions.forEach(p => {
-      const node = new THREE.Mesh(nodeGeo, nodeMat);
-      node.position.copy(p);
-      heartGroup.add(node);
-    });
-
-    const ringGeo = new THREE.TorusGeometry(2.8, 0.012, 8, 80);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF, transparent: true, opacity: 0.22 });
-    const ring3D = new THREE.Mesh(ringGeo, ringMat);
-    ring3D.rotation.x = Math.PI / 3;
-    ring3D.rotation.y = Math.PI / 6;
-    heartGroup.add(ring3D);
-
-    const partCount = 90;
-    const partGeo = new THREE.BufferGeometry();
-    const partPositions = new Float32Array(partCount * 3);
-    for (let i = 0; i < partCount; i++) {
-      const radius = 2.4 + Math.random() * 1.8;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      partPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      partPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      partPositions[i * 3 + 2] = radius * Math.cos(phi);
-    }
-    partGeo.setAttribute('position', new THREE.BufferAttribute(partPositions, 3));
-    const partMat = new THREE.PointsMaterial({ color: 0x38BDF8, size: 0.05, transparent: true, opacity: 0.6 });
-    hero3DParticles = new THREE.Points(partGeo, partMat);
-    heartGroup.add(hero3DParticles);
-
-    hero3DScene.add(heartGroup);
-
-    let isDragging = false;
-    let prevMouseX = 0;
-    let prevMouseY = 0;
-
-    canvas.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-    });
-    if (typeof window !== 'undefined') {
-      window.addEventListener('mouseup', () => { isDragging = false; });
-      window.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-          const deltaX = e.clientX - prevMouseX;
-          const deltaY = e.clientY - prevMouseY;
-          heroTargetRotY += deltaX * 0.01;
-          heroTargetRotX += deltaY * 0.01;
-          prevMouseX = e.clientX;
-          prevMouseY = e.clientY;
-        } else {
-          const rect = canvas.getBoundingClientRect();
-          const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-          const normY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-          if (normX >= -1.2 && normX <= 1.2 && normY >= -1.2 && normY <= 1.2) {
-            heroTargetRotY = normX * 0.4;
-            heroTargetRotX = -normY * 0.25;
-          }
-        }
-      });
-    }
-
-    canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        isDragging = true;
-        prevMouseX = e.touches[0].clientX;
-        prevMouseY = e.touches[0].clientY;
-      }
-    }, { passive: true });
-    if (typeof window !== 'undefined') {
-      window.addEventListener('touchend', () => { isDragging = false; });
-      canvas.addEventListener('touchmove', (e) => {
-        if (isDragging && e.touches.length === 1) {
-          const deltaX = e.touches[0].clientX - prevMouseX;
-          const deltaY = e.touches[0].clientY - prevMouseY;
-          heroTargetRotY += deltaX * 0.015;
-          heroTargetRotX += deltaY * 0.015;
-          prevMouseX = e.touches[0].clientX;
-          prevMouseY = e.touches[0].clientY;
-        }
-      }, { passive: true });
-
-      window.addEventListener('resize', () => {
-        if (!canvas || !canvas.parentElement || !hero3DRenderer || !hero3DCamera) return;
-        const w = canvas.parentElement.clientWidth || 360;
-        const h = canvas.parentElement.clientHeight || 360;
-        hero3DCamera.aspect = w / h;
-        hero3DCamera.updateProjectionMatrix();
-        hero3DRenderer.setSize(w, h);
-      });
-    }
-
-    let clock = new THREE.Clock();
-    function animateHero3D() {
-      hero3DAnimId = requestAnimationFrame(animateHero3D);
-      const elapsed = clock.getElapsedTime();
-
-      const pulsePhase = (elapsed * 3.8) % (Math.PI * 2);
-      const beat = Math.sin(pulsePhase);
-      const systolic = Math.max(0, beat) * 0.06;
-      const currentScale = 1.0 + systolic;
-      if (hero3DHeartMesh) {
-        hero3DHeartMesh.scale.set(currentScale, currentScale, currentScale);
-      }
-
-      heroCurrentRotX += (heroTargetRotX - heroCurrentRotX) * 0.05;
-      heroCurrentRotY += (heroTargetRotY - heroCurrentRotY) * 0.05;
-
-      if (hero3DRotating) {
-        heartGroup.rotation.y += 0.006;
-      }
-      heartGroup.rotation.y += heroCurrentRotY * 0.02;
-      heartGroup.rotation.x = heroCurrentRotX * 0.5 + Math.sin(elapsed * 0.6) * 0.05;
-
-      if (hero3DParticles) {
-        hero3DParticles.rotation.y -= 0.003;
-        hero3DParticles.rotation.z += 0.001;
-      }
-
-      hero3DRenderer.render(hero3DScene, hero3DCamera);
-    }
-    animateHero3D();
-
-  } catch (err) {
-    console.warn('[CardioSense] Hero 3D visualizer initialization skipped:', err);
-  }
-}
-
-function attachLakshyaHaptics() {
-  if (typeof document === 'undefined') return;
-  try {
-    const clickables = document.querySelectorAll('button, a, .cockpit-tab-pill, .scenario-chip, .app-btn, .lakshya-btn, .dock-item, .dock-icon-btn, .stepper-btn, .case-chip');
-    clickables.forEach(el => {
-      el.addEventListener('mouseenter', () => { lakshyaAudio.playHover(); });
-      el.addEventListener('click', () => { lakshyaAudio.playClick(); });
-    });
-  } catch (_e) {}
-}
-
-// Check URL hash for direct mobile view activation, initialize Hero, and attach audio haptics
 if (typeof window !== 'undefined' && window.addEventListener) {
   window.addEventListener('DOMContentLoaded', () => {
     try {
-      initHero3DVisualizer();
-      attachLakshyaHaptics();
-      if (typeof window !== 'undefined' && window.location) {
-        const hash = window.location.hash || '';
-        const search = window.location.search || '';
-        if (hash === '#mobile' || search.includes('mobile=1')) {
-          openMobileCompanionView();
-        }
-      }
+      const hash = window.location.hash || '';
+      const search = window.location.search || '';
+      if (hash === '#mobile' || search.includes('mobile=1')) openMobileCompanionView();
     } catch (_e) {
-      // In headless testing or sandbox environments where window.location is partially mocked
+      // partially mocked window.location in headless tests
     }
   });
 }

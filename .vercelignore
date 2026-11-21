@@ -6,3 +6,5 @@ tests/
 .github/
 __pycache__/
 *.pyc
+portal/downloads/
+portal/manifest.json

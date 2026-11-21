@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+// Local preview: serves ./portal and the ./api handlers the way Vercel does.
+//   SESSION_SECRET=<32+ chars> CARDIOSENSE_USERS='{...}' node scripts/dev-server.js
+// Set MOCK_RELEASES=1 to show sample downloads without a published GitHub release.
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const root = path.join(__dirname, '..');
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
+
+if (process.env.MOCK_RELEASES) {
+  const real = global.fetch;
+  global.fetch = async (url, opts) => {
+    if (String(url).endsWith('/releases/latest')) {
+      const mk = (id, name, size) => ({ id, name, size });
+      return new Response(JSON.stringify({ tag_name: 'v1.0.0', assets: [
+        mk(1, 'CardioSense-1.0.0-macos-arm64.dmg', 211e6), mk(2, 'CardioSense-1.0.0-macos-x64.dmg', 228e6),
+        mk(3, 'CardioSense-1.0.0-windows-x64-setup.exe', 187e6), mk(4, 'CardioSense-1.0.0-windows-arm64-setup.exe', 183e6),
+        mk(5, 'SHA256SUMS.txt', 600)] }), { status: 200 });
+    }
+    if (String(url).includes('/releases/assets/')) return new Response(null, { status: 302, headers: { location: 'http://localhost/signed' } });
+    return real(url, opts);
+  };
+}
+
+http.createServer((req, res) => {
+  const u = new URL(req.url, 'http://x');
+  const api = u.pathname.match(/^\/api\/([a-z]+)$/);
+  if (api && fs.existsSync(path.join(root, 'api', api[1] + '.js'))) {
+    return require(path.join(root, 'api', api[1] + '.js'))(req, res);
+  }
+  let p = u.pathname === '/' ? '/index.html' : u.pathname;
+  if (!path.extname(p)) p += '.html';
+  const file = path.join(root, 'portal', path.normalize(p));
+  if (!file.startsWith(path.join(root, 'portal')) || !fs.existsSync(file)) { res.statusCode = 404; return res.end('Not found'); }
+  res.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
+  fs.createReadStream(file).pipe(res);
+}).listen(process.env.PORT || 3000, () => console.log('http://localhost:' + (process.env.PORT || 3000)));

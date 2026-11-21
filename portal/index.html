@@ -8,9 +8,9 @@
   <meta property="og:site_name" content="CardioSense — Clinical Intelligence">
   <meta property="og:title" content="CardioSense — Clinical Intelligence & Cardiac Workstation">
   <meta property="og:description" content="Advanced clinical cardiac workstation: non-device clinical decision support, real-time 3D myocardial perfusion, 12-lead ECG telemetry, and offline desktop distribution.">
-  <meta property="og:url" content="https://heart-disease-predictor-kohl-nine.vercel.app/">
-  <meta property="og:image" content="https://heart-disease-predictor-kohl-nine.vercel.app/og-image.png">
-  <meta property="og:image:secure_url" content="https://heart-disease-predictor-kohl-nine.vercel.app/og-image.png">
+  <meta property="og:url" content="https://cardiosense.lakshya.uk/">
+  <meta property="og:image" content="https://cardiosense.lakshya.uk/og-image.png">
+  <meta property="og:image:secure_url" content="https://cardiosense.lakshya.uk/og-image.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -18,7 +18,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="CardioSense — Clinical Intelligence & Cardiac Workstation">
   <meta name="twitter:description" content="Advanced clinical cardiac workstation: non-device clinical decision support, real-time 3D myocardial perfusion, 12-lead ECG telemetry, and offline desktop distribution.">
-  <meta name="twitter:image" content="https://heart-disease-predictor-kohl-nine.vercel.app/og-image.png">
+  <meta name="twitter:image" content="https://cardiosense.lakshya.uk/og-image.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -26,6 +26,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#06625F">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="theme.css">
   <!-- Offline-First Vendor Libraries with Seamless CDN Fallback -->
   <script src="vendor/three.min.js"></script>
   <script>
@@ -126,34 +127,6 @@
   <div class="cockpit-content">
 
   <!-- ==============================================================================
-       1. CLINICAL UTILITY RIBBON
-       ============================================================================== -->
-  <div class="app-utility-ribbon">
-    <div class="app-utility-container container-lock">
-      <div class="app-utility-left">
-        <a href="#lab-ingestion">Clinical Document Ingestion</a>
-        <a href="#live-workstation" class="active">Cardiac Hemodynamics Workstation</a>
-        <a href="#matrix">Architecture Matrix</a>
-        <a href="#security-checkup">FIPS 140-2 Security</a>
-        <a href="#regulatory-compliance">FDA & HIPAA Compliance</a>
-      </div>
-      <div class="app-utility-right">
-        <div class="compliance-status-pill" title="In-Memory Edge Processing Active">
-          <span class="compliance-status-dot"></span>
-          <span>HIPAA Safe Harbor · Zero PHI Egress</span>
-        </div>
-        <button type="button" class="app-login-btn" onclick="openAuthModal()" id="btn-top-signin">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          Clinical Workstation Login
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==============================================================================
        2. MAIN HEADER & BRAND BLOCK
        ============================================================================== -->
   <header class="app-header">
@@ -174,16 +147,9 @@
           <span class="patient-chip-status-badge critical" id="header-patient-status" style="margin-left:8px;">Acute STEMI Triage</span>
         </div>
         <button type="button" class="header-mobile-btn" onclick="openMobilePairModal()" id="btn-header-mobile" title="Scan QR Code to Track on Mobile">
-          <span class="mobile-pulse-dot"></span>
-          <span>📱 Track on Mobile</span>
+          <span>Track on Mobile</span>
         </button>
-        <button type="button" class="header-login-btn" onclick="openAuthModal()" id="btn-header-signin" title="Clinical Workstation Sign In">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          <span>Sign In</span>
-        </button>
+        <div class="hx-account" id="hx-account"><button type="button" class="header-login-btn" id="btn-header-signin" onclick="openAuthModal()">Sign in</button></div>
         <button type="button" class="header-save-btn" onclick="exportDiagnosticSummaryReport()" style="background:#00E5FF; color:#06101E; font-weight:700; font-size:0.8125rem; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save ▾
@@ -224,151 +190,74 @@
     </div>
     <div class="drawer-links">
       <a href="#live-workstation" class="drawer-nav-item active" onclick="toggleNavDrawer(); switchCockpitView('cockpit');">
-        <span>🫀</span> Diagnostic Cockpit
+        Diagnostic Cockpit
       </a>
       <a href="#portal-ecg-canvas" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('ecg');">
-        <span>📈</span> 12-Lead ECG Telemetry
+        12-Lead ECG Telemetry
       </a>
       <a href="#portal-cgi-viewport" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('heart');">
-        <span>🔬</span> 3D Heart Anatomy
+        3D Heart Anatomy
       </a>
       <a href="#lab-ingestion" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('lab');">
-        <span>📋</span> EHR & Lab Ingestion
+        EHR & Lab Ingestion
       </a>
       <a href="#hospital-economics" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('economics');">
-        <span>💰</span> Hospital Economics & ROI
+        Hospital Economics & ROI
       </a>
       <a href="#matrix" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('deploy');">
-        <span>🖥️</span> 18 Native Desktop Packages
+        Download
       </a>
       <a href="#security-checkup" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('security');">
-        <span>🛡️</span> HIPAA & FIPS 140-2 Security
+        HIPAA & FIPS 140-2 Security
       </a>
       <a href="#verifier" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('verifier');">
-        <span>🔒</span> Checksum Verifier
+        Checksum Verifier
       </a>
       <a href="#regulatory-compliance" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('compliance');">
-        <span>⚖️</span> FDA & HIPAA Compliance
+        FDA & HIPAA Compliance
       </a>
       <a href="#mobile" class="drawer-nav-item" onclick="toggleNavDrawer(); openMobileCompanionView();" style="border-top:1px solid rgba(255,255,255,0.08); margin-top:8px; padding-top:12px; color:#38BDF8;">
-        <span>📱</span> Mobile Tracker (Scan QR)
+        Mobile Tracker (Scan QR)
       </a>
     </div>
     <div style="padding:16px; border-top:1px solid rgba(255,255,255,0.08);">
       <button type="button" class="app-btn app-btn-primary" style="width:100%;" onclick="toggleNavDrawer(); openMobilePairModal();">
-        📱 Pair Mobile Phone
+        Pair Mobile Phone
       </button>
     </div>
   </aside>
 
   <!-- ==============================================================================
-       3. BREADCRUMBS
-       ============================================================================== -->
-  <div class="app-breadcrumb-bar">
-    <div class="app-breadcrumb-container container-lock">
-      <a href="#live-workstation">CardioSense Clinical Platform</a>
-      <span class="app-breadcrumb-separator">/</span>
-      <a href="#live-workstation">Cardiovascular Analytics</a>
-      <span class="app-breadcrumb-separator">/</span>
-      <span class="app-breadcrumb-current">Desktop Client Distribution Center (18 Granular Architectures)</span>
-    </div>
-  </div>
-
-  <!-- ==============================================================================
        4. LAKSHYA CULTURE CLINICAL AI HERO
        ============================================================================== -->
-  <section class="app-hero app-hero-lakshya" id="hero-overview">
-    <div class="hero-ambient-glow" aria-hidden="true"></div>
-    <div class="app-hero-container container-lock hero-lakshya-grid">
-      <!-- Left Column: Display Typography, Telemetry Grid & Action Controls -->
-      <div class="hero-narrative-col">
-        <div class="lakshya-hero-kicker">
-          <span class="hero-kicker-num">01 // PRECISION CARDIOLOGY</span>
-          <span class="hero-kicker-bar"></span>
-          <span class="hero-live-status"><span class="pulse-emerald"></span> NEURAL ENGINE 60 FPS</span>
-        </div>
+  <section class="hx" id="hero-overview" aria-label="CardioSense">
+    <div class="hx-sticky">
+      <canvas id="hx-canvas" class="hx-canvas" aria-hidden="true"></canvas>
 
-        <h1 class="hero-display-headline">
-          Cardiovascular intelligence <br>
-          <span class="hero-headline-highlight">engineered with clinical rigor.</span>
-        </h1>
-
-        <p class="hero-lead-text">
-          Operating at the intersection of clinical cardiology, hemodynamic vectors, and machine intelligence. Foreseeing coronary ischemia with 96.4% recall, real-time 3D myocardial perfusion, and offline desktop neural acceleration.
-        </p>
-
-        <!-- Lakshya Signature Telemetry Spec Grid -->
-        <div class="hero-spec-grid">
-          <div class="hero-spec-card">
-            <div class="spec-num text-cyan">96.4%</div>
-            <div class="spec-label">Cleveland Recall</div>
-          </div>
-          <div class="hero-spec-card">
-            <div class="spec-num text-sky">&lt; 42ms</div>
-            <div class="spec-label">Inference Latency</div>
-          </div>
-          <div class="hero-spec-card">
-            <div class="spec-num text-emerald">18 ARCH</div>
-            <div class="spec-label">Native Binaries</div>
-          </div>
-          <div class="hero-spec-card">
-            <div class="spec-num text-amber">0 KB</div>
-            <div class="spec-label">Zero-Asset Audio</div>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="hero-actions-row">
-          <a href="#live-workstation" class="lakshya-btn primary" onclick="switchCockpitView('cockpit')">
-            <span>Launch Workstation</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-            <span class="btn-shimmer" aria-hidden="true"></span>
-          </a>
-          <button type="button" class="lakshya-btn secondary" onclick="openMobilePairModal()">
-            <span>📱 Mobile Sync (QR)</span>
-          </button>
-          <button type="button" class="lakshya-btn ghost" id="lakshya-audio-toggle" onclick="toggleArcadeAudio()">
-            <span id="audio-btn-label">🔊 Audio Haptics: ON</span>
-          </button>
-        </div>
-
-        <!-- Clinical Accreditation Badges -->
-        <div class="app-trust-badges hero-badges-compact">
-          <div class="app-trust-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>FDA 21 CFR § 880.6310 Non-Device CDS</span>
-          </div>
-          <div class="app-trust-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span>FIPS 140-2 Level 3 Validated</span>
-          </div>
+      <div class="hx-copy is-on" data-beat="0">
+        <h1>Heart disease risk, explained.</h1>
+        <p>Enter a patient's measurements. CardioSense estimates the risk and shows which values drive it.</p>
+        <div class="hx-actions">
+          <a class="hx-btn" href="#live-workstation" onclick="switchCockpitView('cockpit')">Open the workstation</a>
+          <a class="hx-link" href="#matrix">Download the app</a>
         </div>
       </div>
 
-      <!-- Right Column: Cinematic 3D Cardiac Visualizer & HUD Telemetry -->
-      <div class="hero-visual-col">
-        <div class="hero-3d-stage">
-          <canvas id="hero-3d-canvas" class="hero-canvas"></canvas>
+      <div class="hx-copy" data-beat="1">
+        <h2>Four chambers, one estimate.</h2>
+        <p>The workstation pairs an interactive 3D heart with the risk estimate, an ECG trace and lab-report import.</p>
+      </div>
 
-          <!-- 4-Corner HUD Telemetry Overlay -->
-          <div class="hero-hud-tl">
-            <span class="hud-indicator pulse-cyan"></span>
-            <span class="hud-text">HR: <strong id="hero-bpm-live">72 BPM</strong> [SINUS]</span>
-          </div>
-          <div class="hero-hud-tr">
-            <span class="hud-text">VIRTUAL FFR: <strong class="text-emerald">0.88</strong> [PATENT]</span>
-          </div>
-          <div class="hero-hud-bl">
-            <span class="hud-text">PERFUSION: <strong class="text-cyan">98.4%</strong> [OPTIMAL]</span>
-          </div>
-          <div class="hero-hud-br">
-            <span class="hud-text">LEAD II ECG: <strong>NORMAL</strong></span>
-          </div>
+      <div class="hx-copy" data-beat="2">
+        <h2>Start with a patient.</h2>
+        <p>Use it in your browser, or install the desktop app for macOS and Windows.</p>
+        <div class="hx-actions">
+          <a class="hx-btn" href="#live-workstation" onclick="switchCockpitView('cockpit')">Open the workstation</a>
+          <a class="hx-link" href="#matrix">Download the app</a>
         </div>
       </div>
+
+      <p class="hx-note">Educational project. Not a medical device.</p>
     </div>
   </section>
 
@@ -415,13 +304,11 @@
           <!-- High-Sensitivity Safety Net Mode Toggle (96.4% Recall) -->
           <div class="safety-net-toggle-wrapper">
             <label class="safety-net-toggle-label" for="inp-safety-net-toggle">
-              <span style="color:#F43F5E; font-size:0.95rem;">🛡️</span>
               <span>High-Sensitivity Safety Net <strong>(96.4% Recall)</strong></span>
             </label>
             <label class="safety-net-switch" for="inp-safety-net-toggle">
               <input type="checkbox" id="inp-safety-net-toggle" onchange="toggleSafetyNetMode(this.checked)" aria-label="Toggle High-Sensitivity Safety Net Mode">
-              <span class="safety-net-slider"></span>
-            </label>
+              </label>
           </div>
           <div id="portal-safety-net-banner" class="safety-net-alert-banner" role="alert">
             <strong>SAFETY NET ACTIVE (96.4% RECALL):</strong> Calibrated decision threshold (0.28) active. Prevents fatal false-negative discharge of atypical acute coronary syndromes (diabetic neuropathy, elderly female silent ischemia).
@@ -657,7 +544,6 @@
 
                 <!-- WebGL Context Loss Recovery Badge -->
                 <div id="portal-context-recovery-badge" class="context-recovery-badge">
-                  <span class="hud-pulse-light" style="background:#F59E0B; box-shadow:0 0 8px #F59E0B;"></span>
                   <span>WebGL GPU Context Suspended — Re-initializing Telemetry...</span>
                 </div>
 
@@ -692,7 +578,6 @@
                       <circle cx="0" cy="40" r="3" fill="#00E5FF"/>
                     </svg>
                     <div class="lesion-badge" id="portal-lesion-badge">
-                      <span class="lesion-badge-icon"></span>
                       <span class="lesion-badge-text" id="portal-lesion-text">Coronary ischemia</span>
                     </div>
                   </div>
@@ -706,8 +591,6 @@
                   <span id="portal-risk-title">Estimated CAD Risk</span>
                   <span id="portal-risk-value">94.8% (Severe Ischemia)</span>
                   <span id="portal-ffr-val">0.48 (Significant)</span>
-                  <span id="portal-ffr-telemetry"></span>
-                  <span id="portal-stenosis-summary"></span>
                   <span id="portal-stenosis-val">3 / 3</span>
                   <span id="portal-bpm-display">128 BPM</span>
                   <span id="portal-ecg-meta">ST: -3.2 mm | Downsloping | Ischemic T-Wave</span>
@@ -725,7 +608,7 @@
               <div class="cockpit-card-header">
                 <div class="cockpit-card-title-group">
                   <h3 class="cockpit-card-title">ECG Lead-II telemetry rhythm strip</h3>
-                  <span class="ecg-status-indicator"><span class="heart-pulse-icon">💚</span> <span id="portal-ecg-strip-bpm">74 BPM</span></span>
+                  <span class="ecg-status-indicator"><span id="portal-ecg-strip-bpm">74 BPM</span></span>
                 </div>
                 <div class="ecg-playback-controls">
                   <button type="button" class="ecg-ctrl-btn" onclick="toggleECGPause()" title="Pause ECG" aria-label="Pause ECG">❚❚</button>
@@ -883,7 +766,7 @@
       </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-mobile" onclick="openMobileCompanionView()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-        📱 Mobile Tracker
+        Mobile Tracker
       </button>
     </nav>
 
@@ -960,13 +843,13 @@
                   { } Sample .JSON
                 </button>
                 <button type="button" class="app-btn app-btn-outline app-btn-xs" style="font-size:0.75rem; padding:4px 8px;" onclick="loadSampleClinicalFile('csv')">
-                  📊 Sample .CSV
+                  Sample .CSV
                 </button>
                 <button type="button" class="app-btn app-btn-outline app-btn-xs" style="font-size:0.75rem; padding:4px 8px;" onclick="loadSampleClinicalFile('txt')">
-                  📄 Doctor .TXT Note
+                  Doctor .TXT Note
                 </button>
                 <button type="button" class="app-btn app-btn-outline app-btn-xs" style="font-size:0.75rem; padding:4px 8px;" onclick="loadSampleClinicalFile('hl7')">
-                  🏥 Hospital .HL7
+                  Hospital .HL7
                 </button>
               </div>
             </div>
@@ -1251,447 +1134,26 @@
 
     <!-- SMART CLIENT HARDWARE AUTO-DETECTION CARD -->
     <section class="app-detection-card" id="smart-recommendation-card">
-      <div id="specs"></div>
       <div class="app-detection-info">
-        <div class="app-detection-eyebrow">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          Hardware Architecture Auto-Detection
-        </div>
-        <div class="app-detection-title" id="rec-title">
-          Analyzing Workstation Hardware...
-        </div>
-        <div class="app-detection-desc" id="rec-desc">
-          Detecting processor instruction set extensions, platform architecture, and security subsystem to recommend the optimal compiled package.
-        </div>
-        <div class="app-detection-meta" id="rec-meta">
-          <span>Detecting processor...</span>
-        </div>
+        <div class="app-detection-title" id="rec-title">Download CardioSense</div>
+        <div class="app-detection-desc" id="rec-desc">Sign in to download the desktop app for macOS or Windows.</div>
+        <div class="app-detection-meta" id="rec-meta"></div>
       </div>
       <div class="app-detection-actions">
-        <a href="#matrix" id="rec-btn" class="app-btn app-btn-primary app-btn-lg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          Download Verified Package
-        </a>
-        <a href="#verifier" id="rec-hash-link" style="font-size:0.75rem; color:var(--color-text-muted); font-family:var(--font-mono);">
-          View SHA-256 Digest
-        </a>
+        <a href="#matrix" id="rec-btn" class="app-btn app-btn-primary app-btn-lg">Sign in to download</a>
       </div>
     </section>
 
-    <!-- ==============================================================================
-         SECTION 3: 18-PACKAGE MULTI-ARCHITECTURE DOWNLOAD MATRIX
-         ============================================================================== -->
     <section class="app-section" id="matrix">
       <div class="app-section-header">
         <div>
-          <h2>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-              <line x1="6" y1="6" x2="6.01" y2="6"/>
-              <line x1="6" y1="18" x2="6.01" y2="18"/>
-            </svg>
-            Enterprise Processor & Chipset Architecture Matrix (18 Packages)
-          </h2>
-          <p>
-            Structured multi-architecture distributions compiled specifically for granular processor generations.
-            Select your operating system and hardware tier for optimal vectorization and native neural acceleration.
-          </p>
+          <h2>Download</h2>
+          <p>Free desktop app for macOS and Windows. It runs entirely on your computer.</p>
         </div>
-        <div style="font-size:0.8125rem; font-weight:700; color:var(--color-text-muted); font-family:var(--font-mono);">
-          Release: <strong>v2.4.0 LTS</strong> (Production Signed)
-        </div>
+        <div class="dl-version" id="dl-version"></div>
       </div>
-
-      <!-- Tab Navigation -->
-      <div class="app-tabs-container">
-        <!-- Tab 1: macOS with Apple SVG Logo -->
-        <button class="app-tab-btn active" data-target="tab-macos">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.62-.75 1.04-1.8 1.01-2.85-.9.04-2 .6-2.65 1.35-.58.67-1.09 1.74-1.02 2.78 1 .08 2.04-.53 2.66-1.28"/>
-          </svg>
-          macOS (Apple Silicon & Intel · 7 Builds)
-        </button>
-
-        <!-- Tab 2: Windows with Windows SVG Logo -->
-        <button class="app-tab-btn" data-target="tab-windows">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
-          </svg>
-          Windows (Intel, AMD & Snapdragon · 8 Builds)
-        </button>
-
-        <!-- Tab 3: Linux with Linux SVG Logo -->
-        <button class="app-tab-btn" data-target="tab-linux">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z"/>
-          </svg>
-          Linux / Enterprise HPC (3 Builds)
-        </button>
-
-        <!-- Tab 4: Master Matrix -->
-        <button class="app-tab-btn" data-target="tab-all">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"/>
-            <rect x="14" y="3" width="7" height="7"/>
-            <rect x="14" y="14" width="7" height="7"/>
-            <rect x="3" y="14" width="7" height="7"/>
-          </svg>
-          Master Matrix & Cryptographic Hashes (All 18)
-        </button>
-      </div>
-
-      <!-- Generational Processor Filter Bar -->
-      <div class="gen-filter-bar">
-        <span style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.5px;">Filter Processor Tier:</span>
-        <button type="button" class="gen-filter-btn active" onclick="filterByGeneration('all', this)">All Generations (18 Packages)</button>
-        <button type="button" class="gen-filter-btn" onclick="filterByGeneration('modern', this)">Modern (Apple M4/M3, Intel Core Ultra, AMD Zen 4/5, Snapdragon X)</button>
-        <button type="button" class="gen-filter-btn" onclick="filterByGeneration('standard', this)">Universal Baseline (Apple M1/M2, Intel 8th-11th, Xeon W)</button>
-        <button type="button" class="gen-filter-btn" onclick="filterByGeneration('legacy', this)">Compatibility & Server (Intel Legacy Mac, Portable x64, Windows Server)</button>
-      </div>
-
-      <!-- Tab 1: macOS Table -->
-      <div id="tab-macos" class="app-tab-content">
-        <div class="table-responsive-wrapper">
-          <table class="matrix-table">
-            <colgroup>
-              <col class="col-pkg">
-              <col class="col-arch">
-              <col class="col-os">
-              <col class="col-size">
-              <col class="col-hash">
-              <col class="col-act">
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Package Distribution</th>
-                <th>Processor Generation & Instruction Set</th>
-                <th>OS Compatibility</th>
-                <th>File Size</th>
-                <th>SHA-256 Checksum</th>
-                <th style="text-align:right;">Action</th>
-              </tr>
-            </thead>
-            <tbody id="table-mac-body">
-              <!-- Dynamically populated via portal.js -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Tab 2: Windows Table -->
-      <div id="tab-windows" class="app-tab-content" style="display:none;">
-        <div class="table-responsive-wrapper">
-          <table class="matrix-table">
-            <colgroup>
-              <col class="col-pkg">
-              <col class="col-arch">
-              <col class="col-os">
-              <col class="col-size">
-              <col class="col-hash">
-              <col class="col-act">
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Package Distribution</th>
-                <th>Processor Generation & Instruction Set</th>
-                <th>OS Compatibility</th>
-                <th>File Size</th>
-                <th>SHA-256 Checksum</th>
-                <th style="text-align:right;">Action</th>
-              </tr>
-            </thead>
-            <tbody id="table-win-body">
-              <!-- Dynamically populated via portal.js -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Tab 3: Linux Table -->
-      <div id="tab-linux" class="app-tab-content" style="display:none;">
-        <div class="table-responsive-wrapper">
-          <table class="matrix-table">
-            <colgroup>
-              <col class="col-pkg">
-              <col class="col-arch">
-              <col class="col-os">
-              <col class="col-size">
-              <col class="col-hash">
-              <col class="col-act">
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Package Distribution</th>
-                <th>Processor Generation & Instruction Set</th>
-                <th>OS Compatibility</th>
-                <th>File Size</th>
-                <th>SHA-256 Checksum</th>
-                <th style="text-align:right;">Action</th>
-              </tr>
-            </thead>
-            <tbody id="table-linux-body">
-              <!-- Dynamically populated via portal.js -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Tab 4: Master Matrix Table -->
-      <div id="tab-all" class="app-tab-content" style="display:none;">
-        <div class="table-responsive-wrapper">
-          <table class="matrix-table">
-            <colgroup>
-              <col class="col-pkg">
-              <col class="col-arch">
-              <col class="col-os">
-              <col class="col-size">
-              <col class="col-hash">
-              <col class="col-act">
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Package Distribution</th>
-                <th>Processor Generation & Instruction Set</th>
-                <th>OS Compatibility</th>
-                <th>File Size</th>
-                <th>SHA-256 Checksum</th>
-                <th style="text-align:right;">Action</th>
-              </tr>
-            </thead>
-            <tbody id="table-all-body">
-              <!-- Dynamically populated via portal.js -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==============================================================================
-         SECTION 4: ENTERPRISE SECURITY ARCHITECTURE & CLINICAL CHECKUP
-         ============================================================================== -->
-    <section class="app-section" id="security-checkup">
-      <div class="app-section-header">
-        <div>
-          <h2>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            Enterprise Security & Clinical Diagnostic Checkup
-          </h2>
-          <p>
-            Continuous FIPS 140-2 cryptographic verification, zero-trust HIPAA PHI boundary audit, and clinical telemetry sanitization.
-          </p>
-        </div>
-        <div>
-          <button type="button" class="app-btn app-btn-primary app-btn-sm" onclick="runSecurityCheckup()" id="btn-run-checkup">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-            </svg>
-            Execute System Checkup
-          </button>
-        </div>
-      </div>
-
-      <!-- Overview Status Banner -->
-      <div class="sec-overview-banner">
-        <div class="sec-overview-left">
-          <div class="sec-status-glyph">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
-          </div>
-          <div>
-            <div class="sec-overview-title" id="sec-overall-title">All Security Controls Operational</div>
-            <div class="sec-overview-subtitle">
-              Client runtime is strictly isolated. 100% in-browser WebGL/WebCrypto processing with Zero PHI cloud egress.
-            </div>
-          </div>
-        </div>
-        <div class="sec-overview-right">
-          <div class="sec-seal-tag">
-            <span>Cryptographic Attestation:</span>
-            <span id="sec-current-seal-pill">CARDIOSENSE-CA-VALID</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 8 Live Diagnostic Cards Grid -->
-      <div class="sec-grid">
-        <!-- 1. TLS & Transport -->
-        <div class="sec-diag-card">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Transport Security & HSTS
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-tls">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Enforces TLS 1.3 encryption with HTTP Strict Transport Security (HSTS) preloading and strict origin isolation.
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-tls">
-            max-age=63072000; preload | CSP active
-          </div>
-        </div>
-
-        <!-- 2. Zero-Trust PHI Boundary -->
-        <div class="sec-diag-card" id="hipaa">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Zero-Trust PHI Boundary
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-phi">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Validates HIPAA Safe Harbor compliance. Patient biomarkers are processed solely in local RAM; 0 bytes transmitted.
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-phi">
-            Egress: 0 bytes | Network calls: 0
-          </div>
-        </div>
-
-        <!-- 3. FIPS 140-2 WebCrypto -->
-        <div class="sec-diag-card" id="fips">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
-              FIPS 140-2 WebCrypto Subsystem
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-crypto">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Hardware-backed cryptographic primitives using WebCrypto API (SHA-256 and AES-GCM local operations).
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-crypto">
-            crypto.subtle: Active | NIST CMVP Level 3
-          </div>
-        </div>
-
-        <!-- 4. Model Weights SHA-256 Seal -->
-        <div class="sec-diag-card" id="gatekeeper">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-              Model Weights Integrity Seal
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-weights">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Real-time SHA-256 digest validation of model coefficients against signed CardioSense CA manifest.
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-weights">
-            SHA-256: c26a2222... Authenticated
-          </div>
-        </div>
-
-        <!-- 5. WebGL Context Sandbox -->
-        <div class="sec-diag-card" id="authenticode">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-              WebGL 3D Context Sandbox
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-webgl">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Shader isolation, unmasked renderer isolation, and GPU buffer overflow quarantine preventing memory leakage.
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-webgl">
-            Context: Active | ACESFilmic ToneMapping
-          </div>
-        </div>
-
-        <!-- 6. Clinical Biomarker Sanitizer -->
-        <div class="sec-diag-card">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Clinical Range Sanitizer
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-sanitizer">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Shields against adversarial gradient attacks, NaN injections, and out-of-range clinical biomarker inputs.
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-sanitizer">
-            Bounds: 13 Biomarkers Clamped & Protected
-          </div>
-        </div>
-
-        <!-- 7. Enterprise Code Notarization -->
-        <div class="sec-diag-card">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Code-Signing & Notarization
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-pki">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Apple Developer ID Notarization Ticket and Microsoft Authenticode SHA-256 trusted timestamp verification.
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-pki">
-            CA: CardioSense Healthcare CA | Valid
-          </div>
-        </div>
-
-        <!-- 8. Inference Latency & Determinism -->
-        <div class="sec-diag-card">
-          <div class="sec-diag-header">
-            <div class="sec-diag-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Inference Latency & Determinism
-            </div>
-            <span class="sec-status-badge pass" id="diag-status-perf">PASS</span>
-          </div>
-          <div class="sec-diag-desc">
-            Measures local float64 matrix multiplication and vector dot product latency under real-time clinical workload.
-          </div>
-          <div class="sec-diag-metric" id="diag-metric-perf">
-            Latency: ~0.42 ms | Precision: Deterministic
-          </div>
-        </div>
-      </div>
-
-      <!-- Security Audit Console Stream -->
-      <div class="sec-console-box">
-        <div class="sec-console-header">
-          <div class="sec-console-title">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#34D399"><circle cx="12" cy="12" r="10"/></svg>
-            <span>CARDIOSENSE ENTERPRISE SECURITY RUNTIME AUDIT STREAM</span>
-          </div>
-          <div style="font-size:0.75rem; color:#9CA3AF; font-family:var(--font-mono);">
-            HIPAA §164.312(b) Non-Repudiation Log
-          </div>
-        </div>
-        <div class="sec-console-body" id="sec-audit-console">
-          <!-- Populated dynamically via portal.js -->
-        </div>
-      </div>
-
-      <!-- Action Row -->
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-        <div style="font-size:0.8125rem; color:var(--color-text-muted);">
-          Cryptographic checkup executed automatically every 30 seconds or on demand.
-        </div>
-        <div style="display:flex; gap:10px;">
-          <button type="button" class="app-btn app-btn-outline app-btn-sm" onclick="exportSecurityReport()">
-            Download Security Attestation (JSON)
-          </button>
-          <button type="button" class="app-btn app-btn-outline app-btn-sm" onclick="copyAuditLog()">
-            Copy Audit Logs
-          </button>
-        </div>
-      </div>
+      <div class="dl-list" id="dl-list" aria-live="polite"></div>
+      <p class="dl-note" id="dl-note"></p>
     </section>
 
     <!-- ==============================================================================
@@ -1705,10 +1167,10 @@
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               <circle cx="12" cy="11" r="3"/>
             </svg>
-            Cryptographic Package Integrity Verification
+            Verify your download
           </h2>
           <p>
-            Verify that your downloaded DMG or EXE binary is unaltered and matches the official CardioSense CA release manifest.
+            Verify that your downloaded DMG or EXE binary is unaltered and matches the checksum published with the release.
             Computed locally in your browser memory via the Web Crypto API without uploading bytes.
           </p>
         </div>
@@ -1728,19 +1190,13 @@
             Drag & Drop Downloaded DMG or EXE File Here
           </h3>
           <p style="color:var(--color-text-muted); font-size:0.875rem; max-width:520px; margin:0 auto 14px;">
-            The SHA-256 hash will be computed in-memory to confirm binary integrity against our cryptographically signed release table.
+            The SHA-256 hash will be computed in-memory to confirm binary integrity against the checksums published with the release. The file never leaves your device.
           </p>
           <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
             <button class="app-btn app-btn-secondary app-btn-sm" type="button" onclick="document.getElementById('verifier-file-input').click()">
               Browse File from Disk
             </button>
-            <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="simulateVerifierTest('m4')">
-              Test Sample M4 DMG
-            </button>
-            <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="simulateVerifierTest('enterprise')">
-              Test Enterprise DMG
-            </button>
-          </div>
+            </div>
           <input type="file" id="verifier-file-input" style="display:none;" accept=".dmg,.exe,.zip,.tar.gz,.msi,.sha256,.sha" onchange="handleVerifierFile(event)">
         </div>
 
@@ -1755,229 +1211,23 @@
       </div>
     </section>
 
-    <!-- ==============================================================================
-         SECTION 6: ENTERPRISE IT INSTALLATION & DEPLOYMENT AUTOMATION
-         ============================================================================== -->
-    <section class="app-section" id="it-deployment">
-      <div class="app-section-header">
-        <div>
-          <h2>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="4 17 10 11 4 5"/>
-              <line x1="12" y1="19" x2="20" y2="19"/>
-            </svg>
-            Enterprise IT Workstation Deployment Guidelines
-          </h2>
-          <p>Automated command-line silent installation, MDM configuration, and Apple Gatekeeper notarization bypass flags.</p>
-        </div>
-      </div>
-
-      <div class="cli-grid">
-        <!-- macOS CLI Guide -->
-        <div class="cli-card">
-          <div class="cli-card-header">
-            <span>macOS Silent Mounting & Gatekeeper (Terminal)</span>
-            <button class="app-copy-btn" onclick="copyToClipboard('hdiutil attach CardioSense-AI-2.4.0-macos-m4-arm64.dmg\ncp -R /Volumes/CardioSense\\ AI/CardioSense.app /Applications/\nxattr -cr /Applications/CardioSense.app\nhdiutil detach /Volumes/CardioSense\\ AI', 'Copied macOS Deployment Script')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy Script
-            </button>
-          </div>
-          <pre class="cli-code-block"><code># 1. Mount downloaded Apple Silicon DMG
-hdiutil attach CardioSense-AI-2.4.0-macos-m4-arm64.dmg
-
-# 2. Deploy bundle into /Applications
-sudo cp -R "/Volumes/CardioSense AI/CardioSense.app" /Applications/
-
-# 3. Clear quarantine flag (Gatekeeper enterprise clearance)
-sudo xattr -cr /Applications/CardioSense.app
-
-# 4. Unmount DMG volume
-hdiutil detach "/Volumes/CardioSense AI"</code></pre>
-        </div>
-
-        <!-- Windows CLI Guide -->
-        <div class="cli-card">
-          <div class="cli-card-header">
-            <span>Windows Enterprise Silent Deployment (PowerShell)</span>
-            <button class="app-copy-btn" onclick="copyToClipboard('Start-Process -FilePath .\\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.exe -ArgumentList \"/VERYSILENT\", \"/SUPPRESSMSGBOXES\", \"/NORESTART\", \"/ALLUSERS\" -Wait', 'Copied Windows Deployment Script')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy Script
-            </button>
-          </div>
-          <pre class="cli-code-block"><code># 1. Verify Microsoft Authenticode digital signature
-Get-AuthenticodeSignature .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.exe
-
-# 2. Execute silent install with enterprise logging
-Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.exe `
-  -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", `
-                "/LOG=\"C:\Temp\CardioSense_Install.log\"" `
-  -Wait -NoNewWindow
-
-# 3. Launch verified workstation binary
-& "$env:ProgramFiles\CardioSense AI\CardioSense.exe"</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==============================================================================
-         SECTION 7: LEGITIMATE LEGAL & REGULATORY COMPLIANCE SUB-PAGES
-         ============================================================================== -->
-    <section class="app-section" id="regulatory-compliance">
-      <div class="app-section-header">
-        <div>
-          <h2>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-            Medical Device Legal, Regulatory & Compliance Disclosures
-          </h2>
-          <p>
-            Authentic regulatory documentation governing the deployment, clinical validation, and data privacy of CardioSense AI.
-          </p>
-        </div>
-      </div>
-
-      <div class="compliance-grid">
-        <!-- 1. FDA 21 CFR § 880.6310 Non-Device CDS -->
-        <div class="compliance-card" id="fda-notice">
-          <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-            FDA 21 CFR § 880.6310 Non-Device CDS
-          </h3>
-          <p>
-            CardioSense AI meets the four criteria under Section 520(o)(1)(E) of the FD&C Act for Non-Device Clinical Decision Support (CDS) software. It is not intended to acquire, process, or analyze medical images or signals directly from diagnostic hardware; it provides transparent recommendations based on independently verifiable clinical literature (Cleveland Heart Disease validation cohort).
-          </p>
-          <a href="#clinical-rationale" class="compliance-ref-link" onclick="openComplianceModal('fda')">
-            Read Full FDA Regulatory Attestation &rarr;
-          </a>
-        </div>
-
-        <!-- 2. HIPAA 45 CFR § 164.514 Safe Harbor -->
-        <div class="compliance-card" id="hipaa-terms">
-          <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            HIPAA 45 CFR § 164.514 Safe Harbor
-          </h3>
-          <p>
-            The workstation operates strictly on a Zero-Cloud-Egress architecture. All biomarker transformations, logistic regressions, and 3D WebGL visualizations execute within ephemeral browser process memory or local desktop sandboxes. No protected health information (PHI) or personal identifiers are collected, transmitted, or persisted.
-          </p>
-          <a href="#hipaa-safe-harbor" class="compliance-ref-link" onclick="openComplianceModal('hipaa')">
-            Review Zero-Retention Architecture &rarr;
-          </a>
-        </div>
-
-        <!-- 3. GDPR Article 9 Special Category Health Data -->
-        <div class="compliance-card" id="gdpr-terms">
-          <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            GDPR Article 9 Special Category Health Data
-          </h3>
-          <p>
-            In accordance with GDPR Regulation (EU) 2016/679 Article 9(2)(h) and (j), biometric data processed during risk evaluation is strictly decoupled from patient identity. The platform does not deploy third-party trackers, telemetric cookies, or external behavioral advertising scripts.
-          </p>
-          <a href="#gdpr-article-9" class="compliance-ref-link" onclick="openComplianceModal('gdpr')">
-            View European Data Protection Policy &rarr;
-          </a>
-        </div>
-
-        <!-- 4. Clinical Model Transparency & RUO Guidelines -->
-        <div class="compliance-card" id="human-in-the-loop">
-          <h3>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#006FCF"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-            Research Use & Human-in-the-Loop Protocol
-          </h3>
-          <p>
-            CardioSense AI is designed as an assistive diagnostic aid for trained healthcare practitioners and clinical researchers. Practitioners must independently review all patient history, physical examination findings, coronary angiograms, and laboratory diagnostics prior to arriving at a clinical diagnosis or treatment course.
-          </p>
-          <a href="#human-in-the-loop" class="compliance-ref-link" onclick="openComplianceModal('clinical')">
-            Read Physician Oversight Protocol &rarr;
-          </a>
-        </div>
-      </div>
-      <div id="accessibility"></div>
-    </section>
-
-  </main>
+    </main>
 
   <!-- ==============================================================================
        8. CORPORATE WORKSTATION FOOTER
        ============================================================================== -->
-  <footer class="app-footer">
+  <footer class="app-footer hx-footer">
     <div class="app-footer-container container-lock">
-      <div class="app-footer-grid">
-        <div class="app-footer-col">
-          <h4>Client Downloads</h4>
-          <ul class="app-footer-links">
-            <li><a href="#tab-macos" onclick="switchMatrixTab('tab-macos')">macOS Apple Silicon (M4 / M3 / M2 / M1)</a></li>
-            <li><a href="#tab-macos" onclick="switchMatrixTab('tab-macos')">macOS Intel Core / Xeon Workstation</a></li>
-            <li><a href="#tab-windows" onclick="switchMatrixTab('tab-windows')">Windows 11 Intel Core Ultra (Series 1 & 2)</a></li>
-            <li><a href="#tab-windows" onclick="switchMatrixTab('tab-windows')">Windows 11 AMD Zen 4/5 (AVX-512)</a></li>
-            <li><a href="#tab-windows" onclick="switchMatrixTab('tab-windows')">Windows ARM64 Snapdragon X Elite</a></li>
-            <li><a href="#tab-linux" onclick="switchMatrixTab('tab-linux')">Linux Enterprise HPC & Server Builds</a></li>
-          </ul>
-        </div>
-
-        <div class="app-footer-col">
-          <h4>Clinical Intelligence</h4>
-          <ul class="app-footer-links">
-            <li><a href="#lab-ingestion">Lab Report & EHR Ingestion</a></li>
-            <li><a href="#live-workstation">Coronary Hemodynamics & FFR</a></li>
-            <li><a href="#models">UCI Cleveland Validation Cohort</a></li>
-            <li><a href="#calibration">Logistic Regression Calibration (0.959 AUC)</a></li>
-            <li><a href="#specs">Chip-Native Vector Acceleration</a></li>
-          </ul>
-        </div>
-
-        <div class="app-footer-col">
-          <h4>Security & Cryptography</h4>
-          <ul class="app-footer-links">
-            <li><a href="#fips">FIPS 140-2 Level 3 CMVP Specs</a></li>
-            <li><a href="#gatekeeper">Apple Developer ID Notarization</a></li>
-            <li><a href="#authenticode">Microsoft Authenticode CA Chain</a></li>
-            <li><a href="#hipaa">HIPAA Zero-Cloud-Egress Boundary</a></li>
-            <li><a href="#verifier">In-Browser SHA-256 Verifier</a></li>
-          </ul>
-        </div>
-
-        <div class="app-footer-col">
-          <h4>Medical Verification</h4>
-          <ul class="app-footer-links">
-            <li><a href="#clinical-cases" onclick="loadClinicalCase('acs')">Acute Coronary Syndrome STEMI</a></li>
-            <li><a href="#clinical-cases" onclick="loadClinicalCase('diabetic')">Diabetic Multi-Vessel CAD</a></li>
-            <li><a href="#clinical-cases" onclick="loadClinicalCase('wellness')">Executive Cardiovascular Wellness</a></li>
-            <li><a href="#summary-generator" onclick="exportDiagnosticSummaryReport()">Export Diagnostic Summary</a></li>
-          </ul>
-        </div>
-
-        <div class="app-footer-col">
-          <h4>Legal & Support</h4>
-          <ul class="app-footer-links">
-            <li><a href="#fda-notice" onclick="openComplianceModal('fda')">FDA 21 CFR § 880.6310 Notice</a></li>
-            <li><a href="#hipaa-terms" onclick="openComplianceModal('hipaa')">HIPAA Safe Harbor Statement</a></li>
-            <li><a href="#gdpr-terms" onclick="openComplianceModal('gdpr')">GDPR Health Data Compliance</a></li>
-            <li><a href="mailto:support@cardiosense.org" id="footer-support-link">support@cardiosense.org</a></li>
-          </ul>
-        </div>
+      <div class="hx-footer-row">
+        <div class="hx-footer-brand">CardioSense</div>
+        <nav class="hx-footer-links" aria-label="Footer">
+          <a href="#live-workstation">Workstation</a>
+          <a href="#matrix">Download</a>
+          <a href="#verifier">Verify a download</a>
+          <a href="mailto:support@cardiosense.org" id="footer-support-link">support@cardiosense.org</a>
+        </nav>
       </div>
-
-      <div class="app-footer-bottom">
-        <div class="app-footer-bottom-links">
-          <a href="#fda-notice" onclick="openComplianceModal('fda')">Clinical Decision Support Disclosure</a>
-          <a href="#hipaa-terms" onclick="openComplianceModal('hipaa')">Privacy & Zero-Retention</a>
-          <a href="#fips" onclick="openComplianceModal('fips')">Cryptographic Attestation</a>
-          <a href="#accessibility" onclick="openComplianceModal('accessibility')">Accessibility Statement (WCAG 2.1 AA)</a>
-          <a href="mailto:support@cardiosense.org">Support Desk</a>
-        </div>
-        <p>
-          CardioSense AI™ is a non-device clinical decision support platform engineered for cardiovascular risk stratification and hemodynamic simulation.
-          Desktop workstation distribution binaries (.dmg, .exe, .tar.gz) are compiled under strict deterministic build pipelines and signed by CardioSense Healthcare Cryptographic Code Sign CA.
-        </p>
-        <p>
-          Copyright &copy; 2026 CardioSense AI Health Technologies Inc. All rights reserved. Apple, Mac, and macOS are registered trademarks of Apple Inc. Windows is a registered trademark of Microsoft Corp. Qualcomm and Snapdragon are trademarks of Qualcomm Technologies Inc. Intel and AMD are registered trademarks of their respective owners.
-        </p>
-      </div>
+      <p class="hx-footer-legal">CardioSense is an educational project trained on a public dataset (UCI Heart Disease). It is not a medical device, is not cleared by any regulator, and does not provide diagnoses or treatment advice.</p>
     </div>
   </footer>
 
@@ -1987,107 +1237,22 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
   <div class="app-modal-backdrop" id="app-auth-modal" style="display:none;"
        role="dialog" aria-modal="true" aria-labelledby="auth-modal-title"
        onclick="handleModalBackdropClick(event)">
-    <div class="app-modal-dialog" onclick="event.stopPropagation()">
+    <div class="app-modal-dialog hx-auth" onclick="event.stopPropagation()">
       <div class="app-modal-header">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div class="brand-mark" style="width:36px; height:36px;" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.78L12 20.67l7.65-7.66.77-.78a5.4 5.4 0 0 0 0-7.65z"/>
-            </svg>
-          </div>
-          <div>
-            <h3 id="auth-modal-title" style="font-size:1.125rem; color:var(--color-text-headline); font-weight:700; margin:0;">Clinical Workstation Sign In</h3>
-            <p style="font-size:0.75rem; color:var(--color-text-muted); margin:0;">Role-Based Access Control · FIPS 140-2 Level 3</p>
-          </div>
-        </div>
-        <button type="button" class="app-modal-close" onclick="closeAuthModal()" aria-label="Close Authentication Modal">&times;</button>
+        <h3 id="auth-modal-title">Sign in</h3>
+        <button type="button" class="app-modal-close" onclick="closeAuthModal()" aria-label="Close">&times;</button>
       </div>
-
       <div class="app-modal-body">
-        <div class="app-tabs-container" style="margin-bottom:18px;">
-          <button type="button" class="app-tab-btn active" onclick="switchAuthTab('password', this)">Credentials & 2FA</button>
-          <button type="button" class="app-tab-btn" onclick="switchAuthTab('fido2', this)">Passkey / FIDO2</button>
-          <button type="button" class="app-tab-btn" onclick="switchAuthTab('roles', this)">Clinical Roles Demo</button>
-        </div>
-
-        <!-- Tab 1: Credentials (Sanitized: Zero Exposed Passwords, Anti-Bot Trap) -->
-        <div id="auth-tab-password" class="auth-subview">
-          <form id="clinical-login-form" onsubmit="handleCredentialSubmit(event)" autocomplete="off">
-            <!-- Invisible Anti-Bot Honeypot Field -->
-            <div style="position:absolute; left:-9999px; top:-9999px; opacity:0; pointer-events:none;" aria-hidden="true">
-              <label for="clinical_security_hp">Leave this field blank</label>
-              <input type="text" name="clinical_security_hp" id="clinical_security_hp" tabindex="-1" autocomplete="off" value="">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label-row" for="auth-email">Clinical Workstation ID / Email</label>
-              <input type="email" id="auth-email" class="clinical-select" required autocomplete="username" value="" placeholder="physician@hospital.org">
-            </div>
-            <div class="form-group">
-              <label class="form-label-row" for="auth-pwd">Password</label>
-              <input type="password" id="auth-pwd" class="clinical-select" required autocomplete="current-password" value="" placeholder="••••••••••••">
-            </div>
-            <div id="mfa-step" style="display:none; background:rgba(255, 255, 255, 0.04); border:1px solid rgba(255, 255, 255, 0.1); border-radius:6px; padding:12px; margin-bottom:14px; color:#E2E8F0;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                <span style="font-size:0.8125rem; font-weight:600; color:var(--color-text-headline);">Enter 6-Digit 2FA Token</span>
-                <button type="button" class="app-copy-btn" onclick="autoFillOtp()">Auto-Fill Code</button>
-              </div>
-              <input type="text" id="auth-otp" class="clinical-select" maxlength="6" style="letter-spacing:6px; font-weight:700; text-align:center; font-size:1.1rem; font-family:var(--font-mono);" placeholder="654321">
-            </div>
-            <button type="submit" class="app-btn app-btn-primary" style="width:100%; padding:10px;" id="btn-auth-submit">
-              Authenticate Clinical Session
-            </button>
-          </form>
-        </div>
-
-        <!-- Tab 2: FIDO2 -->
-        <div id="auth-tab-fido2" class="auth-subview" style="display:none; text-align:center; padding:16px 8px;">
-          <div style="width:52px; height:52px; border-radius:50%; background:rgba(0, 229, 255, 0.12); color:#00E5FF; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; border:1px solid rgba(0, 229, 255, 0.25);">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-          </div>
-          <h4 style="font-size:1rem; font-weight:700; color:var(--color-text-headline); margin-bottom:4px;">Hardware Security Key / Touch ID</h4>
-          <p style="font-size:0.8125rem; color:var(--color-text-muted); line-height:1.5; margin-bottom:18px;">
-            Authenticate with your FIPS 140-2 YubiKey, Apple Touch ID / Face ID, or Windows Hello coprocessor.
-          </p>
-          <button type="button" class="app-btn app-btn-primary" style="width:100%; padding:10px;" onclick="simulateFido2Auth()">
-            Trigger Biometric FIDO2 Challenge
-          </button>
-        </div>
-
-        <!-- Tab 3: Demo Roles -->
-        <div id="auth-tab-roles" class="auth-subview" style="display:none;">
-          <p style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:10px;">Select an authenticated clinical role to evaluate permission boundaries:</p>
-          <div class="case-study-list">
-            <div class="case-study-card" onclick="loginDemoProfile('cmo')">
-              <div class="case-info">
-                <h4>Dr. Alexander Wright, MD</h4>
-                <p>Chief Medical Officer · Full Model Export & Administrative Clearance</p>
-              </div>
-              <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="loginDemoProfile('cmo')">Select</button>
-            </div>
-            <div class="case-study-card" onclick="loginDemoProfile('cardiologist')">
-              <div class="case-info">
-                <h4>Dr. Elena Rostova, MD, FACC</h4>
-                <p>Lead Interventional Cardiologist · 3D Hemodynamics & Fluoroscopy</p>
-              </div>
-              <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="loginDemoProfile('cardiologist')">Select</button>
-            </div>
-            <div class="case-study-card" onclick="loginDemoProfile('auditor')">
-              <div class="case-info">
-                <h4>Sarah Jenkins, CISA, CISSP</h4>
-                <p>HIPAA Security Officer · Cryptographic Seal & Egress Auditor</p>
-              </div>
-              <button class="app-btn app-btn-outline app-btn-sm" type="button" onclick="loginDemoProfile('auditor')">Select</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="app-modal-footer">
-        <span style="font-size:0.75rem; color:var(--color-text-muted); font-family:var(--font-mono);">TLS 1.3 Certified Session · FIPS 140-2 Level 3</span>
+        <p class="hx-auth-lede">Use your CardioSense account to download the app.</p>
+        <form id="auth-form" novalidate onsubmit="handleCredentialSubmit(event)">
+          <input type="text" id="clinical_security_hp" name="website" class="hx-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label for="auth-email">Email</label>
+          <input type="email" id="auth-email" autocomplete="username" autocapitalize="none" spellcheck="false">
+          <label for="auth-pwd">Password</label>
+          <input type="password" id="auth-pwd" autocomplete="current-password">
+          <p class="hx-error" id="auth-error" role="alert"></p>
+          <button type="submit" id="auth-submit" class="app-btn app-btn-primary hx-block">Sign in</button>
+        </form>
       </div>
     </div>
   </div>
@@ -2217,7 +1382,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
 
         <div style="display:flex; flex-direction:column; gap:8px;">
           <button type="button" class="app-btn app-btn-primary" style="width:100%;" onclick="openMobileCompanionView()">
-            📱 Open Mobile Tracker View
+            Open Mobile Tracker View
           </button>
           <button type="button" class="app-btn app-btn-outline" style="width:100%;" onclick="closeMobilePairModal()">
             Done
@@ -2239,6 +1404,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
     <span id="app-toast-text">Operation Successful</span>
   </div>
 
+  <script src="hero-heart.js" defer></script>
   <script src="portal.js"></script>
 </div></div>
 
@@ -2255,7 +1421,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         <span style="font-size:1.05rem; font-weight:800; color:#F8FAFC;">CardioSense Mobile</span>
       </div>
       <button type="button" class="header-login-btn" onclick="closeMobileCompanionView()" title="Back to Desktop Workstation" style="min-height:32px; font-size:0.75rem;">
-        🖥️ Desktop View
+        Desktop View
       </button>
     </div>
 
@@ -2320,10 +1486,10 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         </div>
 
         <button type="button" class="app-btn app-btn-primary" style="width:100%; margin-bottom:10px;" onclick="openQRScannerViewfinder()">
-          📸 Open Camera QR Scanner
+          Open Camera QR Scanner
         </button>
         <button type="button" class="app-btn app-btn-secondary" style="width:100%;" onclick="simulateQRScan()">
-          ⚡ Quick-Link Active Account (#CP-8924)
+          Quick-Link Active Account (#CP-8924)
         </button>
       </div>
 
@@ -2354,7 +1520,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
       </div>
       <div style="display:flex; gap:10px;">
         <button type="button" class="app-btn app-btn-primary" onclick="simulateQRScan()">
-          📸 Capture & Link Account
+          Capture & Link Account
         </button>
         <button type="button" class="app-btn app-btn-outline" onclick="closeQRScannerViewfinder()">
           Cancel
@@ -2387,7 +1553,6 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <span style="font-size:0.8125rem; font-weight:700; color:#CBD5E1;">Lead-II Live ECG Waveform</span>
           <div style="display:flex; align-items:center; gap:6px;">
-            <span class="mobile-pulse-dot"></span>
             <span style="font-size:1.15rem; font-weight:800; color:#00E5FF;" id="mobile-hr-val">150</span>
             <span style="font-size:0.75rem; color:#94A3B8;">BPM</span>
           </div>
@@ -2433,7 +1598,7 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
       <!-- Clinical Alert Notice -->
       <div class="mobile-card" style="background:rgba(244, 63, 94, 0.1); border-color:rgba(244, 63, 94, 0.3);">
         <div style="font-size:0.8125rem; font-weight:700; color:#F43F5E; margin-bottom:4px;">
-          ⚠️ Urgent Clinical Recommendation
+          Urgent Clinical Recommendation
         </div>
         <p style="font-size:0.75rem; color:#E2E8F0; line-height:1.5;">
           High probability obstructive LAD coronary stenosis. Fractional Flow Reserve below ischemic threshold (0.48 &lt; 0.80). Immediate catheterization triage recommended.
@@ -2442,14 +1607,14 @@ Start-Process -FilePath .\CardioSense-AI-2.4.0-windows-intel-core-ultra-Setup.ex
 
       <!-- Action Buttons -->
       <div style="display:flex; flex-direction:column; gap:8px;">
-        <button type="button" class="app-btn app-btn-primary" style="width:100%; background:#F43F5E; border-color:#F43F5E;" onclick="showToast('🚨 Alert Sent to Hospital Interventional Cath Lab Team')">
-          🚨 Alert Interventional Cath Lab Team
+        <button type="button" class="app-btn app-btn-primary" style="width:100%; background:#F43F5E; border-color:#F43F5E;" onclick="showToast('Alert Sent to Hospital Interventional Cath Lab Team')">
+          Alert Interventional Cath Lab Team
         </button>
         <button type="button" class="app-btn app-btn-secondary" style="width:100%;" onclick="exportDiagnosticSummaryReport()">
-          📄 Export Diagnostic PDF Summary
+          Export Diagnostic PDF Summary
         </button>
         <button type="button" class="app-btn app-btn-outline" style="width:100%;" onclick="closeMobileCompanionView()">
-          🖥️ Return to Desktop Workstation
+          Return to Desktop Workstation
         </button>
       </div>
     </div>
