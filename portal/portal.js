@@ -244,18 +244,18 @@ const CLINICAL_CASES = {
   },
   atypical_safety_net: {
     id: 'atypical_safety_net',
-    title: 'Case 4: Atypical Diabetic Heart Attack (96.4% Recall Safety Net)',
+    title: 'Case 4: Atypical presentation, diabetic (sample case)',
     patient: 'Patient #DM-7714 (64F)',
     source: 'Emergency Triage & Endocrine Assessment — Johns Hopkins Medicine',
     vitals: {
       age: 64, sex: 0, cp: 2, trestbps: 140, chol: 250, fbs: 1,
       restecg: 1, thalach: 135, exang: 0, oldpeak: 1.6, slope: 2, ca: 1, thal: 7
     },
-    findings: 'Atypical presentation with diabetic neuropathy: painless dyspnea, fatigue, and nausea without substernal chest pressure. Flagged by 96.4% recall safety net.'
+    findings: 'Atypical presentation with diabetic neuropathy: painless dyspnea, fatigue, and nausea without substernal chest pressure. Flagged in high-sensitivity mode (threshold 0.28).'
   },
   ruled_out_cath: {
     id: 'ruled_out_cath',
-    title: 'Case 5: Low-Risk Non-Obstructive Chest Pain (Cath Ruled Out)',
+    title: 'Case 5: Low-risk chest pain (sample case)',
     patient: 'Patient #RULEOUT-3102 (52M)',
     source: 'Cardiovascular Assessment — Cleveland Clinic Main Campus',
     vitals: {
@@ -1365,7 +1365,7 @@ function loadClinicalCase(caseKey) {
       statusEl.textContent = 'Atypical ACS (Safety Net)';
       statusEl.className = 'patient-chip-status-badge critical';
     }
-    // Enable Safety Net toggle to demonstrate 96.4% recall catch
+    // Turn on high-sensitivity mode for this sample case
     const snToggle = document.getElementById('inp-safety-net-toggle');
     if (snToggle && !snToggle.checked) {
       snToggle.checked = true;
@@ -1375,7 +1375,7 @@ function loadClinicalCase(caseKey) {
     if (nameEl) nameEl.textContent = 'Robert Chen, 52 yrs';
     if (idEl) idEl.textContent = 'ID: #RULEOUT-3102';
     if (statusEl) {
-      statusEl.textContent = 'Cath Ruled Out (FFR 0.94)';
+      statusEl.textContent = 'Lower estimate (illustrative FFR 0.94)';
       statusEl.className = 'patient-chip-status-badge stable';
     }
   } else if (caseKey === 'rural_triage') {
@@ -1453,20 +1453,20 @@ function updateGoldenHourTelemetry(risk, ffr) {
   if (ffr >= 0.80 && risk < 0.35 && (!isSafetyNetActive || risk < 0.28)) {
     // Ruled-out catheterization
     if (badge) {
-      badge.textContent = 'Catheterization Ruled Out · Cath Avoided';
+      badge.textContent = 'Scenario: lower estimate';
       badge.style.background = 'rgba(45, 212, 191, 0.15)';
       badge.style.color = '#2DD4BF';
       badge.style.borderColor = 'rgba(45, 212, 191, 0.3)';
     }
     if (d2bVal) d2bVal.textContent = 'N/A';
     if (d2bFill) d2bFill.style.width = '10%';
-    if (d2bSaved) d2bSaved.textContent = 'Cath Spared';
+    if (d2bSaved) d2bSaved.textContent = 'n/a';
     if (myoSalvage) myoSalvage.textContent = '100%';
     if (necReduction) necReduction.textContent = '0% Risk';
   } else {
     // Urgent catheterization or ischemic lesion
     if (badge) {
-      badge.textContent = '48 min shaved · ACC/AHA Target Met';
+      badge.textContent = 'Illustrative timeline, not measured';
       badge.style.background = 'rgba(16, 185, 129, 0.15)';
       badge.style.color = '#34D399';
       badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
@@ -1834,19 +1834,19 @@ function updatePortalPrediction() {
     const riskPct = Math.round(pTargetRisk * 100);
     recBar.style.width = `${Math.min(100, Math.max(8, riskPct))}%`;
     if (isSafetyNetActive && pTargetRisk >= 0.28 && pTargetRisk < 0.66) {
-      recEl.textContent = 'Clinical recommendation: Atypical presentation detected under 96.4% recall safety net. Urgent catheterization triage indicated to prevent fatal false-negative discharge.';
+      recEl.textContent = 'Model output: estimate falls between the 0.28 and 0.66 marks in high-sensitivity mode. This flags the case for review by a clinician. It is not a diagnosis.';
       recBar.style.backgroundColor = '#F43F5E';
     } else if (pFFR >= 0.80 && pTargetRisk < 0.35 && (!isSafetyNetActive || pTargetRisk < 0.28)) {
-      recEl.textContent = `Clinical recommendation: Non-obstructive coronary hemodynamics (FFR ${pFFR.toFixed(2)} ≥ 0.80). Invasive diagnostic catheterization safely RULED OUT (sparing patient arterial complications and saving hospital $5,000–$12,000). Ambulatory follow-up appropriate.`;
+      recEl.textContent = `Model output: lower estimated probability (illustrative FFR ${pFFR.toFixed(2)}). The model misses some cases, so this does not rule out disease. Decisions rest with the treating clinician.`;
       recBar.style.backgroundColor = '#10B981';
     } else if (pTargetRisk >= 0.66) {
-      recEl.textContent = `Clinical recommendation: High probability obstructive coronary disease with ${ca > 0 ? ca + '-vessel calcification' : 'hemodynamic ischemia'}. Immediate diagnostic catheterization and clinical evaluation indicated.`;
+      recEl.textContent = `Model output: high estimated probability of coronary disease${ca > 0 ? ' (' + ca + ' vessel(s) reported)' : ''}. Needs prompt review by a clinician.`;
       recBar.style.backgroundColor = '#F43F5E';
     } else if (pTargetRisk >= 0.33) {
-      recEl.textContent = 'Clinical recommendation: Moderate intermediate probability of CAD. Stress echocardiography or CCTA recommended with medical therapy optimization.';
+      recEl.textContent = 'Model output: intermediate estimated probability of coronary disease. Review by a clinician.';
       recBar.style.backgroundColor = '#F59E0B';
     } else {
-      recEl.textContent = 'Clinical recommendation: Low acute coronary disease probability. Outpatient follow-up, lifestyle management, and primary prevention recommended.';
+      recEl.textContent = 'Model output: lower estimated probability of coronary disease. This does not rule out disease.';
       recBar.style.backgroundColor = '#10B981';
     }
   }
@@ -3537,7 +3537,7 @@ function exportDiagnosticSummaryReport() {
           Catheterization Disposition: <strong style="color:${pFFR >= 0.80 && pTargetRisk < 0.35 ? '#10B981' : '#F43F5E'};">${pFFR >= 0.80 && pTargetRisk < 0.35 ? 'Catheterization Safely RULED OUT ($5,000–$12,000 Saved, Arterial Complications Spared)' : 'Diagnostic Catheterization Indicated'}</strong>
         </p>
         <p style="font-size:0.8125rem; margin-top:2px; color:#94A3B8;">
-          Safety Net Status: <strong>${isSafetyNetActive ? 'Active (96.4% Recall Sensitivity Mode)' : 'Standard Diagnostic Mode'}</strong> · Door-to-Balloon: <strong>${pFFR < 0.80 ? '44 min (48 min shaved off Golden Hour, 88% myocardium salvaged)' : 'Catheterization Spared'}</strong>
+          Safety Net Status: <strong>${isSafetyNetActive ? 'High-sensitivity mode (threshold 0.28)' : 'Standard Diagnostic Mode'}</strong> · Door-to-balloon: <strong>${pFFR < 0.80 ? 'Illustrative scenario only' : 'n/a'}</strong>
         </p>
       </div>
 

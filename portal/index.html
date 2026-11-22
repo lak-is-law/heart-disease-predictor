@@ -135,13 +135,13 @@
           <span style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.3px;">CardioSense</span>
         </a>
         <div class="header-patient-context-text" style="font-size:0.875rem; font-weight:600; color:#94A3B8; margin-left:20px; padding-left:18px; border-left:1px solid rgba(255,255,255,0.12);">
-          <strong id="header-patient-name" style="color:#F8FAFC;">Eleanor Vance, 58 yrs</strong> <span style="opacity:0.5;">|</span> <span id="header-patient-id">ID: #CP-8924</span>
+          <strong id="header-patient-name" style="color:#F8FAFC;">Sample patient, 58 yrs</strong> <span style="opacity:0.5;">|</span> <span id="header-patient-id">ID: #CP-8924</span>
         </div>
       </div>
 
       <div class="header-actions-group" style="display:flex; align-items:center; gap:12px;">
         <div class="header-patient-chip" id="header-patient-chip" style="font-size:0.8125rem; color:#94A3B8;">
-          <span>Eleanor Vance, 58 yrs | ID: #CP-8924</span>
+          <span>Sample patient, 58 yrs</span>
           <span class="patient-chip-status-badge critical" id="header-patient-status" style="margin-left:8px;">Acute STEMI Triage</span>
         </div>
         <button type="button" class="header-mobile-btn" onclick="openMobilePairModal()" id="btn-header-mobile" title="Scan QR Code to Track on Mobile">
@@ -304,18 +304,27 @@
             <button type="button" class="cockpit-new-btn" onclick="loadClinicalCase('wellness')" title="Reset Biomarkers">+ New</button>
           </div>
 
-          <!-- High-Sensitivity Safety Net Mode Toggle (96.4% Recall) -->
+          <!-- High-sensitivity mode toggle (threshold 0.28) -->
           <div class="safety-net-toggle-wrapper">
             <label class="safety-net-toggle-label" for="inp-safety-net-toggle">
-              <span>High-Sensitivity Safety Net <strong>(96.4% Recall)</strong></span>
+              <span>High-sensitivity mode <strong>(threshold 0.28)</strong></span>
             </label>
             <label class="safety-net-switch" for="inp-safety-net-toggle">
               <input type="checkbox" id="inp-safety-net-toggle" onchange="toggleSafetyNetMode(this.checked)" aria-label="Toggle High-Sensitivity Safety Net Mode">
               </label>
           </div>
           <div id="portal-safety-net-banner" class="safety-net-alert-banner" role="alert">
-            <strong>SAFETY NET ACTIVE (96.4% RECALL):</strong> Calibrated decision threshold (0.28) active. Prevents fatal false-negative discharge of atypical acute coronary syndromes (diabetic neuropathy, elderly female silent ischemia).
+            <strong>HIGH-SENSITIVITY MODE:</strong> threshold 0.28. More patients are flagged for review. In cross-validation on the Cleveland data it caught about 88 of every 100 cases and flagged about 27 of every 100 people without disease. It still misses cases.
           </div>
+          <details class="hx-evidence">
+            <summary>How reliable is this estimate?</summary>
+            <p>Measured on the 303-patient Cleveland data with 20 repeats of 5-fold cross-validation (every patient scored by a model that never saw them):</p>
+            <ul>
+              <li>All 13 inputs: AUC 0.91 (95% interval 0.87 to 0.94). At the 0.28 threshold it caught 88% of cases, flagged 27% of people without disease, and missed 16 of 139 cases.</li>
+              <li>Using only what a first visit provides (age, sex, chest pain type, blood pressure, cholesterol, glucose, resting ECG): AUC 0.84 (0.79 to 0.88).</li>
+            </ul>
+            <p>The data is one 1980s US clinic of patients referred for angiography. It has not been tested on other hospitals, countries or today's patients, so treat the output as a research prototype, not a diagnosis. The FFR, door-to-balloon and savings figures are illustrative models, not measurements.</p>
+          </details>
 
           <!-- Quick Clinical Scenario Preset Strip -->
           <div class="quick-scenario-strip" role="toolbar" aria-label="Quick Clinical Scenarios">
@@ -329,10 +338,10 @@
               <span style="color:#10B981;">●</span> Baseline Normal
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('atypical_safety_net')">
-              <span style="color:#EC4899;">●</span> Atypical ACS (96.4% Recall)
+              <span style="color:#EC4899;">●</span> Atypical presentation
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('ruled_out_cath')">
-              <span style="color:#2DD4BF;">●</span> Ruled-Out Cath (FFR 0.94)
+              <span style="color:#2DD4BF;">●</span> Lower estimate (illustrative FFR 0.94)
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('rural_triage')">
               <span style="color:#A78BFA;">●</span> Rural Offline Triage
@@ -628,7 +637,7 @@
               <div class="golden-hour-header">
                 <div class="golden-hour-title">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-                  <span>Door-to-Balloon "Golden Hour" Telemetry</span>
+                  <span>Door-to-balloon scenario (illustrative)</span>
                 </div>
                 <span class="golden-hour-pill" id="portal-golden-hour-badge">48 min shaved · ACC/AHA Target Met</span>
               </div>
@@ -655,11 +664,11 @@
                 </div>
                 <div>
                   <div class="gh-stat-val" id="portal-myo-salvage">88%</div>
-                  <div class="gh-stat-lbl">Myocardium Saved</div>
+                  <div class="gh-stat-lbl">Modelled salvage</div>
                 </div>
                 <div>
                   <div class="gh-stat-val" id="portal-necrosis-reduction">-65%</div>
-                  <div class="gh-stat-lbl">Necrosis Risk</div>
+                  <div class="gh-stat-lbl">Modelled necrosis change</div>
                 </div>
               </div>
             </div>
@@ -690,7 +699,7 @@
                 <span>·</span>
                 <span id="portal-rpp-val" title="Rate Pressure Product (RPP = HR × SBP)">RPP: 21,504</span>
                 <span>·</span>
-                <span title="Fractional Flow Reserve">FFR: <strong id="portal-cockpit-ffr-val" style="color:#00E5FF;">0.48</strong></span>
+                <span title="Illustrative estimate from a simplified flow model. Not a measured FFR.">FFR (illustrative): <strong id="portal-cockpit-ffr-val" style="color:#00E5FF;">0.48</strong></span>
               </div>
               <div id="portal-risk-blurb" class="clinical-risk-blurb">
                 Critical Ischemic Risk: Multi-vessel coronary calcification with hemodynamic depression requiring urgent cardiology review.
@@ -895,7 +904,7 @@
             <!-- Case 4: Atypical ACS (Safety Net) -->
             <button type="button" class="case-study-card" id="case-btn-atypical_safety_net" role="radio" aria-checked="false" onclick="loadClinicalCase('atypical_safety_net')">
               <div class="case-info">
-                <h4>Case 4: Atypical Diabetic Heart Attack (96.4% Recall Safety Net)</h4>
+                <h4>Case 4: Atypical presentation, diabetic (sample case)</h4>
                 <p>64F · BP 140/90 · Chol 250 mg/dL · Painless Dyspnea & Nausea · ST Dep: -1.6 mm · 1 Occluded Vessel</p>
               </div>
               <span class="case-severity-badge critical" style="background:rgba(244,63,94,0.15); color:#F43F5E; border:1px solid rgba(244,63,94,0.3);">Safety Net Catch</span>
@@ -904,10 +913,10 @@
             <!-- Case 5: Low-Risk Non-Obstructive Cath Ruled Out -->
             <button type="button" class="case-study-card" id="case-btn-ruled_out_cath" role="radio" aria-checked="false" onclick="loadClinicalCase('ruled_out_cath')">
               <div class="case-info">
-                <h4>Case 5: Low-Risk Non-Obstructive Chest Pain (Cath Ruled Out)</h4>
-                <p>52M · BP 126/80 · Chol 204 mg/dL · FFR 0.94 &gt; 0.80 · 0 Occluded Vessels · $8,500 Saved</p>
+                <h4>Case 5: Low-risk chest pain (sample case)</h4>
+                <p>52M · BP 126/80 · Chol 204 mg/dL · Illustrative FFR 0.94 · 0 occluded vessels</p>
               </div>
-              <span class="case-severity-badge baseline" style="background:rgba(45,212,191,0.15); color:#2DD4BF; border:1px solid rgba(45,212,191,0.3);">Cath Avoided</span>
+              <span class="case-severity-badge baseline" style="background:rgba(45,212,191,0.15); color:#2DD4BF; border:1px solid rgba(45,212,191,0.3);">Lower estimate</span>
             </button>
 
             <!-- Case 6: Rural Clinic Bedside Triage -->
@@ -959,12 +968,11 @@
             Hospital Economics & Catheterization Cost Reduction Engine
           </h2>
           <p>
-            Slashes millions in hospital expenditures by ruling out up to 60% of unnecessary diagnostic catheterizations ($5,000–$12,000 per procedure),
-            compressing emergency department boarding hours, eliminating expensive cloud infrastructure, and avoiding catastrophic malpractice payouts.
+            A scenario calculator. Enter your own volumes, costs and assumptions. The results come from those assumptions, not from measured outcomes of this tool.
           </p>
         </div>
         <div style="font-size:0.8125rem; font-weight:700; color:#2DD4BF; font-family:var(--font-mono);">
-          ROI Model: <strong>Enterprise Health System 2026</strong>
+          Scenario model: <strong>your assumptions</strong>
         </div>
       </div>
 
@@ -1004,7 +1012,7 @@
                 <span id="val-econ-ruleout" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">52%</span>
               </div>
               <input type="range" class="clinical-slider" id="inp-econ-ruleout" min="20" max="60" step="1" value="52" oninput="calculateHospitalEconomics()">
-              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Safely rules out up to 60% of unnecessary invasive catheterizations via non-invasive FFR &gt; 0.80</div>
+              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Share of catheterizations you assume could be avoided. Not a measured result.</div>
             </div>
 
             <!-- 4. ED Boarding Hours Compressed -->
@@ -1104,7 +1112,7 @@
               <div class="econ-kpi-num" id="econ-kpi-malpractice">$2,400,000</div>
             </div>
             <div class="econ-kpi-sub">
-              96.4% recall safety net prevents fatal false-negative discharge of atypical acute coronary cases.
+              High-sensitivity mode flags more patients for review at the cost of more false alarms.
             </div>
           </div>
         </div>
@@ -1412,7 +1420,7 @@
 
       <div class="app-modal-body" style="padding:24px 20px;">
         <p style="font-size:0.875rem; color:#CBD5E1; line-height:1.5; margin-bottom:16px;">
-          Scan this QR code with your mobile phone camera or enter the 6-digit sync PIN to link your account and track <strong>Eleanor Vance (#CP-8924)</strong> in real time.
+          Scan this QR code with your mobile phone camera or enter the 6-digit sync PIN to link your account and track the <strong>sample patient</strong> in real time.
         </p>
 
         <!-- QR Code Box -->
@@ -1631,7 +1639,7 @@
       <div class="mobile-card" style="border-left:4px solid #34D399; display:flex; justify-content:space-between; align-items:center;">
         <div>
           <div style="font-size:0.6875rem; text-transform:uppercase; color:#34D399; font-weight:700; letter-spacing:0.5px;">
-            ● Active Live Stream · Eleanor Vance
+            ● Sample patient
           </div>
           <div style="font-size:1.05rem; font-weight:800; color:#F8FAFC; margin-top:2px;">
             Patient ID: #CP-8924 (58 yrs)

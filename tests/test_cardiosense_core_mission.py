@@ -97,7 +97,7 @@ class TestCardioSenseHospitalEconomics(unittest.TestCase):
 
 
 class TestHighSensitivitySafetyNet(unittest.TestCase):
-    """Verifies the 96.4% recall safety net for preventing atypical false-negative discharges."""
+    """Verifies the high-sensitivity (0.28 threshold) mode reports measured sensitivity and never says a patient is safe."""
 
     def test_safety_net_flags_atypical_patient(self):
         """Verify atypical presentation (prob = 0.38) is caught under 0.28 safety net threshold."""
@@ -110,15 +110,17 @@ class TestHighSensitivitySafetyNet(unittest.TestCase):
         # Under 0.28 safety net, patient is flagged for urgent evaluation
         self.assertTrue(safety_net_eval["is_flagged"])
         self.assertTrue(safety_net_eval["atypical_risk_mitigated"])
-        self.assertEqual(safety_net_eval["recall_sensitivity"], 0.964)
-        self.assertIn("SAFETY NET INTERVENTION", safety_net_eval["clinical_note"])
+        self.assertEqual(safety_net_eval["recall_sensitivity"], core.MEASURED_SENSITIVITY_AT_028)
+        self.assertLess(safety_net_eval["recall_sensitivity"], 0.95, "must report the measured value, not a marketing figure")
+        self.assertIn("HIGH-SENSITIVITY FLAG", safety_net_eval["clinical_note"])
 
     def test_safety_net_allows_truly_low_risk_baseline(self):
         """Verify completely normal screening profile (prob = 0.12) is not flagged."""
         res = core.evaluate_safety_net(prob=0.12, threshold=0.28)
         self.assertFalse(res["is_flagged"])
         self.assertFalse(res["atypical_risk_mitigated"])
-        self.assertIn("Safe for Ambulatory Pathway", res["disposition"])
+        self.assertIn("Lower likelihood in this model", res["disposition"])
+        self.assertNotIn("Safe", res["disposition"])
 
 
 class TestVirtualFFRFluidDynamics(unittest.TestCase):
@@ -175,7 +177,8 @@ class TestOfflineFirstAndPortalIntegrity(unittest.TestCase):
         self.assertIn('"atypical":', app_text)
         self.assertIn('"ruleout":', app_text)
         self.assertIn('"rural":', app_text)
-        self.assertIn("High-Sensitivity Safety Net Mode (96.4% Recall)", app_text)
+        self.assertIn("High-sensitivity mode (threshold 0.28)", app_text)
+        self.assertNotIn("96.4", app_text)
         self.assertIn("Hospital Economics & Catheterization Cost Reduction Engine", app_text)
 
     def test_portal_html_contains_economics_and_safety_net_elements(self):
@@ -194,7 +197,8 @@ class TestOfflineFirstAndPortalIntegrity(unittest.TestCase):
         # Safety Net Toggle & Alert Banner
         self.assertIn('id="inp-safety-net-toggle"', index_html)
         self.assertIn('id="portal-safety-net-banner"', index_html)
-        self.assertIn("96.4% Recall", index_html)
+        self.assertIn("threshold 0.28", index_html)
+        self.assertNotIn("96.4", index_html)
 
         # Door-to-Balloon Golden Hour Card
         self.assertIn('id="portal-golden-hour-badge"', index_html)

@@ -255,28 +255,34 @@ def calculate_hospital_economics(
         "total_annual_savings": total_annual_savings,
     }
 
+# Sensitivity at threshold 0.28 from evaluate.py (artifacts/validation.json), not a claim about patients.
+MEASURED_SENSITIVITY_AT_028 = 0.885
+
 
 def evaluate_safety_net(prob: float, threshold: float = 0.28) -> dict[str, Any]:
-    """High-sensitivity safety net (96.4% recall) preventing fatal false-negative discharges
-    of atypical myocardial infarction patients (e.g. diabetic neuropathy, elderly females).
+    """High-sensitivity mode: a lower decision threshold that flags more patients for review.
+
+    Measured with evaluate.py (20x repeated 5-fold CV on the Cleveland data, 13 inputs):
+    at 0.28 the model caught about 88% of cases and flagged about 27% of people without
+    disease. It misses some cases and it is not a discharge decision tool.
     """
     is_flagged = prob >= threshold
     return {
         "probability": prob,
         "threshold": threshold,
         "safety_net_active": True,
-        "recall_sensitivity": 0.964,
+        "recall_sensitivity": MEASURED_SENSITIVITY_AT_028,
         "is_flagged": is_flagged,
-        "disposition": "Admit / Urgent Cardiology Consult" if is_flagged else "Safe for Ambulatory Pathway",
+        "disposition": "Flagged for clinical review" if is_flagged else "Lower likelihood in this model",
         "atypical_risk_mitigated": is_flagged and prob < 0.50,
         "clinical_note": (
-            "SAFETY NET INTERVENTION: Patient flagged under 96.4% recall safety net. "
-            "Prevents fatal false-negative discharge despite subtle or non-anginal presentation."
+            "HIGH-SENSITIVITY FLAG: flagged at the lower 0.28 threshold. "
+            "Review clinically. The model misses some cases, so a low estimate never rules out disease."
             if (is_flagged and prob < 0.50)
             else (
-                "High probability acute coronary syndrome detected."
+                "High estimated probability of coronary disease in this model."
                 if prob >= 0.50
-                else "Low probability CAD; ambulatory evaluation appropriate."
+                else "Lower estimated probability in this model. This does not rule out disease."
             )
         ),
     }

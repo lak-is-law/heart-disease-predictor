@@ -392,9 +392,9 @@ with tab_pred:
         b6.button("Case 6: Rural Triage", on_click=apply_preset, args=("rural",))
 
         safety_net_active = st.checkbox(
-            "High-Sensitivity Safety Net Mode (96.4% Recall)",
+            "High-sensitivity mode (threshold 0.28)",
             value=False,
-            help="Lowers decision threshold to 0.28 to prevent fatal false-negative discharges of atypical coronary syndrome presentations.",
+            help="Lowers the decision threshold to 0.28 so more patients are flagged for review. In cross-validation it caught about 88% of cases and flagged about 27% of people without disease.",
         )
 
         st.markdown('<div class="section">Demographics & vitals</div>', unsafe_allow_html=True)
@@ -489,8 +489,7 @@ with tab_pred:
 
         if safety_net_active and safety_net_eval["atypical_risk_mitigated"]:
             st.warning(
-                "High-Sensitivity Safety Net Triggered (96.4% Recall): Atypical presentation detected. "
-                "Prevents fatal false-negative discharge of atypical acute myocardial infarction."
+                "Flagged at the lower 0.28 threshold. Review clinically. A low estimate never rules out disease."
             )
 
         # Occlusion explanation feature importance
