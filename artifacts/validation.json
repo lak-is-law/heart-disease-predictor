@@ -1,0 +1,177 @@
+{
+  "n": 303,
+  "prevalence": 0.45874587458745875,
+  "method": "20x repeated stratified 5-fold CV, out-of-fold, bootstrap 95% CI",
+  "sets": {
+    "all_13": {
+      "features": [
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg",
+        "thalach",
+        "exang",
+        "oldpeak",
+        "slope",
+        "ca",
+        "thal"
+      ],
+      "auc": 0.9099403404105983,
+      "auc_ci95": [
+        0.8718098508063369,
+        0.9427309094823089
+      ],
+      "auc_repeat_sd": 0.004609725403174691,
+      "brier": 0.11749395697049426,
+      "calibration_slope": 0.9163123374800244,
+      "calibration_intercept": -0.03023337948419099,
+      "operating_points": [
+        {
+          "threshold": 0.28,
+          "sensitivity": 0.8848920863309353,
+          "specificity": 0.7317073170731707,
+          "ppv": 0.7365269461077845,
+          "npv": 0.8823529411764706,
+          "missed_cases": 16,
+          "false_alarms": 44
+        },
+        {
+          "threshold": 0.33,
+          "sensitivity": 0.8489208633093526,
+          "specificity": 0.7682926829268293,
+          "ppv": 0.7564102564102564,
+          "npv": 0.8571428571428571,
+          "missed_cases": 21,
+          "false_alarms": 38
+        },
+        {
+          "threshold": 0.5,
+          "sensitivity": 0.7913669064748201,
+          "specificity": 0.8780487804878049,
+          "ppv": 0.8461538461538461,
+          "npv": 0.8323699421965318,
+          "missed_cases": 29,
+          "false_alarms": 20
+        }
+      ],
+      "auc_female": 0.9272222222222222,
+      "n_female": 97,
+      "auc_male": 0.8866323417238748,
+      "n_male": 206,
+      "auc_under55": 0.9286042240587695,
+      "auc_55plus": 0.877085020242915
+    },
+    "first_visit": {
+      "features": [
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg"
+      ],
+      "auc": 0.8368134760484296,
+      "auc_ci95": [
+        0.7895649074494983,
+        0.8821662325016438
+      ],
+      "auc_repeat_sd": 0.005031687271668027,
+      "brier": 0.16250557329406806,
+      "calibration_slope": 0.9966336484479924,
+      "calibration_intercept": -0.0065159374341681835,
+      "operating_points": [
+        {
+          "threshold": 0.28,
+          "sensitivity": 0.8992805755395683,
+          "specificity": 0.5487804878048781,
+          "ppv": 0.628140703517588,
+          "npv": 0.8653846153846154,
+          "missed_cases": 14,
+          "false_alarms": 74
+        },
+        {
+          "threshold": 0.33,
+          "sensitivity": 0.8920863309352518,
+          "specificity": 0.6463414634146342,
+          "ppv": 0.6813186813186813,
+          "npv": 0.8760330578512396,
+          "missed_cases": 15,
+          "false_alarms": 58
+        },
+        {
+          "threshold": 0.5,
+          "sensitivity": 0.7553956834532374,
+          "specificity": 0.8170731707317073,
+          "ppv": 0.7777777777777778,
+          "npv": 0.7976190476190477,
+          "missed_cases": 34,
+          "false_alarms": 30
+        }
+      ],
+      "auc_female": 0.8672222222222222,
+      "n_female": 97,
+      "auc_male": 0.7960526315789473,
+      "n_male": 206,
+      "auc_under55": 0.8434343434343434,
+      "auc_55plus": 0.7886639676113361
+    },
+    "no_tests": {
+      "features": [
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs"
+      ],
+      "auc": 0.8363309352517986,
+      "auc_ci95": [
+        0.7882988708274384,
+        0.8786932496468576
+      ],
+      "auc_repeat_sd": 0.00563660862033698,
+      "brier": 0.16278600129530443,
+      "calibration_slope": 1.0068363051101052,
+      "calibration_intercept": -0.00674086365897825,
+      "operating_points": [
+        {
+          "threshold": 0.28,
+          "sensitivity": 0.9136690647482014,
+          "specificity": 0.5853658536585366,
+          "ppv": 0.6512820512820513,
+          "npv": 0.8888888888888888,
+          "missed_cases": 12,
+          "false_alarms": 68
+        },
+        {
+          "threshold": 0.33,
+          "sensitivity": 0.8705035971223022,
+          "specificity": 0.6707317073170732,
+          "ppv": 0.6914285714285714,
+          "npv": 0.859375,
+          "missed_cases": 18,
+          "false_alarms": 54
+        },
+        {
+          "threshold": 0.5,
+          "sensitivity": 0.762589928057554,
+          "specificity": 0.8048780487804879,
+          "ppv": 0.7681159420289855,
+          "npv": 0.8,
+          "missed_cases": 33,
+          "false_alarms": 32
+        }
+      ],
+      "auc_female": 0.87,
+      "n_female": 97,
+      "auc_male": 0.7935736079328756,
+      "n_male": 206,
+      "auc_under55": 0.8438934802571166,
+      "auc_55plus": 0.7817004048582995
+    }
+  }
+}

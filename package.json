@@ -1,0 +1,10 @@
+{
+  "name": "cardiosense-portal",
+  "private": true,
+  "description": "CardioSense portal: static site in portal/ plus serverless API in api/",
+  "scripts": {
+    "dev": "node scripts/dev-server.js",
+    "test:api": "node --test tests/api/api.test.js"
+  },
+  "engines": { "node": ">=18" }
+}

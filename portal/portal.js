@@ -349,7 +349,16 @@ const BUILD_INFO = {
 };
 const BUILD_ORDER = ['mac-arm64', 'mac-x64', 'win-x64', 'win-arm64'];
 let currentUser = null;
+let csrfToken = '';
 let releaseData = null;
+window.csState = () => ({ user: currentUser, csrf: csrfToken });
+window.csSetCsrf = (t) => { csrfToken = t || ''; };
+// Called by the dashboard when the server says the session is gone (expired, signed out elsewhere).
+window.csSessionLost = () => {
+  currentUser = null; csrfToken = ''; releaseData = null;
+  renderAccount(); renderMatrixTables(); updateSmartRecommendationCard(detectedPlatform);
+  if (window.CSDash) CSDash.refresh();
+};
 
 function megabytes(bytes) { return Math.round(bytes / 1048576) + ' MB'; }
 
@@ -371,7 +380,10 @@ function renderAccount() {
   out.type = 'button'; out.className = 'header-login-btn'; out.id = 'btn-header-signout';
   out.textContent = 'Sign out';
   out.addEventListener('click', signOut);
-  box.appendChild(who); box.appendChild(out);
+  const dash = document.createElement('button');
+  dash.type = 'button'; dash.className = 'header-login-btn'; dash.textContent = 'Dashboard';
+  dash.addEventListener('click', () => window.CSDash && CSDash.open());
+  box.appendChild(who); box.appendChild(dash); box.appendChild(out);
 }
 
 async function loadReleases() {
@@ -391,19 +403,22 @@ async function initSession() {
     const r = await fetch('/api/session', { credentials: 'same-origin' });
     const s = r.ok ? await r.json() : { user: null };
     currentUser = s.user || null;
+    csrfToken = s.csrf || '';
   } catch (e) {
-    currentUser = null;
+    currentUser = null; csrfToken = '';
   }
   if (currentUser) await loadReleases();
   renderAccount();
   renderMatrixTables();
   updateSmartRecommendationCard(detectedPlatform);
+  if (window.CSDash) CSDash.refresh();
 }
 
 async function signOut() {
-  try { await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }); } catch (e) { /* offline */ }
-  currentUser = null; releaseData = null;
+  try { await fetch('/api/logout', { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-Token': csrfToken } }); } catch (e) { /* offline */ }
+  currentUser = null; csrfToken = ''; releaseData = null;
   renderAccount(); renderMatrixTables(); updateSmartRecommendationCard(detectedPlatform);
+  if (window.CSDash) CSDash.refresh();
   showToast('Signed out');
 }
 window.signOut = signOut;

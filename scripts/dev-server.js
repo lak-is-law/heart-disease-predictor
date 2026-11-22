@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Local preview: serves ./portal and the ./api handlers the way Vercel does.
-//   SESSION_SECRET=<32+ chars> CARDIOSENSE_USERS='{...}' node scripts/dev-server.js
+// Local preview: serves ./portal and the ./api handlers the way Vercel does. Uses an in-memory database unless UPSTASH_* variables are set.
+//   SESSION_SECRET=<32+ chars> DATA_ENCRYPTION_KEY=<base64 32 bytes> node scripts/dev-server.js
 // Set MOCK_RELEASES=1 to show sample downloads without a published GitHub release.
 const http = require('http');
 const fs = require('fs');
@@ -24,7 +24,8 @@ if (process.env.MOCK_RELEASES) {
   };
 }
 
-http.createServer((req, res) => {
+function createServer() {
+  return http.createServer((req, res) => {
   const u = new URL(req.url, 'http://x');
   const api = u.pathname.match(/^\/api\/([a-z]+)$/);
   if (api && fs.existsSync(path.join(root, 'api', api[1] + '.js'))) {
@@ -36,4 +37,10 @@ http.createServer((req, res) => {
   if (!file.startsWith(path.join(root, 'portal')) || !fs.existsSync(file)) { res.statusCode = 404; return res.end('Not found'); }
   res.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
   fs.createReadStream(file).pipe(res);
-}).listen(process.env.PORT || 3000, () => console.log('http://localhost:' + (process.env.PORT || 3000)));
+  });
+}
+module.exports = { createServer };
+
+if (require.main === module) {
+  createServer().listen(process.env.PORT || 3000, () => console.log('http://localhost:' + (process.env.PORT || 3000)));
+}
