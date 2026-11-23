@@ -207,74 +207,26 @@ function renderAttributionBarsFromDeltas(deltas) {
   }).join('');
 }
 
-// Verified Clinical Hospital Cases
+// Synthetic sample cases. These are made-up values for demonstration; they are not real patients.
 const CLINICAL_CASES = {
-  acs: {
-    id: 'acs',
-    title: 'Case 1: Acute Coronary Syndrome (Anterior STEMI)',
-    patient: 'Patient #ACS-9082 (62M)',
-    source: 'Hospital Discharge Summary — Cleveland Clinic Regional',
-    vitals: {
-      age: 62, sex: 1, cp: 1, trestbps: 168, chol: 288, fbs: 1,
-      restecg: 1, thalach: 128, exang: 1, oldpeak: 3.2, slope: 3, ca: 3, thal: 7
-    },
-    findings: 'Severe 3-vessel coronary artery disease with critical LAD occlusion. Reversible transmural ischemia on myocardial perfusion scintigraphy.'
-  },
-  diabetic: {
-    id: 'diabetic',
-    title: 'Case 2: Diabetic Multi-Vessel CAD Screening',
-    patient: 'Patient #DIA-4410 (57F)',
-    source: 'Endocrinology & Cardiology Consultation — Mount Sinai Health',
-    vitals: {
-      age: 57, sex: 0, cp: 2, trestbps: 142, chol: 245, fbs: 1,
-      restecg: 1, thalach: 142, exang: 0, oldpeak: 1.4, slope: 2, ca: 2, thal: 7
-    },
-    findings: 'Moderate 2-vessel calcification in LAD and RCA. Stress-induced horizontal ST depression consistent with multi-vessel CAD.'
-  },
-  wellness: {
-    id: 'wellness',
-    title: 'Case 3: Asymptomatic Executive Cardiovascular Screen',
-    patient: 'Patient #EXE-1029 (42M)',
-    source: 'Executive Health Assessment — Mayo Clinic Wellness Center',
-    vitals: {
-      age: 42, sex: 1, cp: 4, trestbps: 118, chol: 175, fbs: 0,
-      restecg: 0, thalach: 178, exang: 0, oldpeak: 0.0, slope: 1, ca: 0, thal: 3
-    },
-    findings: 'Normal coronary anatomy with 0 fluoroscopic calcifications. Physiologic upsloping ST response and normal myocardial perfusion.'
-  },
-  atypical_safety_net: {
-    id: 'atypical_safety_net',
-    title: 'Case 4: Atypical presentation, diabetic (sample case)',
-    patient: 'Patient #DM-7714 (64F)',
-    source: 'Emergency Triage & Endocrine Assessment — Johns Hopkins Medicine',
-    vitals: {
-      age: 64, sex: 0, cp: 2, trestbps: 140, chol: 250, fbs: 1,
-      restecg: 1, thalach: 135, exang: 0, oldpeak: 1.6, slope: 2, ca: 1, thal: 7
-    },
-    findings: 'Atypical presentation with diabetic neuropathy: painless dyspnea, fatigue, and nausea without substernal chest pressure. Flagged in high-sensitivity mode (threshold 0.28).'
-  },
-  ruled_out_cath: {
-    id: 'ruled_out_cath',
-    title: 'Case 5: Low-risk chest pain (sample case)',
-    patient: 'Patient #RULEOUT-3102 (52M)',
-    source: 'Cardiovascular Assessment — Cleveland Clinic Main Campus',
-    vitals: {
-      age: 52, sex: 1, cp: 3, trestbps: 126, chol: 204, fbs: 0,
-      restecg: 0, thalach: 162, exang: 0, oldpeak: 0.2, slope: 1, ca: 0, thal: 3
-    },
-    findings: 'Atypical non-anginal chest pain. Non-invasive FFR 0.94 rules out obstructive ischemia. Invasive catheterization avoided, saving $8,500.'
-  },
-  rural_triage: {
-    id: 'rural_triage',
-    title: 'Case 6: Critical Access Rural Clinic Triage (Air-Gapped)',
-    patient: 'Patient #RURAL-9051 (68M)',
-    source: 'Critical Access Clinic Bedside Triage — Appalachian Regional Health',
-    vitals: {
-      age: 68, sex: 1, cp: 1, trestbps: 160, chol: 270, fbs: 1,
-      restecg: 2, thalach: 115, exang: 1, oldpeak: 2.8, slope: 3, ca: 2, thal: 7
-    },
-    findings: 'Severe acute coronary ischemia evaluated 100% offline with 0 KB cloud data egress. Immediate life-flight helicopter catheterization transfer indicated.'
-  }
+  acs: { id: 'acs', title: 'Sample 1: several risk markers', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 62, sex: 1, cp: 1, trestbps: 168, chol: 288, fbs: 1, restecg: 1, thalach: 128, exang: 1, oldpeak: 3.2, slope: 3, ca: 3, thal: 7 },
+    findings: 'Synthetic values chosen to give a high model estimate.' },
+  diabetic: { id: 'diabetic', title: 'Sample 2: diabetes with exercise ST change', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 57, sex: 0, cp: 2, trestbps: 142, chol: 245, fbs: 1, restecg: 1, thalach: 142, exang: 0, oldpeak: 1.4, slope: 2, ca: 2, thal: 7 },
+    findings: 'Synthetic values chosen to give an intermediate to high model estimate.' },
+  wellness: { id: 'wellness', title: 'Sample 3: no reported risk markers', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 42, sex: 1, cp: 4, trestbps: 118, chol: 175, fbs: 0, restecg: 0, thalach: 178, exang: 0, oldpeak: 0.0, slope: 1, ca: 0, thal: 3 },
+    findings: 'Synthetic values chosen to give a low model estimate.' },
+  atypical_safety_net: { id: 'atypical_safety_net', title: 'Sample 4: atypical symptoms, diabetes', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 64, sex: 0, cp: 2, trestbps: 140, chol: 250, fbs: 1, restecg: 1, thalach: 135, exang: 0, oldpeak: 1.6, slope: 2, ca: 1, thal: 7 },
+    findings: 'Synthetic values for an intermediate estimate; shown in high-sensitivity mode (threshold 0.28).' },
+  ruled_out_cath: { id: 'ruled_out_cath', title: 'Sample 5: low estimate', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 52, sex: 1, cp: 3, trestbps: 126, chol: 204, fbs: 0, restecg: 0, thalach: 162, exang: 0, oldpeak: 0.2, slope: 1, ca: 0, thal: 3 },
+    findings: 'Synthetic values chosen to give a low model estimate. A low estimate does not rule out disease.' },
+  rural_triage: { id: 'rural_triage', title: 'Sample 6: older adult, several markers', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 68, sex: 1, cp: 1, trestbps: 160, chol: 270, fbs: 1, restecg: 2, thalach: 115, exang: 1, oldpeak: 2.8, slope: 3, ca: 2, thal: 7 },
+    findings: 'Synthetic values chosen to give a high model estimate.' }
 };
 
 // SVG Vector Icons for Official Brands (No Emojis!)
@@ -1238,11 +1190,11 @@ function extractSex(text) {
  */
 const SAMPLE_CLINICAL_FILES = {
   json: {
-    filename: 'patient_eleanor_vance_severe_cad.json',
+    filename: 'sample_case_severe_cad.json',
     content: JSON.stringify({
-      patient_id: "CP-8924",
-      name: "Eleanor Vance",
-      clinical_study: "Severe Multivessel CAD with Anterior STEMI",
+      patient_id: "SAMPLE-1",
+      name: "Sample Patient",
+      clinical_study: "Synthetic sample",
       admission_date: "2026-11-15",
       biomarkers: {
         age: 62, sex: 0, cp: 1, trestbps: 168, chol: 288,
@@ -1252,13 +1204,13 @@ const SAMPLE_CLINICAL_FILES = {
     }, null, 2)
   },
   csv: {
-    filename: 'patient_eleanor_vance_lab_report.csv',
+    filename: 'sample_case_lab_report.csv',
     content: 'age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal\n62,0,1,168,288,1,2,128,1,3.2,3,3,7'
   },
   txt: {
-    filename: 'patient_eleanor_vance_consultation.txt',
+    filename: 'sample_case_consultation.txt',
     content: `PATIENT CLINICAL SUMMARY
-Patient Name: Eleanor Vance (#CP-8924)
+Patient Name: Sample Patient (#SAMPLE-1)
 Age: 62 years old (62 yo female)
 Gender: Female
 Chief Complaint: Typical angina, substernal crushing chest pressure on exertion.
@@ -1274,9 +1226,9 @@ Fluoroscopy Major Calcified Vessels: 3 vessels
 Thallium Scintigraphy: Reversible defect (7)`
   },
   hl7: {
-    filename: 'patient_eleanor_vance_hl7.hl7',
-    content: `MSH|^~\\&|EPIC_HIS|ST_JUDE_HOSPITAL|CARDIOSENSE_CDS|CARDIOLOGY|20261115083045||ORU^R01|MSG20261115-8924|P|2.5
-PID|1||8924^^^STJUDE^MR||Vance^Eleanor^^^^||19640512|F
+    filename: 'sample_case_hl7.hl7',
+    content: `MSH|^~\\&|SAMPLE_HIS|SAMPLE_FACILITY|CARDIOSENSE_CDS|CARDIOLOGY|20261115083045||ORU^R01|MSG20261115-8924|P|2.5
+PID|1||8924^^^SAMPLE^MR||Patient^Sample^^^^||19640512|F
 OBX|1|NM|AGE^Patient Age||62|years
 OBX|2|ST|SEX^Patient Sex||0|code
 OBX|3|NM|CP^Chest Pain Type||1|code
@@ -1337,53 +1289,17 @@ function loadClinicalCase(caseKey) {
   const idEl = document.getElementById('header-patient-id');
   const statusEl = document.getElementById('header-patient-status');
 
-  if (caseKey === 'acs') {
-    if (nameEl) nameEl.textContent = 'Eleanor Vance, 58 yrs';
-    if (idEl) idEl.textContent = 'ID: #CP-8924';
-    if (statusEl) {
-      statusEl.textContent = 'Acute STEMI Triage';
-      statusEl.className = 'patient-chip-status-badge critical';
-    }
-  } else if (caseKey === 'diabetic') {
-    if (nameEl) nameEl.textContent = 'Elena Gomez, 57 yrs';
-    if (idEl) idEl.textContent = 'ID: #DIA-4410';
-    if (statusEl) {
-      statusEl.textContent = 'Multi-Vessel CAD';
-      statusEl.className = 'patient-chip-status-badge warning';
-    }
-  } else if (caseKey === 'wellness') {
-    if (nameEl) nameEl.textContent = 'David Vance, 42 yrs';
-    if (idEl) idEl.textContent = 'ID: #EXE-1029';
-    if (statusEl) {
-      statusEl.textContent = 'Screening Normal';
-      statusEl.className = 'patient-chip-status-badge stable';
-    }
-  } else if (caseKey === 'atypical_safety_net') {
-    if (nameEl) nameEl.textContent = 'Maria Hernandez, 64 yrs';
-    if (idEl) idEl.textContent = 'ID: #DM-7714';
-    if (statusEl) {
-      statusEl.textContent = 'Atypical ACS (Safety Net)';
-      statusEl.className = 'patient-chip-status-badge critical';
-    }
-    // Turn on high-sensitivity mode for this sample case
+  if (nameEl) nameEl.textContent = 'Sample case';
+  if (idEl) idEl.textContent = 'Synthetic data';
+  if (statusEl) {
+    statusEl.textContent = 'Model output only';
+    statusEl.className = 'patient-chip-status-badge stable';
+  }
+  if (caseKey === 'atypical_safety_net') {
     const snToggle = document.getElementById('inp-safety-net-toggle');
     if (snToggle && !snToggle.checked) {
       snToggle.checked = true;
       toggleSafetyNetMode(true);
-    }
-  } else if (caseKey === 'ruled_out_cath') {
-    if (nameEl) nameEl.textContent = 'Robert Chen, 52 yrs';
-    if (idEl) idEl.textContent = 'ID: #RULEOUT-3102';
-    if (statusEl) {
-      statusEl.textContent = 'Lower estimate (illustrative FFR 0.94)';
-      statusEl.className = 'patient-chip-status-badge stable';
-    }
-  } else if (caseKey === 'rural_triage') {
-    if (nameEl) nameEl.textContent = 'James Miller, 68 yrs';
-    if (idEl) idEl.textContent = 'ID: #RURAL-9051';
-    if (statusEl) {
-      statusEl.textContent = 'Rural Air-Gapped Triage';
-      statusEl.className = 'patient-chip-status-badge critical';
     }
   }
 
@@ -1442,42 +1358,7 @@ function toggleSafetyNetMode(checked) {
 }
 window.toggleSafetyNetMode = toggleSafetyNetMode;
 
-function updateGoldenHourTelemetry(risk, ffr) {
-  const badge = document.getElementById('portal-golden-hour-badge');
-  const d2bVal = document.getElementById('portal-d2b-val');
-  const d2bFill = document.getElementById('portal-d2b-progress-fill');
-  const d2bSaved = document.getElementById('portal-d2b-saved');
-  const myoSalvage = document.getElementById('portal-myo-salvage');
-  const necReduction = document.getElementById('portal-necrosis-reduction');
-
-  if (ffr >= 0.80 && risk < 0.35 && (!isSafetyNetActive || risk < 0.28)) {
-    // Ruled-out catheterization
-    if (badge) {
-      badge.textContent = 'Scenario: lower estimate';
-      badge.style.background = 'rgba(45, 212, 191, 0.15)';
-      badge.style.color = '#2DD4BF';
-      badge.style.borderColor = 'rgba(45, 212, 191, 0.3)';
-    }
-    if (d2bVal) d2bVal.textContent = 'N/A';
-    if (d2bFill) d2bFill.style.width = '10%';
-    if (d2bSaved) d2bSaved.textContent = 'n/a';
-    if (myoSalvage) myoSalvage.textContent = '100%';
-    if (necReduction) necReduction.textContent = '0% Risk';
-  } else {
-    // Urgent catheterization or ischemic lesion
-    if (badge) {
-      badge.textContent = 'Illustrative timeline, not measured';
-      badge.style.background = 'rgba(16, 185, 129, 0.15)';
-      badge.style.color = '#34D399';
-      badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-    }
-    if (d2bVal) d2bVal.textContent = '44 min';
-    if (d2bFill) d2bFill.style.width = '44%';
-    if (d2bSaved) d2bSaved.textContent = '48 min';
-    if (myoSalvage) myoSalvage.textContent = '88%';
-    if (necReduction) necReduction.textContent = '-65%';
-  }
-}
+function updateGoldenHourTelemetry() { /* removed: the timeline figures were not measured */ }
 window.updateGoldenHourTelemetry = updateGoldenHourTelemetry;
 
 function calculateHospitalEconomics() {
@@ -1667,8 +1548,8 @@ function updatePortalPrediction() {
   const exang = parseFloat(document.getElementById('inp-exang')?.value || 0);
   const oldpeak = parseFloat(document.getElementById('inp-oldpeak')?.value || 1.2);
   const slope = parseFloat(document.getElementById('inp-slope')?.value || 2);
-  const ca = parseFloat(document.getElementById('inp-ca')?.value || 0);
-  const thal = parseFloat(document.getElementById('inp-thal')?.value || 3);
+  const ca = parseFloat(document.getElementById('inp-ca')?.value);
+  const thal = parseFloat(document.getElementById('inp-thal')?.value);
   const fbs = parseFloat(document.getElementById('inp-fbs')?.value || 0);
   const restecgEl = document.getElementById('inp-restecg');
   const restecg = parseFloat(
@@ -1690,6 +1571,15 @@ function updatePortalPrediction() {
   const valOp = document.getElementById('val-oldpeak');
   if (valOp) valOp.innerText = `${oldpeak.toFixed(1)} mm`;
 
+  if (Number.isNaN(ca) || Number.isNaN(thal)) {
+    const rv = document.getElementById('portal-risk-value');
+    if (rv) { rv.innerText = 'Incomplete'; rv.style.color = '#94A3B8'; }
+    const rec = document.getElementById('portal-cockpit-recommendation');
+    if (rec) rec.textContent = 'This model needs the fluoroscopy vessel count and the thallium result. Select both to see an estimate. If they are not available, this model cannot be used for the patient.';
+    const rb = document.getElementById('portal-risk-blurb');
+    if (rb) rb.textContent = '';
+    return;
+  }
   const patient = { age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal };
   const prob = predictClinicalRisk(patient);
 
@@ -1730,8 +1620,8 @@ function updatePortalPrediction() {
   }
 
   if (ffrEl) {
-    ffrEl.innerText = `${pFFR.toFixed(2)} (${pFFR < 0.80 ? 'Ischemia Lesion' : 'Physiologic Normal'})`;
-    ffrEl.style.color = pFFR < 0.80 ? '#EF4444' : '#10B981';
+    ffrEl.innerText = `${pFFR.toFixed(2)} (illustrative)`;
+    ffrEl.style.color = '#94A3B8';
   }
 
   if (bpmDisplay) bpmDisplay.innerText = `${Math.round(pBPM)} BPM`;
@@ -1741,23 +1631,22 @@ function updatePortalPrediction() {
   const ecgMeta = document.getElementById('portal-ecg-meta');
   if (ecgMeta) {
     const slopeText = slope === 3 ? 'Downsloping' : (slope === 2 ? 'Horizontal Flat' : 'Upsloping');
-    ecgMeta.innerText = `ST: ${(-oldpeak).toFixed(1)} mm | ${slopeText} | FFR: ${pFFR.toFixed(2)}`;
+    ecgMeta.innerText = `ST: ${(-oldpeak).toFixed(1)} mm | ${slopeText} | illustrative trace`;
   }
 
   // Update Diagnostic Risk Blurb
   if (riskBlurb) {
     if (pTargetRisk >= 0.66) {
       riskBlurb.innerHTML = `
-        <strong>Critical Ischemic Risk:</strong> Elevated ST depression (${oldpeak.toFixed(1)} mm) and fluoroscopic calcification in ${ca} major coronary vessels.
-        Indicates probable hemodynamic lesion requiring diagnostic coronary angiography and cardiology review.
+        <strong>High model estimate:</strong> ST depression ${oldpeak.toFixed(1)} mm and ${ca} vessel(s) reported by the input. A model output for a clinician to weigh, not a diagnosis.
       `;
     } else if (pTargetRisk >= 0.33) {
       riskBlurb.innerHTML = `
-        <strong>Intermediate CAD Risk:</strong> Mild to moderate ischemic markers. Recommend outpatient functional stress testing, coronary CTA, and targeted lipid optimization.
+        <strong>Intermediate model estimate:</strong> some risk markers present. Interpretation and next steps rest with the treating clinician.
       `;
     } else {
       riskBlurb.innerHTML = `
-        <strong>Low Cardiovascular Risk:</strong> Biomarkers align with physiological baseline. Recommend routine preventive primary care follow-up.
+        <strong>Lower model estimate:</strong> few risk markers in the input. The model misses some cases, so this does not rule out disease.
       `;
     }
   }
@@ -1836,8 +1725,8 @@ function updatePortalPrediction() {
     if (isSafetyNetActive && pTargetRisk >= 0.28 && pTargetRisk < 0.66) {
       recEl.textContent = 'Model output: estimate falls between the 0.28 and 0.66 marks in high-sensitivity mode. This flags the case for review by a clinician. It is not a diagnosis.';
       recBar.style.backgroundColor = '#F43F5E';
-    } else if (pFFR >= 0.80 && pTargetRisk < 0.35 && (!isSafetyNetActive || pTargetRisk < 0.28)) {
-      recEl.textContent = `Model output: lower estimated probability (illustrative FFR ${pFFR.toFixed(2)}). The model misses some cases, so this does not rule out disease. Decisions rest with the treating clinician.`;
+    } else if (pTargetRisk < 0.33) {
+      recEl.textContent = 'Model output: lower estimated probability. The model misses some cases, so this does not rule out disease. Decisions rest with the treating clinician.';
       recBar.style.backgroundColor = '#10B981';
     } else if (pTargetRisk >= 0.66) {
       recEl.textContent = `Model output: high estimated probability of coronary disease${ca > 0 ? ' (' + ca + ' vessel(s) reported)' : ''}. Needs prompt review by a clinician.`;
@@ -3258,7 +3147,7 @@ function animateECG(timestamp) {
   }
   // T wave (ventricular repolarization, inverted on severe ischemia or restecg=1)
   else if (phase >= 0.60 && phase < 0.82) {
-    const inverted = (currentPatientRestecg === 1 || (currentPatientOldpeak || 0) >= 2.0 || pTargetRisk >= 0.70);
+    const inverted = (currentPatientRestecg === 1 || (currentPatientOldpeak || 0) >= 2.0 || pTargetRisk >= 0.66);
     const amp = inverted ? -0.28 : 0.32;
     mV = amp * Math.sin(((phase - 0.60) / 0.22) * Math.PI);
   }
@@ -3269,8 +3158,8 @@ function animateECG(timestamp) {
   ecgCtx.moveTo(prevX, ecgLastY);
   ecgCtx.lineTo(ecgX, currentY);
   ecgCtx.lineWidth = 2.0;
-  ecgCtx.strokeStyle = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.70) ? '#EF4444' : '#38BDF8';
-  ecgCtx.shadowColor = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.70) ? '#DC2626' : '#0284C7';
+  ecgCtx.strokeStyle = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.66) ? '#EF4444' : '#38BDF8';
+  ecgCtx.shadowColor = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.66) ? '#DC2626' : '#0284C7';
   ecgCtx.shadowBlur = 6.0;
   ecgCtx.stroke();
   ecgCtx.shadowBlur = 0;
@@ -3491,6 +3380,7 @@ function exportDiagnosticSummaryReport() {
   const modal = document.getElementById('app-report-modal');
   const container = document.getElementById('report-modal-content');
   if (!modal || !container) return;
+  if (!document.getElementById('inp-ca').value || !document.getElementById('inp-thal').value) { showToast('Select the vessel count and thallium result first.'); return; }
 
   const age = document.getElementById('inp-age').value;
   const sex = document.getElementById('inp-sex').value === '1' ? 'Male' : 'Female';
@@ -3526,23 +3416,20 @@ function exportDiagnosticSummaryReport() {
         </div>
       </div>
 
-      <div style="border-left:4px solid ${pTargetRisk >= 0.70 ? '#F43F5E' : '#34D399'}; padding-left:14px; margin-bottom:16px;">
+      <div style="border-left:4px solid ${pTargetRisk >= 0.66 ? '#F43F5E' : '#34D399'}; padding-left:14px; margin-bottom:16px;">
         <h4 style="font-size:1rem; color:var(--color-text-headline); font-weight:800;">
-          CAD Risk Stratification: <span style="color:${pTargetRisk >= 0.70 ? '#F43F5E' : '#34D399'};">${riskPct}% Probability</span>
+          Model estimate: <span style="color:${pTargetRisk >= 0.66 ? '#F43F5E' : '#34D399'};">${riskPct}%</span>
         </h4>
         <p style="font-size:0.8125rem; margin-top:4px; color:#CBD5E1;">
-          Fractional Flow Reserve (FFR Index): <strong>${pFFR.toFixed(2)}</strong> (${pFFR < 0.80 ? 'Hemodynamically Significant Ischemia' : 'Physiologic Baseline'}).
+          Model estimate: <strong>${riskPct}%</strong> (research model, trained on 303 patients from one clinic).
         </p>
         <p style="font-size:0.8125rem; margin-top:2px; color:#94A3B8;">
-          Catheterization Disposition: <strong style="color:${pFFR >= 0.80 && pTargetRisk < 0.35 ? '#10B981' : '#F43F5E'};">${pFFR >= 0.80 && pTargetRisk < 0.35 ? 'Catheterization Safely RULED OUT ($5,000–$12,000 Saved, Arterial Complications Spared)' : 'Diagnostic Catheterization Indicated'}</strong>
-        </p>
-        <p style="font-size:0.8125rem; margin-top:2px; color:#94A3B8;">
-          Safety Net Status: <strong>${isSafetyNetActive ? 'High-sensitivity mode (threshold 0.28)' : 'Standard Diagnostic Mode'}</strong> · Door-to-balloon: <strong>${pFFR < 0.80 ? 'Illustrative scenario only' : 'n/a'}</strong>
+          Mode: <strong>${isSafetyNetActive ? 'High-sensitivity (flags at 0.28 or above)' : 'Standard (flags at 0.50 or above)'}</strong>. This estimate does not rule disease in or out.
         </p>
       </div>
 
       <div style="background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:10px; font-size:0.75rem; color:#FCD34D; margin-bottom:20px;">
-        <strong>Regulatory Notice:</strong> This assessment is provided as a non-device clinical decision support aid under FDA 21 CFR § 880.6310. It does not replace physical examination, invasive angiography, or clinical judgment by a licensed physician.
+        <strong>Research prototype. Not for clinical use.</strong> Not a medical device and not reviewed by any regulator. It does not replace examination, testing or the judgment of a licensed clinician.
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px dashed rgba(255, 255, 255, 0.15); padding-top:14px; font-size:0.75rem;">
@@ -3623,40 +3510,19 @@ function openComplianceModal(type) {
   let body = '';
 
   if (type === 'fda') {
-    title = 'FDA 21 CFR § 880.6310 Non-Device Clinical Decision Support';
+    title = 'Intended use and limits';
     body = `
-      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">
-        CardioSense AI qualifies as Non-Device Clinical Decision Support (CDS) under Section 520(o)(1)(E) of the Federal Food, Drug, and Cosmetic Act.
-      </p>
-      <ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px; margin-bottom:12px;">
-        <li>Does not acquire, process, or analyze medical images or diagnostic signals directly from hardware.</li>
-        <li>Provides transparent recommendations with full visibility into Cleveland Clinic statistical feature weights.</li>
-        <li>Enables independent review of the basis for recommendations by licensed healthcare practitioners.</li>
-      </ul>
+      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">CardioSense is a research prototype. It is not a medical device, it has not been reviewed by any regulator, and no exemption or clearance is claimed.</p><ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px;"><li>It estimates the probability that angiography would show coronary disease, from 13 inputs.</li><li>The model was trained on 303 patients from one 1980s clinic who were already referred for angiography.</li><li>It has not been tested prospectively or on other populations. Do not use it to make care decisions.</li></ul>
     `;
   } else if (type === 'hipaa') {
-    title = 'HIPAA 45 CFR § 164.514 Safe Harbor De-Identification';
+    title = 'Data handling';
     body = `
-      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">
-        The workstation enforces an absolute Zero-Cloud-Egress boundary.
-      </p>
-      <ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px; margin-bottom:12px;">
-        <li>All patient vitals and laboratory biomarkers are processed strictly in local browser process memory.</li>
-        <li>Zero network requests are dispatched containing biometric data or clinical inputs.</li>
-        <li>No cookies, persistent database records, or telemetric identifiers are stored.</li>
-      </ul>
+      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">The calculator runs in your browser. Inputs you type into it are not sent anywhere.</p><ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px;"><li>If you sign in and choose to save an assessment, the saved fields are encrypted on the server and visible to your account only.</li><li>Do not enter real patient information. No compliance certification (HIPAA or otherwise) is claimed for this prototype.</li></ul>
     `;
   } else if (type === 'fips') {
-    title = 'FIPS 140-2 Level 3 Cryptographic Attestation';
+    title = 'Download verification';
     body = `
-      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">
-        CardioSense AI utilizes WebCrypto API with hardware-backed TPM/Secure Enclave acceleration for client-side SHA-256 verification and session token generation.
-      </p>
-      <ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px; margin-bottom:12px;">
-        <li>Deterministic bit-for-bit SHA-256 verification across 18 workstation packages.</li>
-        <li>NIST SP 800-131A compliant cryptographic hash primitives.</li>
-        <li>Zero plaintext session secrets transmitted across loopback interfaces.</li>
-      </ul>
+      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">Each download lists a SHA-256 checksum. Compare it with the checksum of the file you received to confirm it was not altered in transit. This is an integrity check, not a security certification.</p>
     `;
   } else if (type === 'accessibility') {
     title = 'Accessibility Statement (WCAG 2.1 AA Compliance)';
@@ -3788,7 +3654,7 @@ window.closeQRScannerViewfinder = closeQRScannerViewfinder;
 function simulateQRScan() {
   closeQRScannerViewfinder();
   isMobileLinked = true;
-  showToast('Verified QR Code: Account #CP-8924 Linked Successfully!');
+  showToast('Verified QR Code: Account #SAMPLE-1 Linked Successfully!');
   const pairSection = document.getElementById('mobile-pairing-section');
   const dashSection = document.getElementById('mobile-tracking-dashboard');
   if (pairSection) pairSection.style.display = 'none';

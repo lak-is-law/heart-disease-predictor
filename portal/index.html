@@ -109,7 +109,7 @@
     <button type="button" class="dock-icon-btn" title="EHR & Lab Reports" onclick="switchCockpitView('lab')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     </button>
-    <button type="button" class="dock-icon-btn" title="HIPAA & FIPS Security" onclick="switchCockpitView('security')">
+    <button type="button" class="dock-icon-btn" title="Data handling" onclick="switchCockpitView('security')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     </button>
     <button type="button" class="dock-icon-btn" id="btn-dock-mobile" title="Mobile Tracker (Pair Device)" onclick="openMobilePairModal()" aria-label="Mobile Companion Pairing">
@@ -135,14 +135,14 @@
           <span style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.3px;">CardioSense</span>
         </a>
         <div class="header-patient-context-text" style="font-size:0.875rem; font-weight:600; color:#94A3B8; margin-left:20px; padding-left:18px; border-left:1px solid rgba(255,255,255,0.12);">
-          <strong id="header-patient-name" style="color:#F8FAFC;">Sample patient, 58 yrs</strong> <span style="opacity:0.5;">|</span> <span id="header-patient-id">ID: #CP-8924</span>
+          <strong id="header-patient-name" style="color:#F8FAFC;">Sample patient, 58 yrs</strong> <span style="opacity:0.5;">|</span> <span id="header-patient-id">ID: #SAMPLE-1</span>
         </div>
       </div>
 
       <div class="header-actions-group" style="display:flex; align-items:center; gap:12px;">
         <div class="header-patient-chip" id="header-patient-chip" style="font-size:0.8125rem; color:#94A3B8;">
           <span>Sample patient, 58 yrs</span>
-          <span class="patient-chip-status-badge critical" id="header-patient-status" style="margin-left:8px;">Acute STEMI Triage</span>
+          <span class="patient-chip-status-badge stable" id="header-patient-status" style="margin-left:8px;">Model output only</span>
         </div>
         <button type="button" class="header-mobile-btn" onclick="openMobilePairModal()" id="btn-header-mobile" title="Scan QR Code to Track on Mobile">
           <span>Track on Mobile</span>
@@ -162,7 +162,7 @@
           <li class="app-nav-item"><a href="#matrix">Architecture Matrix</a></li>
           <li class="app-nav-item"><a href="#security-checkup">Security Checkup</a></li>
           <li class="app-nav-item"><a href="#verifier">Checksum Verifier</a></li>
-          <li class="app-nav-item"><a href="#regulatory-compliance">Regulatory Specs</a></li>
+          <li class="app-nav-item"><a href="#regulatory-compliance">Intended use</a></li>
         </ul>
       </nav>
       <div class="app-header-actions" style="display:none !important;">
@@ -199,20 +199,17 @@
       <a href="#lab-ingestion" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('lab');">
         EHR & Lab Ingestion
       </a>
-      <a href="#hospital-economics" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('economics');">
-        Hospital Economics & ROI
-      </a>
       <a href="#matrix" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('deploy');">
         Download
       </a>
       <a href="#security-checkup" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('security');">
-        HIPAA & FIPS 140-2 Security
+        Data handling
       </a>
       <a href="#verifier" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('verifier');">
         Checksum Verifier
       </a>
       <a href="#regulatory-compliance" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('compliance');">
-        FDA & HIPAA Compliance
+        Intended use and limits
       </a>
       <a href="#mobile" class="drawer-nav-item" onclick="toggleNavDrawer(); openMobileCompanionView();" style="border-top:1px solid rgba(255,255,255,0.08); margin-top:8px; padding-top:12px; color:#38BDF8;">
         Mobile Tracker (Scan QR)
@@ -282,7 +279,7 @@
             Diagnostic Coronary Hemodynamics & 12-Lead ECG Workstation
           </h2>
           <p>
-            Anatomical multi-chamber myocardium with dual-phase systolic/diastolic torsion, coronary artery tree (LAD, RCA, LCx), localized calcium stenosis lesions, Fractional Flow Reserve (FFR), and calibrated 25 mm/s Lead II vector cardiogram.
+            Anatomical multi-chamber myocardium with dual-phase systolic/diastolic torsion, a schematic coronary tree and an illustrative ECG trace. The visuals are teaching aids driven by the inputs, not measurements.
           </p>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
@@ -329,7 +326,7 @@
           <!-- Quick Clinical Scenario Preset Strip -->
           <div class="quick-scenario-strip" role="toolbar" aria-label="Quick Clinical Scenarios">
             <button type="button" class="quick-scenario-chip active" onclick="loadClinicalCase('acs')">
-              <span style="color:#F43F5E;">●</span> STEMI Critical
+              <span style="color:#F43F5E;">●</span> High estimate
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('diabetic')">
               <span style="color:#F59E0B;">●</span> Diabetic CAD
@@ -341,7 +338,7 @@
               <span style="color:#EC4899;">●</span> Atypical presentation
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('ruled_out_cath')">
-              <span style="color:#2DD4BF;">●</span> Lower estimate (illustrative FFR 0.94)
+              <span style="color:#2DD4BF;">●</span> Lower estimate
             </button>
             <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('rural_triage')">
               <span style="color:#A78BFA;">●</span> Rural Offline Triage
@@ -511,27 +508,29 @@
             <!-- 12. Calcified Major Vessels -->
             <div class="bmc-card">
               <label class="form-label-row" for="inp-ca">
-                <span class="label-primary">Calcified Major Vessels</span>
-                <span class="label-sub clinical-acronym" title="Number of major coronary vessels with calcified stenosis on fluoroscopy">(ca · 0-3 vessels)</span>
+                <span class="label-primary">Major vessels colored by fluoroscopy</span>
+                <span class="label-sub clinical-acronym" title="Number of major vessels (0-3) colored by fluoroscopy, an invasive study. Required by this 13-input model.">(ca · required)</span>
               </label>
               <select class="clinical-select" id="inp-ca" onchange="updatePortalPrediction()">
-                <option value="0">0: Clean Coronaries</option>
-                <option value="1">1: Single-Vessel Disease</option>
-                <option value="2" selected>2: Two-Vessel Disease</option>
-                <option value="3">3: Triple-Vessel Disease</option>
+                <option value="" selected>Select</option>
+                <option value="0">0 vessels</option>
+                <option value="1">1 vessel</option>
+                <option value="2">2 vessels</option>
+                <option value="3">3 vessels</option>
               </select>
             </div>
 
             <!-- 13. Thallium Scintigraphy -->
             <div class="bmc-card bmc-card-wide">
               <label class="form-label-row" for="inp-thal">
-                <span class="label-primary">Thallium Scintigraphy</span>
-                <span class="label-sub clinical-acronym" title="Nuclear myocardial perfusion scintigraphy status (3=Normal, 6=Fixed, 7=Reversible)">(thal · 3/6/7)</span>
+                <span class="label-primary">Thallium stress test</span>
+                <span class="label-sub clinical-acronym" title="Nuclear myocardial perfusion scintigraphy status (3=Normal, 6=Fixed, 7=Reversible)">(thal · required)</span>
               </label>
               <select class="clinical-select" id="inp-thal" onchange="updatePortalPrediction()">
-                <option value="3">3: Normal Perfusion</option>
-                <option value="6">6: Fixed Infarct Scar</option>
-                <option value="7" selected>7: Reversible Ischemic Defect</option>
+                <option value="" selected>Select</option>
+                <option value="3">3: Normal perfusion</option>
+                <option value="6">6: Fixed defect</option>
+                <option value="7">7: Reversible defect</option>
               </select>
             </div>
           </div>
@@ -609,7 +608,7 @@
                   <button type="button" class="mode-btn active" id="portal-mode-cta" onclick="setPortalMode('cta', this)">CT Angio</button>
                   <button type="button" class="mode-btn" id="portal-mode-perfusion" onclick="setPortalMode('perfusion', this)">Perfusion</button>
                   <button type="button" class="mode-btn" id="portal-mode-fluoro" onclick="setPortalMode('fluoro', this)">Fluoroscopy</button>
-                  <button type="button" class="mode-btn" id="portal-mode-ffr" onclick="setPortalMode('ffr', this)">Coronary FFR</button>
+                  <button type="button" class="mode-btn" id="portal-mode-ffr" onclick="setPortalMode('ffr', this)">Flow view (illustrative)</button>
                   <button type="button" class="sound-btn" id="portal-sound-btn" onclick="togglePortalAudio()"><span id="portal-sound-icon">[Muted]</span></button>
                 </div>
               </div>
@@ -632,51 +631,12 @@
               </div>
             </div>
 
-            <!-- Door-to-Balloon Golden Hour Telemetry Card -->
-            <div class="cockpit-card golden-hour-card">
-              <div class="golden-hour-header">
-                <div class="golden-hour-title">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-                  <span>Door-to-balloon scenario (illustrative)</span>
-                </div>
-                <span class="golden-hour-pill" id="portal-golden-hour-badge">48 min shaved · ACC/AHA Target Met</span>
-              </div>
-              <div class="golden-hour-bars">
-                <div class="d2b-row">
-                  <span class="d2b-label">Traditional ED:</span>
-                  <div class="d2b-track">
-                    <div class="d2b-fill-trad" title="92 min traditional door-to-balloon"></div>
-                  </div>
-                  <span class="d2b-val" style="color:#EF4444;">92 min</span>
-                </div>
-                <div class="d2b-row">
-                  <span class="d2b-label">CardioSense AI:</span>
-                  <div class="d2b-track">
-                    <div class="d2b-fill-cs" id="portal-d2b-progress-fill" title="44 min CardioSense AI door-to-balloon"></div>
-                  </div>
-                  <span class="d2b-val" id="portal-d2b-val" style="color:#2DD4BF;">44 min</span>
-                </div>
-              </div>
-              <div class="golden-hour-stat-row">
-                <div>
-                  <div class="gh-stat-val" id="portal-d2b-saved">48 min</div>
-                  <div class="gh-stat-lbl">Time Shaved</div>
-                </div>
-                <div>
-                  <div class="gh-stat-val" id="portal-myo-salvage">88%</div>
-                  <div class="gh-stat-lbl">Modelled salvage</div>
-                </div>
-                <div>
-                  <div class="gh-stat-val" id="portal-necrosis-reduction">-65%</div>
-                  <div class="gh-stat-lbl">Modelled necrosis change</div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Right Column: Diagnostics & Attribution -->
           <div class="cockpit-right-column telemetry-summary-row">
             <!-- 1. Risk Assessment -->
+            <div class="hx-strip" role="note">Research prototype. Not for clinical use.</div>
             <div class="cockpit-card radial-gauge-card">
               <div class="cockpit-card-header">
                 <h3 class="cockpit-card-title">Risk Assessment</h3>
@@ -699,7 +659,7 @@
                 <span>·</span>
                 <span id="portal-rpp-val" title="Rate Pressure Product (RPP = HR × SBP)">RPP: 21,504</span>
                 <span>·</span>
-                <span title="Illustrative estimate from a simplified flow model. Not a measured FFR.">FFR (illustrative): <strong id="portal-cockpit-ffr-val" style="color:#00E5FF;">0.48</strong></span>
+                <span title="Illustrative estimate from a simplified flow model. Not a measured FFR.">Flow index (illustrative, not FFR): <strong id="portal-cockpit-ffr-val" style="color:#00E5FF;">0.48</strong></span>
               </div>
               <div id="portal-risk-blurb" class="clinical-risk-blurb">
                 Critical Ischemic Risk: Multi-vessel coronary calcification with hemodynamic depression requiring urgent cardiology review.
@@ -764,17 +724,13 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         EHR & Lab Reports
       </button>
-      <button type="button" class="cockpit-nav-btn" id="tab-btn-economics" onclick="switchCockpitView('economics')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Hospital ROI
-      </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-deploy" onclick="switchCockpitView('deploy')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
         Desktop Packages (18)
       </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-security" onclick="switchCockpitView('security')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Security & HIPAA
+        Data handling
       </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-mobile" onclick="openMobileCompanionView()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
@@ -873,21 +829,21 @@
           <div style="font-size:0.8125rem; font-weight:700; color:var(--color-text-headline); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">
             Or Load Validated Hospital Case Studies (1-Click Verification)
           </div>
-          <div class="case-study-list" role="radiogroup" id="clinical-cases" aria-label="Validated Hospital Clinical Case Studies">
+          <div class="case-study-list" role="radiogroup" id="clinical-cases" aria-label="Synthetic sample cases">
             <!-- Case 1: High Risk ACS -->
             <button type="button" class="case-study-card selected" id="case-btn-acs" role="radio" aria-checked="true" onclick="loadClinicalCase('acs')">
               <div class="case-info">
-                <h4>Case 1: Acute Coronary Syndrome (Anterior STEMI)</h4>
-                <p>62M · BP 168/104 · Chol 288 mg/dL · Max HR 128 · ExAngina: Yes · ST Dep: -3.2 mm · 3 Major Vessels Calcified</p>
+                <h4>Sample 1: several risk markers</h4>
+                <p>Synthetic: 62M, BP 168, cholesterol 288, ST depression 3.2 mm</p>
               </div>
-              <span class="case-severity-badge critical">Critical Ischemic</span>
+              <span class="case-severity-badge critical">High estimate</span>
             </button>
 
             <!-- Case 2: Moderate Diabetic CAD -->
             <button type="button" class="case-study-card" id="case-btn-diabetic" role="radio" aria-checked="false" onclick="loadClinicalCase('diabetic')">
               <div class="case-info">
-                <h4>Case 2: Diabetic Multi-Vessel CAD Screening</h4>
-                <p>57F · BP 142/88 · Chol 245 mg/dL · Max HR 142 · Atypical Angina · ST Dep: -1.4 mm · 2 Major Vessels</p>
+                <h4>Sample 2: diabetes with exercise ST change</h4>
+                <p>Synthetic: 57F, BP 142, cholesterol 245, ST depression 1.4 mm</p>
               </div>
               <span class="case-severity-badge moderate">Moderate Risk</span>
             </button>
@@ -895,8 +851,8 @@
             <!-- Case 3: Low Risk Baseline -->
             <button type="button" class="case-study-card" id="case-btn-wellness" role="radio" aria-checked="false" onclick="loadClinicalCase('wellness')">
               <div class="case-info">
-                <h4>Case 3: Asymptomatic Executive Cardiovascular Screen</h4>
-                <p>42M · BP 118/76 · Chol 175 mg/dL · Max HR 178 · No Angina · ST Dep: 0.0 mm (Upsloping) · 0 Occluded Vessels</p>
+                <h4>Sample 3: no reported risk markers</h4>
+                <p>Synthetic: 42M, BP 118, cholesterol 175, no ST depression</p>
               </div>
               <span class="case-severity-badge baseline">Baseline Normal</span>
             </button>
@@ -904,8 +860,8 @@
             <!-- Case 4: Atypical ACS (Safety Net) -->
             <button type="button" class="case-study-card" id="case-btn-atypical_safety_net" role="radio" aria-checked="false" onclick="loadClinicalCase('atypical_safety_net')">
               <div class="case-info">
-                <h4>Case 4: Atypical presentation, diabetic (sample case)</h4>
-                <p>64F · BP 140/90 · Chol 250 mg/dL · Painless Dyspnea & Nausea · ST Dep: -1.6 mm · 1 Occluded Vessel</p>
+                <h4>Sample 4: atypical symptoms, diabetes</h4>
+                <p>Synthetic: 64F, BP 140, cholesterol 250, ST depression 1.6 mm</p>
               </div>
               <span class="case-severity-badge critical" style="background:rgba(244,63,94,0.15); color:#F43F5E; border:1px solid rgba(244,63,94,0.3);">Safety Net Catch</span>
             </button>
@@ -913,20 +869,12 @@
             <!-- Case 5: Low-Risk Non-Obstructive Cath Ruled Out -->
             <button type="button" class="case-study-card" id="case-btn-ruled_out_cath" role="radio" aria-checked="false" onclick="loadClinicalCase('ruled_out_cath')">
               <div class="case-info">
-                <h4>Case 5: Low-risk chest pain (sample case)</h4>
-                <p>52M · BP 126/80 · Chol 204 mg/dL · Illustrative FFR 0.94 · 0 occluded vessels</p>
+                <h4>Sample 5: low estimate</h4>
+                <p>Synthetic: 52M, BP 126, cholesterol 204, ST depression 0.2 mm</p>
               </div>
               <span class="case-severity-badge baseline" style="background:rgba(45,212,191,0.15); color:#2DD4BF; border:1px solid rgba(45,212,191,0.3);">Lower estimate</span>
             </button>
 
-            <!-- Case 6: Rural Clinic Bedside Triage -->
-            <button type="button" class="case-study-card" id="case-btn-rural_triage" role="radio" aria-checked="false" onclick="loadClinicalCase('rural_triage')">
-              <div class="case-info">
-                <h4>Case 6: Critical Access Rural Clinic Triage (Air-Gapped)</h4>
-                <p>68M · BP 160/98 · Chol 270 mg/dL · Acute Ischemia · 0 KB Egress · Helicopter Transfer Triage</p>
-              </div>
-              <span class="case-severity-badge moderate" style="background:rgba(167,139,250,0.15); color:#A78BFA; border:1px solid rgba(167,139,250,0.3);">Rural Offline</span>
-            </button>
           </div>
         </div>
       </div>
@@ -954,194 +902,6 @@
       </div>
     </section>
 
-    <!-- ==============================================================================
-         SECTION: HOSPITAL ECONOMICS & CATHETERIZATION COST REDUCTION ENGINE
-         ============================================================================== -->
-    <section class="app-section" id="hospital-economics">
-      <div class="app-section-header">
-        <div>
-          <h2>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="1" x2="12" y2="23"/>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-            </svg>
-            Hospital Economics & Catheterization Cost Reduction Engine
-          </h2>
-          <p>
-            A scenario calculator. Enter your own volumes, costs and assumptions. The results come from those assumptions, not from measured outcomes of this tool.
-          </p>
-        </div>
-        <div style="font-size:0.8125rem; font-weight:700; color:#2DD4BF; font-family:var(--font-mono);">
-          Scenario model: <strong>your assumptions</strong>
-        </div>
-      </div>
-
-      <div class="economics-section-grid">
-        <!-- Left: Interactive Sliders & Institutional Parameters -->
-        <div class="economics-controls-card">
-          <h3 style="font-size:1.05rem; font-weight:700; color:#F0FDFA; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2.2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
-            Hospital Operational Inputs
-          </h3>
-
-          <div style="display:flex; flex-direction:column; gap:16px;">
-            <!-- 1. Annual Cath Volume -->
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
-                <label for="inp-econ-vol" style="font-weight:600; color:#E6FAF6;">Annual Diagnostic Catheterizations</label>
-                <span id="val-econ-vol" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">1,200 procedures</span>
-              </div>
-              <input type="range" class="clinical-slider" id="inp-econ-vol" min="200" max="5000" step="50" value="1200" oninput="calculateHospitalEconomics()">
-              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Baseline diagnostic cardiac caths performed annually</div>
-            </div>
-
-            <!-- 2. Procedure Cost -->
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
-                <label for="inp-econ-cost" style="font-weight:600; color:#E6FAF6;">Average Diagnostic Cath Procedure Cost</label>
-                <span id="val-econ-cost" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">$8,500</span>
-              </div>
-              <input type="range" class="clinical-slider" id="inp-econ-cost" min="5000" max="12000" step="250" value="8500" oninput="calculateHospitalEconomics()">
-              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Inpatient & outpatient diagnostic catheterization billing cost ($5,000–$12,000)</div>
-            </div>
-
-            <!-- 3. Unnecessary Cath Rule-Out Rate -->
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
-                <label for="inp-econ-ruleout" style="font-weight:600; color:#E6FAF6;">Normal / Negative Cath Rule-Out Rate</label>
-                <span id="val-econ-ruleout" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">52%</span>
-              </div>
-              <input type="range" class="clinical-slider" id="inp-econ-ruleout" min="20" max="60" step="1" value="52" oninput="calculateHospitalEconomics()">
-              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Share of catheterizations you assume could be avoided. Not a measured result.</div>
-            </div>
-
-            <!-- 4. ED Boarding Hours Compressed -->
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
-                <label for="inp-econ-ed-hrs" style="font-weight:600; color:#E6FAF6;">Emergency Dept Boarding Hours Compressed</label>
-                <span id="val-econ-ed-hrs" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">4.2 hrs / patient</span>
-              </div>
-              <input type="range" class="clinical-slider" id="inp-econ-ed-hrs" min="1.0" max="6.0" step="0.2" value="4.2" oninput="calculateHospitalEconomics()">
-              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Reduction in acute cardiac holding bay boarding time ($220/hour bed cost)</div>
-            </div>
-
-            <!-- 5. Annual Chest Pain Presentations -->
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:0.8125rem; margin-bottom:6px;">
-                <label for="inp-econ-ed-visits" style="font-weight:600; color:#E6FAF6;">Annual Acute Chest Pain ED Presentations</label>
-                <span id="val-econ-ed-visits" style="font-family:var(--font-mono); font-weight:700; color:#2DD4BF;">4,500 patients</span>
-              </div>
-              <input type="range" class="clinical-slider" id="inp-econ-ed-visits" min="1000" max="15000" step="250" value="4500" oninput="calculateHospitalEconomics()">
-              <div style="font-size:0.6875rem; color:var(--color-text-muted); margin-top:2px;">Volume of adult patients presenting to ED triage with undifferentiated chest pain</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: Live Real-Time Financial & Clinical Outcome KPI Dashboard -->
-        <div class="economics-kpi-grid">
-          <!-- Featured Total Net Savings KPI -->
-          <div class="econ-kpi-tile featured-kpi">
-            <div>
-              <div class="econ-kpi-label">TOTAL ANNUAL HOSPITAL SYSTEM SAVINGS</div>
-              <div class="econ-kpi-num" id="econ-kpi-total-savings">$12,242,000</div>
-            </div>
-            <div class="econ-kpi-sub" style="color:#CCFBF1;">
-              Net expenditure reduction combining cath avoidance, ED throughput, zero cloud fees, and malpractice mitigation.
-            </div>
-          </div>
-
-          <!-- KPI 1: Unnecessary Caths Avoided -->
-          <div class="econ-kpi-tile">
-            <div>
-              <div class="econ-kpi-label">CATHETERIZATIONS RULED OUT</div>
-              <div class="econ-kpi-num" id="econ-kpi-caths-avoided">624</div>
-            </div>
-            <div class="econ-kpi-sub">
-              Up to 60% of diagnostic procedures safely diverted to non-invasive outpatient follow-up.
-            </div>
-          </div>
-
-          <!-- KPI 2: Direct Cath Lab Expenditure Saved -->
-          <div class="econ-kpi-tile">
-            <div>
-              <div class="econ-kpi-label">CATH LAB DIRECT SAVINGS</div>
-              <div class="econ-kpi-num" id="econ-kpi-direct-savings">$5,304,000</div>
-            </div>
-            <div class="econ-kpi-sub">
-              Direct avoidance of $5,000–$12,000 consumable and staffing costs per procedure.
-            </div>
-          </div>
-
-          <!-- KPI 3: Invasive Complications Spared -->
-          <div class="econ-kpi-tile">
-            <div>
-              <div class="econ-kpi-label">ARTERIAL COMPLICATIONS SPARED</div>
-              <div class="econ-kpi-num" id="econ-kpi-complications" style="color:#10B981;">11.2 events</div>
-            </div>
-            <div class="econ-kpi-sub">
-              Avoids femoral/radial hematomas, arterial dissections, stroke, and contrast nephropathy (1.8% rate).
-            </div>
-          </div>
-
-          <!-- KPI 4: ED Boarding Hours Compressed -->
-          <div class="econ-kpi-tile">
-            <div>
-              <div class="econ-kpi-label">ED BOARDING COST REDUCTION</div>
-              <div class="econ-kpi-num" id="econ-kpi-ed-boarding">$4,158,000</div>
-            </div>
-            <div class="econ-kpi-sub">
-              18,900 emergency hours freed at $220/hr, relieving critical hospital bed capacity.
-            </div>
-          </div>
-
-          <!-- KPI 5: Zero-Cloud Infrastructure Savings -->
-          <div class="econ-kpi-tile">
-            <div>
-              <div class="econ-kpi-label">ZERO-CLOUD INFRA SAVINGS</div>
-              <div class="econ-kpi-num" id="econ-kpi-cloud-infra">$380,000</div>
-            </div>
-            <div class="econ-kpi-sub">
-              100% on-prem/in-browser execution eliminates recurring cloud GPU, transit, and HIPAA storage fees.
-            </div>
-          </div>
-
-          <!-- KPI 6: Malpractice Payout Mitigation -->
-          <div class="econ-kpi-tile">
-            <div>
-              <div class="econ-kpi-label">MALPRACTICE RISK MITIGATED</div>
-              <div class="econ-kpi-num" id="econ-kpi-malpractice">$2,400,000</div>
-            </div>
-            <div class="econ-kpi-sub">
-              High-sensitivity mode flags more patients for review at the cost of more false alarms.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Rural & Critical Access Clinic Offline Triage Callout Banner -->
-      <div style="background:linear-gradient(135deg, rgba(6,78,72,0.4) 0%, rgba(4,23,22,0.9) 100%); border:1px solid rgba(45,212,191,0.25); border-radius:12px; padding:18px 22px; margin-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div style="max-width:850px;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-            <span class="rural-air-gapped-pill">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Critical Access & Rural Clinic Architecture
-            </span>
-            <span style="font-size:0.75rem; color:#94A3B8;">Zero Telecom / Broadband Dependency</span>
-          </div>
-          <div style="font-size:0.9375rem; font-weight:700; color:#F0FDFA; margin-bottom:4px;">
-            Air-Gapped Bedside Cardiology Decision Support for Underserved Rural Hospitals
-          </div>
-          <p style="font-size:0.8125rem; color:#CCFBF1; margin:0; line-height:1.5;">
-            Rural health clinics and critical access hospitals located hours away from tertiary catheterization centers can execute instant clinical NLP on local chart records, generate the 3D anatomical twin, and compute virtual FFR without an internet connection. Clinicians immediately identify patients requiring emergency helicopter transfer versus those safe for local management, bridging the acute cardiology healthcare divide.
-          </p>
-        </div>
-        <div>
-          <button type="button" class="app-btn app-btn-secondary" onclick="loadClinicalCase('rural_triage')" style="white-space:nowrap;">
-            Launch Rural Clinic Demo
-          </button>
-        </div>
-      </div>
-    </section>
 
     <!-- SMART CLIENT HARDWARE AUTO-DETECTION CARD -->
     <section class="app-detection-card" id="smart-recommendation-card">
@@ -1412,7 +1172,7 @@
           </div>
           <div>
             <h3 id="mobile-pair-title" style="font-size:1.1rem; color:var(--color-text-headline); font-weight:700; margin:0;">Pair CardioSense Mobile Tracker</h3>
-            <p style="font-size:0.75rem; color:var(--color-text-muted); margin:0;">Live Telemetry Stream · FIPS 140-2 Local Encryption</p>
+            <p style="font-size:0.75rem; color:var(--color-text-muted); margin:0;">Demonstration only. No device is paired.</p>
           </div>
         </div>
         <button type="button" class="app-modal-close" onclick="closeMobilePairModal()" aria-label="Close Pairing Modal">&times;</button>
@@ -1496,7 +1256,7 @@
 
       <div class="app-modal-footer" style="justify-content:center;">
         <span style="font-size:0.75rem; color:var(--color-text-muted);">
-          Patient Protocol: #CP-8924 · Session Secret: CS-7491-SECURE
+          Patient Protocol: #SAMPLE-1 · Session Secret: CS-7491-SECURE
         </span>
       </div>
     </div>
@@ -1539,7 +1299,7 @@
         Link Account to Track Telemetry
       </h2>
       <p style="font-size:0.875rem; color:#94A3B8; max-width:380px; line-height:1.5; margin-bottom:16px;">
-        Pair with your workstation to track real-time 12-lead ECG waveforms, coronary FFR index, and clinical CAD alerts on your mobile device.
+        Pair with your workstation to track real-time 12-lead ECG waveforms, and model output on your mobile device.
       </p>
 
       <!-- Workstation QR Code Prompt Box -->
@@ -1594,7 +1354,7 @@
           Open Camera QR Scanner
         </button>
         <button type="button" class="app-btn app-btn-secondary" style="width:100%;" onclick="simulateQRScan()">
-          Quick-Link Active Account (#CP-8924)
+          Quick-Link Active Account (#SAMPLE-1)
         </button>
       </div>
 
@@ -1642,10 +1402,10 @@
             ● Sample patient
           </div>
           <div style="font-size:1.05rem; font-weight:800; color:#F8FAFC; margin-top:2px;">
-            Patient ID: #CP-8924 (58 yrs)
+            Patient ID: #SAMPLE-1 (58 yrs)
           </div>
           <div style="font-size:0.75rem; color:#94A3B8; margin-top:2px;">
-            Telemetry: Sinus Tachycardia · STEMI Triage
+            Demonstration only
           </div>
         </div>
         <button type="button" class="app-btn app-btn-outline app-btn-sm" style="min-height:32px; font-size:0.75rem;" onclick="unlinkMobileAccount()" title="Disconnect session">
@@ -1673,7 +1433,7 @@
         <div class="mobile-vitals-row">
           <div class="mobile-vital-tile">
             <div class="mv-val" style="color:#00E5FF;" id="mobile-ffr-val">0.48</div>
-            <div class="mv-lbl">Coronary FFR</div>
+            <div class="mv-lbl">Flow index</div>
           </div>
           <div class="mobile-vital-tile">
             <div class="mv-val" style="color:#F43F5E;" id="mobile-risk-val">94.8%</div>
@@ -1691,11 +1451,11 @@
           </div>
           <div class="mobile-vital-tile">
             <div class="mv-val" id="mobile-occl-val">2 / 3</div>
-            <div class="mv-lbl">Vessels Occluded</div>
+            <div class="mv-lbl">Vessels reported</div>
           </div>
           <div class="mobile-vital-tile">
-            <div class="mv-val" style="color:#34D399;">Active</div>
-            <div class="mv-lbl">FIPS 140-2</div>
+            <div class="mv-val" style="color:#94A3B8;">Demo</div>
+            <div class="mv-lbl">Status</div>
           </div>
         </div>
       </div>

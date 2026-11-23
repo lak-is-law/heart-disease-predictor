@@ -247,3 +247,5 @@ body { font-family: var(--hx-font); background: var(--hx-bg); -webkit-font-smoot
 .hx-evidence summary:focus-visible { outline: 2px solid var(--hx-cyan); outline-offset: 3px; }
 .hx-evidence ul { margin: 8px 0; padding-left: 1.2em; }
 .hx-evidence p { margin: 8px 0 0; }
+
+.hx-strip { padding: 8px 12px; margin-bottom: 8px; border: 1px solid rgba(0,229,255,.35); border-radius: 8px; font-size: .75rem; letter-spacing: .01em; color: #BFEFF7; background: rgba(0,229,255,.07); }

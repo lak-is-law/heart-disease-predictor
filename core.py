@@ -185,18 +185,16 @@ def explain(pipe: Pipeline, patient: dict, baseline: dict) -> tuple[float, list[
 
 def risk_band(p: float) -> tuple[str, str]:
     if p < 0.33:
-        return "Low risk", "Few patterns associated with heart disease show up in this profile."
+        return "Lower estimate", "Few inputs resemble patients who had disease in the training data. This does not rule out disease."
     if p < 0.66:
-        return "Moderate risk", "Some indicators point towards heart disease; worth a closer look."
-    return "High risk", "Several strong indicators line up with patients who had heart disease."
+        return "Intermediate estimate", "Some inputs resemble patients who had disease in the training data."
+    return "Higher estimate", "Many inputs resemble patients who had disease in the training data."
 
 
 # ----------------------------------------------------------- hemodynamic & economics
 def calculate_virtual_ffr(ca: int, oldpeak: float, exang: int, slope: int) -> float:
-    """Clinically calibrated Hagen-Poiseuille fluid dynamics non-invasive FFR.
-    Clamped strictly to physiological bounds [0.48, 0.98].
-    FFR >= 0.80 rules out hemodynamically significant ischemia (avoiding unnecessary catheterization).
-    """
+    """Illustrative flow index for the teaching visual. It is NOT a fractional flow reserve,
+    is not validated against any measurement, and must not be used in any decision."""
     import math
     slope_factor = 0.06 if slope == 3 else (0.03 if slope == 2 else 0.0)
     raw_stenosis = (min(ca or 0, 3) * 0.28) + ((oldpeak or 0.0) * 0.06) + ((exang or 0) * 0.08) + slope_factor

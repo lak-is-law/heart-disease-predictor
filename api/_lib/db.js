@@ -105,7 +105,11 @@ module.exports = {
   set: (k, v, ttlSeconds) => (ttlSeconds ? run('SET', k, v, 'EX', ttlSeconds) : run('SET', k, v)),
   setIfAbsent: async (k, v) => (await run('SET', k, v, 'NX')) === 'OK',
   del: (k) => run('DEL', k),
-  incr: async (k, ttlSeconds) => { const n = Number(await run('INCR', k)); if (n === 1 && ttlSeconds) await run('EXPIRE', k, ttlSeconds); return n; },
+  // The key is created with its expiry first, so a failure between two calls can never leave a counter that lives forever.
+  incr: async (k, ttlSeconds) => {
+    if (ttlSeconds) await run('SET', k, '0', 'EX', ttlSeconds, 'NX');
+    return Number(await run('INCR', k));
+  },
   hset: (k, f, v) => run('HSET', k, f, v),
   hget: (k, f) => run('HGET', k, f),
   hgetall: async (k) => asObject((await run('HGETALL', k)) || []),

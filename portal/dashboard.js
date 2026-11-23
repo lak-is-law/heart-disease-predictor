@@ -44,6 +44,7 @@
   }
 
   function band(p) { return p < 0.33 ? 'Low' : (p < 0.66 ? 'Moderate' : 'High'); }
+  function label(p) { return p < 0.33 ? 'Lower' : (p < 0.66 ? 'Intermediate' : 'Higher'); }
   function pct(p) { return (p * 100).toFixed(0) + '%'; }
   function when(t) {
     var d = new Date(t);
@@ -57,6 +58,7 @@
     for (var i = 0; i < FIELDS.length; i++) {
       var node = $('inp-' + FIELDS[i]);
       if (!node) throw new Error('The workstation is not ready yet.');
+      if (node.value === '') throw new Error('Select the vessel count and thallium result before saving.');
       inputs[FIELDS[i]] = Number(node.value);
     }
     var risk = typeof pTargetRisk === 'number' ? pTargetRisk : NaN;
@@ -76,7 +78,7 @@
       items.unshift(j.item);
       if (ref) ref.value = '';
       render();
-      say('Saved. Risk ' + pct(j.item.risk) + ', ' + band(j.item.risk).toLowerCase() + '.');
+      say('Saved. Risk ' + pct(j.item.risk) + ', ' + label(j.item.risk).toLowerCase() + ' estimate.');
       if (window.showToast) showToast('Saved to your dashboard');
     } catch (e) {
       say(e.message, true);
@@ -99,10 +101,9 @@
     var box = $('dash-stats');
     clear(box);
     var n = items.length;
-    var high = items.filter(function (a) { return a.risk >= 0.66; }).length;
     var avg = n ? items.reduce(function (s, a) { return s + a.risk; }, 0) / n : 0;
     var recent = items.filter(function (a) { return Date.now() - a.createdAt < 30 * 864e5; }).length;
-    [['Saved', String(n)], ['High risk', n ? Math.round(high / n * 100) + '%' : '-'], ['Average risk', n ? pct(avg) : '-'], ['Last 30 days', String(recent)]]
+    [['Saved', String(n)], ['Average risk', n ? pct(avg) : '-'], ['Last 30 days', String(recent)]]
       .forEach(function (s) {
         var t = el('div', 'hx-stat');
         t.appendChild(el('div', 'hx-stat-v', s[1]));
@@ -154,7 +155,7 @@
     items.forEach(function (a) { counts[band(a.risk)]++; });
     ['Low', 'Moderate', 'High'].forEach(function (b) {
       var row = el('div', 'hx-band');
-      row.appendChild(el('span', 'hx-band-l', b));
+      row.appendChild(el('span', 'hx-band-l', {Low:'Lower',Moderate:'Intermediate',High:'Higher'}[b]));
       var track = el('span', 'hx-band-track');
       var fill = el('span', 'hx-band-fill ' + b.toLowerCase());
       fill.style.width = items.length ? (counts[b] / items.length * 100) + '%' : '0%';
@@ -177,7 +178,7 @@
       tr.appendChild(el('td', '', when(a.createdAt)));
       tr.appendChild(el('td', '', a.inputs.age + ', ' + (a.inputs.sex === 1 ? 'male' : 'female')));
       tr.appendChild(el('td', 'hx-num', pct(a.risk)));
-      var b = el('td'); b.appendChild(el('span', 'hx-chip ' + band(a.risk).toLowerCase(), band(a.risk))); tr.appendChild(b);
+      var b = el('td'); b.appendChild(el('span', 'hx-chip ' + band(a.risk).toLowerCase(), label(a.risk))); tr.appendChild(b);
       var act = el('td', 'hx-actions-cell');
       var open = el('button', 'hx-linkbtn', 'Open'); open.type = 'button';
       open.setAttribute('aria-label', 'Open ' + (a.label || 'assessment') + ' in the workstation');
@@ -194,8 +195,8 @@
   function render() {
     var u = state().user;
     $('dash-sub').textContent = items.length
-      ? items.length + ' saved ' + (items.length === 1 ? 'assessment' : 'assessments') + '. Only you can read them.'
-      : 'Your saved assessments appear here. Only you can read them.';
+      ? items.length + ' saved ' + (items.length === 1 ? 'assessment' : 'assessments') + '. Stored encrypted. Use synthetic or de-identified data only.'
+      : 'Your saved assessments appear here. Stored encrypted. Use synthetic or de-identified data only.';
     renderStats(); renderTrend(); renderBands(); renderTable();
     var line = $('acct-line');
     if (u && line) line.textContent = u.email + (u.name ? ', ' + u.name : '') + ', ' + (u.role === 'admin' ? 'admin' : 'clinician');

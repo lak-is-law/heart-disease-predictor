@@ -179,35 +179,23 @@ class TestOfflineFirstAndPortalIntegrity(unittest.TestCase):
         self.assertIn('"rural":', app_text)
         self.assertIn("High-sensitivity mode (threshold 0.28)", app_text)
         self.assertNotIn("96.4", app_text)
-        self.assertIn("Hospital Economics & Catheterization Cost Reduction Engine", app_text)
+        for gone in ("Hospital Economics", "Virtual FFR", "FIPS 140-2", "HIPAA", "880.6310", "STEMI"):
+            self.assertNotIn(gone, app_text)
+        self.assertIn("Not for clinical use", app_text)
 
     def test_portal_html_contains_economics_and_safety_net_elements(self):
         """Verify portal/index.html includes economics section, safety net, and golden hour widgets."""
         index_html = (PORTAL_DIR / "index.html").read_text(encoding="utf-8")
 
-        # Hospital Economics section
-        self.assertIn('id="hospital-economics"', index_html)
-        self.assertIn('id="inp-econ-vol"', index_html)
-        self.assertIn('id="inp-econ-cost"', index_html)
-        self.assertIn('id="inp-econ-ruleout"', index_html)
-        self.assertIn('id="econ-kpi-total-savings"', index_html)
-        self.assertIn('id="econ-kpi-caths-avoided"', index_html)
-        self.assertIn('id="econ-kpi-direct-savings"', index_html)
+        # Unfounded economics, timeline and compliance content must stay removed
+        for gone in ('id="hospital-economics"', 'golden-hour', 'STEMI', 'FIPS', 'HIPAA', '880.6310'):
+            self.assertNotIn(gone, index_html)
 
         # Safety Net Toggle & Alert Banner
         self.assertIn('id="inp-safety-net-toggle"', index_html)
         self.assertIn('id="portal-safety-net-banner"', index_html)
         self.assertIn("threshold 0.28", index_html)
         self.assertNotIn("96.4", index_html)
-
-        # Door-to-Balloon Golden Hour Card
-        self.assertIn('id="portal-golden-hour-badge"', index_html)
-        self.assertIn('id="portal-d2b-val"', index_html)
-        self.assertIn('id="portal-d2b-saved"', index_html)
-
-        # Rural clinic air-gapped support
-        self.assertIn("Critical Access & Rural Clinic Architecture", index_html)
-        self.assertIn("Offline-First 0.00 KB Egress", index_html)
 
     def test_portal_js_contains_required_functions_and_cases(self):
         """Verify portal/portal.js exports calculateHospitalEconomics and new clinical cases."""

@@ -1,7 +1,7 @@
 {
-  "patient_id": "CP-8924",
-  "name": "Eleanor Vance",
-  "clinical_study": "Severe Multivessel CAD with Anterior STEMI",
+  "patient_id": "SAMPLE-1",
+  "name": "Sample Patient",
+  "clinical_study": "Synthetic sample",
   "admission_date": "2026-11-15",
   "biomarkers": {
     "age": 62,

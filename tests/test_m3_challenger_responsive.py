@@ -332,7 +332,7 @@ class TestPortalHtmlAccessibilityAndSemantics(unittest.TestCase):
             "Case study list must implement role='radiogroup'"
         )
         self.assertIn(
-            'aria-label="Validated Hospital Clinical Case Studies"',
+            'aria-label="Synthetic sample cases"',
             self.html_raw,
             "Radiogroup must possess descriptive aria-label"
         )
@@ -383,8 +383,8 @@ class TestPortalHtmlAccessibilityAndSemantics(unittest.TestCase):
             "exang · 0/1",
             "slope · 1-3",
             "oldpeak · normal 0.0 mm",
-            "ca · 0-3 vessels",
-            "thal · 3/6/7",
+            "ca · required",
+            "thal · required",
         ]
         for acr in biomarker_acronyms:
             self.assertIn(acr, self.html_raw, f"Missing clinical dual-label acronym info: {acr}")
