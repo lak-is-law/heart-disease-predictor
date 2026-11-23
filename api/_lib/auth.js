@@ -94,7 +94,7 @@ async function saveUser(u) {
   await db.sadd('users', u.email);
 }
 
-async function createUser({ email, name, role, password }) {
+async function createUser({ email, name, role, password, mustChange = true }) {
   email = normEmail(email);
   if (!validEmail(email)) throw Object.assign(new Error('Enter a valid email address.'), { status: 400 });
   const problem = C.passwordProblem(password, email);
@@ -102,7 +102,7 @@ async function createUser({ email, name, role, password }) {
   if (await findUser(email)) throw Object.assign(new Error('An account with that email already exists.'), { status: 409 });
   const u = {
     id: C.randomId(12), email, name: String(name || '').trim().slice(0, 80), role: ROLES.includes(role) ? role : 'clinician',
-    pw: C.hashPassword(password), createdAt: Date.now(), disabled: false, mustChange: true,
+    pw: C.hashPassword(password), createdAt: Date.now(), disabled: false, mustChange,
   };
   await saveUser(u);
   return u;
@@ -200,7 +200,7 @@ function handle(fn) {
 module.exports = {
   json, readJson, clientIp, sameOrigin, handle,
   normEmail, validEmail, findUser, saveUser, createUser, publicUser, emailKey,
-  createSession, getSession, endSession, endAllSessions, requireSession,
+  cookies, PROD, createSession, getSession, endSession, endAllSessions, requireSession,
   hit, audit, ROLES,
   hashPassword: C.hashPassword, checkPassword: C.checkPassword,
 };

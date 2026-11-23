@@ -6,7 +6,7 @@ module.exports = A.handle(async (req, res) => {
   const s = await A.getSession(req);
   if (!s) {
     res.statusCode = 302;
-    res.setHeader('Location', '/?signin=1#matrix');
+    res.setHeader('Location', '/signin?next=/download');
     return res.end();
   }
   const id = Number(new URL(req.url, 'http://x').searchParams.get('id'));

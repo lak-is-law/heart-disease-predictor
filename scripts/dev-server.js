@@ -27,6 +27,8 @@ if (process.env.MOCK_RELEASES) {
 function createServer() {
   return http.createServer((req, res) => {
   const u = new URL(req.url, 'http://x');
+  const oa = u.pathname.match(/^\/api\/oauth\/([a-z]+)(\/callback)?$/);
+  if (oa) { u.searchParams.set('provider', oa[1]); u.searchParams.set('step', oa[2] ? 'callback' : 'start'); req.url = '/api/oauth?' + u.searchParams; return require(path.join(root, 'api', 'oauth.js'))(req, res); }
   const api = u.pathname.match(/^\/api\/([a-z]+)$/);
   if (api && fs.existsSync(path.join(root, 'api', api[1] + '.js'))) {
     return require(path.join(root, 'api', api[1] + '.js'))(req, res);

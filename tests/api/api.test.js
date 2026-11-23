@@ -48,7 +48,7 @@ const GOOD = { age: 58, sex: 0, cp: 4, trestbps: 140, chol: 240, fbs: 0, restecg
 test('anonymous requests are rejected', async () => {
   const c = new Client();
   assert.equal((await c.call('GET', '/api/assessments')).status, 401);
-  assert.equal((await c.call('GET', '/api/releases')).status, 401);
+  assert.equal((await c.call('GET', '/api/download?id=1')).status, 302); // sends anonymous visitors to sign in
   assert.equal((await c.call('GET', '/api/session')).json.user, null);
   const dl = await c.call('GET', '/api/download?id=1');
   assert.equal(dl.status, 302);
@@ -214,4 +214,68 @@ test('Upstash REST backend speaks the expected protocol', async () => {
     delete process.env.UPSTASH_REDIS_REST_URL; delete process.env.UPSTASH_REDIS_REST_TOKEN;
     db._reset(); fake.close();
   }
+});
+
+test('sign-up creates an account, signs in, and rejects duplicates and weak passwords', async () => {
+  const c = new Client();
+  const weak = await c.call('POST', '/api/signup', { email: 'new@example.org', password: 'short' });
+  assert.equal(weak.status, 400);
+  const ok = await c.call('POST', '/api/signup', { email: 'new@example.org', name: 'New Person', password: 'a long unique passphrase 91' });
+  assert.equal(ok.status, 201);
+  c.csrf = ok.json.csrf;
+  assert.equal((await c.call('GET', '/api/session')).json.user.email, 'new@example.org');
+  assert.equal((await new Client().call('POST', '/api/signup', { email: 'new@example.org', password: 'a long unique passphrase 91' })).status, 409);
+  assert.equal((await new Client().call('POST', '/api/signup', { email: 'bot@example.org', password: 'a long unique passphrase 91', website: 'x' })).status, 400);
+});
+
+test('reviews: public read, signed-in write, one per user, own delete', async () => {
+  const anon = new Client();
+  assert.equal((await anon.call('GET', '/api/reviews')).json.count, 0);
+  assert.equal((await anon.call('POST', '/api/reviews', { rating: 5, text: 'Clear and easy to use.' })).status, 401);
+  const c = new Client();
+  const r = await c.call('POST', '/api/signup', { email: 'rev@example.org', name: 'Rina Kapoor', password: 'another long passphrase 77' });
+  c.csrf = r.json.csrf;
+  assert.equal((await c.call('POST', '/api/reviews', { rating: 9, text: 'Clear and easy to use.' })).status, 400);
+  assert.equal((await c.call('POST', '/api/reviews', { rating: 4, text: 'short' })).status, 400);
+  assert.equal((await c.call('POST', '/api/reviews', { rating: 4, text: '<img src=x onerror=alert(1)> Clear and easy.' })).status, 200);
+  await c.call('POST', '/api/reviews', { rating: 5, text: 'Edited: clear and easy to use.' });
+  const list = (await anon.call('GET', '/api/reviews')).json;
+  assert.equal(list.count, 1);
+  assert.equal(list.items[0].name, 'Rina K.');
+  assert.equal(list.average, 5);
+  assert.equal((await c.call('DELETE', '/api/reviews')).status, 200);
+  assert.equal((await anon.call('GET', '/api/reviews')).json.count, 0);
+});
+
+test('oauth: lists providers, rejects unconfigured ones, completes a mocked Google sign-in once', async () => {
+  const c = new Client();
+  const list = (await c.call('GET', '/api/oauth?providers=1')).json.providers;
+  assert.deepEqual(list.map((p) => p.id), ['google', 'microsoft', 'x', 'openai']);
+  assert.ok(list.every((p) => !p.enabled));
+  assert.match((await c.call('GET', '/api/oauth/google')).headers.get('location'), /error=unavailable/);
+
+  process.env.GOOGLE_CLIENT_ID = 'cid'; process.env.GOOGLE_CLIENT_SECRET = 'sec';
+  const start = await c.call('GET', '/api/oauth/google?next=/app');
+  assert.equal(start.status, 302);
+  const loc = new URL(start.headers.get('location'));
+  assert.equal(loc.hostname, 'accounts.google.com');
+  assert.equal(loc.searchParams.get('code_challenge_method'), 'S256');
+  const state = loc.searchParams.get('state');
+  const stateCookie = start.headers.get('set-cookie').split(';')[0];
+
+  const real = global.fetch;
+  global.fetch = async (u, o) => {
+    if (String(u).includes('oauth2.googleapis.com')) return new Response(JSON.stringify({ access_token: 't' }));
+    if (String(u).includes('openidconnect.googleapis.com')) return new Response(JSON.stringify({ sub: 'g-1', email: 'gg@example.org', email_verified: true, name: 'G User' }));
+    return real(u, o);
+  };
+  try {
+    const bad = await fetch(`${base}/api/oauth/google/callback?code=c&state=${state}`, { redirect: 'manual', headers: { Cookie: 'cs_oauth=wrong' } });
+    assert.match(bad.headers.get('location'), /error=state/);
+    const ok = await fetch(`${base}/api/oauth/google/callback?code=c&state=${state}`, { redirect: 'manual', headers: { Cookie: stateCookie } });
+    assert.equal(ok.status, 200);
+    assert.ok((ok.headers.get('set-cookie') || '').includes('cs_session='));
+    const replay = await fetch(`${base}/api/oauth/google/callback?code=c&state=${state}`, { redirect: 'manual', headers: { Cookie: stateCookie } });
+    assert.match(replay.headers.get('location'), /error=state/);
+  } finally { global.fetch = real; delete process.env.GOOGLE_CLIENT_ID; delete process.env.GOOGLE_CLIENT_SECRET; }
 });
