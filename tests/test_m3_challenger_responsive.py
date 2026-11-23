@@ -315,7 +315,7 @@ class TestPortalHtmlAccessibilityAndSemantics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        cls.html_path = os.path.join(base_dir, "portal", "index.html")
+        cls.html_path = os.path.join(base_dir, "portal", "app.html")
         with open(cls.html_path, "r", encoding="utf-8") as f:
             cls.html_raw = f.read()
 

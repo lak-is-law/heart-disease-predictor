@@ -229,7 +229,7 @@ class TestM3PortalHtmlSemantics(unittest.TestCase):
 
     def setUp(self):
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.html_path = os.path.join(base_dir, "portal", "index.html")
+        self.html_path = os.path.join(base_dir, "portal", "app.html")
         with open(self.html_path, "r", encoding="utf-8") as f:
             self.html_content = f.read()
 

@@ -185,7 +185,7 @@ class TestOfflineFirstAndPortalIntegrity(unittest.TestCase):
 
     def test_portal_html_contains_economics_and_safety_net_elements(self):
         """Verify portal/index.html includes economics section, safety net, and golden hour widgets."""
-        index_html = (PORTAL_DIR / "index.html").read_text(encoding="utf-8")
+        index_html = (PORTAL_DIR / "app.html").read_text(encoding="utf-8")
 
         # Unfounded economics, timeline and compliance content must stay removed
         for gone in ('id="hospital-economics"', 'golden-hour', 'STEMI', 'FIPS', 'HIPAA', '880.6310'):

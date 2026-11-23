@@ -422,7 +422,7 @@ class TestFeature10OfflineAssetBundling(unittest.TestCase):
 
     def test_f10_portal_html_local_vendor_references(self):
         """Verify portal/index.html loads vendor libraries from local relative paths."""
-        html = (PORTAL_DIR / "index.html").read_text(encoding="utf-8")
+        html = (PORTAL_DIR / "app.html").read_text(encoding="utf-8")
         self.assertIn('src="vendor/three.min.js"', html)
         self.assertIn('src="vendor/OrbitControls.js"', html)
 

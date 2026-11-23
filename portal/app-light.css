@@ -1,0 +1,17 @@
+/* Light theme for the workstation. The workstation is designed dark, so light mode inverts the page and
+   restores images, canvases and the 3D viewport so they keep their real colours. */
+.app-theme-btn { width: 36px; height: 36px; display: inline-grid; place-items: center; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; background: transparent; color: #F5F7FA; cursor: pointer; padding: 0; }
+.app-theme-btn:hover { background: rgba(255,255,255,.08); }
+.app-theme-btn .sun { display: none; }
+.app-home-link { color: #9AA6B8; font-size: .85rem; text-decoration: none; margin-right: 4px; }
+.app-home-link:hover { color: #F5F7FA; }
+:root[data-theme="light"] { background: #fff; filter: invert(.93) hue-rotate(180deg); }
+:root[data-theme="light"] :is(canvas, img, video, .hx-avatar, .keep-colors) { filter: invert(1) hue-rotate(180deg); }
+:root[data-theme="light"] .app-theme-btn .sun { display: block; } :root[data-theme="light"] .app-theme-btn .moon { display: none; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) { background: #fff; filter: invert(.93) hue-rotate(180deg); }
+  :root:not([data-theme]) :is(canvas, img, video, .hx-avatar, .keep-colors) { filter: invert(1) hue-rotate(180deg); }
+  :root:not([data-theme]) .app-theme-btn .sun { display: block; } :root:not([data-theme]) .app-theme-btn .moon { display: none; }
+}
+:root[data-theme="light"] .app-brand-block img { filter: none; }
+@media (prefers-color-scheme: light) { :root:not([data-theme]) .app-brand-block img { filter: none; } }

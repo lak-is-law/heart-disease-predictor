@@ -26,7 +26,7 @@ PORTAL_DIR = REPO_ROOT / "portal"
 VENDOR_DIR = PORTAL_DIR / "vendor"
 CGI_HEART_PATH = REPO_ROOT / "cgi_heart.py"
 PORTAL_JS_PATH = PORTAL_DIR / "portal.js"
-PORTAL_HTML_PATH = PORTAL_DIR / "index.html"
+PORTAL_HTML_PATH = PORTAL_DIR / "app.html"
 
 from serve_portal import PortalHTTPRequestHandler, find_available_port
 
@@ -516,7 +516,7 @@ class TestM2ChallengerHTTPServer(unittest.TestCase):
 
     def test_offline_integrity_zero_external_network_dependencies(self):
         """Local index.html must load vendor assets locally first, not blindly requesting CDNs."""
-        html = (PORTAL_DIR / "index.html").read_text(encoding="utf-8")
+        html = (PORTAL_DIR / "app.html").read_text(encoding="utf-8")
         # Ensure local scripts precede any CDN fallback
         self.assertIn('<script src="vendor/three.min.js"></script>', html)
         self.assertIn('<script src="vendor/OrbitControls.js"></script>', html)

@@ -168,7 +168,7 @@ function explainClinicalRisk(patient) {
 }
 
 const FEATURE_LABELS = {
-  ca: 'Calcified Coronary Vessels',
+  ca: 'Vessels seen on fluoroscopy',
   oldpeak: 'ST Segment Depression',
   chol: 'Serum Total Cholesterol',
   trestbps: 'Resting Blood Pressure',
@@ -177,8 +177,8 @@ const FEATURE_LABELS = {
   sex: 'Biological Sex',
   cp: 'Chest Pain Presentation',
   exang: 'Exercise-Induced Angina',
-  slope: 'Peak Exercise ST Slope',
-  thal: 'Thallium Defect Status',
+  slope: 'ST slope',
+  thal: 'Thallium result',
   fbs: 'Fasting Blood Sugar',
   restecg: 'Resting Electrocardiogram'
 };
@@ -1682,16 +1682,16 @@ function updatePortalPrediction() {
 
   if (radialBand) {
     if (isSafetyNetActive && pTargetRisk >= 0.28 && pTargetRisk < 0.66) {
-      radialBand.innerText = 'SAFETY NET CAD';
+      radialBand.innerText = 'FLAGGED';
       radialBand.style.color = '#F43F5E';
     } else if (pTargetRisk >= 0.66) {
-      radialBand.innerText = 'CRITICAL CAD';
+      radialBand.innerText = 'HIGHER';
       radialBand.style.color = '#EF4444';
     } else if (pTargetRisk >= 0.33) {
-      radialBand.innerText = 'MODERATE RISK';
+      radialBand.innerText = 'INTERMEDIATE';
       radialBand.style.color = '#F59E0B';
     } else {
-      radialBand.innerText = 'BASELINE NORMAL';
+      radialBand.innerText = 'LOWER';
       radialBand.style.color = '#10B981';
     }
   }
@@ -1785,7 +1785,7 @@ function renderAttributionBars(v) {
   if (!container) return;
 
   const items = [
-    { name: 'Calcified Coronary Vessels', impact: (v.ca / 3) * 100, color: '#DC2626' },
+    { name: 'Vessels seen on fluoroscopy', impact: (v.ca / 3) * 100, color: '#DC2626' },
     { name: 'ST Segment Depression', impact: Math.min(100, (v.oldpeak / 4.0) * 100), color: '#DC2626' },
     { name: 'Serum Cholesterol Delta', impact: Math.min(100, (Math.max(0, v.chol - 200) / 150) * 100), color: '#D97706' },
     { name: 'Systolic Blood Pressure', impact: Math.min(100, (Math.max(0, v.trestbps - 120) / 80) * 100), color: '#0284C7' }
@@ -1993,11 +1993,11 @@ function updateLesionCalloutPosition() {
   const lesionText = document.getElementById('portal-lesion-text');
   if (lesionText) {
     if (pTargetRisk >= 0.65) {
-      lesionText.textContent = 'Coronary ischemia (LAD)';
+      lesionText.textContent = 'Illustrative marker';
     } else if (pTargetRisk >= 0.35) {
-      lesionText.textContent = 'Moderate Hypoperfusion';
+      lesionText.textContent = 'Illustrative marker';
     } else {
-      lesionText.textContent = 'Normal Perfusion';
+      lesionText.textContent = 'Illustrative marker';
     }
   }
 }
