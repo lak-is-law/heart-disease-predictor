@@ -1606,13 +1606,13 @@ function updatePortalPrediction() {
 
   if (riskValueEl) {
     const pct = (pTargetRisk * 100).toFixed(1);
-    let category = 'Low Risk';
+    let category = 'Lower estimate';
     let color = '#10B981';
     if (pTargetRisk >= 0.66) {
-      category = 'High Risk';
+      category = 'Higher estimate';
       color = '#EF4444';
     } else if (pTargetRisk >= 0.33) {
-      category = 'Moderate Risk';
+      category = 'Intermediate estimate';
       color = '#F59E0B';
     }
     riskValueEl.innerText = `${pct}% (${category})`;
@@ -1729,7 +1729,7 @@ function updatePortalPrediction() {
       recEl.textContent = 'Model output: lower estimated probability. The model misses some cases, so this does not rule out disease. Decisions rest with the treating clinician.';
       recBar.style.backgroundColor = '#10B981';
     } else if (pTargetRisk >= 0.66) {
-      recEl.textContent = `Model output: high estimated probability of coronary disease${ca > 0 ? ' (' + ca + ' vessel(s) reported)' : ''}. Needs prompt review by a clinician.`;
+      recEl.textContent = `Model output: high estimated probability of coronary disease${ca > 0 ? ' (' + ca + ' vessel(s) reported)' : ''}. For review by a clinician.`;
       recBar.style.backgroundColor = '#F43F5E';
     } else if (pTargetRisk >= 0.33) {
       recEl.textContent = 'Model output: intermediate estimated probability of coronary disease. Review by a clinician.';
