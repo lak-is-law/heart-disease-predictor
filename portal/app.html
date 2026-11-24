@@ -852,97 +852,7 @@
     </section>
 
 
-    <section class="app-section hx-dash" id="dashboard" hidden aria-labelledby="dash-title">
-      <div class="hx-dash-head">
-        <div>
-          <h2 id="dash-title">Dashboard</h2>
-          <p id="dash-sub"></p>
-        </div>
-        <div class="hx-dash-actions">
-          <input type="text" id="dash-ref" class="hx-input" maxlength="40" placeholder="Reference, e.g. Case 12" aria-label="Reference for this assessment. Do not use names." autocomplete="off">
-          <button type="button" class="app-btn app-btn-primary" id="dash-save">Save current assessment</button>
-        </div>
-      </div>
-
-      <div class="hx-banner" id="dash-must-change" hidden>Choose a new password to finish setting up your account. <a href="#dash-account" onclick="document.getElementById('pw-current').focus()">Change password</a></div>
-      <p class="hx-msg" id="dash-msg" role="status"></p>
-
-      <div class="hx-stats" id="dash-stats"></div>
-
-      <div class="hx-grid">
-        <div class="hx-panel">
-          <h3>Risk over time</h3>
-          <svg id="dash-trend" class="hx-trend" viewBox="0 0 600 180" role="img" aria-label="Risk estimate for the most recent saved assessments"></svg>
-          <p class="hx-empty" id="dash-trend-empty">Save assessments to see how risk estimates change.</p>
-        </div>
-        <div class="hx-panel">
-          <h3>Risk bands</h3>
-          <div id="dash-bands"></div>
-        </div>
-      </div>
-
-      <div class="hx-panel">
-        <div class="hx-panel-head">
-          <h3>Saved assessments</h3>
-          <button type="button" class="app-btn app-btn-sm" id="dash-export">Export CSV</button>
-        </div>
-        <div class="hx-table-wrap">
-          <table class="hx-table" id="dash-table">
-            <thead><tr><th>Reference</th><th>Saved</th><th>Age, sex</th><th>Risk</th><th>Band</th><th><span class="hx-sr">Actions</span></th></tr></thead>
-            <tbody id="dash-rows"></tbody>
-          </table>
-        </div>
-        <p class="hx-empty" id="dash-empty">Nothing saved yet. Set up a patient in the workstation, then choose Save current assessment.</p>
-        <button type="button" class="app-btn app-btn-sm" id="dash-more" hidden>Show more</button>
-      </div>
-
-      <div class="hx-grid" id="dash-account">
-        <div class="hx-panel">
-          <h3>Account</h3>
-          <p class="hx-meta" id="acct-line"></p>
-          <form id="pw-form" class="hx-form" novalidate>
-            <label for="pw-current">Current password</label>
-            <input type="password" id="pw-current" autocomplete="current-password">
-            <label for="pw-next">New password</label>
-            <input type="password" id="pw-next" autocomplete="new-password" aria-describedby="pw-hint">
-            <p class="hx-hint" id="pw-hint">At least 12 characters. Changing it signs out your other devices.</p>
-            <p class="hx-error" id="pw-error" role="alert"></p>
-            <div class="hx-row">
-              <button type="submit" class="app-btn app-btn-primary app-btn-sm">Change password</button>
-              <button type="button" class="app-btn app-btn-sm" id="signout-all">Sign out everywhere</button>
-            </div>
-          </form>
-        </div>
-        <div class="hx-panel">
-          <h3>Recent activity</h3>
-          <ul class="hx-activity" id="acct-activity"></ul>
-        </div>
-      </div>
-
-      <div class="hx-panel">
-        <h3>Your data</h3>
-        <p class="hx-meta">Saved assessments hold only the 13 model inputs, the risk estimate and the reference you type. They are encrypted before they reach the database and only you can read them. Do not put names or ID numbers in the reference.</p>
-        <button type="button" class="app-btn app-btn-sm hx-danger" id="dash-erase">Erase all my assessments</button>
-      </div>
-
-      <div class="hx-panel" id="dash-admin" hidden>
-        <h3>People</h3>
-        <p class="hx-meta">There is no public sign-up. Create an account, then give the person the temporary password. They must change it when they first sign in.</p>
-        <form id="user-form" class="hx-form hx-inline" novalidate>
-          <input type="email" id="nu-email" placeholder="Email" autocomplete="off" aria-label="New account email">
-          <input type="text" id="nu-name" placeholder="Name" autocomplete="off" aria-label="New account name" maxlength="80">
-          <select id="nu-role" aria-label="Role"><option value="clinician">Clinician</option><option value="admin">Admin</option></select>
-          <button type="submit" class="app-btn app-btn-primary app-btn-sm">Create account</button>
-        </form>
-        <p class="hx-error" id="nu-error" role="alert"></p>
-        <div class="hx-banner" id="nu-secret" hidden></div>
-        <div class="hx-table-wrap">
-          <table class="hx-table"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th><span class="hx-sr">Actions</span></th></tr></thead><tbody id="admin-rows"></tbody></table>
-        </div>
-        <h4 class="hx-sub">Sign-ins and changes</h4>
-        <ul class="hx-activity" id="admin-events"></ul>
-      </div>
-    </section>
+    
 
     </main>
 
@@ -957,7 +867,7 @@
           <a href="#live-workstation">Workstation</a>
           <a href="/download">Download</a>
           
-          <a href="mailto:support@cardiosense.org" id="footer-support-link">support@cardiosense.org</a>
+          <a href="/report">Report a bug</a>
         </nav>
       </div>
       <p class="hx-footer-legal">CardioSense is an educational project trained on a public dataset (UCI Heart Disease). It is not a medical device, is not cleared by any regulator, and does not provide diagnoses or treatment advice.</p>

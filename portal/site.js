@@ -41,7 +41,7 @@
     var box = $('acct'); if (!box) return;
     box.textContent = '';
     if (S.user) {
-      var d = el('a', 'link', 'Dashboard'); d.href = '/app#dashboard';
+      var d = el('a', 'link', 'Dashboard'); d.href = '/dashboard';
       var o = el('button', 'btn sm line', 'Sign out'); o.type = 'button';
       o.addEventListener('click', function () { api('POST', '/api/logout').then(function () { location.href = '/'; }); });
       box.append(d, o);
@@ -190,4 +190,26 @@
   var t0 = Date.now(); function go() { setTimeout(done, Math.max(0, 2100 - (Date.now() - t0))); }
   if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
   setTimeout(done, 4000);
+})();
+
+
+/* bug report form */
+(function () {
+  var f = document.getElementById('bug-form'); if (!f) return;
+  var msg = document.getElementById('bug-msg');
+  var page = (document.referrer && document.referrer.indexOf(location.origin) === 0) ? document.referrer.slice(location.origin.length) : '';
+  f.addEventListener('submit', function (e) {
+    e.preventDefault(); msg.className = 'msg'; msg.textContent = '';
+    var what = document.getElementById('bug-what').value.trim();
+    if (what.length < 10) { msg.className = 'msg bad'; msg.textContent = 'Describe the problem in at least 10 characters.'; return; }
+    var btn = f.querySelector('button[type=submit]'); btn.disabled = true;
+    fetch('/api/bug', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ what: what, area: document.getElementById('bug-area').value, email: document.getElementById('bug-email').value.trim(), page: page, website: f.website.value }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return [r.ok, j]; }); })
+      .then(function (x) {
+        btn.disabled = false;
+        if (x[0]) { f.reset(); msg.className = 'msg ok'; msg.textContent = 'Thank you. Your report was sent.'; }
+        else { msg.className = 'msg bad'; msg.textContent = x[1].error || 'Could not send the report. Try again.'; }
+      }).catch(function () { btn.disabled = false; msg.className = 'msg bad'; msg.textContent = 'Could not reach the server. Try again.'; });
+  });
 })();

@@ -1,7 +1,12 @@
 /* CardioSense help chat: FAQ answers in English or Hindi */
-.cc-fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 90; display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px 0 14px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--btn-fg, #fff); font: 600 .95rem var(--font); cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+.cc-fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 90; display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 18px 0 6px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--btn-fg, #fff); font: 600 .95rem var(--font); cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
 :root:not([data-theme="dark"]) .cc-fab { color: #fff; }
-.cc-fab svg { width: 20px; height: 20px; }
+.cc-fab img { width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 1px solid rgba(0,0,0,.08); animation: cc-bob 3.2s ease-in-out infinite; }
+@keyframes cc-bob { 50% { transform: translateY(-2px) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .cc-fab img { animation: none; } }
+.cc-av { width: 36px; height: 36px; border-radius: 50%; background: #fff; border: 1px solid var(--line-strong); flex: none; }
+.cc-tip { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 64px); z-index: 90; padding: 10px 14px; border-radius: 14px 14px 4px 14px; background: var(--bg); color: var(--fg); border: 1px solid var(--line-strong); box-shadow: 0 6px 24px rgba(0,0,0,.16); font: 500 .92rem var(--font); animation: cc-pop .4s ease both; }
+@keyframes cc-pop { from { opacity: 0; transform: translateY(6px); } }
 .cc-panel { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 60px); z-index: 91; width: min(380px, calc(100vw - 32px)); height: min(560px, calc(100vh - 120px)); display: none; flex-direction: column; background: var(--bg); color: var(--fg); border: 1px solid var(--line-strong); border-radius: 16px; box-shadow: 0 16px 48px rgba(0,0,0,.22); overflow: hidden; font-family: var(--font); }
 .cc-panel.open { display: flex; }
 .cc-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--bg-soft); }

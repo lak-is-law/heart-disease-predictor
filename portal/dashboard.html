@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | CardioSense</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Your saved assessments and report.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script src="/theme-init.js"></script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/chat.css">
+
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+    <nav class="nav" aria-label="Main">
+      <a href="/features">Features</a>
+      <a href="/download">Download</a>
+      <a href="/#reviews">Reviews</a>
+      <a href="/app">Workstation</a>
+      <a class="m-only" href="/signin">Sign in</a><a class="m-only" href="/signup">Create account</a>
+    </nav>
+    <div class="head-right">
+      <div id="acct" style="display:flex;align-items:center;gap:14px"></div>
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<main id="dashboard" class="dash" hidden>
+<section class="dash-hero" id="dash-hero">
+  <div class="wrap dash-hero-in">
+    <div class="avatar" id="dash-avatar" aria-hidden="true">?</div>
+    <div>
+      <h1 id="dash-hi">Hi</h1>
+      <p class="lede" id="dash-intro"></p>
+      <div class="hx-actions"><a class="btn" href="/app">New assessment</a><a class="btn line" href="#report">View my report</a></div>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#report" aria-label="Scroll to your report"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></a>
+</section>
+
+<div class="wrap">
+<section class="sec" id="report" style="padding-top:64px">
+  <h2>Your report</h2>
+  <p class="lede" id="dash-sub"></p>
+  <div class="hx-banner" id="dash-must-change" hidden>Choose a new password to finish setting up your account. <a href="#dash-account" onclick="document.getElementById('pw-current').focus()">Change password</a></div>
+  <p class="hx-msg" id="dash-msg" role="status"></p>
+  <div class="hx-stats" id="dash-stats"></div>
+  <div class="hx-grid">
+    <div class="hx-panel"><h3>Risk over time</h3>
+      <svg id="dash-trend" class="hx-trend" viewBox="0 0 600 180" role="img" aria-label="Risk estimate for the most recent saved assessments"></svg>
+      <p class="hx-empty" id="dash-trend-empty">Save at least two assessments to see how estimates change.</p></div>
+    <div class="hx-panel"><h3>Risk bands</h3><div id="dash-bands"></div></div>
+  </div>
+  <div class="hx-panel">
+    <div class="hx-panel-head"><h3>Saved assessments</h3><button type="button" class="btn sm line" id="dash-export">Export CSV</button></div>
+    <div class="hx-table-wrap"><table class="hx-table" id="dash-table"><thead><tr><th>Reference</th><th>Saved</th><th>Age, sex</th><th>Risk</th><th>Band</th><th><span class="hx-sr">Actions</span></th></tr></thead><tbody id="dash-rows"></tbody></table></div>
+    <p class="hx-empty" id="dash-empty">Nothing saved yet. Set up a case in the workstation, then choose Save to dashboard.</p>
+    <button type="button" class="btn sm line" id="dash-more" hidden>Show more</button>
+  </div>
+</section>
+
+<section class="sec" id="dash-account" style="padding-top:0">
+  <h2>Account</h2>
+  <div class="hx-grid">
+    <div class="hx-panel"><h3>Sign-in details</h3><p class="hx-meta" id="acct-line"></p>
+      <form id="pw-form" class="hx-form" novalidate>
+        <label for="pw-current">Current password</label><input type="password" id="pw-current" autocomplete="current-password">
+        <label for="pw-next">New password</label><input type="password" id="pw-next" autocomplete="new-password" aria-describedby="pw-hint">
+        <p class="hx-hint" id="pw-hint">At least 12 characters. Changing it signs out your other devices.</p>
+        <p class="hx-error" id="pw-error" role="alert"></p>
+        <div class="hx-row"><button type="submit" class="btn sm">Change password</button><button type="button" class="btn sm line" id="signout-all">Sign out everywhere</button></div>
+      </form></div>
+    <div class="hx-panel"><h3>Recent activity</h3><ul class="hx-activity" id="acct-activity"></ul></div>
+  </div>
+  <div class="hx-panel"><h3>Your data</h3>
+    <p class="hx-meta">Saved assessments hold only the 13 model inputs, the risk estimate and the reference you type. They are encrypted before they reach the database. Do not put names or ID numbers in the reference.</p>
+    <button type="button" class="btn sm line hx-danger" id="dash-erase">Erase all my assessments</button></div>
+
+  <div class="hx-panel" id="dash-admin" hidden><h3>People</h3>
+    <p class="hx-meta">Anyone can sign up. Use this to create an account for someone, or to disable or reset one.</p>
+    <form id="user-form" class="hx-form hx-inline" novalidate>
+      <input type="email" id="nu-email" placeholder="Email" autocomplete="off" aria-label="New account email">
+      <input type="text" id="nu-name" placeholder="Name" autocomplete="off" aria-label="New account name" maxlength="80">
+      <select id="nu-role" aria-label="Role"><option value="clinician">Clinician</option><option value="admin">Admin</option></select>
+      <button type="submit" class="btn sm">Create account</button>
+    </form>
+    <p class="hx-error" id="nu-error" role="alert"></p><div class="hx-banner" id="nu-secret" hidden></div>
+    <div class="hx-table-wrap"><table class="hx-table"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th><span class="hx-sr">Actions</span></th></tr></thead><tbody id="admin-rows"></tbody></table></div>
+    <h4 class="hx-sub">Sign-ins and changes</h4><ul class="hx-activity" id="admin-events"></ul>
+    <h4 class="hx-sub">Bug reports</h4><ul class="hx-activity hx-bugs" id="bug-rows"></ul>
+  </div>
+</section>
+</div>
+</main>
+<noscript><main class="wrap"><p>The dashboard needs JavaScript.</p></main></noscript>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+      <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
+      <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
+      <div><h4>Project</h4><a href="/report">Report a bug</a><a href="/features#limits">Limits</a></div>
+    </div>
+    <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
+  </div>
+</footer>
+<script src="/site.js"></script>
+<script src="/dashboard.js" defer></script>
+<script src="/chat.js" defer></script>
+</body>
+</html>

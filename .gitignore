@@ -38,3 +38,14 @@ dist/
 .streamlit/secrets.toml
 .vercel
 .env*
+
+# Secrets and local data: never commit. Values live in Vercel environment variables.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+.dev-db*.json
+*.patch
+secrets/

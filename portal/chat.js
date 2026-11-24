@@ -39,9 +39,9 @@
     { id: 'reviews', k: ['review', 'rating', 'testimonial', 'feedback', 'रिव्यू', 'समीक्षा', 'रेटिंग'],
       en: 'Reviews on the home page are written by signed-in users. Sign in to add one; it shows your first name and last initial, and submitting again edits it.',
       hi: 'होम पेज की समीक्षाएँ साइन-इन किए हुए उपयोगकर्ता लिखते हैं। जोड़ने के लिए साइन इन करें; यह आपका पहला नाम और अंतिम नाम का पहला अक्षर दिखाती है, और दोबारा भेजने पर बदल जाती है।' },
-    { id: 'contact', k: ['contact', 'support', 'bug', 'issue', 'help', 'github', 'source', 'code', 'संपर्क', 'सहायता', 'मदद', 'बग'],
-      en: 'The source code and issue tracker are on GitHub: https://github.com/lak-is-law/heart-disease-predictor. You can report problems there.',
-      hi: 'सोर्स कोड और इश्यू ट्रैकर GitHub पर हैं: https://github.com/lak-is-law/heart-disease-predictor। समस्याएँ वहीं दर्ज करें।' },
+    { id: 'contact', k: ['contact', 'support', 'bug', 'issue', 'problem', 'not working', 'error', 'report', 'संपर्क', 'सहायता', 'मदद', 'बग', 'समस्या', 'दिक्कत'],
+      en: 'To report a problem, use the Report a bug link in the footer (/report). Describe what happened and which page you were on.',
+      hi: 'समस्या बताने के लिए फ़ुटर में "Report a bug" लिंक (/report) का उपयोग करें। बताइए क्या हुआ और आप किस पेज पर थे।' },
     { id: 'hello', k: ['hello', 'hi', 'hey', 'namaste', 'thanks', 'thank', 'नमस्ते', 'हेलो', 'धन्यवाद', 'शुक्रिया'],
       en: 'Hello. Ask me about what CardioSense does, accuracy, privacy, downloads or accounts.', hi: 'नमस्ते। CardioSense क्या करता है, सटीकता, गोपनीयता, डाउनलोड या खाते के बारे में पूछिए।' }
   ];
@@ -51,14 +51,14 @@
     en: { title: 'CardioSense help', ph: 'Ask a question', send: 'Send', open: 'Help', close: 'Close',
       hi: 'Hi. I can answer questions about CardioSense in English or Hindi. I cannot give medical advice.',
       note: 'Automated answers from the site FAQ. Not medical advice.',
-      none: 'I could not find an answer to that. Try one of the questions below, or ask on GitHub: https://github.com/lak-is-law/heart-disease-predictor',
+      none: 'I could not find an answer to that. Try one of the questions below, or report a problem at /report',
       emerg: 'If you or someone else has chest pain, trouble breathing or fainting, call your local emergency number now (112 in India) or go to the nearest hospital. This site cannot help in an emergency.',
       med: 'I cannot give medical advice or say whether you have a condition. CardioSense is a learning tool, not a medical device. Please speak to a qualified doctor.',
       chips: [['what', 'What is CardioSense?'], ['device', 'Is it a medical device?'], ['accuracy', 'How accurate is it?'], ['privacy', 'What happens to my data?'], ['download', 'How do I download it?'], ['account', 'How do I sign up?']] },
     hi: { title: 'CardioSense सहायता', ph: 'अपना सवाल लिखें', send: 'भेजें', open: 'सहायता', close: 'बंद करें',
       hi: 'नमस्ते। मैं CardioSense के बारे में हिंदी या अंग्रेज़ी में सवालों के जवाब दे सकता हूँ। मैं चिकित्सा सलाह नहीं दे सकता।',
       note: 'साइट के FAQ से स्वचालित जवाब। चिकित्सा सलाह नहीं।',
-      none: 'इसका जवाब मुझे नहीं मिला। नीचे दिए सवालों में से चुनें, या GitHub पर पूछें: https://github.com/lak-is-law/heart-disease-predictor',
+      none: 'इसका जवाब मुझे नहीं मिला। नीचे दिए सवालों में से चुनें, या /report पर समस्या दर्ज करें',
       emerg: 'अगर आपको या किसी और को सीने में दर्द, साँस लेने में तकलीफ़ या बेहोशी है, तो तुरंत अपने स्थानीय आपातकालीन नंबर (भारत में 112) पर कॉल करें या नज़दीकी अस्पताल जाएँ। आपात स्थिति में यह साइट मदद नहीं कर सकती।',
       med: 'मैं चिकित्सा सलाह नहीं दे सकता और यह नहीं बता सकता कि आपको कोई बीमारी है या नहीं। CardioSense सीखने का साधन है, मेडिकल डिवाइस नहीं। कृपया योग्य डॉक्टर से मिलें।',
       chips: [['what', 'CardioSense क्या है?'], ['device', 'क्या यह मेडिकल डिवाइस है?'], ['accuracy', 'यह कितना सटीक है?'], ['privacy', 'मेरे डेटा का क्या होता है?'], ['download', 'डाउनलोड कैसे करें?'], ['account', 'साइन अप कैसे करें?']] }
@@ -85,7 +85,7 @@
 
   function add(text, who, warn) {
     var m = el('div', 'cc-m ' + who + (warn ? ' warn' : ''));
-    var parts = String(text).split(/(https?:\/\/[^\s]+|\/(?:features#limits|download|signup|signin))/g);
+    var parts = String(text).split(/(https?:\/\/[^\s]+|\/(?:features#limits|download|signup|signin|report))/g);
     parts.forEach(function (p, i) {
       if (i % 2 === 1) { var a = el('a', '', p.replace(/[.,]$/, '')); a.href = p.replace(/[.,]$/, ''); if (/^http/.test(p)) { a.target = '_blank'; a.rel = 'noopener'; } m.appendChild(a); if (/[.,]$/.test(p)) m.appendChild(document.createTextNode(p.slice(-1))); }
       else m.appendChild(document.createTextNode(p));
@@ -116,9 +116,9 @@
   }
   function build() {
     fab = el('button', 'cc-fab'); fab.type = 'button'; fab.setAttribute('aria-expanded', 'false'); fab.setAttribute('aria-controls', 'cc-panel');
-    fab.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span></span>';
+    fab.innerHTML = '<img src="/img/llama.svg" alt="" width="38" height="38"><span></span>';
     panel = el('div', 'cc-panel'); panel.id = 'cc-panel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Help chat');
-    var head = el('div', 'cc-head'); title = el('b'); head.appendChild(title);
+    var head = el('div', 'cc-head'); var av = el('img', 'cc-av'); av.src = '/img/llama.svg'; av.alt = ''; av.width = 36; av.height = 36; head.appendChild(av); title = el('b'); head.appendChild(title);
     var lg = el('div', 'cc-lang'); [['en', 'EN'], ['hi', 'हिं']].forEach(function (p) { var b = el('button', '', p[1]); b.type = 'button'; b.dataset.l = p[0]; b.addEventListener('click', function () { setLang(p[0]); }); lg.appendChild(b); });
     head.appendChild(lg); var x = el('button', 'cc-x', '×'); x.type = 'button'; head.appendChild(x);
     log = el('div', 'cc-log'); log.setAttribute('aria-live', 'polite'); chips = el('div', 'cc-chips');
@@ -131,6 +131,13 @@
     x.addEventListener('click', function () { toggle(false); fab.focus(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panel.classList.contains('open')) toggle(false); });
     setLang(lang);
+    var seen = false; try { seen = sessionStorage.getItem('cs-chat-greeted'); } catch (e) { /* ignore */ }
+    if (!seen) setTimeout(function () {
+      if (panel.classList.contains('open')) return;
+      var tip = el('div', 'cc-tip', lang === 'hi' ? 'नमस्ते! कोई सवाल है?' : 'Namaste! Any questions?'); tip.setAttribute('role', 'status');
+      document.body.appendChild(tip); try { sessionStorage.setItem('cs-chat-greeted', '1'); } catch (e) { /* ignore */ }
+      setTimeout(function () { tip.remove(); }, 6000); fab.addEventListener('click', function () { tip.remove(); }, { once: true });
+    }, 5000);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build); else build();
 })();

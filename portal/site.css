@@ -220,3 +220,35 @@ a:not(.btn):not(.brand):not(.social):hover { color: var(--accent); }
 @media (max-width: 860px) { .row { grid-template-columns: 1fr; gap: 16px; } .row.soft { padding: 24px 20px; } }
 .nf-ecg { display: block; } .nf .kicker { display: flex; }
 .nf .hx-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* dashboard */
+.dash-hero { position: relative; padding: 72px 0 88px; border-bottom: 1px solid var(--line); background: var(--bg-soft); min-height: min(70vh, 560px); display: flex; align-items: center; }
+.dash-hero-in { display: flex; align-items: center; gap: 36px; }
+.avatar { flex: none; width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); border: 2px solid var(--accent); font-size: 2.6rem; font-weight: 600; letter-spacing: -.02em; }
+.dash-hero h1 { margin: 0 0 12px; font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.08; }
+.dash-hero .lede { color: var(--dim); font-size: 1.15rem; max-width: 36em; margin: 0 0 24px; }
+.dash-hero .hx-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.scroll-cue { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--dim); background: var(--bg); animation: cue 2s ease-in-out infinite; }
+@keyframes cue { 50% { transform: translate(-50%, 6px); } }
+.hx-msg { min-height: 1.4em; margin: 0 0 12px; color: var(--ok); } .hx-msg.is-bad, .hx-error { color: var(--bad); } .hx-error { min-height: 1.2em; margin: 6px 0; font-size: .92rem; }
+.hx-banner { padding: 14px 18px; border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 12px; margin: 0 0 16px; } .hx-banner code { font-family: ui-monospace, monospace; font-weight: 600; }
+.hx-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+.hx-stat { padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }
+.hx-stat-v { font-size: 2.2rem; font-weight: 600; letter-spacing: -.03em; color: var(--accent); font-variant-numeric: tabular-nums; } .hx-stat-l { color: var(--dim); font-size: .92rem; margin-top: 2px; }
+.hx-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 16px; } #dash-account .hx-grid { grid-template-columns: 1fr 1fr; }
+.hx-panel { padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); margin-bottom: 16px; min-width: 0; } .hx-grid .hx-panel { margin-bottom: 0; }
+.hx-panel h3 { margin: 0 0 14px; font-size: 1.05rem; font-weight: 600; } .hx-sub { margin: 24px 0 10px; font-size: .98rem; }
+.hx-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; } .hx-panel-head h3 { margin: 0; }
+.hx-meta, .hx-hint, .hx-empty { color: var(--dim); font-size: .95rem; margin: 0 0 14px; } .hx-empty { margin: 12px 0; }
+.hx-trend { width: 100%; height: auto; display: block; } .hx-grid-line { stroke: var(--line); stroke-width: 1; } .hx-axis { fill: var(--dim); font-size: 10px; }
+.hx-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; } .hx-dot { fill: var(--bg); stroke: var(--accent); stroke-width: 2; } .hx-dot.high { stroke: var(--bad); } .hx-dot.moderate { stroke: #B7791F; }
+.hx-band { display: grid; grid-template-columns: 96px 1fr 28px; gap: 12px; align-items: center; padding: 7px 0; font-size: .95rem; } .hx-band-track { height: 10px; border-radius: 6px; background: var(--line); overflow: hidden; } .hx-band-fill { display: block; height: 100%; border-radius: 6px; background: var(--ok); } .hx-band-fill.moderate { background: #B7791F; } .hx-band-fill.high { background: var(--bad); } .hx-band-n { text-align: right; font-variant-numeric: tabular-nums; }
+.hx-table-wrap { overflow-x: auto; position: relative; } .hx-table { width: 100%; border-collapse: collapse; font-size: .95rem; } .hx-table th { text-align: left; color: var(--dim); font-weight: 500; padding: 10px 12px; border-bottom: 1px solid var(--line-strong); white-space: nowrap; } .hx-table td { padding: 12px; border-bottom: 1px solid var(--line); white-space: nowrap; } .hx-ref { font-weight: 600; } .hx-num { font-variant-numeric: tabular-nums; }
+.hx-chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .82rem; font-weight: 600; background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); } .hx-chip.moderate { background: color-mix(in srgb, #B7791F 16%, transparent); color: #B7791F; } .hx-chip.high { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
+.hx-linkbtn { border: 0; background: none; color: var(--accent); font: 600 .9rem var(--font); cursor: pointer; padding: 4px 8px; } .hx-linkbtn.is-danger { color: var(--bad); } .hx-actions-cell { text-align: right; }
+.hx-form label { display: block; margin: 14px 0 6px; font-size: .92rem; font-weight: 500; } .hx-form input, .hx-form select { width: 100%; height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg); font: 1rem var(--font); }
+.hx-inline { display: grid; grid-template-columns: 1.4fr 1fr 130px auto; gap: 10px; align-items: center; margin-bottom: 10px; } .hx-form.hx-inline input, .hx-form.hx-inline select { margin: 0; }
+.hx-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; } .hx-danger { color: var(--bad); border-color: var(--bad); }
+.hx-activity { list-style: none; margin: 0; padding: 0; } .hx-activity li { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: .93rem; } .hx-activity time { color: var(--dim); white-space: nowrap; font-size: .85rem; } .hx-bugs li { display: block; } .hx-bugs b { font-weight: 600; } .hx-bugs span { display: block; color: var(--dim); margin-top: 2px; }
+.hx-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (max-width: 860px) { .dash-hero { padding: 48px 0 80px; } .dash-hero-in { flex-direction: column; align-items: flex-start; gap: 20px; } .avatar { width: 84px; height: 84px; font-size: 1.9rem; } .hx-stats, .hx-grid, #dash-account .hx-grid { grid-template-columns: 1fr; } .hx-inline { grid-template-columns: 1fr; } }

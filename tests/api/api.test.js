@@ -279,3 +279,18 @@ test('oauth: lists providers, rejects unconfigured ones, completes a mocked Goog
     assert.match(replay.headers.get('location'), /error=state/);
   } finally { global.fetch = real; delete process.env.GOOGLE_CLIENT_ID; delete process.env.GOOGLE_CLIENT_SECRET; }
 });
+
+test('bug reports: anyone can send, only admins can read, abuse is blocked', async () => {
+  const anon = new Client();
+  assert.equal((await anon.call('POST', '/api/bug', { what: 'short' })).status, 400);
+  assert.equal((await anon.call('POST', '/api/bug', { what: 'The save button does nothing on the dashboard', email: 'bad' })).status, 400);
+  assert.equal((await anon.call('POST', '/api/bug', { what: 'The save button does nothing on the dashboard', website: 'x' })).status, 400);
+  assert.equal((await anon.call('POST', '/api/bug', { what: 'The save button does nothing on the dashboard' }, { Origin: 'https://evil.example' })).status, 403);
+  const ok = await anon.call('POST', '/api/bug', { what: 'The save button does nothing on the dashboard', area: 'Dashboard', page: '/app' });
+  assert.equal(ok.status, 201);
+  assert.equal((await anon.call('GET', '/api/bug')).status, 401);
+  const admin = new Client(); await admin.login('admin@example.org', 'admin password 123');
+  const list = await admin.call('GET', '/api/bug');
+  assert.equal(list.status, 200);
+  assert.ok(list.json.items.some((i) => i.what.includes('save button')));
+});

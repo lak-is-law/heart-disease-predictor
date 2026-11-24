@@ -8,13 +8,13 @@
     login: 'Signed in', logout: 'Signed out', login_failed: 'Failed sign-in attempt', assessment_saved: 'Saved an assessment',
     assessment_deleted: 'Deleted an assessment', assessments_erased: 'Erased all assessments', password_changed: 'Changed password',
     signout_all: 'Signed out everywhere', download: 'Downloaded the app', user_created: 'Created an account', user_disabled: 'Disabled an account',
-    user_enabled: 'Enabled an account', user_role_changed: 'Changed a role', user_password_reset: 'Reset a password'
+    user_enabled: 'Enabled an account', user_role_changed: 'Changed a role', signup: 'Created the account', oauth_login: 'Signed in with a provider', review_saved: 'Saved a review', user_password_reset: 'Reset a password'
   };
   var items = [];
   var shown = 15;
   var $ = function (id) { return document.getElementById(id); };
 
-  function state() { return window.csState ? window.csState() : { user: null, csrf: '' }; }
+  function state() { return window.csState ? window.csState() : (window.CS ? { user: window.CS.user, csrf: window.CS.csrf } : { user: null, csrf: '' }); }
 
   async function api(method, path, body) {
     var r = await fetch(path, {
@@ -23,7 +23,7 @@
       body: body ? JSON.stringify(body) : undefined
     });
     var j = await r.json().catch(function () { return {}; });
-    if (r.status === 401 && window.csSessionLost) window.csSessionLost();
+    if (r.status === 401) { if (window.csSessionLost) window.csSessionLost(); else if ($('dash-hero')) location.replace('/signin?next=/dashboard'); }
     if (!r.ok) { var e = new Error(j.error || 'Something went wrong. Try again.'); e.status = r.status; throw e; }
     return j;
   }
@@ -72,7 +72,7 @@
     try {
       var body = readCockpit();
       var ref = $('dash-ref');
-      body.label = ref ? ref.value.trim() : '';
+      body.label = ref ? ref.value.trim() : (window.csAskRef ? window.csAskRef() : '');
       if (btn) btn.disabled = true;
       var j = await api('POST', '/api/assessments', body);
       items.unshift(j.item);
@@ -87,6 +87,10 @@
   }
 
   function openInWorkstation(a) {
+    if (!$('live-workstation')) {
+      try { sessionStorage.setItem('cs-open', JSON.stringify(a.inputs)); } catch (e) { /* ignore */ }
+      location.href = '/app'; return;
+    }
     FIELDS.forEach(function (f) {
       var node = $('inp-' + f);
       if (node) node.value = String(a.inputs[f]);
@@ -197,9 +201,29 @@
     $('dash-sub').textContent = items.length
       ? items.length + ' saved ' + (items.length === 1 ? 'assessment' : 'assessments') + '. Stored encrypted. Use synthetic or de-identified data only.'
       : 'Your saved assessments appear here. Stored encrypted. Use synthetic or de-identified data only.';
-    renderStats(); renderTrend(); renderBands(); renderTable();
+    renderStats(); renderTrend(); renderBands(); renderTable(); renderHero();
     var line = $('acct-line');
     if (u && line) line.textContent = u.email + (u.name ? ', ' + u.name : '') + ', ' + (u.role === 'admin' ? 'admin' : 'clinician');
+  }
+
+  function firstName(u) {
+    var n = (u.name || '').trim().split(/\s+/)[0];
+    if (!n) n = String(u.email || '').split('@')[0].replace(/[._\-+0-9]+/g, ' ').trim().split(' ')[0];
+    return n ? n.charAt(0).toUpperCase() + n.slice(1) : 'there';
+  }
+  function renderHero() {
+    var u = state().user, hi = $('dash-hi');
+    if (!u || !hi) return;
+    var nm = firstName(u);
+    hi.textContent = 'Hi, ' + nm;
+    var parts = (u.name || nm).trim().split(/\s+/);
+    $('dash-avatar').textContent = ((parts[0] || '?').charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : '')).toUpperCase();
+    var intro = $('dash-intro'), n = items.length;
+    if (!n) intro.textContent = 'Welcome to CardioSense. Nothing is saved yet. Open the workstation, set up a synthetic or de-identified case and choose Save to dashboard. Your report will build up below.';
+    else {
+      var avg = items.reduce(function (s, a) { return s + a.risk; }, 0) / n;
+      intro.textContent = 'You have ' + n + ' saved ' + (n === 1 ? 'assessment' : 'assessments') + ', the latest on ' + when(items[0].createdAt) + '. The average estimated risk across them is ' + pct(avg) + '. Scroll to see your report.';
+    }
   }
 
   function armed(btn, label, run) {          // two-step confirm without browser dialogs
@@ -247,7 +271,7 @@
         ul.appendChild(li);
       });
       $('dash-must-change').hidden = !j.mustChange;
-      if (j.mustChange && !loadAccount.nudged) { loadAccount.nudged = true; open(); }
+      if (j.mustChange && !loadAccount.nudged) { loadAccount.nudged = true; var a = $('dash-account'); if (a) a.scrollIntoView({ behavior: 'smooth' }); }
     } catch (e) { /* shown elsewhere */ }
   }
 
@@ -258,7 +282,7 @@
     if (!cur || !next) { err.textContent = 'Enter your current and new password.'; return; }
     try {
       var j = await api('POST', '/api/account', { action: 'password', current: cur, next: next });
-      if (window.csSetCsrf) csSetCsrf(j.csrf);
+      if (window.csSetCsrf) csSetCsrf(j.csrf); else if (window.CS) CS.csrf = j.csrf;
       $('pw-current').value = ''; $('pw-next').value = '';
       $('dash-must-change').hidden = true;
       say('Password changed. Your other devices were signed out.');
@@ -268,7 +292,7 @@
 
   async function signOutEverywhere() {
     try { await api('POST', '/api/account', { action: 'signout-all' }); } catch (e) { say(e.message, true); return; }
-    if (window.csSessionLost) csSessionLost();
+    if (window.csSessionLost) csSessionLost(); else location.href = '/signin';
     if (window.showToast) showToast('Signed out on all devices');
   }
 
@@ -307,6 +331,15 @@
         li.appendChild(el('time', '', when(r.t)));
         ev.appendChild(li);
       });
+      var bl = $('bug-rows');
+      if (bl) {
+        var bj = await api('GET', '/api/bug'); clear(bl);
+        if (!bj.items.length) bl.appendChild(el('li', 'hx-empty', 'No bug reports.'));
+        bj.items.slice(0, 20).forEach(function (r) {
+          var li = el('li'); var b = el('b', '', (r.area || 'General') + (r.page ? ' on ' + r.page : '') + (r.email ? ' (' + r.email + ')' : ''));
+          li.appendChild(b); li.appendChild(el('span', '', r.what)); li.appendChild(el('time', '', when(r.t))); bl.appendChild(li);
+        });
+      }
     } catch (e) { /* ignore */ }
   }
 
@@ -334,10 +367,10 @@
   // ------------------------------------------------------------ session hooks
   async function refresh() {
     var u = state().user, sec = $('dashboard'), av = $('dock-avatar');
+    if (!u && !sec) return;
     if (av) av.textContent = u ? (u.name || u.email).trim().slice(0, 1).toUpperCase() : 'In';
-    if (!sec) return;
-    sec.hidden = !u;
-    if (!u) { items = []; return; }
+    if (!sec) { if (u) { try { items = (await api('GET', '/api/assessments')).items || []; } catch (e) { items = []; } } return; }
+    if (!u) { items = []; if ($('dash-hero')) return; sec.hidden = true; return; }
     try {
       var j = await api('GET', '/api/assessments');
       items = j.items || [];
@@ -347,8 +380,8 @@
 
   function open() {
     if (!state().user) { if (window.openAuthModal) openAuthModal(); return; }
-    var s = $('dashboard');
-    if (s) { s.hidden = false; s.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    var s = $('dash-hero');
+    if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); else location.href = '/dashboard';
   }
 
   function init() {
@@ -360,6 +393,12 @@
     on('pw-form', 'submit', changePassword);
     on('signout-all', 'click', signOutEverywhere);
     on('user-form', 'submit', createUser);
+    if ($('dash-hero') && window.CS && CS.ready) {
+      CS.ready.then(function () {
+        if (!CS.user) { location.replace('/signin?next=/dashboard'); return; }
+        refresh().then(function () { $('dashboard').hidden = false; if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); } });
+      });
+    }
     var q = new URLSearchParams(location.search);
     if (q.get('signin') === '1' && !state().user && window.openAuthModal) setTimeout(openAuthModal, 400);
   }
