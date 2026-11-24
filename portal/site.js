@@ -9,7 +9,7 @@
     document.documentElement.setAttribute('data-theme', t);
     try { localStorage.setItem('cs-theme', t); } catch (e) { /* ignore */ }
     var m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute('content', t === 'dark' ? '#07090E' : '#F6F8FB');
+    if (m) m.setAttribute('content', t === 'dark' ? '#0D0D0D' : '#FFFFFF');
   }
   function isDark() {
     var t = document.documentElement.getAttribute('data-theme');
@@ -41,16 +41,18 @@
     var box = $('acct'); if (!box) return;
     box.textContent = '';
     if (S.user) {
-      var d = el('a', 'btn ghost small', 'Dashboard'); d.href = '/app#dashboard';
-      var o = el('button', 'btn small', 'Sign out'); o.type = 'button';
+      var d = el('a', 'link', 'Dashboard'); d.href = '/app#dashboard';
+      var o = el('button', 'btn sm line', 'Sign out'); o.type = 'button';
       o.addEventListener('click', function () { api('POST', '/api/logout').then(function () { location.href = '/'; }); });
       box.append(d, o);
     } else {
-      var si = el('a', 'link-signin', 'Sign in'); si.href = '/signin'; si.style.cssText = 'color:var(--fg);font-size:.9rem;font-weight:500;';
-      var su = el('a', 'btn small', 'Get started'); su.href = '/signup';
+      var si = el('a', 'link', 'Sign in'); si.href = '/signin';
+      var su = el('a', 'btn sm', 'Get started'); su.href = '/signup';
       box.append(si, su);
     }
   }
+  var hd = document.querySelector('.site-head');
+  if (hd) { var sc = function () { hd.classList.toggle('scrolled', window.scrollY > 8); }; window.addEventListener('scroll', sc, { passive: true }); sc(); }
   S.ready = api('GET', '/api/session').then(function (s) {
     S.user = s.user || null; S.csrf = s.csrf || '';
     renderAccount();
@@ -73,21 +75,24 @@
     return fetch('/api/releases').then(function (r) { return r.json(); }).then(function (d) {
       box.textContent = '';
       if (!d.builds || !d.builds.length) {
-        box.appendChild(el('div', 'empty', d.error || 'The first installers are not published yet. You can use the workstation in your browser now.'));
+        box.appendChild(el('div', 'empty', d.error || 'The first installers are not published yet. You can use the workstation in your browser.'));
         return;
       }
       var g = guess();
-      var list = d.builds.slice().sort(function (a, b) { return (b.kind === g) - (a.kind === g); });
+      var list = d.builds.slice().sort(function (x, y) { return (y.kind === g) - (x.kind === g); });
       list.slice(0, limit || list.length).forEach(function (b) {
         var info = LABEL[b.kind] || [b.kind, '', ''];
-        var c = el('div', 'build' + (b.kind === g ? ' rec' : ''));
-        c.appendChild(el('h3', '', info[0] + ' ' + info[2]));
-        c.appendChild(el('div', 'meta', info[1] + ' · v' + d.version + ' · ' + mb(b.size)));
-        if (b.kind === g) c.appendChild(el('span', 'pill', 'Matches this device'));
-        if (b.sha256) c.appendChild(el('div', 'sum', 'SHA-256 ' + b.sha256));
-        var a = el('a', 'btn small', S.user ? 'Download' : 'Sign in to download');
+        var row = el('div', 'dl-row' + (b.kind === g ? ' rec' : ''));
+        var n = el('div'); n.appendChild(el('b', '', info[0] + ' ' + info[2])); n.appendChild(el('span', '', info[1])); row.appendChild(n);
+        row.appendChild(el('span', 'meta', 'Version ' + d.version + ' \u00b7 ' + mb(b.size)));
+        if (b.sha256) {
+          var sum = el('button', 'sum', 'SHA-256 ' + b.sha256.slice(0, 12) + '\u2026'); sum.type = 'button'; sum.title = b.sha256 + ' (click to copy)';
+          sum.addEventListener('click', function () { try { navigator.clipboard.writeText(b.sha256); sum.textContent = 'Copied'; setTimeout(function () { sum.textContent = 'SHA-256 ' + b.sha256.slice(0, 12) + '\u2026'; }, 1500); } catch (e) { /* ignore */ } });
+          row.appendChild(sum);
+        } else row.appendChild(el('span', 'meta', ''));
+        var a = el('a', 'btn sm', S.user ? 'Download' : 'Sign in to download');
         a.href = S.user ? '/api/download?id=' + b.id : '/signin?next=/download';
-        c.appendChild(a); box.appendChild(c);
+        row.appendChild(a); box.appendChild(row);
       });
     }).catch(function () { box.textContent = ''; box.appendChild(el('div', 'empty', 'Downloads could not be loaded. Refresh to try again.')); });
   }
@@ -154,7 +159,7 @@
         if (p.enabled) a.href = '/api/oauth/' + p.id + '?next=' + encodeURIComponent(nextUrl());
         else { a.classList.add('off'); a.setAttribute('aria-disabled', 'true'); a.removeAttribute('href'); a.title = 'Not set up on this site yet'; }
       });
-      if (sp.querySelector('.off')) { var h = el('p', 'hint', 'Dimmed options are not enabled on this site yet.'); sp.parentNode.insertBefore(h, sp.nextSibling); }
+      if (sp.querySelector('.off')) { var h = el('p', 'hint', 'Dimmed options are not enabled on this site yet.'); sp.appendChild(h); }
     }).catch(function () {});
   }
   function authForm(id, url, build) {
@@ -173,8 +178,6 @@
   }
   authForm('signin-form', '/api/login', function (f) { return { email: f.email.value, password: f.password.value, website: f.website.value }; });
   authForm('signup-form', '/api/signup', function (f) {
-    var m = $('auth-msg');
-    if (f.password.value !== f.confirm.value) { m.textContent = 'The passwords do not match.'; return null; }
     return { name: f.name.value, email: f.email.value, password: f.password.value, website: f.website.value };
   });
 })();

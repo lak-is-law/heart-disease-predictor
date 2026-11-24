@@ -163,10 +163,10 @@
     '  vec3 hv1=normalize(L1+v),hv2=normalize(L2+v);',
     '  float d1=clamp(dot(nw,L1)*.5+.5,0.,1.);',
     '  vec3 lit=col*(.10+.95*d1*d1)*vec3(1.,.94,.9);',
-    '  lit+=col*vec3(.0,.55,.7)*pow(clamp(dot(nw,L2)*.5+.5,0.,1.),3.)*.55;',     // cyan rim from the favicon palette
+    '  lit+=col*vec3(.45,.5,.6)*pow(clamp(dot(nw,L2)*.5+.5,0.,1.),3.)*.35;',     // cool fill light
     '  lit+=col*vec3(.1,.18,.4)*clamp(dot(nw,L3)*.5+.5,0.,1.)*.25;',
     '  lit+=vec3(1.,.95,.9)*pow(max(dot(nw,hv1),0.),gloss)*spec;',
-    '  lit+=vec3(.0,.9,1.)*pow(max(dot(nw,hv2),0.),gloss*.6)*spec*.7;',
+    '  lit+=vec3(.9,.95,1.)*pow(max(dot(nw,hv2),0.),gloss*.6)*spec*.5;',
     '  float fr=.03+.97*pow(1.-ndv,4.);',
     '  lit+=env(reflect(-v,nw))*fr*(isCut?.25:.9);',
     '  lit*=mix(.35,1.,ao);',
