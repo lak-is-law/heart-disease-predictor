@@ -100,6 +100,7 @@
     <p class="hx-error" id="nu-error" role="alert"></p><div class="hx-banner" id="nu-secret" hidden></div>
     <div class="hx-table-wrap"><table class="hx-table"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th><span class="hx-sr">Actions</span></th></tr></thead><tbody id="admin-rows"></tbody></table></div>
     <h4 class="hx-sub">Sign-ins and changes</h4><ul class="hx-activity" id="admin-events"></ul>
+    <h4 class="hx-sub">Newsletter</h4><p class="hx-meta" id="sub-line"></p><button type="button" class="btn sm line" id="sub-export" hidden>Export subscribers (CSV)</button>
     <h4 class="hx-sub">Bug reports</h4><ul class="hx-activity hx-bugs" id="bug-rows"></ul>
   </div>
 </section>
@@ -108,6 +109,16 @@
 <noscript><main class="wrap"><p>The dashboard needs JavaScript.</p></main></noscript>
 <footer class="site-foot">
   <div class="wrap">
+    <div class="news">
+      <div><h4>Newsletter</h4><p>Occasional product updates and research notes. No spam, unsubscribe any time.</p></div>
+      <form id="news-form" novalidate>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="hx-sr" for="news-email">Email address</label>
+        <input id="news-email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="120">
+        <button class="btn sm" type="submit">Subscribe</button>
+        <p class="msg" id="news-msg" role="status"></p>
+      </form>
+    </div>
     <div class="foot-grid">
       <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
       <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>

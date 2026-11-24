@@ -144,6 +144,16 @@
 </main>
 <footer class="site-foot">
   <div class="wrap">
+    <div class="news">
+      <div><h4>Newsletter</h4><p>Occasional product updates and research notes. No spam, unsubscribe any time.</p></div>
+      <form id="news-form" novalidate>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="hx-sr" for="news-email">Email address</label>
+        <input id="news-email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="120">
+        <button class="btn sm" type="submit">Subscribe</button>
+        <p class="msg" id="news-msg" role="status"></p>
+      </form>
+    </div>
     <div class="foot-grid">
       <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
       <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>

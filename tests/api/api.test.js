@@ -294,3 +294,17 @@ test('bug reports: anyone can send, only admins can read, abuse is blocked', asy
   assert.equal(list.status, 200);
   assert.ok(list.json.items.some((i) => i.what.includes('save button')));
 });
+
+test('newsletter: public subscribe is validated, idempotent, rate limited; only admins read', async () => {
+  const anon = new Client();
+  assert.equal((await anon.call('POST', '/api/subscribe', { email: 'nope' })).status, 400);
+  assert.equal((await anon.call('POST', '/api/subscribe', { email: 'a@example.org', website: 'x' })).status, 400);
+  assert.equal((await anon.call('POST', '/api/subscribe', { email: 'a@example.org' }, { Origin: 'https://evil.example' })).status, 403);
+  assert.equal((await anon.call('POST', '/api/subscribe', { email: 'Reader@Example.org' })).status, 201);
+  assert.equal((await anon.call('POST', '/api/subscribe', { email: 'reader@example.org' })).status, 201);
+  assert.equal((await anon.call('GET', '/api/subscribe')).status, 401);
+  const admin = new Client(); await admin.login('admin@example.org', 'admin password 123');
+  const l = await admin.call('GET', '/api/subscribe');
+  assert.equal(l.status, 200);
+  assert.equal(l.json.items.filter((i) => i.email === 'reader@example.org').length, 1);
+});

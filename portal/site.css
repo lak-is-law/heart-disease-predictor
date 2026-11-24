@@ -255,3 +255,7 @@ a:not(.btn):not(.brand):not(.social):hover { color: var(--accent); }
 
 .dl-row .os-ic { width: 32px; height: 32px; display: grid; place-items: center; color: var(--fg); } .dl-row .os-ic svg { width: 28px; height: 28px; }
 @media (max-width: 860px) { .dl-row { grid-template-columns: 36px 1fr; gap: 10px 14px; } .dl-row > :nth-child(n+3) { grid-column: 2; } }
+
+.news { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 20px 48px; padding-bottom: 36px; margin-bottom: 36px; border-bottom: 1px solid var(--line); }
+.news h4 { margin: 0 0 6px; color: var(--fg); font-size: 1rem; font-weight: 600; } .news p { margin: 0; max-width: 36ch; }
+.news form { display: flex; flex-wrap: wrap; gap: 10px; width: min(420px, 100%); } .news form input[type=email] { flex: 1; min-width: 180px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg); font: .95rem var(--font); } .news form .btn { height: 40px; } .news .msg { flex-basis: 100%; margin: 0; min-height: 1.2em; }

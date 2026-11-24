@@ -218,3 +218,33 @@
       }).catch(function () { btn.disabled = false; msg.className = 'msg bad'; msg.textContent = 'Could not reach the server. Try again.'; });
   });
 })();
+
+
+/* newsletter */
+(function () {
+  var f = document.getElementById('news-form');
+  if (f) {
+    var msg = document.getElementById('news-msg');
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); msg.className = 'msg'; msg.textContent = '';
+      var em = document.getElementById('news-email').value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { msg.textContent = 'Enter a valid email address.'; return; }
+      var btn = f.querySelector('button'); btn.disabled = true;
+      fetch('/api/subscribe', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em, website: f.website.value }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return [r.ok, j]; }); })
+        .then(function (x) { btn.disabled = false; if (x[0]) { f.reset(); msg.className = 'msg ok'; msg.textContent = 'You are subscribed.'; } else msg.textContent = x[1].error || 'Could not subscribe. Try again.'; })
+        .catch(function () { btn.disabled = false; msg.textContent = 'Could not reach the server. Try again.'; });
+    });
+  }
+  var ub = document.getElementById('un-btn');
+  if (ub) {
+    var t = new URLSearchParams(location.search).get('t') || '', um = document.getElementById('un-msg');
+    ub.addEventListener('click', function () {
+      if (!t) { um.className = 'msg'; um.textContent = 'This link is missing its code. Use the link from the email.'; return; }
+      ub.disabled = true;
+      fetch('/api/subscribe', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ unsubscribe: t }) })
+        .then(function (r) { um.className = r.ok ? 'msg ok' : 'msg'; um.textContent = r.ok ? 'You have been unsubscribed.' : 'Could not unsubscribe. Try again.'; ub.disabled = false; })
+        .catch(function () { um.className = 'msg'; um.textContent = 'Could not reach the server.'; ub.disabled = false; });
+    });
+  }
+})();
