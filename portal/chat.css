@@ -1,0 +1,28 @@
+/* CardioSense help chat: FAQ answers in English or Hindi */
+.cc-fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 90; display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 18px 0 14px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--btn-fg, #fff); font: 600 .95rem var(--font); cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+:root:not([data-theme="dark"]) .cc-fab { color: #fff; }
+.cc-fab svg { width: 20px; height: 20px; }
+.cc-panel { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 60px); z-index: 91; width: min(380px, calc(100vw - 32px)); height: min(560px, calc(100vh - 120px)); display: none; flex-direction: column; background: var(--bg); color: var(--fg); border: 1px solid var(--line-strong); border-radius: 16px; box-shadow: 0 16px 48px rgba(0,0,0,.22); overflow: hidden; font-family: var(--font); }
+.cc-panel.open { display: flex; }
+.cc-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--bg-soft); }
+.cc-head b { font-size: .98rem; flex: 1; font-weight: 600; }
+.cc-lang { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
+.cc-lang button { border: 0; background: transparent; color: var(--dim); padding: 5px 10px; font: 600 .82rem var(--font); cursor: pointer; }
+.cc-lang button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+:root[data-theme="dark"] .cc-lang button[aria-pressed="true"] { color: #05222B; }
+.cc-x { border: 0; background: transparent; color: var(--dim); font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 0 4px; }
+.cc-log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.cc-m { max-width: 88%; padding: 10px 13px; border-radius: 14px; font-size: .94rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cc-m.bot { align-self: flex-start; background: var(--bg-soft); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.cc-m.me { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+:root[data-theme="dark"] .cc-m.me { color: #05222B; }
+.cc-m.warn { border-color: var(--bad); }
+.cc-m a { color: var(--accent); }
+.cc-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
+.cc-chips button { border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg); border-radius: 999px; padding: 6px 12px; font: 500 .84rem var(--font); cursor: pointer; }
+.cc-chips button:hover { border-color: var(--accent); color: var(--accent); }
+.cc-form { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
+.cc-form input { flex: 1; min-width: 0; height: 42px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg); font: .95rem var(--font); }
+.cc-form button { height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: var(--btn); color: var(--btn-fg); font: 600 .92rem var(--font); cursor: pointer; }
+.cc-note { padding: 0 14px 10px; color: var(--dim); font-size: .75rem; }
+@media (max-width: 480px) { .cc-panel { right: 8px; left: 8px; width: auto; bottom: 72px; height: min(70vh, 560px); } }

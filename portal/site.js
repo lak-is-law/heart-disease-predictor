@@ -181,3 +181,13 @@
     return { name: f.name.value, email: f.email.value, password: f.password.value, website: f.website.value };
   });
 })();
+
+/* home splash: show once per session, then fade */
+(function () {
+  var s = document.getElementById('splash'); if (!s) return;
+  function done() { s.classList.add('done'); try { sessionStorage.setItem('cs-splash', '1'); } catch (e) { /* ignore */ } setTimeout(function () { document.documentElement.classList.remove('splash'); }, 600); }
+  if (!document.documentElement.classList.contains('splash')) return;
+  var t0 = Date.now(); function go() { setTimeout(done, Math.max(0, 2100 - (Date.now() - t0))); }
+  if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+  setTimeout(done, 4000);
+})();

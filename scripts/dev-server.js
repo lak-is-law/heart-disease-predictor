@@ -36,7 +36,7 @@ function createServer() {
   let p = u.pathname === '/' ? '/index.html' : u.pathname;
   if (!path.extname(p)) p += '.html';
   const file = path.join(root, 'portal', path.normalize(p));
-  if (!file.startsWith(path.join(root, 'portal')) || !fs.existsSync(file)) { res.statusCode = 404; return res.end('Not found'); }
+  if (!file.startsWith(path.join(root, 'portal')) || !fs.existsSync(file)) { res.statusCode = 404; res.setHeader('Content-Type', 'text/html; charset=utf-8'); return fs.createReadStream(path.join(root, 'portal', '404.html')).pipe(res); }
   res.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
   fs.createReadStream(file).pipe(res);
   });
