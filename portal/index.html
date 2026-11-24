@@ -40,6 +40,7 @@
   <div class="hx-sticky">
     <canvas id="hx-canvas" class="hx-canvas" aria-hidden="true"></canvas>
     <div class="hx-copy is-on" data-beat="0">
+      <p class="kicker" style="margin-bottom:18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg>Coronary disease risk estimation</p>
       <h1>Estimate heart disease risk from 13 clinical values.</h1>
       <p>CardioSense turns a cardiac work-up into a probability and shows which values moved it.</p>
       <div class="hx-actions"><a class="btn" href="/app">Open the workstation</a><a class="btn line" href="/download">Download</a></div>
@@ -52,13 +53,51 @@
   </div>
 </section>
 <main>
+<svg class="ecg" viewBox="0 0 1200 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30H210l12-6 10 6h60l8 8 10-30 12 40 10-18h40l12-8 16 8H560l12-6 10 6h60l8 8 10-30 12 40 10-18h40l12-8 16 8H1200"/></svg>
 <section class="sec" id="what"><div class="wrap">
+  <p class="kicker"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Clinical decision support, for study</p>
   <h2>A risk estimate you can inspect.</h2>
-  <p class="lede">Enter the values from a cardiac work-up. CardioSense gives a probability, shows what moved it, and lets you keep the assessment.</p>
-  <div class="cols3">
-    <div><h3>Estimate</h3><p>A logistic-regression model turns 13 clinical inputs into the probability that angiography would show coronary disease. Use the standard threshold or a high-sensitivity one.</p></div>
-    <div><h3>Inspect</h3><p>A 3D heart and an ECG trace respond to the inputs. They are teaching aids, not images of the patient.</p></div>
-    <div><h3>Keep a record</h3><p>Import a lab report as CSV, JSON or HL7, then save assessments to your account and review them on a dashboard.</p></div>
+  <p class="lede">Enter the values from a cardiac work-up. CardioSense returns the probability that angiography would show coronary disease, and shows which values moved it.</p>
+  <div class="stats">
+    <div><b>13</b><span>clinical inputs, from history, ECG, stress test and imaging</span></div>
+    <div><b>0.91</b><span>cross-validated AUC with all inputs (95% CI 0.87 to 0.94)</span></div>
+    <div><b>0.84</b><span>AUC without the invasive and stress-test inputs</span></div>
+    <div><b>303</b><span>patients in the UCI training data, one clinic</span></div>
+  </div>
+</div></section>
+
+<section class="sec soft" id="features"><div class="wrap">
+  <h2>What is inside.</h2>
+  <p class="lede">One workstation for entering a case, seeing the estimate and keeping a record.</p>
+  <div class="feat">
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6"/></svg><h3>Risk estimate</h3><p>Logistic regression on 13 inputs. Standard threshold 0.50, or a high-sensitivity threshold of 0.28.</p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><h3>3D heart</h3><p>Four chambers that turn and open along the four-chamber plane. A teaching aid, not an image of the patient.</p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><h3>Live ECG trace</h3><p>Rate and ST changes follow the inputs, so you can see how a value shifts the picture.</p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><h3>Lab report import</h3><p>Fill the form from a CSV, JSON, HL7 v2 or consultation-note file. Check every value after import.</p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><h3>Encrypted records</h3><p>Saved assessments are encrypted on the server (AES-256-GCM) and tied to your account. Sign-out ends the session server-side.</p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><h3>Desktop and browser</h3><p>Use it in a browser, or install it on macOS or Windows. Each installer lists its SHA-256 checksum.</p></div>
+  </div>
+</div></section>
+
+<section class="sec" id="how"><div class="wrap">
+  <h2>How an assessment works.</h2>
+  <p class="lede">Four steps from a patient record to a saved result.</p>
+  <ol class="steps">
+    <li><h3>Enter the case</h3><p>Type the 13 values, or import them from a lab report.</p></li>
+    <li><h3>Read the estimate</h3><p>See the probability, the threshold used and the flag.</p></li>
+    <li><h3>Inspect the drivers</h3><p>The heart and ECG respond as you change a value.</p></li>
+    <li><h3>Save it</h3><p>Keep the assessment on your dashboard, or delete it.</p></li>
+  </ol>
+  <h3 style="margin:48px 0 14px;font-size:1.06rem">The 13 inputs</h3>
+  <ul class="inputs"><li>Age</li><li>Sex</li><li>Chest-pain type</li><li>Resting blood pressure</li><li>Cholesterol</li><li>Fasting glucose</li><li>Resting ECG</li><li>Max heart rate</li><li>Exercise angina</li><li>ST depression</li><li>ST slope</li><li class="req">Vessels on fluoroscopy (required)</li><li class="req">Thallium result (required)</li></ul>
+</div></section>
+
+<section class="sec soft" id="evidence"><div class="wrap split">
+  <div><h2>Honest about accuracy.</h2><p class="lede">Figures are from repeated cross-validation on the 303-patient training set. They are not a test at another site, and a good AUC does not show that using the tool improves care.</p><a class="btn line" href="/features#limits">Read the limits</a></div>
+  <div class="bars">
+    <div class="bar"><b><span>All 13 inputs</span><span>AUC 0.91</span></b><i><u style="width:91%"></u></i><small>95% CI 0.87 to 0.94</small></div>
+    <div class="bar"><b><span>Without invasive and stress-test inputs</span><span>AUC 0.84</span></b><i><u style="width:84%"></u></i><small>95% CI 0.79 to 0.88</small></div>
+    <div class="bar"><b><span>High-sensitivity threshold 0.28</span><span>about 88% of cases flagged</span></b><i><u style="width:88%"></u></i><small>Also flags many people without disease</small></div>
   </div>
 </div></section>
 
@@ -68,7 +107,7 @@
   <div class="shots"><figure class="shot"><img class="t-light" src="/img/workstation-light.jpg" alt="The workstation: inputs, estimate and heart." width="1200" height="750" loading="lazy"><img class="t-dark" src="/img/workstation-dark.jpg" alt="The workstation: inputs, estimate and heart." width="1200" height="750" loading="lazy"><figcaption>The workstation: inputs, estimate and heart.</figcaption></figure><figure class="shot"><img class="t-light" src="/img/dashboard-light.jpg" alt="The dashboard: saved assessments." width="1200" height="750" loading="lazy"><img class="t-dark" src="/img/dashboard-dark.jpg" alt="The dashboard: saved assessments." width="1200" height="750" loading="lazy"><figcaption>The dashboard: saved assessments.</figcaption></figure></div>
 </div></section>
 
-<section class="sec" id="download"><div class="wrap">
+<section class="sec soft" id="download"><div class="wrap">
   <h2>Download.</h2>
   <p class="lede">Installers for macOS and Windows. Each lists its SHA-256 checksum so you can verify the file.</p>
   <div class="dl" id="builds" data-limit="4"><div class="empty">Loading...</div></div>
@@ -92,7 +131,7 @@
   </form>
 </div></section>
 
-<section class="sec" id="faq"><div class="wrap faq-wrap">
+<section class="sec soft" id="faq"><div class="wrap faq-wrap">
   <h2>Questions.</h2>
   <details class="faq"><summary>Is it a medical device?</summary><p>No. It is a research prototype, not reviewed by any regulator. Do not use it to diagnose, to rule out disease or to decide care.</p></details>
   <details class="faq"><summary>How accurate is it?</summary><p>On repeated cross-validation of the 303-patient training set, the area under the ROC curve is 0.91 with all 13 inputs and 0.84 without the invasive and stress-test inputs. It has not been tested at another site or prospectively. <a href="/features#limits">Details and limits</a>.</p></details>

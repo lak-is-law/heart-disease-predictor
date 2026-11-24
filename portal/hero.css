@@ -7,7 +7,7 @@
 .hx-copy.is-on { opacity: 1; transform: translateY(-50%); pointer-events: auto; }
 .hx-copy h1, .hx-copy h2 { margin: 0 0 20px; font-weight: 500; font-size: clamp(2.5rem, 5.2vw, 4.5rem); line-height: 1.03; letter-spacing: -.035em; text-wrap: balance; }
 .hx-copy h2 { font-size: clamp(2.25rem, 4.4vw, 3.75rem); }
-.hx-copy p { margin: 0 0 32px; color: var(--dim); font-size: clamp(1.0625rem, 1.4vw, 1.25rem); line-height: 1.5; max-width: 26em; }
+.hx-copy p.kicker { margin: 0 0 18px; color: var(--accent); font-size: .95rem; max-width: none; } .hx-copy p { margin: 0 0 32px; color: var(--dim); font-size: clamp(1.0625rem, 1.4vw, 1.25rem); line-height: 1.5; max-width: 26em; }
 .hx-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .hx-note { position: absolute; left: max(24px, calc((100vw - 1180px) / 2)); bottom: 24px; margin: 0; color: var(--dim); font-size: .8rem; }
 /* chamber labels */

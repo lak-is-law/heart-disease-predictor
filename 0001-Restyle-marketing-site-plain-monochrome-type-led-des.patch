@@ -1,0 +1,1066 @@
+From 694fc812828affa1936340319eb6b0f1a1e70396 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 24 Nov 2026 07:27:35 +0000
+Subject: [PATCH] Restyle marketing site: plain monochrome type-led design,
+ flat hero background in both themes
+
+Remove gradients, glow, cyan accent, pills and card grids; rows for features and downloads; stacked social sign-in buttons; mobile menu carries account links.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013wfdDS5MaZTKAFnBmj9ziu
+---
+ portal/download.html |  37 +++----
+ portal/features.html |  59 +++++------
+ portal/hero-heart.js |   4 +-
+ portal/hero.css      |  69 +++++--------
+ portal/index.html    | 171 +++++++++++++-----------------
+ portal/signin.html   |  35 ++++---
+ portal/signup.html   |  38 +++----
+ portal/site.css      | 240 +++++++++++++++++++++----------------------
+ portal/site.js       |  37 ++++---
+ 9 files changed, 323 insertions(+), 367 deletions(-)
+
+diff --git a/portal/download.html b/portal/download.html
+index 275267b..5400d83 100644
+--- a/portal/download.html
++++ b/portal/download.html
+@@ -4,56 +4,57 @@
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Download | CardioSense</title>
+-<meta name="description" content="Download CardioSense for macOS and Windows and verify the file.">
+-<meta name="theme-color" content="#F6F8FB">
++<meta name="description" content="Download CardioSense for macOS and Windows.">
++<meta name="theme-color" content="#FFFFFF">
+ <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+ <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+ <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+ <script src="/theme-init.js"></script>
+ <link rel="stylesheet" href="/site.css">
++
+ </head>
+ <body>
+ <header class="site-head">
+   <div class="wrap">
+-    <a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a>
++    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+     <nav class="nav" aria-label="Main">
+       <a href="/features">Features</a>
+       <a href="/download" aria-current="page">Download</a>
+       <a href="/#reviews">Reviews</a>
+       <a href="/app">Workstation</a>
++      <a class="m-only" href="/signin">Sign in</a><a class="m-only" href="/signup">Create account</a>
+     </nav>
+     <div class="head-right">
+-      <div id="acct" style="display:flex;align-items:center;gap:10px"></div>
++      <div id="acct" style="display:flex;align-items:center;gap:14px"></div>
+       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+-        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/></svg>
+-        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg>
++        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
++        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+       </button>
+       <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Menu" aria-expanded="false">
+-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
++        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+       </button>
+     </div>
+   </div>
+ </header>
+ <main class="wrap">
+-<div class="page-head"><h1>Download CardioSense</h1><p>Choose the build for your computer. Sign in to start the download.</p></div>
+-<div class="builds" id="builds"><div class="empty">Loading downloads...</div></div>
+-<div class="grid2" style="margin:56px 0 80px">
+-  <div class="card"><h3>Open this page on your phone</h3><p>The installers are for computers. Scan this code to open the download page on another device, then sign in there.</p>
+-  <div class="qr-box"><img src="/img/qr-download.svg" alt="QR code for cardiosense.lakshya.uk/download" width="168" height="168"></div>
+-  <p class="note" style="margin-top:10px">cardiosense.lakshya.uk/download</p></div>
+-  <div class="card"><h3>Verify a download</h3><p>Pick the file you downloaded. Your browser computes its SHA-256 locally and nothing is uploaded.</p>
+-  <div class="verify"><input type="file" id="verify-file" aria-label="Downloaded file"><label for="verify-expected" style="margin:0">Expected checksum (optional)</label><input type="text" id="verify-expected" placeholder="Paste the SHA-256 shown above"><div class="res" id="verify-res" role="status"></div></div></div>
++<div class="page-head"><h1>Download</h1><p>Choose the build for your computer. Sign in to start the download.</p></div>
++<div class="dl" id="builds"><div class="empty">Loading...</div></div>
++<div class="cols2">
++  <div><h2>Open on your phone</h2><p>The installers are for computers. Scan the code to open this page on another device.</p>
++  <div class="qr"><img src="/img/qr-download.svg" alt="QR code for cardiosense.lakshya.uk/download" width="160" height="160"></div></div>
++  <div><h2>Verify a download</h2><p>Choose the file you downloaded. Your browser computes its SHA-256 locally. Nothing is uploaded.</p>
++  <div class="verify"><input type="file" id="verify-file" aria-label="Downloaded file"><label for="verify-expected">Expected checksum (optional)</label><input type="text" id="verify-expected" placeholder="Paste the SHA-256 from the list above"><div class="res" id="verify-res" role="status"></div></div></div>
+ </div>
+ </main>
+ <footer class="site-foot">
+   <div class="wrap">
+     <div class="foot-grid">
+-      <div><a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a></div>
++      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+       <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
+       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
+-      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits of the model</a></div>
++      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits</a></div>
+     </div>
+-    <p class="legal">CardioSense is a research prototype built on a public dataset (UCI Heart Disease, 303 patients from one clinic). It is not a medical device, has not been reviewed by any regulator, and must not be used to make care decisions. Do not enter real patient information.</p>
++    <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
+   </div>
+ </footer>
+ <script src="/site.js"></script>
+diff --git a/portal/features.html b/portal/features.html
+index 2094cac..6c8b217 100644
+--- a/portal/features.html
++++ b/portal/features.html
+@@ -4,75 +4,76 @@
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Features | CardioSense</title>
+-<meta name="description" content="What CardioSense does, how the estimate is produced, and where its limits are.">
+-<meta name="theme-color" content="#F6F8FB">
++<meta name="description" content="What CardioSense does and where its limits are.">
++<meta name="theme-color" content="#FFFFFF">
+ <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+ <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+ <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+ <script src="/theme-init.js"></script>
+ <link rel="stylesheet" href="/site.css">
++
+ </head>
+ <body>
+ <header class="site-head">
+   <div class="wrap">
+-    <a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a>
++    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+     <nav class="nav" aria-label="Main">
+       <a href="/features" aria-current="page">Features</a>
+       <a href="/download">Download</a>
+       <a href="/#reviews">Reviews</a>
+       <a href="/app">Workstation</a>
++      <a class="m-only" href="/signin">Sign in</a><a class="m-only" href="/signup">Create account</a>
+     </nav>
+     <div class="head-right">
+-      <div id="acct" style="display:flex;align-items:center;gap:10px"></div>
++      <div id="acct" style="display:flex;align-items:center;gap:14px"></div>
+       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+-        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/></svg>
+-        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg>
++        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
++        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+       </button>
+       <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Menu" aria-expanded="false">
+-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
++        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+       </button>
+     </div>
+   </div>
+ </header>
+ <main class="wrap">
+-<div class="page-head"><h1>Features</h1><p>What each part of CardioSense does, in plain terms, and what it cannot do.</p></div>
++<div class="page-head"><h1>Features</h1><p>What each part does, in plain terms, and what it cannot do.</p></div>
+ 
+-<section class="feature" id="estimate"><div class="f-text"><span class="pill">Core</span><h2>A risk estimate from 13 inputs</h2>
++<section class="row" id="estimate"><h2>The estimate</h2><div class="body">
+ <p>Enter age, sex, chest-pain type, resting blood pressure, cholesterol, fasting glucose, resting ECG, maximum heart rate, exercise angina, ST depression, ST slope, the number of vessels seen on fluoroscopy and the thallium result.</p>
+-<ul><li>The output is a probability that angiography would show coronary disease.</li><li>Standard mode flags at 0.50. High-sensitivity mode flags at 0.28, which caught about 88% of cases in cross-validation and also flags many people without disease.</li><li>Vessel count and thallium are required. If they are missing, no estimate is shown.</li></ul></div>
+-<div class="card"><h3>How it works</h3><ol class="steps" style="grid-template-columns:1fr"><li><b>Enter values</b><span>Type them in, pick a sample case, or import a report.</span></li><li><b>Score</b><span>The model computes a probability in your browser.</span></li><li><b>Review</b><span>See the estimate, the threshold used and the visuals.</span></li></ol></div></section>
++<ul><li>The output is the probability that angiography would show coronary disease.</li><li>Standard mode flags at 0.50. High-sensitivity mode flags at 0.28, which caught about 88% of cases in cross-validation and also flags many people without disease.</li><li>Vessel count and thallium are required. Without them no estimate is shown.</li></ul></div></section>
+ 
+-<section class="feature" id="explain"><div class="f-text"><span class="pill">Visuals</span><h2>An interactive heart and ECG trace</h2>
++<section class="row" id="explain"><h2>The heart and ECG</h2><div class="body">
+ <p>A 3D heart with four chambers turns and opens along the four-chamber plane. The ECG trace and coronary view respond to your inputs.</p>
+-<ul><li>These are teaching aids driven by the inputs. They are not measurements or images of the patient.</li></ul></div>
+-<figure class="shot"><img class="t-light" src="/img/workstation-light.jpg" alt="The workstation with the 3D heart." loading="lazy"><img class="t-dark" src="/img/workstation-dark.jpg" alt="The workstation with the 3D heart." loading="lazy"><figcaption>The workstation with the 3D heart.</figcaption></figure></section>
++<p class="dim">These are teaching aids driven by the inputs. They are not measurements or images of the patient.</p>
++<figure class="shot"><img class="t-light" src="/img/workstation-light.jpg" alt="The workstation." width="1200" height="750" loading="lazy"><img class="t-dark" src="/img/workstation-dark.jpg" alt="The workstation." width="1200" height="750" loading="lazy"><figcaption>The workstation.</figcaption></figure></div></section>
+ 
+-<section class="feature" id="labs"><div class="f-text"><span class="pill">Import</span><h2>Lab report import</h2>
+-<p>Drop in a lab report and the matching fields are filled for you. CSV, JSON, HL7 and plain-text consultation notes are supported. Check every imported value before relying on it.</p></div>
+-<div class="card"><h3>Supported files</h3><p>CSV, JSON, HL7 v2 messages and text notes. Sample files are included in the workstation.</p><a class="more" href="/app">Try a sample</a></div></section>
++<section class="row" id="labs"><h2>Lab report import</h2><div class="body">
++<p>Drop in a lab report and the matching fields are filled. CSV, JSON, HL7 v2 and plain-text consultation notes are supported. Sample files are included in the workstation. Check every imported value before relying on it.</p>
++<p><a href="/app">Open the workstation</a></p></div></section>
+ 
+-<section class="feature" id="dashboard"><div class="f-text"><span class="pill">Account</span><h2>Accounts and a dashboard</h2>
++<section class="row" id="dashboard"><h2>Accounts and dashboard</h2><div class="body">
+ <p>Create an account with your email, or sign in with Google, Microsoft, X or ChatGPT where enabled. Save assessments and review them later.</p>
+-<ul><li>Saved fields are encrypted on the server with AES-256-GCM.</li><li>Signing out ends the session on the server, not only in your browser.</li><li>Delete any saved assessment, or your whole account, from the dashboard.</li></ul></div>
+-<figure class="shot"><img class="t-light" src="/img/dashboard-light.jpg" alt="The dashboard with saved assessments." loading="lazy"><img class="t-dark" src="/img/dashboard-dark.jpg" alt="The dashboard with saved assessments." loading="lazy"><figcaption>The dashboard with saved assessments.</figcaption></figure></section>
++<ul><li>Saved fields are encrypted on the server with AES-256-GCM.</li><li>Signing out ends the session on the server, not only in your browser.</li><li>Delete any saved assessment, or all of them, from the dashboard.</li></ul>
++<figure class="shot"><img class="t-light" src="/img/dashboard-light.jpg" alt="The dashboard." width="1200" height="750" loading="lazy"><img class="t-dark" src="/img/dashboard-dark.jpg" alt="The dashboard." width="1200" height="750" loading="lazy"><figcaption>The dashboard.</figcaption></figure></div></section>
+ 
+-<section class="feature" id="desktop"><div class="f-text"><span class="pill">Desktop</span><h2>macOS and Windows apps</h2>
+-<p>Installers for Apple silicon and Intel Macs, and for Windows on x64 and ARM64. Every installer lists a SHA-256 checksum, and the download page can check a file for you.</p><p><a class="btn" href="/download">Go to downloads</a></p></div>
+-<div class="card"><h3>Which one do I need?</h3><p>On a Mac, open the Apple menu, choose About This Mac and look at Chip. On Windows, open Settings, System, About and look at System type.</p></div></section>
++<section class="row" id="desktop"><h2>Desktop apps</h2><div class="body">
++<p>Installers for Apple silicon and Intel Macs, and for Windows on x64 and ARM64. Each lists a SHA-256 checksum, and the download page can check a file for you.</p>
++<p>On a Mac, choose Apple menu, About This Mac and read the Chip line. On Windows, open Settings, System, About and read System type.</p>
++<p><a class="btn" href="/download">Go to downloads</a></p></div></section>
+ 
+-<section class="feature" id="limits"><div class="f-text"><span class="pill">Honest limits</span><h2>What it cannot do</h2>
+-<ul><li>It was trained on 303 patients from one clinic in the 1980s, all referred for angiography. 97 were women.</li><li>The label is angiographic disease, not future heart attacks.</li><li>AUC is 0.91 (95% CI 0.87 to 0.94) with all 13 inputs and 0.84 (0.79 to 0.88) without the invasive and stress-test inputs.</li><li>It has not been tested prospectively or at another site. A good AUC does not show that using it improves outcomes.</li><li>A low estimate does not rule out disease.</li></ul></div>
+-<div class="card"><h3>Not a medical device</h3><p>No regulatory clearance or exemption is claimed. Do not use it for care decisions or with real patient information.</p></div></section>
++<section class="row" id="limits"><h2>Limits</h2><div class="body">
++<ul><li><strong>Small, old data.</strong> 303 patients from one clinic in the 1980s, all referred for angiography. 97 were women.</li><li><strong>The label is angiographic disease,</strong> not future heart attacks.</li><li><strong>Accuracy.</strong> AUC is 0.91 (95% CI 0.87 to 0.94) with all 13 inputs and 0.84 (0.79 to 0.88) without the invasive and stress-test inputs.</li><li><strong>Not validated.</strong> It has not been tested prospectively or at another site. A good AUC does not show that using it improves outcomes.</li><li><strong>A low estimate does not rule out disease.</strong></li><li><strong>Not a medical device.</strong> No regulatory clearance or exemption is claimed.</li></ul></div></section>
+ </main>
+ <footer class="site-foot">
+   <div class="wrap">
+     <div class="foot-grid">
+-      <div><a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a></div>
++      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+       <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
+       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
+-      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits of the model</a></div>
++      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits</a></div>
+     </div>
+-    <p class="legal">CardioSense is a research prototype built on a public dataset (UCI Heart Disease, 303 patients from one clinic). It is not a medical device, has not been reviewed by any regulator, and must not be used to make care decisions. Do not enter real patient information.</p>
++    <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
+   </div>
+ </footer>
+ <script src="/site.js"></script>
+diff --git a/portal/hero-heart.js b/portal/hero-heart.js
+index 684db2d..bc4dd19 100644
+--- a/portal/hero-heart.js
++++ b/portal/hero-heart.js
+@@ -163,10 +163,10 @@
+     '  vec3 hv1=normalize(L1+v),hv2=normalize(L2+v);',
+     '  float d1=clamp(dot(nw,L1)*.5+.5,0.,1.);',
+     '  vec3 lit=col*(.10+.95*d1*d1)*vec3(1.,.94,.9);',
+-    '  lit+=col*vec3(.0,.55,.7)*pow(clamp(dot(nw,L2)*.5+.5,0.,1.),3.)*.55;',     // cyan rim from the favicon palette
++    '  lit+=col*vec3(.45,.5,.6)*pow(clamp(dot(nw,L2)*.5+.5,0.,1.),3.)*.35;',     // cool fill light
+     '  lit+=col*vec3(.1,.18,.4)*clamp(dot(nw,L3)*.5+.5,0.,1.)*.25;',
+     '  lit+=vec3(1.,.95,.9)*pow(max(dot(nw,hv1),0.),gloss)*spec;',
+-    '  lit+=vec3(.0,.9,1.)*pow(max(dot(nw,hv2),0.),gloss*.6)*spec*.7;',
++    '  lit+=vec3(.9,.95,1.)*pow(max(dot(nw,hv2),0.),gloss*.6)*spec*.5;',
+     '  float fr=.03+.97*pow(1.-ndv,4.);',
+     '  lit+=env(reflect(-v,nw))*fr*(isCut?.25:.9);',
+     '  lit*=mix(.35,1.,ao);',
+diff --git a/portal/hero.css b/portal/hero.css
+index ce3e50e..db7dc55 100644
+--- a/portal/hero.css
++++ b/portal/hero.css
+@@ -1,51 +1,30 @@
+-/* ---- hero ---- */
+-.hx { position: relative; height: 300vh; background: var(--hx-bg); }
+-.hx-sticky {
+-  position: sticky; top: var(--hx-head); height: calc(100vh - var(--hx-head)); min-height: 520px;
+-  overflow: hidden;
+-  background: radial-gradient(120% 90% at 78% 40%, #0E1726 0%, #07090E 62%);
+-}
+-.hx-canvas {
+-  position: absolute; top: 0; right: 0; width: 62%; height: 100%;
+-  opacity: 0; transition: opacity 0.8s ease;
+-}
++/* Home hero: a flat page-coloured stage with the heart on the right and copy on the left. Same in light and dark. */
++.hx { position: relative; height: 300vh; background: var(--bg); }
++.hx-sticky { position: sticky; top: var(--head); height: calc(100vh - var(--head)); min-height: 540px; overflow: hidden; background: var(--bg); }
++.hx-canvas { position: absolute; top: 0; right: 0; width: 60%; height: 100%; opacity: 0; transition: opacity .8s ease; }
+ .hx-canvas.ready { opacity: 1; }
+-.hx-copy {
+-  position: absolute; left: max(24px, 6vw); top: 50%; width: min(520px, 42vw);
+-  transform: translateY(-46%); opacity: 0; pointer-events: none;
+-  transition: opacity 0.5s ease, transform 0.5s ease;
+-}
++.hx-copy { position: absolute; left: max(24px, calc((100vw - 1180px) / 2)); top: 50%; width: min(520px, 40vw); transform: translateY(-46%); opacity: 0; pointer-events: none; transition: opacity .5s ease, transform .5s ease; }
+ .hx-copy.is-on { opacity: 1; transform: translateY(-50%); pointer-events: auto; }
+-.hx-copy h1, .hx-copy h2 {
+-  margin: 0 0 18px; color: var(--hx-text); font-weight: 600;
+-  font-size: clamp(2.25rem, 4.6vw, 4.25rem); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance;
+-}
+-.hx-copy h2 { font-size: clamp(2rem, 3.8vw, 3.5rem); }
+-.hx-copy p { margin: 0 0 28px; color: var(--hx-dim); font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.5; max-width: 30em; }
+-.hx-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+-.hx-btn {
+-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 980px;
+-  background: var(--hx-cyan); color: #04121A; font-weight: 600; font-size: 0.9375rem; text-decoration: none;
+-}
+-.hx-btn:hover { background: #5CF6FF; }
+-.hx-link { color: var(--hx-sky); font-size: 0.9375rem; text-decoration: none; }
+-.hx-link:hover { text-decoration: underline; }
+-.hx-btn:focus-visible, .hx-link:focus-visible { outline: 2px solid var(--hx-cyan); outline-offset: 3px; }
+-.hx-note { position: absolute; left: max(24px, 6vw); bottom: 20px; margin: 0; color: #66728A; font-size: 0.75rem; }
++.hx-copy h1, .hx-copy h2 { margin: 0 0 20px; font-weight: 500; font-size: clamp(2.5rem, 5.2vw, 4.5rem); line-height: 1.03; letter-spacing: -.035em; text-wrap: balance; }
++.hx-copy h2 { font-size: clamp(2.25rem, 4.4vw, 3.75rem); }
++.hx-copy p { margin: 0 0 32px; color: var(--dim); font-size: clamp(1.0625rem, 1.4vw, 1.25rem); line-height: 1.5; max-width: 26em; }
++.hx-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
++.hx-note { position: absolute; left: max(24px, calc((100vw - 1180px) / 2)); bottom: 24px; margin: 0; color: var(--dim); font-size: .8rem; }
++/* chamber labels */
++.hx-tag { position: absolute; z-index: 2; width: 0; height: 0; opacity: 0; pointer-events: none; transition: opacity .25s linear; }
++.hx-tag i { position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; border-radius: 50%; background: var(--fg); }
++.hx-tag span { position: absolute; top: -11px; white-space: nowrap; color: var(--fg); font-size: .85rem; font-weight: 500; }
++.hx-tag::before { content: ""; position: absolute; top: 0; height: 1px; width: 64px; background: var(--fg); opacity: .5; }
++.hx-tag-l span { right: 72px; } .hx-tag-r span { left: 72px; }
++.hx-tag-l::before { right: 4px; } .hx-tag-r::before { left: 4px; }
++.hx-progress { display: none; }
+ 
+ @media (max-width: 820px) {
+-  .hx-sticky { min-height: 560px; }
+-  .hx-canvas { width: 100%; height: 58%; top: auto; bottom: 0; }
+-  .hx-copy { top: 28px; transform: translateY(-10px); width: auto; right: 24px; left: 24px; }
++  .hx { height: 260vh; } .hx-sticky { min-height: 560px; }
++  .hx-canvas { width: 100%; height: 56%; top: auto; bottom: 0; }
++  .hx-copy { top: 24px; transform: translateY(-10px); width: auto; right: 24px; left: 24px; }
+   .hx-copy.is-on { transform: none; }
+-  .hx-copy h1 { font-size: 2.25rem; }
+-  .hx-copy h2 { font-size: 2rem; }
+-  .hx-copy p { font-size: 1rem; margin-bottom: 18px; }
+-  .hx-note { left: 24px; bottom: 12px; }
+-  .hx { height: 260vh; }
+-}
+-@media (prefers-reduced-motion: reduce) {
+-  .hx { height: auto; }
+-  .hx-sticky { position: relative; top: 0; height: auto; min-height: 640px; }
++  .hx-copy h1 { font-size: 2.5rem; } .hx-copy h2 { font-size: 2.25rem; } .hx-copy p { font-size: 1.0625rem; margin-bottom: 20px; }
++  .hx-note { left: 24px; bottom: 12px; } .hx-tag span { font-size: .75rem; } .hx-tag::before { width: 36px; } .hx-tag-l span { right: 44px; } .hx-tag-r span { left: 44px; }
+ }
+-
++@media (prefers-reduced-motion: reduce) { .hx { height: auto; } .hx-sticky { position: relative; top: 0; height: auto; min-height: 640px; } }
+diff --git a/portal/index.html b/portal/index.html
+index ff7d0a8..023ccad 100644
+--- a/portal/index.html
++++ b/portal/index.html
+@@ -3,143 +3,112 @@
+ <head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+-<title>CardioSense | Heart disease risk, explained</title>
+-<meta name="description" content="CardioSense estimates the probability of coronary artery disease from 13 clinical inputs and shows how each value contributes.">
+-<meta name="theme-color" content="#F6F8FB">
++<title>CardioSense</title>
++<meta name="description" content="Estimate coronary disease risk from 13 clinical values and see what drives it.">
++<meta name="theme-color" content="#FFFFFF">
+ <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+ <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+ <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+ <script src="/theme-init.js"></script>
+ <link rel="stylesheet" href="/site.css">
+-<link rel="stylesheet" href="/hero.css"></head>
++<link rel="stylesheet" href="/hero.css">
++</head>
+ <body>
+ <header class="site-head">
+   <div class="wrap">
+-    <a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a>
++    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+     <nav class="nav" aria-label="Main">
+       <a href="/features">Features</a>
+       <a href="/download">Download</a>
+-      <a href="/#reviews" aria-current="page">Reviews</a>
++      <a href="/#reviews">Reviews</a>
+       <a href="/app">Workstation</a>
++      <a class="m-only" href="/signin">Sign in</a><a class="m-only" href="/signup">Create account</a>
+     </nav>
+     <div class="head-right">
+-      <div id="acct" style="display:flex;align-items:center;gap:10px"></div>
++      <div id="acct" style="display:flex;align-items:center;gap:14px"></div>
+       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+-        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/></svg>
+-        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg>
++        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
++        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+       </button>
+       <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Menu" aria-expanded="false">
+-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
++        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+       </button>
+     </div>
+   </div>
+ </header>
+ <section class="hx" id="hero-overview" aria-label="CardioSense">
+-    <div class="hx-sticky">
+-      <canvas id="hx-canvas" class="hx-canvas" aria-hidden="true"></canvas>
+-
+-      <div class="hx-copy is-on" data-beat="0">
+-        <h1>Heart disease risk, explained.</h1>
+-        <p>Enter a patient's measurements. CardioSense estimates the risk and shows which values drive it.</p>
+-        <div class="hx-actions">
+-          <a class="hx-btn" href="/app">Open the workstation</a>
+-          <a class="hx-link" href="/download">Download</a>
+-        </div>
+-      </div>
+-
+-      <div class="hx-copy" data-beat="1">
+-        <h2>Look inside.</h2>
+-        <p>Keep scrolling. The heart turns and opens along the four-chamber plane.</p>
+-      </div>
+-
+-      <div class="hx-copy" data-beat="2">
+-        <h2>Four chambers, one estimate.</h2>
+-        <p>The workstation pairs an interactive 3D heart with the risk estimate, an ECG trace and lab-report import.</p>
+-      </div>
+-
+-      <div class="hx-copy" data-beat="3">
+-        <h2>Start with a patient.</h2>
+-        <p>Use it in your browser, or install the desktop app for macOS and Windows.</p>
+-        <div class="hx-actions">
+-          <a class="hx-btn" href="/app">Open the workstation</a>
+-          <a class="hx-link" href="/download">Download</a>
+-        </div>
+-      </div>
+-
+-      <p class="hx-note">Educational project. Not a medical device.</p>
+-    </div>
+-  </section>
+-<main>
+-<section class="sec" id="what">
+-  <div class="wrap">
+-    <h2>What CardioSense does</h2>
+-    <p class="lede">Enter the measurements from a cardiac work-up. CardioSense returns a probability, shows which values pushed it up or down, and keeps a record of your assessments.</p>
+-    <div class="grid3">
+-      <div class="card"><h3>Estimate</h3><p>A logistic-regression model turns 13 clinical inputs into the probability that angiography would show coronary disease. Choose a standard or high-sensitivity threshold.</p><a class="more" href="/features#estimate">How the estimate works</a></div>
+-      <div class="card"><h3>Explain</h3><p>An interactive heart and an ECG trace respond to your inputs, so each value has a visible effect on the result.</p><a class="more" href="/features#explain">See the visuals</a></div>
+-      <div class="card"><h3>Import and save</h3><p>Load a lab report as CSV, JSON or HL7, then save assessments to your account and review them on a dashboard.</p><a class="more" href="/features#dashboard">See the dashboard</a></div>
++  <div class="hx-sticky">
++    <canvas id="hx-canvas" class="hx-canvas" aria-hidden="true"></canvas>
++    <div class="hx-copy is-on" data-beat="0">
++      <h1>Estimate heart disease risk from 13 clinical values.</h1>
++      <p>CardioSense turns a cardiac work-up into a probability and shows which values moved it.</p>
++      <div class="hx-actions"><a class="btn" href="/app">Open the workstation</a><a class="btn line" href="/download">Download</a></div>
+     </div>
++    <div class="hx-copy" data-beat="1"><h2>Look inside.</h2><p>Keep scrolling. The heart turns and opens along the four-chamber plane.</p></div>
++    <div class="hx-copy" data-beat="2"><h2>Change a value, see the effect.</h2><p>The estimate, the heart and the ECG trace respond as you edit the inputs.</p></div>
++    <div class="hx-copy" data-beat="3"><h2>Try it now.</h2><p>Use it in your browser, or install the desktop app for macOS or Windows.</p>
++      <div class="hx-actions"><a class="btn" href="/app">Open the workstation</a><a class="btn line" href="/download">Download</a></div></div>
++    <p class="hx-note">Research prototype. Not a medical device.</p>
+   </div>
+ </section>
+-
+-<section class="sec alt" id="screens">
+-  <div class="wrap">
+-    <h2>See it working</h2>
+-    <p class="lede">The workstation and the dashboard. Both screenshots use synthetic example data.</p>
+-    <div class="grid2">
+-      <figure class="shot"><img class="t-light" src="/img/workstation-light.jpg" alt="The workstation: inputs, risk estimate and 3D heart." loading="lazy"><img class="t-dark" src="/img/workstation-dark.jpg" alt="The workstation: inputs, risk estimate and 3D heart." loading="lazy"><figcaption>The workstation: inputs, risk estimate and 3D heart.</figcaption></figure>
+-      <figure class="shot"><img class="t-light" src="/img/dashboard-light.jpg" alt="The dashboard: saved assessments and risk bands." loading="lazy"><img class="t-dark" src="/img/dashboard-dark.jpg" alt="The dashboard: saved assessments and risk bands." loading="lazy"><figcaption>The dashboard: saved assessments and risk bands.</figcaption></figure>
+-    </div>
++<main>
++<section class="sec" id="what"><div class="wrap">
++  <h2>A risk estimate you can inspect.</h2>
++  <p class="lede">Enter the values from a cardiac work-up. CardioSense gives a probability, shows what moved it, and lets you keep the assessment.</p>
++  <div class="cols3">
++    <div><h3>Estimate</h3><p>A logistic-regression model turns 13 clinical inputs into the probability that angiography would show coronary disease. Use the standard threshold or a high-sensitivity one.</p></div>
++    <div><h3>Inspect</h3><p>A 3D heart and an ECG trace respond to the inputs. They are teaching aids, not images of the patient.</p></div>
++    <div><h3>Keep a record</h3><p>Import a lab report as CSV, JSON or HL7, then save assessments to your account and review them on a dashboard.</p></div>
+   </div>
+-</section>
++</div></section>
+ 
+-<section class="sec" id="download">
+-  <div class="wrap">
+-    <h2>Download for your computer</h2>
+-    <p class="lede">Installers for macOS and Windows on Intel, AMD and ARM. Each one lists its SHA-256 checksum so you can verify it.</p>
+-    <div class="builds" id="builds" data-limit="4"><div class="empty">Loading downloads...</div></div>
+-    <p class="note" style="margin-top:18px">Prefer not to install? <a href="/app">Open the workstation in your browser</a>. <a href="/download">All downloads, checksum check and QR code</a>.</p>
+-  </div>
+-</section>
++<section class="sec" id="screens"><div class="wrap">
++  <h2>The workstation and the dashboard.</h2>
++  <p class="lede">Both screenshots use synthetic data.</p>
++  <div class="shots"><figure class="shot"><img class="t-light" src="/img/workstation-light.jpg" alt="The workstation: inputs, estimate and heart." width="1200" height="750" loading="lazy"><img class="t-dark" src="/img/workstation-dark.jpg" alt="The workstation: inputs, estimate and heart." width="1200" height="750" loading="lazy"><figcaption>The workstation: inputs, estimate and heart.</figcaption></figure><figure class="shot"><img class="t-light" src="/img/dashboard-light.jpg" alt="The dashboard: saved assessments." width="1200" height="750" loading="lazy"><img class="t-dark" src="/img/dashboard-dark.jpg" alt="The dashboard: saved assessments." width="1200" height="750" loading="lazy"><figcaption>The dashboard: saved assessments.</figcaption></figure></div>
++</div></section>
+ 
+-<section class="sec alt" id="reviews">
+-  <div class="wrap">
+-    <h2>Reviews</h2>
+-    <p class="lede">Written by people who signed in and used CardioSense. Nothing here is pre-written.</p>
+-    <div class="rev-top"><div class="rev-avg" id="rev-avg">-</div><div><div class="stars" id="rev-stars"></div><div class="note" id="rev-count"></div></div></div>
+-    <div class="rev-list" id="rev-list"></div>
+-    <div id="rev-gate" class="banner">Sign in to write a review. <a href="/signin?next=/%23reviews">Sign in</a> or <a href="/signup?next=/%23reviews">create an account</a>.</div>
+-    <form class="rev-form" id="rev-form" hidden>
+-      <label id="rev-l">Your rating</label>
+-      <div class="star-pick" role="group" aria-labelledby="rev-l"><button type="button" aria-label="1 of 5" aria-pressed="false">★</button><button type="button" aria-label="2 of 5" aria-pressed="false">★</button><button type="button" aria-label="3 of 5" aria-pressed="false">★</button><button type="button" aria-label="4 of 5" aria-pressed="false">★</button><button type="button" aria-label="5 of 5" aria-pressed="false">★</button></div>
+-      <label for="rev-text">Your review</label>
+-      <textarea id="rev-text" rows="4" maxlength="500" placeholder="What did you use it for, and how did it go?"></textarea>
+-      <p class="msg" id="rev-msg" role="status"></p>
+-      <button class="btn" type="submit">Publish review</button>
+-      <p class="hint">Shown with your first name and last initial. You can edit it by submitting again.</p>
+-    </form>
+-  </div>
+-</section>
++<section class="sec" id="download"><div class="wrap">
++  <h2>Download.</h2>
++  <p class="lede">Installers for macOS and Windows. Each lists its SHA-256 checksum so you can verify the file.</p>
++  <div class="dl" id="builds" data-limit="4"><div class="empty">Loading...</div></div>
++  <p class="note" style="margin-top:20px">No install needed: <a href="/app">use it in your browser</a>. <a href="/download">More download options</a>.</p>
++</div></section>
+ 
+-<section class="sec" id="faq">
+-  <div class="wrap" style="max-width:820px">
+-    <h2>Questions</h2>
+-    <details class="faq"><summary>Is CardioSense a medical device?</summary><p>No. It is a research prototype and has not been reviewed by any regulator. It must not be used to diagnose, to rule out disease or to decide care.</p></details>
+-    <details class="faq"><summary>How accurate is it?</summary><p>On repeated cross-validation of the 303-patient training set, the area under the ROC curve is 0.91 using all 13 inputs, and 0.84 without the invasive and stress-test inputs. It has not been tested at any other site or prospectively. <a href="/features#limits">Details and limits</a>.</p></details>
+-    <details class="faq"><summary>What happens to the data I enter?</summary><p>The calculator runs in your browser. If you choose to save an assessment, the fields are encrypted on the server and tied to your account. Use synthetic or de-identified data only.</p></details>
+-    <details class="faq"><summary>Which platforms are supported?</summary><p>macOS on Apple silicon and Intel, and Windows on x64 and ARM64. The workstation also runs in any modern browser.</p></details>
+-  </div>
+-</section>
++<section class="sec" id="reviews"><div class="wrap">
++  <h2>Reviews.</h2>
++  <p class="lede">Written by people who signed in and used CardioSense.</p>
++  <div class="rev-top"><div class="rev-avg" id="rev-avg">-</div><div><div class="stars" id="rev-stars"></div><div class="note" id="rev-count"></div></div></div>
++  <div class="rev-list" id="rev-list"></div>
++  <p id="rev-gate" class="note">Sign in to write a review. <a href="/signin?next=/%23reviews">Sign in</a> or <a href="/signup?next=/%23reviews">create an account</a>.</p>
++  <form class="rev-form" id="rev-form" hidden>
++    <label id="rev-l" style="margin-top:0">Rating</label>
++    <div class="star-pick" role="group" aria-labelledby="rev-l"><button type="button" aria-label="1 of 5" aria-pressed="false">★</button><button type="button" aria-label="2 of 5" aria-pressed="false">★</button><button type="button" aria-label="3 of 5" aria-pressed="false">★</button><button type="button" aria-label="4 of 5" aria-pressed="false">★</button><button type="button" aria-label="5 of 5" aria-pressed="false">★</button></div>
++    <label for="rev-text">Review</label>
++    <textarea id="rev-text" rows="4" maxlength="500" placeholder="What did you use it for?"></textarea>
++    <p class="hint">Shown with your first name and last initial. Submit again to edit.</p>
++    <p class="msg" id="rev-msg" role="status"></p>
++    <button class="btn" type="submit">Publish</button>
++  </form>
++</div></section>
++
++<section class="sec" id="faq"><div class="wrap faq-wrap">
++  <h2>Questions.</h2>
++  <details class="faq"><summary>Is it a medical device?</summary><p>No. It is a research prototype, not reviewed by any regulator. Do not use it to diagnose, to rule out disease or to decide care.</p></details>
++  <details class="faq"><summary>How accurate is it?</summary><p>On repeated cross-validation of the 303-patient training set, the area under the ROC curve is 0.91 with all 13 inputs and 0.84 without the invasive and stress-test inputs. It has not been tested at another site or prospectively. <a href="/features#limits">Details and limits</a>.</p></details>
++  <details class="faq"><summary>What happens to the data I enter?</summary><p>The calculator runs in your browser. If you save an assessment, the fields are encrypted on the server and tied to your account. Use synthetic or de-identified data only.</p></details>
++  <details class="faq"><summary>Which platforms are supported?</summary><p>macOS on Apple silicon and Intel, Windows on x64 and ARM64, and any modern browser.</p></details>
++</div></section>
+ </main>
+ <footer class="site-foot">
+   <div class="wrap">
+     <div class="foot-grid">
+-      <div><a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a></div>
++      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+       <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
+       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
+-      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits of the model</a></div>
++      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits</a></div>
+     </div>
+-    <p class="legal">CardioSense is a research prototype built on a public dataset (UCI Heart Disease, 303 patients from one clinic). It is not a medical device, has not been reviewed by any regulator, and must not be used to make care decisions. Do not enter real patient information.</p>
++    <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
+   </div>
+ </footer>
+ <script src="/site.js"></script>
+diff --git a/portal/signin.html b/portal/signin.html
+index b6cc75f..815b2dc 100644
+--- a/portal/signin.html
++++ b/portal/signin.html
+@@ -5,57 +5,60 @@
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Sign in | CardioSense</title>
+ <meta name="description" content="Sign in to CardioSense.">
+-<meta name="theme-color" content="#F6F8FB">
++<meta name="theme-color" content="#FFFFFF">
+ <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+ <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+ <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+ <script src="/theme-init.js"></script>
+ <link rel="stylesheet" href="/site.css">
++
+ </head>
+ <body>
+ <header class="site-head">
+   <div class="wrap">
+-    <a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a>
++    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+     <nav class="nav" aria-label="Main">
+       <a href="/features">Features</a>
+       <a href="/download">Download</a>
+       <a href="/#reviews" aria-current="page">Reviews</a>
+       <a href="/app">Workstation</a>
++      <a class="m-only" href="/signin">Sign in</a><a class="m-only" href="/signup">Create account</a>
+     </nav>
+     <div class="head-right">
+-      <div id="acct" style="display:flex;align-items:center;gap:10px"></div>
++      <div id="acct" style="display:flex;align-items:center;gap:14px"></div>
+       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+-        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/></svg>
+-        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg>
++        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
++        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+       </button>
+       <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Menu" aria-expanded="false">
+-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
++        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+       </button>
+     </div>
+   </div>
+ </header>
+-<main class="auth"><div class="auth-card">
+-<h1>Sign in</h1><p class="sub">Welcome back. Pick up where you left off.</p>
+-<div class="socials" id="socials"><a class="social" data-provider="google" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.800 3.500 14.600 2.500 12 2.500 6.800 2.500 2.600 6.700 2.600 12S6.800 21.500 12 21.500c5.500 0 9.100-3.900 9.100-9.300 0-.6-.1-1.100-.2-2z"/></svg>Google</a><a class="social" data-provider="microsoft" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#F25022" d="M3 3h8.500v8.500H3z"/><path fill="#7FBA00" d="M12.500 3H21v8.500h-8.500z"/><path fill="#00A4EF" d="M3 12.500h8.500V21H3z"/><path fill="#FFB900" d="M12.500 12.500H21V21h-8.500z"/></svg>Microsoft</a><a class="social" data-provider="x" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X</a><a class="social" data-provider="openai" href="#"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.500l8.500 4.900v9.200L12 21.500l-8.500-4.900V7.400z"/><circle cx="12" cy="12" r="3.200"/></svg>ChatGPT</a></div>
+-<div class="divider">or use email</div>
++<main class="auth"><div class="auth-box">
++<img class="mark" src="/favicon.svg" alt="" width="40" height="40">
++<h1>Welcome back</h1>
+ <form id="signin-form" novalidate>
+   <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+-  <label for="email">Email</label><input id="email" name="email" type="email" autocomplete="username" required>
++  <label for="email" style="margin-top:0">Email</label><input id="email" name="email" type="email" autocomplete="username" required>
+   <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required>
+   <p class="msg" id="auth-msg" role="alert"></p>
+-  <button class="btn" type="submit" style="width:100%;margin-top:8px">Sign in</button>
++  <button class="btn full" type="submit">Continue</button>
+ </form>
+-<p class="alt-link">New here? <a href="/signup">Create an account</a></p>
++<p class="alt-link">Don't have an account? <a href="/signup">Sign up</a></p>
++<div class="divider">or</div>
++<div class="socials" id="socials"><a class="social" data-provider="google" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23 12.27c0-.79-.07-1.54-.2-2.27H12v4.51h6.17a5.28 5.28 0 0 1-2.29 3.46v2.88h3.7C21.74 18.87 23 15.8 23 12.27z"/><path fill="#34A853" d="M12 23c3.1 0 5.7-1.03 7.6-2.79l-3.7-2.88c-1.03.69-2.34 1.1-3.9 1.1-3 0-5.54-2.03-6.45-4.75H1.74v2.97A11.5 11.5 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.55 13.68a6.9 6.9 0 0 1 0-4.36V6.35H1.74a11.5 11.5 0 0 0 0 10.3l3.81-2.97z"/><path fill="#EA4335" d="M12 5.58c1.69 0 3.2.58 4.39 1.72l3.29-3.29C17.7 2.17 15.1 1 12 1A11.5 11.5 0 0 0 1.74 6.35l3.81 2.97C6.46 7.6 9 5.58 12 5.58z"/></svg>Continue with Google</a><a class="social" data-provider="microsoft" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#F25022" d="M3 3h8.5v8.5H3z"/><path fill="#7FBA00" d="M12.5 3H21v8.5h-8.5z"/><path fill="#00A4EF" d="M3 12.5h8.5V21H3z"/><path fill="#FFB900" d="M12.5 12.5H21V21h-8.5z"/></svg>Continue with Microsoft</a><a class="social" data-provider="x" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Continue with X</a><a class="social" data-provider="openai" href="#"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z"/><circle cx="12" cy="12" r="3.2"/></svg>Continue with ChatGPT</a></div>
+ </div></main>
+ <footer class="site-foot">
+   <div class="wrap">
+     <div class="foot-grid">
+-      <div><a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a></div>
++      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+       <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
+       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
+-      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits of the model</a></div>
++      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits</a></div>
+     </div>
+-    <p class="legal">CardioSense is a research prototype built on a public dataset (UCI Heart Disease, 303 patients from one clinic). It is not a medical device, has not been reviewed by any regulator, and must not be used to make care decisions. Do not enter real patient information.</p>
++    <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
+   </div>
+ </footer>
+ <script src="/site.js"></script>
+diff --git a/portal/signup.html b/portal/signup.html
+index b2aab8e..57fdc4d 100644
+--- a/portal/signup.html
++++ b/portal/signup.html
+@@ -3,62 +3,64 @@
+ <head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+-<title>Create account | CardioSense</title>
++<title>Sign up | CardioSense</title>
+ <meta name="description" content="Create a CardioSense account.">
+-<meta name="theme-color" content="#F6F8FB">
++<meta name="theme-color" content="#FFFFFF">
+ <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+ <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+ <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+ <script src="/theme-init.js"></script>
+ <link rel="stylesheet" href="/site.css">
++
+ </head>
+ <body>
+ <header class="site-head">
+   <div class="wrap">
+-    <a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a>
++    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+     <nav class="nav" aria-label="Main">
+       <a href="/features">Features</a>
+       <a href="/download">Download</a>
+       <a href="/#reviews" aria-current="page">Reviews</a>
+       <a href="/app">Workstation</a>
++      <a class="m-only" href="/signin">Sign in</a><a class="m-only" href="/signup">Create account</a>
+     </nav>
+     <div class="head-right">
+-      <div id="acct" style="display:flex;align-items:center;gap:10px"></div>
++      <div id="acct" style="display:flex;align-items:center;gap:14px"></div>
+       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+-        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/></svg>
+-        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg>
++        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
++        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+       </button>
+       <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Menu" aria-expanded="false">
+-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
++        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+       </button>
+     </div>
+   </div>
+ </header>
+-<main class="auth"><div class="auth-card">
+-<h1>Create your account</h1><p class="sub">Save assessments, download the apps and write a review.</p>
+-<div class="socials" id="socials"><a class="social" data-provider="google" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.800 3.500 14.600 2.500 12 2.500 6.800 2.500 2.600 6.700 2.600 12S6.800 21.500 12 21.500c5.500 0 9.100-3.900 9.100-9.300 0-.6-.1-1.100-.2-2z"/></svg>Google</a><a class="social" data-provider="microsoft" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#F25022" d="M3 3h8.500v8.500H3z"/><path fill="#7FBA00" d="M12.500 3H21v8.500h-8.500z"/><path fill="#00A4EF" d="M3 12.500h8.500V21H3z"/><path fill="#FFB900" d="M12.500 12.500H21V21h-8.500z"/></svg>Microsoft</a><a class="social" data-provider="x" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X</a><a class="social" data-provider="openai" href="#"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.500l8.500 4.900v9.200L12 21.500l-8.500-4.900V7.400z"/><circle cx="12" cy="12" r="3.200"/></svg>ChatGPT</a></div>
+-<div class="divider">or use email</div>
++<main class="auth"><div class="auth-box">
++<img class="mark" src="/favicon.svg" alt="" width="40" height="40">
++<h1>Create your account</h1>
+ <form id="signup-form" novalidate>
+   <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+-  <label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name">
++  <label for="name" style="margin-top:0">Name</label><input id="name" name="name" type="text" autocomplete="name">
+   <label for="email">Email</label><input id="email" name="email" type="email" autocomplete="username" required>
+   <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="12" required>
+-  <p class="hint">At least 12 characters. A few random words work well.</p>
+-  <label for="confirm">Confirm password</label><input id="confirm" name="confirm" type="password" autocomplete="new-password" required>
++  <p class="hint">At least 12 characters.</p>
+   <p class="msg" id="auth-msg" role="alert"></p>
+-  <button class="btn" type="submit" style="width:100%;margin-top:8px">Create account</button>
++  <button class="btn full" type="submit">Continue</button>
+ </form>
+ <p class="alt-link">Already have an account? <a href="/signin">Sign in</a></p>
++<div class="divider">or</div>
++<div class="socials" id="socials"><a class="social" data-provider="google" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23 12.27c0-.79-.07-1.54-.2-2.27H12v4.51h6.17a5.28 5.28 0 0 1-2.29 3.46v2.88h3.7C21.74 18.87 23 15.8 23 12.27z"/><path fill="#34A853" d="M12 23c3.1 0 5.7-1.03 7.6-2.79l-3.7-2.88c-1.03.69-2.34 1.1-3.9 1.1-3 0-5.54-2.03-6.45-4.75H1.74v2.97A11.5 11.5 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.55 13.68a6.9 6.9 0 0 1 0-4.36V6.35H1.74a11.5 11.5 0 0 0 0 10.3l3.81-2.97z"/><path fill="#EA4335" d="M12 5.58c1.69 0 3.2.58 4.39 1.72l3.29-3.29C17.7 2.17 15.1 1 12 1A11.5 11.5 0 0 0 1.74 6.35l3.81 2.97C6.46 7.6 9 5.58 12 5.58z"/></svg>Continue with Google</a><a class="social" data-provider="microsoft" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#F25022" d="M3 3h8.5v8.5H3z"/><path fill="#7FBA00" d="M12.5 3H21v8.5h-8.5z"/><path fill="#00A4EF" d="M3 12.5h8.5V21H3z"/><path fill="#FFB900" d="M12.5 12.5H21V21h-8.5z"/></svg>Continue with Microsoft</a><a class="social" data-provider="x" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Continue with X</a><a class="social" data-provider="openai" href="#"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z"/><circle cx="12" cy="12" r="3.2"/></svg>Continue with ChatGPT</a></div>
+ </div></main>
+ <footer class="site-foot">
+   <div class="wrap">
+     <div class="foot-grid">
+-      <div><a class="brand" href="/"><img src="/logo-icon-transparent.png" alt="" width="28" height="28">CardioSense</a></div>
++      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+       <div><h4>Product</h4><a href="/features">Features</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
+       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
+-      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits of the model</a></div>
++      <div><h4>Project</h4><a href="https://github.com/lak-is-law/heart-disease-predictor">Source code</a><a href="/features#limits">Limits</a></div>
+     </div>
+-    <p class="legal">CardioSense is a research prototype built on a public dataset (UCI Heart Disease, 303 patients from one clinic). It is not a medical device, has not been reviewed by any regulator, and must not be used to make care decisions. Do not enter real patient information.</p>
++    <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
+   </div>
+ </footer>
+ <script src="/site.js"></script>
+diff --git a/portal/site.css b/portal/site.css
+index 8784a4f..4a9a712 100644
+--- a/portal/site.css
++++ b/portal/site.css
+@@ -1,156 +1,154 @@
+-/* CardioSense site: shared tokens, header, footer and page components. Light and dark themes. */
++/* CardioSense site. Plain, monochrome, type-led. One neutral palette in two themes; no accent colour. */
+ :root {
+-  --bg: #F6F8FB; --bg-2: #FFFFFF; --bg-3: #EDF1F6; --fg: #0B1220; --dim: #4F5E73; --line: rgba(11, 18, 32, 0.12);
+-  --accent: #006F94; --accent-fg: #FFFFFF; --accent-soft: rgba(0, 111, 148, 0.10); --ok: #0B7A4B; --bad: #B42318;
+-  --shadow: 0 1px 2px rgba(11, 18, 32, .06), 0 12px 32px rgba(11, 18, 32, .08);
+-  --hx-bg: #07090E; --hx-text: #F5F7FA; --hx-dim: #9AA6B8; --hx-cyan: #00F0FF; --hx-sky: #38BDF8; --hx-line: rgba(255,255,255,.10); --hx-head: 64px;
+-  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
++  --bg: #FFFFFF; --bg-soft: #F7F7F8; --fg: #0D0D0D; --dim: #6B6B6B; --line: #E5E5E5; --line-strong: #CFCFCF;
++  --btn: #0D0D0D; --btn-fg: #FFFFFF; --ok: #0B7A4B; --bad: #C2271B; --head: 64px;
++  --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+   color-scheme: light;
+ }
+ @media (prefers-color-scheme: dark) {
+-  :root:not([data-theme="light"]) {
+-    --bg: #07090E; --bg-2: #0E1726; --bg-3: #121E33; --fg: #F5F7FA; --dim: #9AA6B8; --line: rgba(255, 255, 255, 0.10);
+-    --accent: #00E5FF; --accent-fg: #06101E; --accent-soft: rgba(0, 229, 255, 0.10); --ok: #34D399; --bad: #F87171;
+-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35); color-scheme: dark;
+-  }
+-}
+-:root[data-theme="dark"] {
+-  --bg: #07090E; --bg-2: #0E1726; --bg-3: #121E33; --fg: #F5F7FA; --dim: #9AA6B8; --line: rgba(255, 255, 255, 0.10);
+-  --accent: #00E5FF; --accent-fg: #06101E; --accent-soft: rgba(0, 229, 255, 0.10); --ok: #34D399; --bad: #F87171;
+-  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35); color-scheme: dark;
++  :root:not([data-theme="light"]) { --bg: #0D0D0D; --bg-soft: #171717; --fg: #F4F4F4; --dim: #9A9A9A; --line: #262626; --line-strong: #3A3A3A;
++    --btn: #F4F4F4; --btn-fg: #0D0D0D; --ok: #4ADE80; --bad: #F87171; color-scheme: dark; }
+ }
++:root[data-theme="dark"] { --bg: #0D0D0D; --bg-soft: #171717; --fg: #F4F4F4; --dim: #9A9A9A; --line: #262626; --line-strong: #3A3A3A;
++  --btn: #F4F4F4; --btn-fg: #0D0D0D; --ok: #4ADE80; --bad: #F87171; color-scheme: dark; }
++
+ * { box-sizing: border-box; }
+-html { scroll-behavior: smooth; }
+-body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+-a { color: var(--accent); text-decoration: none; }
+-a:hover { text-decoration: underline; }
+-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
++html { scroll-behavior: smooth; scroll-padding-top: calc(var(--head) + 16px); }
++body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
++a { color: inherit; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
++a:hover { text-decoration-color: currentColor; }
+ img { max-width: 100%; display: block; }
+-.wrap { width: min(1120px, 100% - 48px); margin-inline: auto; }
++:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; border-radius: 6px; }
++.wrap { width: min(1180px, 100% - 48px); margin-inline: auto; }
+ @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition-duration: .001ms !important; animation: none !important; } }
+ 
+ /* header */
+-.site-head { position: sticky; top: 0; z-index: 50; height: var(--hx-head); background: color-mix(in srgb, var(--bg) 82%, transparent);
+-  backdrop-filter: saturate(180%) blur(18px); -webkit-backdrop-filter: saturate(180%) blur(18px); border-bottom: 1px solid var(--line); }
+-.site-head .wrap { height: 100%; display: flex; align-items: center; gap: 28px; }
+-.brand { display: flex; align-items: center; gap: 10px; color: var(--fg); font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; }
+-.brand:hover { text-decoration: none; }
+-.brand img { width: 28px; height: 28px; }
+-.nav { display: flex; gap: 22px; margin-left: 8px; }
+-.nav a { color: var(--dim); font-size: .9rem; }
+-.nav a:hover, .nav a[aria-current="page"] { color: var(--fg); text-decoration: none; }
+-.head-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+-.icon-btn { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--fg); cursor: pointer; }
+-.icon-btn:hover { background: var(--bg-3); }
++.site-head { position: sticky; top: 0; z-index: 50; height: var(--head); background: var(--bg); border-bottom: 1px solid transparent; transition: border-color .2s; }
++.site-head.scrolled { border-bottom-color: var(--line); }
++.site-head .wrap { height: 100%; display: flex; align-items: center; gap: 36px; }
++.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.0625rem; letter-spacing: -.01em; text-decoration: none; }
++.brand img { width: 26px; height: 26px; border-radius: 7px; }
++.nav { display: flex; gap: 28px; }
++.nav a { font-size: .95rem; color: var(--dim); text-decoration: none; }
++.nav .m-only { display: none; }
++.nav a:hover, .nav a[aria-current="page"] { color: var(--fg); }
++.head-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
++.head-right .link { font-size: .95rem; text-decoration: none; }
++.icon-btn { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--fg); cursor: pointer; }
++.icon-btn:hover { background: var(--bg-soft); }
+ .icon-btn .sun { display: none; }
+ :root[data-theme="dark"] .icon-btn .sun { display: block; } :root[data-theme="dark"] .icon-btn .moon { display: none; }
+ @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .icon-btn .sun { display: block; } :root:not([data-theme="light"]) .icon-btn .moon { display: none; } }
+ .menu-btn { display: none; }
+-@media (max-width: 760px) {
+-  .nav { display: none; position: absolute; top: var(--hx-head); left: 0; right: 0; flex-direction: column; gap: 0; margin: 0; padding: 8px 24px 16px; background: var(--bg); border-bottom: 1px solid var(--line); }
+-  .nav.open { display: flex; } .nav a { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 1rem; }
+-  .menu-btn { display: grid; } .head-right .link-signin { display: none; }
++@media (max-width: 800px) {
++  .site-head .wrap { gap: 12px; }
++  .nav { display: none; position: absolute; top: var(--head); left: 0; right: 0; flex-direction: column; gap: 0; padding: 4px 24px 16px; background: var(--bg); border-bottom: 1px solid var(--line); }
++  .nav.open { display: flex; } .nav .m-only { display: block; } .head-right #acct { display: none !important; } .nav a { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 1.05rem; color: var(--fg); }
++  .menu-btn { display: grid; } .head-right .link { display: none; }
+ }
+ 
+ /* buttons */
+-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 999px; border: 1px solid transparent;
+-  font: inherit; font-weight: 600; font-size: .95rem; cursor: pointer; background: var(--accent); color: var(--accent-fg); }
+-.btn:hover { text-decoration: none; filter: brightness(1.08); }
+-.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+-.btn.ghost:hover { background: var(--bg-3); filter: none; }
+-.btn.small { padding: 7px 14px; font-size: .85rem; }
+-.btn[disabled], .btn.is-off { opacity: .5; cursor: not-allowed; pointer-events: none; }
++.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 999px; border: 1px solid var(--btn);
++  background: var(--btn); color: var(--btn-fg); font: inherit; font-size: .95rem; font-weight: 500; text-decoration: none; cursor: pointer; white-space: nowrap; }
++.btn:hover { opacity: .86; }
++.btn.line { background: transparent; color: var(--fg); border-color: var(--line-strong); } .btn.line:hover { background: var(--bg-soft); opacity: 1; }
++.btn.sm { min-height: 36px; padding: 0 16px; font-size: .9rem; }
++.btn[disabled] { opacity: .5; cursor: not-allowed; }
++.textlink { font-size: .95rem; }
+ 
+-/* sections */
+-.sec { padding: 96px 0; border-top: 1px solid var(--line); }
+-.sec.alt { background: var(--bg-2); }
+-.sec h2 { font-size: clamp(1.9rem, 3.4vw, 2.7rem); line-height: 1.1; letter-spacing: -.025em; margin: 0 0 14px; font-weight: 650; }
+-.sec .lede { color: var(--dim); font-size: 1.1rem; max-width: 60ch; margin: 0 0 40px; }
+-.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+-.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+-@media (max-width: 860px) { .grid3, .grid2 { grid-template-columns: 1fr; } .sec { padding: 64px 0; } }
+-.card { background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+-.sec.alt .card { background: var(--bg); }
+-.card h3 { margin: 0 0 8px; font-size: 1.15rem; letter-spacing: -.01em; }
+-.card p { margin: 0 0 14px; color: var(--dim); }
+-.card .more { font-weight: 600; font-size: .92rem; }
+-.pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: var(--accent-soft); color: var(--accent); }
++/* page structure */
++.sec { padding: 120px 0; }
++.sec + .sec { border-top: 1px solid var(--line); }
++.sec h2 { font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.1; letter-spacing: -.03em; font-weight: 500; margin: 0 0 20px; max-width: 18ch; text-wrap: balance; }
++.sec .lede { color: var(--dim); font-size: 1.25rem; line-height: 1.5; max-width: 38em; margin: 0 0 56px; }
++.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
++.cols3 h3 { margin: 0 0 8px; font-size: 1.0625rem; font-weight: 600; letter-spacing: -.01em; } .cols3 p { margin: 0; color: var(--dim); }
++.shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
++@media (max-width: 860px) { .cols3, .shots { grid-template-columns: 1fr; gap: 32px; } .sec { padding: 72px 0; } }
+ 
+ /* screenshots */
+-.shot { margin: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--bg-2); box-shadow: var(--shadow); }
+-.shot img { width: 100%; height: auto; }
+-.shot figcaption { padding: 14px 18px; font-size: .88rem; color: var(--dim); border-top: 1px solid var(--line); }
++.shot { margin: 0; } .shot img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 14px; }
++.shot figcaption { margin-top: 12px; font-size: .9rem; color: var(--dim); }
+ .shot .t-dark { display: none; }
+ :root[data-theme="dark"] .shot .t-dark { display: block; } :root[data-theme="dark"] .shot .t-light { display: none; }
+ @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .shot .t-dark { display: block; } :root:not([data-theme="light"]) .shot .t-light { display: none; } }
+ 
+ /* downloads */
+-.builds { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+-.build { background: var(--bg-2); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 6px; }
+-.build.rec { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+-.build h3 { margin: 0; font-size: 1.05rem; } .build .meta { color: var(--dim); font-size: .85rem; } .build .sum { font: .72rem/1.4 ui-monospace, Menlo, Consolas, monospace; color: var(--dim); word-break: break-all; }
+-.build .btn { margin-top: auto; align-self: flex-start; }
+-.note { color: var(--dim); font-size: .9rem; }
+-.empty { border: 1px dashed var(--line); border-radius: 16px; padding: 28px; color: var(--dim); }
++.dl { border-top: 1px solid var(--line); }
++.dl-row { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr auto; gap: 24px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--line); }
++.dl-row b { font-weight: 600; display: block; } .dl-row span { color: var(--dim); font-size: .92rem; }
++.dl-row .sum { font: .78rem/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--dim); background: none; border: 0; padding: 0; text-align: left; cursor: pointer; }
++.dl-row .sum:hover { color: var(--fg); }
++.dl-row.rec b::after { content: "This device"; margin-left: 10px; font-weight: 400; font-size: .78rem; color: var(--dim); border: 1px solid var(--line-strong); border-radius: 999px; padding: 1px 8px; }
++@media (max-width: 760px) { .dl-row { grid-template-columns: 1fr auto; row-gap: 6px; } .dl-row .meta, .dl-row .sum { grid-column: 1 / -1; } }
++.note { color: var(--dim); font-size: .95rem; }
++.empty { color: var(--dim); padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+ 
+ /* reviews */
+-.rev-top { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+-.rev-avg { font-size: 3rem; font-weight: 650; letter-spacing: -.03em; line-height: 1; }
+-.stars { color: var(--accent); letter-spacing: 2px; font-size: 1rem; }
+-.rev-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
+-.rev { background: var(--bg-2); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+-.sec.alt .rev { background: var(--bg); }
+-.rev p { margin: 8px 0 12px; } .rev .who { font-size: .85rem; color: var(--dim); }
++.rev-top { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; }
++.rev-avg { font-size: 2.5rem; font-weight: 500; letter-spacing: -.03em; line-height: 1; }
++.stars { letter-spacing: 2px; }
++.rev-list { margin-bottom: 40px; max-width: 760px; }
++.rev { padding: 24px 0; border-top: 1px solid var(--line); } .rev:last-child { border-bottom: 1px solid var(--line); }
++.rev p { margin: 6px 0 8px; } .rev .who { font-size: .9rem; color: var(--dim); }
+ .rev-form { max-width: 560px; }
+-.star-pick { display: flex; gap: 4px; margin: 6px 0 12px; }
+-.star-pick button { background: none; border: 0; font-size: 1.7rem; line-height: 1; color: var(--line); cursor: pointer; padding: 0 2px; }
+-.star-pick button.on { color: var(--accent); }
++.star-pick { display: flex; gap: 2px; margin: 4px 0 8px; }
++.star-pick button { background: none; border: 0; font-size: 1.6rem; line-height: 1; color: var(--line-strong); cursor: pointer; padding: 0 2px; }
++.star-pick button.on { color: var(--fg); }
+ 
+ /* forms */
+-label { display: block; font-size: .85rem; font-weight: 600; margin: 14px 0 6px; }
+-input[type=text], input[type=email], input[type=password], textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-2); color: var(--fg); font: inherit; }
+-input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+-.msg { min-height: 1.4em; font-size: .88rem; color: var(--bad); margin: 10px 0 0; } .msg.ok { color: var(--ok); }
++label { display: block; font-size: .9rem; font-weight: 500; margin: 18px 0 6px; }
++input[type=text], input[type=email], input[type=password], textarea {
++  width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg); font: inherit; font-size: 1rem; }
++textarea { min-height: 112px; resize: vertical; }
++input:focus, textarea:focus { outline: 2px solid var(--fg); outline-offset: -1px; border-color: transparent; }
++.msg { min-height: 1.4em; font-size: .92rem; color: var(--bad); margin: 12px 0 0; } .msg.ok { color: var(--ok); }
++.hint { font-size: .85rem; color: var(--dim); margin: 6px 0 0; }
++.hp { position: absolute; left: -9999px; }
+ 
+-/* auth pages */
+-.auth { min-height: calc(100vh - var(--hx-head)); display: grid; place-items: center; padding: 40px 0; }
+-.auth-card { width: min(440px, 100% - 32px); background: var(--bg-2); border: 1px solid var(--line); border-radius: 22px; padding: 36px; box-shadow: var(--shadow); }
+-.auth-card h1 { margin: 0 0 6px; font-size: 1.8rem; letter-spacing: -.025em; }
+-.auth-card .sub { color: var(--dim); margin: 0 0 22px; }
+-.socials { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+-.social { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--fg); font-weight: 600; font-size: .9rem; }
+-.social:hover { background: var(--bg-3); text-decoration: none; } .social svg { width: 18px; height: 18px; flex: none; }
+-.social.off { opacity: .45; pointer-events: none; }
+-.divider { display: flex; align-items: center; gap: 12px; color: var(--dim); font-size: .8rem; margin: 20px 0 4px; }
++/* auth */
++.auth { min-height: calc(100vh - var(--head)); display: grid; place-items: center; padding: 32px 0 80px; }
++.auth-box { width: min(400px, 100% - 48px); }
++.auth-box .mark { width: 40px; height: 40px; border-radius: 10px; margin: 0 auto 28px; }
++.auth-box h1 { margin: 0 0 28px; font-size: 2rem; font-weight: 500; letter-spacing: -.03em; text-align: center; }
++.auth-box .btn.full { width: 100%; margin-top: 18px; min-height: 48px; }
++.divider { display: flex; align-items: center; gap: 14px; color: var(--dim); font-size: .8rem; margin: 28px 0; text-transform: uppercase; letter-spacing: .06em; }
+ .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+-.hp { position: absolute; left: -9999px; }
+-.auth-card .alt-link { margin-top: 18px; text-align: center; color: var(--dim); font-size: .9rem; }
+-.hint { font-size: .78rem; color: var(--dim); margin: 6px 0 0; }
++.socials { display: grid; gap: 10px; }
++.social { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 18px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: .98rem; text-decoration: none; background: var(--bg); }
++.social:hover { background: var(--bg-soft); }
++.social svg { width: 20px; height: 20px; flex: none; }
++.social.off { opacity: .4; pointer-events: none; }
++.alt-link { margin-top: 28px; text-align: center; color: var(--dim); font-size: .95rem; }
++.alt-link a { color: var(--fg); }
+ 
+-/* page heads, prose, steps */
+-.page-head { padding: 72px 0 40px; } .page-head h1 { font-size: clamp(2.3rem, 5vw, 3.6rem); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 14px; font-weight: 650; }
+-.page-head p { color: var(--dim); font-size: 1.15rem; max-width: 62ch; margin: 0; }
+-.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 64px 0; border-top: 1px solid var(--line); }
+-.feature:nth-of-type(even) .f-text { order: 2; }
+-.feature h2 { font-size: 1.9rem; letter-spacing: -.02em; margin: 0 0 12px; } .feature p { color: var(--dim); } .feature ul { color: var(--dim); padding-left: 1.1em; } .feature li { margin: 6px 0; }
+-@media (max-width: 860px) { .feature { grid-template-columns: 1fr; gap: 24px; } .feature:nth-of-type(even) .f-text { order: 0; } }
+-.steps { counter-reset: s; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; padding: 0; list-style: none; }
+-.steps li { counter-increment: s; background: var(--bg-2); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+-.steps li::before { content: counter(s); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-fg); font-weight: 700; margin-bottom: 12px; }
+-.steps b { display: block; margin-bottom: 4px; } .steps span { color: var(--dim); font-size: .92rem; }
+-details.faq { border-top: 1px solid var(--line); padding: 18px 0; } details.faq:last-child { border-bottom: 1px solid var(--line); }
+-details.faq summary { cursor: pointer; font-weight: 600; font-size: 1.05rem; } details.faq p { color: var(--dim); margin: 10px 0 0; max-width: 70ch; }
+-.qr-box { display: inline-block; background: #fff; padding: 14px; border-radius: 14px; border: 1px solid var(--line); } .qr-box img { width: 168px; height: 168px; }
+-.verify { display: grid; gap: 12px; } .verify .res { font-size: .92rem; word-break: break-all; }
+-.banner { border: 1px solid var(--line); background: var(--accent-soft); border-radius: 12px; padding: 12px 16px; font-size: .88rem; color: var(--fg); }
++/* inner pages */
++.page-head { padding: 96px 0 56px; }
++.page-head h1 { font-size: clamp(2.5rem, 5.4vw, 4.25rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 500; margin: 0 0 20px; max-width: 16ch; text-wrap: balance; }
++.page-head p { color: var(--dim); font-size: 1.25rem; max-width: 36em; margin: 0; }
++.row { display: grid; grid-template-columns: 1fr 2fr; gap: 64px; padding: 64px 0; border-top: 1px solid var(--line); }
++.row h2 { margin: 0; font-size: 1.5rem; font-weight: 500; letter-spacing: -.02em; line-height: 1.2; }
++.row .body > :first-child { margin-top: 0; } .row p { margin: 0 0 16px; max-width: 38em; } .row ul { margin: 0 0 16px; padding-left: 1.2em; max-width: 38em; } .row li { margin: 8px 0; }
++.row p.dim, .row li { color: var(--dim); } .row li strong, .row p strong { color: var(--fg); font-weight: 600; }
++.row .shot { margin-top: 28px; }
++@media (max-width: 860px) { .row { grid-template-columns: 1fr; gap: 20px; padding: 48px 0; } }
++.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; padding: 64px 0 120px; border-top: 1px solid var(--line); }
++.cols2 h2 { margin: 0 0 12px; font-size: 1.5rem; font-weight: 500; letter-spacing: -.02em; } .cols2 p { color: var(--dim); max-width: 32em; }
++@media (max-width: 860px) { .cols2 { grid-template-columns: 1fr; gap: 48px; padding-bottom: 72px; } }
++.qr { display: inline-block; background: #fff; padding: 12px; border-radius: 12px; border: 1px solid var(--line); } .qr img { width: 160px; height: 160px; }
++.verify { display: grid; gap: 4px; } .verify .res { font-size: .92rem; word-break: break-all; margin-top: 10px; }
++.verify input[type=file] { font: inherit; font-size: .95rem; padding: 10px 0; color: var(--dim); }
++details.faq { border-top: 1px solid var(--line); padding: 22px 0; } details.faq:last-of-type { border-bottom: 1px solid var(--line); }
++details.faq summary { cursor: pointer; font-weight: 500; font-size: 1.125rem; list-style: none; display: flex; justify-content: space-between; gap: 24px; }
++details.faq summary::-webkit-details-marker { display: none; } details.faq summary::after { content: "+"; color: var(--dim); font-weight: 300; font-size: 1.4rem; line-height: 1; }
++details.faq[open] summary::after { content: "\2212"; }
++details.faq p { color: var(--dim); margin: 12px 0 0; max-width: 42em; }
++.faq-wrap > * { max-width: 820px; }
+ 
+ /* footer */
+-.site-foot { border-top: 1px solid var(--line); padding: 48px 0 40px; color: var(--dim); font-size: .88rem; background: var(--bg); }
+-.foot-grid { display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; margin-bottom: 28px; }
+-.foot-grid h4 { margin: 0 0 10px; color: var(--fg); font-size: .85rem; } .foot-grid a { display: block; color: var(--dim); padding: 3px 0; }
+-.legal { max-width: 80ch; }
+-:root[data-theme="light"] .brand img { filter: invert(1) hue-rotate(180deg); }
+-@media (prefers-color-scheme: light) { :root:not([data-theme]) .brand img { filter: invert(1) hue-rotate(180deg); } }
+-.site-foot .brand img { filter: none; }
+-:root[data-theme="light"] .site-foot .brand img { filter: invert(1) hue-rotate(180deg); }
+-.btn { white-space: nowrap; }
++.site-foot { border-top: 1px solid var(--line); padding: 56px 0 48px; color: var(--dim); font-size: .92rem; }
++.foot-grid { display: flex; flex-wrap: wrap; gap: 48px 80px; margin-bottom: 40px; }
++.foot-grid h4 { margin: 0 0 12px; color: var(--fg); font-size: .92rem; font-weight: 600; }
++.foot-grid a { display: block; color: var(--dim); text-decoration: none; padding: 4px 0; } .foot-grid a:hover { color: var(--fg); }
++.foot-grid a.brand { display: inline-flex; color: var(--fg); padding: 0; }
++.legal { max-width: 70ch; margin: 0; font-size: .85rem; }
+diff --git a/portal/site.js b/portal/site.js
+index 021dbd6..164a7c7 100644
+--- a/portal/site.js
++++ b/portal/site.js
+@@ -9,7 +9,7 @@
+     document.documentElement.setAttribute('data-theme', t);
+     try { localStorage.setItem('cs-theme', t); } catch (e) { /* ignore */ }
+     var m = document.querySelector('meta[name="theme-color"]');
+-    if (m) m.setAttribute('content', t === 'dark' ? '#07090E' : '#F6F8FB');
++    if (m) m.setAttribute('content', t === 'dark' ? '#0D0D0D' : '#FFFFFF');
+   }
+   function isDark() {
+     var t = document.documentElement.getAttribute('data-theme');
+@@ -41,16 +41,18 @@
+     var box = $('acct'); if (!box) return;
+     box.textContent = '';
+     if (S.user) {
+-      var d = el('a', 'btn ghost small', 'Dashboard'); d.href = '/app#dashboard';
+-      var o = el('button', 'btn small', 'Sign out'); o.type = 'button';
++      var d = el('a', 'link', 'Dashboard'); d.href = '/app#dashboard';
++      var o = el('button', 'btn sm line', 'Sign out'); o.type = 'button';
+       o.addEventListener('click', function () { api('POST', '/api/logout').then(function () { location.href = '/'; }); });
+       box.append(d, o);
+     } else {
+-      var si = el('a', 'link-signin', 'Sign in'); si.href = '/signin'; si.style.cssText = 'color:var(--fg);font-size:.9rem;font-weight:500;';
+-      var su = el('a', 'btn small', 'Get started'); su.href = '/signup';
++      var si = el('a', 'link', 'Sign in'); si.href = '/signin';
++      var su = el('a', 'btn sm', 'Get started'); su.href = '/signup';
+       box.append(si, su);
+     }
+   }
++  var hd = document.querySelector('.site-head');
++  if (hd) { var sc = function () { hd.classList.toggle('scrolled', window.scrollY > 8); }; window.addEventListener('scroll', sc, { passive: true }); sc(); }
+   S.ready = api('GET', '/api/session').then(function (s) {
+     S.user = s.user || null; S.csrf = s.csrf || '';
+     renderAccount();
+@@ -73,21 +75,24 @@
+     return fetch('/api/releases').then(function (r) { return r.json(); }).then(function (d) {
+       box.textContent = '';
+       if (!d.builds || !d.builds.length) {
+-        box.appendChild(el('div', 'empty', d.error || 'The first installers are not published yet. You can use the workstation in your browser now.'));
++        box.appendChild(el('div', 'empty', d.error || 'The first installers are not published yet. You can use the workstation in your browser.'));
+         return;
+       }
+       var g = guess();
+-      var list = d.builds.slice().sort(function (a, b) { return (b.kind === g) - (a.kind === g); });
++      var list = d.builds.slice().sort(function (x, y) { return (y.kind === g) - (x.kind === g); });
+       list.slice(0, limit || list.length).forEach(function (b) {
+         var info = LABEL[b.kind] || [b.kind, '', ''];
+-        var c = el('div', 'build' + (b.kind === g ? ' rec' : ''));
+-        c.appendChild(el('h3', '', info[0] + ' ' + info[2]));
+-        c.appendChild(el('div', 'meta', info[1] + ' · v' + d.version + ' · ' + mb(b.size)));
+-        if (b.kind === g) c.appendChild(el('span', 'pill', 'Matches this device'));
+-        if (b.sha256) c.appendChild(el('div', 'sum', 'SHA-256 ' + b.sha256));
+-        var a = el('a', 'btn small', S.user ? 'Download' : 'Sign in to download');
++        var row = el('div', 'dl-row' + (b.kind === g ? ' rec' : ''));
++        var n = el('div'); n.appendChild(el('b', '', info[0] + ' ' + info[2])); n.appendChild(el('span', '', info[1])); row.appendChild(n);
++        row.appendChild(el('span', 'meta', 'Version ' + d.version + ' \u00b7 ' + mb(b.size)));
++        if (b.sha256) {
++          var sum = el('button', 'sum', 'SHA-256 ' + b.sha256.slice(0, 12) + '\u2026'); sum.type = 'button'; sum.title = b.sha256 + ' (click to copy)';
++          sum.addEventListener('click', function () { try { navigator.clipboard.writeText(b.sha256); sum.textContent = 'Copied'; setTimeout(function () { sum.textContent = 'SHA-256 ' + b.sha256.slice(0, 12) + '\u2026'; }, 1500); } catch (e) { /* ignore */ } });
++          row.appendChild(sum);
++        } else row.appendChild(el('span', 'meta', ''));
++        var a = el('a', 'btn sm', S.user ? 'Download' : 'Sign in to download');
+         a.href = S.user ? '/api/download?id=' + b.id : '/signin?next=/download';
+-        c.appendChild(a); box.appendChild(c);
++        row.appendChild(a); box.appendChild(row);
+       });
+     }).catch(function () { box.textContent = ''; box.appendChild(el('div', 'empty', 'Downloads could not be loaded. Refresh to try again.')); });
+   }
+@@ -154,7 +159,7 @@
+         if (p.enabled) a.href = '/api/oauth/' + p.id + '?next=' + encodeURIComponent(nextUrl());
+         else { a.classList.add('off'); a.setAttribute('aria-disabled', 'true'); a.removeAttribute('href'); a.title = 'Not set up on this site yet'; }
+       });
+-      if (sp.querySelector('.off')) { var h = el('p', 'hint', 'Dimmed options are not enabled on this site yet.'); sp.parentNode.insertBefore(h, sp.nextSibling); }
++      if (sp.querySelector('.off')) { var h = el('p', 'hint', 'Dimmed options are not enabled on this site yet.'); sp.appendChild(h); }
+     }).catch(function () {});
+   }
+   function authForm(id, url, build) {
+@@ -173,8 +178,6 @@
+   }
+   authForm('signin-form', '/api/login', function (f) { return { email: f.email.value, password: f.password.value, website: f.website.value }; });
+   authForm('signup-form', '/api/signup', function (f) {
+-    var m = $('auth-msg');
+-    if (f.password.value !== f.confirm.value) { m.textContent = 'The passwords do not match.'; return null; }
+     return { name: f.name.value, email: f.email.value, password: f.password.value, website: f.website.value };
+   });
+ })();
+-- 
+2.43.0
+
