@@ -57,7 +57,10 @@ Set `SITE_URL` to `https://cardiosense.lakshya.uk`. In each provider's console, 
 
 Notes:
 
-- OpenAI does not publish a general "Sign in with ChatGPT" service for third-party sites. The button works only if you have been given OIDC endpoints and a client, and you enter them in the variables above.
+- **Continue with ChatGPT (Sign in with ChatGPT)**: OpenAI offers an official login partner program via [Sign in with ChatGPT](https://developers.openai.com/siwc) ([Quickstart](https://developers.openai.com/siwc/quickstart)). Request a Client ID and register:
+  - **Website URL**: `https://cardiosense.lakshya.uk`
+  - **OAuth Callback URL**: `https://cardiosense.lakshya.uk/api/oauth/openai/callback`
+  Once OpenAI provisions your client credentials and OIDC endpoints, set `OPENAI_OAUTH_CLIENT_ID`, `OPENAI_OAUTH_CLIENT_SECRET`, `OPENAI_OAUTH_AUTH_URL`, `OPENAI_OAUTH_TOKEN_URL`, and `OPENAI_OAUTH_USERINFO_URL`.
 - X does not return an email address. Those accounts get a placeholder address and are never linked to an existing email account.
 - A social sign-in is linked to an existing account only when the provider confirms the email address (Google). Otherwise the visitor is asked to sign in with their password.
 - Set `CARDIOSENSE_SIGNUP=closed` to turn off open sign-up and keep admin-created accounts only.
