@@ -1,0 +1,202 @@
+{
+  "n": 303,
+  "events": 139,
+  "all_13": {
+    "optimism": {
+      "apparent_auc": 0.935251798561151,
+      "optimism": 0.019636298293836747,
+      "corrected_auc": 0.9156155002673143,
+      "bootstrap_calibration_slope": 0.9593042913549901
+    },
+    "sample_size": {
+      "parameters": 22,
+      "cox_snell_r2_apparent": 0.5188755660643614,
+      "min_n_shrinkage_0.9": 300.6987101154459,
+      "actual_n": 303,
+      "events": 139,
+      "events_per_parameter": 6.318181818181818
+    },
+    "learning_curve": {
+      "60": [
+        0.8977272727272727,
+        0.006426978018224353
+      ],
+      "90": [
+        0.9006132756132756,
+        0.007130472182517349
+      ],
+      "120": [
+        0.9014430014430013,
+        0.007578665925167634
+      ],
+      "160": [
+        0.906890331890332,
+        0.006699957508951373
+      ],
+      "200": [
+        0.9205266955266953,
+        0.006299755637343404
+      ],
+      "240": [
+        0.9265873015873017,
+        0.005787336092920657
+      ]
+    },
+    "decision_curve": [
+      {
+        "threshold": 0.1,
+        "net_benefit_model": 0.4184085075174184,
+        "net_benefit_treat_all": 0.3986065273193986,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.2,
+        "net_benefit_model": 0.38036303630363033,
+        "net_benefit_treat_all": 0.32343234323432346,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.28,
+        "net_benefit_model": 0.3448844884488449,
+        "net_benefit_treat_all": 0.24825815914924823,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.3,
+        "net_benefit_model": 0.34134842055634135,
+        "net_benefit_treat_all": 0.22677982083922676,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.4,
+        "net_benefit_model": 0.31683168316831684,
+        "net_benefit_treat_all": 0.09790979097909785,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.5,
+        "net_benefit_model": 0.29702970297029707,
+        "net_benefit_treat_all": -0.08250825082508251,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.6,
+        "net_benefit_model": 0.27887788778877887,
+        "net_benefit_treat_all": -0.35313531353135297,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.7,
+        "net_benefit_model": 0.22992299229922994,
+        "net_benefit_treat_all": -0.8041804180418041,
+        "net_benefit_treat_none": 0.0
+      }
+    ],
+    "conformal": {
+      "alpha": 0.1,
+      "coverage": 0.9059071038251366,
+      "uncertain_fraction": 0.19798360655737707,
+      "accuracy_when_confident": 0.8882987041439472,
+      "confident_fraction": 0.7993497267759564
+    }
+  },
+  "first_visit": {
+    "optimism": {
+      "apparent_auc": 0.8584839445516756,
+      "optimism": 0.016195243847820832,
+      "corrected_auc": 0.8422887007038549,
+      "bootstrap_calibration_slope": 1.0187972836053967
+    },
+    "sample_size": {
+      "parameters": 12,
+      "cox_snell_r2_apparent": 0.3571280100902908,
+      "min_n_shrinkage_0.9": 271.6101788705793,
+      "actual_n": 303,
+      "events": 139,
+      "events_per_parameter": 11.583333333333334
+    },
+    "learning_curve": {
+      "60": [
+        0.8184343434343434,
+        0.00965473156023912
+      ],
+      "90": [
+        0.820995670995671,
+        0.007953641482208791
+      ],
+      "120": [
+        0.8257936507936509,
+        0.008779137548507976
+      ],
+      "160": [
+        0.840007215007215,
+        0.007298414599476079
+      ],
+      "200": [
+        0.8304112554112553,
+        0.01031962333152632
+      ],
+      "240": [
+        0.8436147186147187,
+        0.007896684490333714
+      ]
+    },
+    "decision_curve": [
+      {
+        "threshold": 0.1,
+        "net_benefit_model": 0.40227356068940223,
+        "net_benefit_treat_all": 0.3986065273193986,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.2,
+        "net_benefit_model": 0.35148514851485146,
+        "net_benefit_treat_all": 0.32343234323432346,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.28,
+        "net_benefit_model": 0.31628162816281624,
+        "net_benefit_treat_all": 0.24825815914924823,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.3,
+        "net_benefit_model": 0.3177746346063178,
+        "net_benefit_treat_all": 0.22677982083922676,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.4,
+        "net_benefit_model": 0.2794279427942794,
+        "net_benefit_treat_all": 0.09790979097909785,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.5,
+        "net_benefit_model": 0.2475247524752475,
+        "net_benefit_treat_all": -0.08250825082508251,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.6,
+        "net_benefit_model": 0.16666666666666669,
+        "net_benefit_treat_all": -0.35313531353135297,
+        "net_benefit_treat_none": 0.0
+      },
+      {
+        "threshold": 0.7,
+        "net_benefit_model": 0.09900990099009901,
+        "net_benefit_treat_all": -0.8041804180418041,
+        "net_benefit_treat_none": 0.0
+      }
+    ],
+    "conformal": {
+      "alpha": 0.1,
+      "coverage": 0.9009398907103824,
+      "uncertain_fraction": 0.4017704918032786,
+      "accuracy_when_confident": 0.8387974940405768,
+      "confident_fraction": 0.5982295081967214
+    }
+  }
+}
