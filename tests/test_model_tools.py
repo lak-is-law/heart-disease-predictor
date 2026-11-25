@@ -35,3 +35,19 @@ def test_external_validation_requires_site_column(tmp_path):
     core.load_raw().to_csv(p, index=False)
     with pytest.raises(SystemExit):
         ev.run(str(p))
+
+
+def test_public_claims_match_the_experiment_outputs():
+    """The numbers on the research page and in the paper must come from artifacts/*.json, not from memory."""
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent
+    esc = json.loads((root / "artifacts" / "escalation.json").read_text())["alphas"]
+    page = (root / "portal" / "research.html").read_text()
+    paper = (root / "docs" / "PAPER.md").read_text()
+    for alpha, skip in (("0.05", "34%"), ("0.1", "60%")):
+        assert f"{(1 - esc[alpha]['cp']['escalation'][0]) * 100:.0f}%" == skip
+        assert skip in page and skip in paper
+    rig = json.loads((root / "artifacts" / "rigor.json").read_text())
+    assert f"{rig['all_13']['optimism']['corrected_auc']:.3f}" in paper
+    assert f"{rig['first_visit']['optimism']['corrected_auc']:.3f}" in paper

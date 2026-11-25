@@ -18,7 +18,7 @@ Internal validation only: 303 patients from the Cleveland Clinic, repeated strat
 
 Differences of about 0.002 are within the run-to-run spread (standard deviation 0.003 to 0.005), so the honest
 reading is that all the sensible models are tied. More complex models were equal or worse. The limit is the data
-(303 patients, about 160 positive cases), not the algorithm. Swapping algorithms will not move this number.
+(303 patients, 139 positive cases), not the algorithm. Swapping algorithms will not move this number.
 
 ## What would actually improve the model
 
@@ -46,7 +46,7 @@ specialist tests, but it is also the least accurate. It is measured but is not y
 
 ## Rigour checks (`python rigor.py`, writes `artifacts/rigor.json`)
 
-Internal validation on Cleveland, 303 patients, 164 with angiographic disease.
+Internal validation on Cleveland, 303 patients, 139 with angiographic disease.
 
 | Check | 13 inputs | First-visit (7 inputs) |
 |---|---|---|

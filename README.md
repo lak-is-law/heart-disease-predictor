@@ -1,3 +1,25 @@
+# CardioSense
+
+**Research question.** A first-visit heart-disease risk model is cheap but less accurate than one that needs a stress test,
+fluoroscopy and a nuclear scan. Can conformal uncertainty decide who can skip the extra tests, and at what cost?
+
+**Answer (internal validation, 303 patients).** About one third of patients can skip the extra tests for a 1.5 point loss in
+accuracy; 60% for 3 points. No model family beat logistic regression (AUC 0.91, or 0.84 with first-visit inputs). More data
+should help the full model; the first-visit model needs new predictors. External validity is untested.
+
+| Read | |
+|---|---|
+| [docs/PAPER.md](docs/PAPER.md) | Working paper: methods, results, limitations, ethics |
+| [docs/MODEL_CARD.md](docs/MODEL_CARD.md), [docs/DATASHEET.md](docs/DATASHEET.md) | Model card and datasheet |
+| [docs/MODEL_REPORT.md](docs/MODEL_REPORT.md) | Benchmark and rigour checks |
+| `bash reproduce.sh` | Regenerates every number and figure |
+| `external_validation.py` | Train on Cleveland, test on other hospitals (needs the multi-site file) |
+
+**Not a medical device and not for clinical use.** Whether a tool like this reduces heart attacks is an open empirical
+question that needs prospective evidence, clinician oversight and regulatory review.
+
+---
+
 # CardioSense AI
 
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-black?logo=vercel)](https://heart-disease-predictor-kohl-nine.vercel.app)

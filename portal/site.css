@@ -261,3 +261,7 @@ a:not(.btn):not(.brand):not(.social):hover { color: var(--accent); }
 .news form { display: flex; flex-wrap: wrap; gap: 10px; width: min(420px, 100%); } .news form input[type=email] { flex: 1; min-width: 180px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg); font: .95rem var(--font); } .news form .btn { height: 40px; } .news .msg { flex-basis: 100%; margin: 0; min-height: 1.2em; }
 
 .legal-page .prose { max-width: 720px; padding-bottom: 72px; } .prose h2 { font-size: 1.25rem; margin: 36px 0 10px; } .prose p, .prose li { color: var(--dim); line-height: 1.65; } .prose li { margin: 6px 0; } .prose strong { color: var(--fg); }
+
+.figs { max-width: 1160px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px 28px; }
+.fig { margin: 0; } .fig img { width: 100%; height: auto; display: block; } .fig figcaption { margin-top: 10px; color: var(--dim); font-size: .92rem; line-height: 1.55; } .fig figcaption b { color: var(--fg); }
+.research .sec.soft { padding-block: 64px; } .wrap-in { max-width: 760px; } .research .split { align-items: start; } .plain { padding-left: 1.1em; color: var(--dim); } .plain li { margin: 10px 0; line-height: 1.6; }
