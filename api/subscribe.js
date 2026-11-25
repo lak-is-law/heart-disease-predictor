@@ -10,7 +10,7 @@ module.exports = A.handle(async (req, res) => {
     const s = await A.requireSession(req, res, { role: 'admin' });
     if (!s) return;
     const all = await db.hgetall('subs');
-    const items = Object.values(all).map((v) => { try { const o = JSON.parse(v); return { email: o.email, t: o.t }; } catch { return null; } }).filter(Boolean).sort((a, b) => b.t - a.t);
+    const items = Object.values(all).map((v) => { try { const o = JSON.parse(v); return { email: o.email, t: o.t, confirmed: !!o.confirmed }; } catch { return null; } }).filter(Boolean).sort((a, b) => b.t - a.t);
     return A.json(res, 200, { count: items.length, items });
   }
   if (req.method !== 'POST') return A.json(res, 405, { error: 'Method not allowed.' });
@@ -27,8 +27,9 @@ module.exports = A.handle(async (req, res) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return A.json(res, 400, { error: 'Enter a valid email address.' });
   const id = C.hmacId('sub:' + email).slice(0, 24);
   if (!(await db.hget('subs', id))) {
+    if ((await db.hlen('subs')) >= 50000) return A.json(res, 503, { error: 'Signups are closed right now.' });
     const token = C.randomId();
-    await db.hset('subs', id, JSON.stringify({ email, t: Date.now(), token }));
+    await db.hset('subs', id, JSON.stringify({ email, t: Date.now(), token, confirmed: false }));
     await db.hset('sub-tokens', token, id);
   }
   A.json(res, 201, { ok: true });

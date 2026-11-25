@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 const P = path.join(__dirname, '..', '..', 'portal');
-const pages = ['index', 'features', 'download', 'signin', 'signup', 'app', '404', 'dashboard', 'report', 'unsubscribe'];
+const pages = ['index', 'features', 'download', 'signin', 'signup', 'app', '404', 'dashboard', 'report', 'unsubscribe', 'privacy', 'terms'];
 
 test('every page exists and has a theme toggle (workstation included)', () => {
   for (const n of pages) {

@@ -23,9 +23,9 @@ module.exports = A.handle(async (req, res) => {
   const what = clean(b.what, 2000), area = clean(b.area, 40), email = clean(b.email, 120), page = clean(b.page, 200);
   if (what.length < 10) return A.json(res, 400, { error: 'Describe the problem in at least 10 characters.' });
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return A.json(res, 400, { error: 'Enter a valid email, or leave it empty.' });
+  if ((await db.hlen('bugs')) >= 2000) return A.json(res, 503, { error: 'The bug inbox is full. Please try again later.' });
   const sess = await A.getSession(req).catch(() => null);
   const id = C.hmacId('bug:' + Date.now() + ':' + Math.random()).slice(0, 12);
   await db.hset('bugs', id, JSON.stringify({ t: Date.now(), what, area, email, page, uid: sess ? sess.uid : null, ua: clean(req.headers['user-agent'], 160), status: 'new' }));
-  if (await db.hlen('bugs') > 2000) { /* the oldest are pruned by an admin; the cap is the rate limit */ }
   A.json(res, 201, { ok: true, id });
 });

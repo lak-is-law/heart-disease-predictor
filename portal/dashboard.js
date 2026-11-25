@@ -333,10 +333,10 @@
       });
       var sl = $('sub-line');
       if (sl) {
-        var sj = await api('GET', '/api/subscribe'); sl.textContent = sj.count + (sj.count === 1 ? ' subscriber.' : ' subscribers.');
+        var sj = await api('GET', '/api/subscribe'); sl.textContent = sj.count + (sj.count === 1 ? ' address' : ' addresses') + ', none confirmed. Anyone can type any address, so do not email this list until a confirmation step exists.';
         var se = $('sub-export'); se.hidden = !sj.count;
         se.onclick = function () {
-          var blob = new Blob(['email,subscribed\n' + sj.items.map(function (i) { return i.email + ',' + new Date(i.t).toISOString(); }).join('\n') + '\n'], { type: 'text/csv' });
+          var blob = new Blob(['email,subscribed,confirmed\n' + sj.items.map(function (i) { return i.email + ',' + new Date(i.t).toISOString() + ',' + (i.confirmed ? 'yes' : 'no'); }).join('\n') + '\n'], { type: 'text/csv' });
           var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'subscribers.csv'; document.body.appendChild(a); a.click(); a.remove();
         };
       }
