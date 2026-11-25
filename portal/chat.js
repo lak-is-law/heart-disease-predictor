@@ -48,14 +48,14 @@
   var EMERGENCY = ['chest pain', 'heart attack', 'emergency', 'cant breathe', "can't breathe", 'short of breath', 'fainting', 'seene mein dard', 'सीने में दर्द', 'सीने मे दर्द', 'दिल का दौरा', 'हार्ट अटैक', 'सांस नहीं', 'आपातकाल', 'बेहोश'];
   var MEDQ = ['do i have', 'am i at risk', 'should i take', 'medicine', 'medication', 'treatment', 'क्या मुझे', 'दवा', 'दवाई', 'मुझे बीमारी'];
   var T = {
-    en: { title: 'CardioSense help', ph: 'Ask a question', send: 'Send', open: 'Help', close: 'Close',
+    en: { title: 'CardioSense help', cname: 'Nurse Llama', cdesc: 'Answers questions about CardioSense. English or Hindi.', ph: 'Ask a question', send: 'Send', open: 'Help', close: 'Close',
       hi: 'Hi. I can answer questions about CardioSense in English or Hindi. I cannot give medical advice.',
       note: 'Automated answers from the site FAQ. Not medical advice.',
       none: 'I could not find an answer to that. Try one of the questions below, or report a problem at /report',
       emerg: 'If you or someone else has chest pain, trouble breathing or fainting, call your local emergency number now (112 in India) or go to the nearest hospital. This site cannot help in an emergency.',
       med: 'I cannot give medical advice or say whether you have a condition. CardioSense is a learning tool, not a medical device. Please speak to a qualified doctor.',
       chips: [['what', 'What is CardioSense?'], ['device', 'Is it a medical device?'], ['accuracy', 'How accurate is it?'], ['privacy', 'What happens to my data?'], ['download', 'How do I download it?'], ['account', 'How do I sign up?']] },
-    hi: { title: 'CardioSense सहायता', ph: 'अपना सवाल लिखें', send: 'भेजें', open: 'सहायता', close: 'बंद करें',
+    hi: { title: 'CardioSense सहायता', cname: 'नर्स लामा', cdesc: 'कार्डियोसेन्स के सवालों के जवाब, हिंदी या अंग्रेज़ी में।', ph: 'अपना सवाल लिखें', send: 'भेजें', open: 'सहायता', close: 'बंद करें',
       hi: 'नमस्ते। मैं CardioSense के बारे में हिंदी या अंग्रेज़ी में सवालों के जवाब दे सकता हूँ। मैं चिकित्सा सलाह नहीं दे सकता।',
       note: 'साइट के FAQ से स्वचालित जवाब। चिकित्सा सलाह नहीं।',
       none: 'इसका जवाब मुझे नहीं मिला। नीचे दिए सवालों में से चुनें, या /report पर समस्या दर्ज करें',
@@ -81,7 +81,7 @@
 
   function el(tag, cls, txt) { var n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; }
   var lang = 'en'; try { lang = localStorage.getItem('cs-chat-lang') || ((navigator.language || '').slice(0, 2) === 'hi' ? 'hi' : 'en'); } catch (e) { /* ignore */ }
-  var fab, panel, log, chips, input, title, sendBtn, ph, note, started = false;
+  var fab, panel, log, chips, input, title, sendBtn, ph, note, cardName, cardDesc, started = false;
 
   function add(text, who, warn) {
     var m = el('div', 'cc-m ' + who + (warn ? ' warn' : ''));
@@ -111,17 +111,19 @@
     lang = l; try { localStorage.setItem('cs-chat-lang', l); } catch (e) { /* ignore */ }
     if (!panel) return;
     var bs = panel.querySelectorAll('.cc-lang button'); for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', String(bs[i].dataset.l === l));
-    title.textContent = T[l].title; input.placeholder = T[l].ph; sendBtn.textContent = T[l].send; note.textContent = T[l].note; fab.querySelector('span').textContent = T[l].open;
+    title.textContent = T[l].title; cardName.textContent = T[l].cname; cardDesc.textContent = T[l].cdesc; input.placeholder = T[l].ph; sendBtn.textContent = T[l].send; note.textContent = T[l].note; fab.querySelector('span').textContent = T[l].open;
     panel.querySelector('.cc-x').setAttribute('aria-label', T[l].close); renderChips();
   }
   function build() {
     fab = el('button', 'cc-fab'); fab.type = 'button'; fab.setAttribute('aria-expanded', 'false'); fab.setAttribute('aria-controls', 'cc-panel');
-    fab.innerHTML = '<img src="/img/llama.svg" alt="" width="38" height="38"><span></span>';
+    fab.innerHTML = '<img src="/img/llama.svg" alt="" width="35" height="40"><span></span>';
     panel = el('div', 'cc-panel'); panel.id = 'cc-panel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Help chat');
-    var head = el('div', 'cc-head'); var av = el('img', 'cc-av'); av.src = '/img/llama.svg'; av.alt = ''; av.width = 36; av.height = 36; head.appendChild(av); title = el('b'); head.appendChild(title);
+    var head = el('div', 'cc-head'); var av = el('img', 'cc-av'); av.src = '/img/llama.svg'; av.alt = ''; av.width = 31; av.height = 36; head.appendChild(av); title = el('b'); head.appendChild(title);
     var lg = el('div', 'cc-lang'); [['en', 'EN'], ['hi', 'हिं']].forEach(function (p) { var b = el('button', '', p[1]); b.type = 'button'; b.dataset.l = p[0]; b.addEventListener('click', function () { setLang(p[0]); }); lg.appendChild(b); });
     head.appendChild(lg); var x = el('button', 'cc-x', '×'); x.type = 'button'; head.appendChild(x);
-    log = el('div', 'cc-log'); log.setAttribute('aria-live', 'polite'); chips = el('div', 'cc-chips');
+    log = el('div', 'cc-log'); log.setAttribute('aria-live', 'polite');
+    var card = el('div', 'cc-card'); var cimg = el('img', 'cc-card-img'); cimg.src = '/img/llama.svg'; cimg.alt = ''; cimg.width = 52; cimg.height = 60;
+    var ct = el('div', 'cc-card-txt'); cardName = el('b'); cardDesc = el('span'); ct.append(cardName, cardDesc); card.append(cimg, ct); log.appendChild(card); chips = el('div', 'cc-chips');
     var form = el('form', 'cc-form'); input = el('input'); input.type = 'text'; input.maxLength = 200; input.setAttribute('aria-label', 'Question'); sendBtn = el('button'); sendBtn.type = 'submit';
     form.append(input, sendBtn); note = el('div', 'cc-note');
     panel.append(head, log, chips, form, note); document.body.append(panel, fab);

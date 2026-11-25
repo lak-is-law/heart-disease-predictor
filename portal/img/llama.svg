@@ -1,30 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Llama wearing a nursing cap">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 30" width="104" height="120" shape-rendering="crispEdges" role="img" aria-label="Pixel-art llama wearing a nursing cap">
 <style>
-.eye{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
-.earL{transform-box:fill-box;transform-origin:50% 100%;animation:twL 6s infinite}
-.earR{transform-box:fill-box;transform-origin:50% 100%;animation:twR 6s 1.2s infinite}
-@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
-@keyframes twL{0%,90%,100%{transform:rotate(0)}94%{transform:rotate(-10deg)}}
-@keyframes twR{0%,90%,100%{transform:rotate(0)}94%{transform:rotate(10deg)}}
-@media (prefers-reduced-motion:reduce){.eye,.earL,.earR{animation:none}}
+.eye{transform-box:fill-box;transform-origin:50% 50%;animation:blink 4.8s steps(1) infinite}
+.heart{animation:beat 1.4s steps(1) infinite}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.25)}}
+@keyframes beat{0%,100%{opacity:1}50%{opacity:.7}}
+@media (prefers-reduced-motion:reduce){.eye,.heart{animation:none}}
 </style>
-<g stroke="#0A1B2B" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
-  <path d="M37 72h26l5 28H32z" fill="#F1E1C8"/>
-  <path class="earL" d="M30 40C24 26 26 12 33 8c6 6 8 20 6 34z" fill="#F1E1C8"/>
-  <path class="earR" d="M70 40C76 26 74 12 67 8c-6 6-8 20-6 34z" fill="#F1E1C8"/>
-  <path d="M32 31c-2-8-1-15 1-18 3 4 4 11 3 19z" fill="#F4B9B2" stroke="none"/>
-  <path d="M68 31c2-8 1-15-1-18-3 4-4 11-3 19z" fill="#F4B9B2" stroke="none"/>
-  <ellipse cx="50" cy="56" rx="24" ry="24" fill="#F6EAD6"/>
-  <ellipse cx="50" cy="66" rx="13" ry="10" fill="#FFF8EC"/>
-  <path d="M46 62.5q4-2.5 8 0q-1 3.5-4 3.5t-4-3.5z" fill="#0A1B2B"/>
-  <path d="M50 66v3M45 70q5 3.5 10 0" fill="none"/>
-  <circle cx="39" cy="53" r="3.1" class="eye" fill="#0A1B2B" stroke="none"/>
-  <circle cx="61" cy="53" r="3.1" class="eye" fill="#0A1B2B" stroke="none"/>
-  <circle cx="40" cy="52" r="1" fill="#fff" stroke="none"/><circle cx="62" cy="52" r="1" fill="#fff" stroke="none"/>
-  <circle cx="33" cy="61" r="3.6" fill="#F4B9B2" stroke="none" opacity=".85"/><circle cx="67" cy="61" r="3.6" fill="#F4B9B2" stroke="none" opacity=".85"/>
-  <path d="M30 36c6-7 34-7 40 0l-3 8c-9-5-25-5-34 0z" fill="#fff"/>
-  <path d="M33 41c10-4 24-4 34 0" fill="none" stroke="#007C91" stroke-width="2.4"/>
-  <path d="M41 30c0-8 4-13 9-13s9 5 9 13z" fill="#fff"/>
-  <path d="M48.6 20.5h2.8v2.7h2.7v2.8h-2.7v2.7h-2.8V26h-2.7v-2.8h2.7z" fill="#007C91" stroke="none"/>
-</g>
+<path fill="#0A1B2B" d="M7 0h12v1h-12zM6 1h1v1h-1zM19 1h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM19 2h1v1h-1zM21 2h1v1h-1zM3 3h1v1h-1zM5 3h2v1h-2zM19 3h2v1h-2zM22 3h1v1h-1zM2 4h1v1h-1zM6 4h1v1h-1zM19 4h1v1h-1zM23 4h1v1h-1zM2 5h1v1h-1zM6 5h1v1h-1zM19 5h1v1h-1zM23 5h1v1h-1zM2 6h1v1h-1zM6 6h1v1h-1zM19 6h1v1h-1zM23 6h1v1h-1zM2 7h1v1h-1zM6 7h1v1h-1zM19 7h1v1h-1zM23 7h1v1h-1zM2 8h1v1h-1zM6 8h1v1h-1zM19 8h1v1h-1zM23 8h1v1h-1zM2 9h1v1h-1zM23 9h1v1h-1zM2 10h1v1h-1zM23 10h1v1h-1zM3 11h1v1h-1zM22 11h1v1h-1zM3 12h1v1h-1zM22 12h1v1h-1zM3 13h1v1h-1zM22 13h1v1h-1zM3 14h1v1h-1zM22 14h1v1h-1zM3 15h1v1h-1zM22 15h1v1h-1zM3 16h1v1h-1zM22 16h1v1h-1zM3 17h1v1h-1zM22 17h1v1h-1zM3 18h1v1h-1zM22 18h1v1h-1zM3 19h1v1h-1zM22 19h1v1h-1zM4 20h3v1h-3zM19 20h3v1h-3zM6 21h1v1h-1zM19 21h1v1h-1zM6 22h1v1h-1zM19 22h1v1h-1zM6 23h1v1h-1zM19 23h1v1h-1zM6 24h1v1h-1zM19 24h1v1h-1zM6 25h1v1h-1zM19 25h1v1h-1zM6 26h1v1h-1zM19 26h1v1h-1zM6 27h1v1h-1zM19 27h1v1h-1zM6 28h1v1h-1zM19 28h1v1h-1zM7 29h12v1h-12z"/><path fill="#F1E1C8" d="M4 3h1v1h-1zM21 3h1v1h-1zM3 4h3v1h-3zM20 4h3v1h-3zM3 5h3v1h-3zM20 5h3v1h-3zM3 6h1v1h-1zM5 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM3 7h1v1h-1zM5 7h1v1h-1zM20 7h1v1h-1zM22 7h1v1h-1zM3 8h1v1h-1zM5 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM3 9h1v1h-1zM5 9h1v1h-1zM20 9h1v1h-1zM22 9h1v1h-1zM3 10h20v1h-20zM4 11h18v1h-18zM4 12h18v1h-18zM4 13h3v1h-3zM9 13h8v1h-8zM19 13h3v1h-3zM4 14h3v1h-3zM9 14h8v1h-8zM19 14h3v1h-3zM4 15h1v1h-1zM7 15h1v1h-1zM18 15h1v1h-1zM21 15h1v1h-1zM4 16h1v1h-1zM7 16h1v1h-1zM18 16h1v1h-1zM21 16h1v1h-1zM4 17h4v1h-4zM18 17h4v1h-4zM4 18h4v1h-4zM18 18h4v1h-4zM4 19h4v1h-4zM18 19h4v1h-4zM7 20h12v1h-12zM7 21h12v1h-12zM7 22h12v1h-12zM7 23h3v1h-3zM16 23h3v1h-3zM7 24h3v1h-3zM16 24h3v1h-3zM7 25h3v1h-3zM16 25h3v1h-3zM7 26h3v1h-3zM16 26h3v1h-3zM7 27h3v1h-3zM16 27h3v1h-3zM7 28h3v1h-3zM16 28h3v1h-3z"/><path fill="#FFF8EC" d="M8 15h3v1h-3zM15 15h3v1h-3zM8 16h1v1h-1zM11 16h4v1h-4zM17 16h1v1h-1zM8 17h3v1h-3zM15 17h3v1h-3zM8 18h10v1h-10zM8 19h10v1h-10zM12 23h2v1h-2zM10 25h1v1h-1zM15 25h1v1h-1zM10 26h2v1h-2zM14 26h2v1h-2zM10 27h6v1h-6zM10 28h6v1h-6z"/><path fill="#F4B9B2" d="M4 6h1v1h-1zM21 6h1v1h-1zM4 7h1v1h-1zM21 7h1v1h-1zM4 8h1v1h-1zM21 8h1v1h-1zM4 9h1v1h-1zM21 9h1v1h-1zM5 15h2v1h-2zM19 15h2v1h-2zM5 16h2v1h-2zM19 16h2v1h-2z"/><path fill="#FFFFFF" d="M7 1h12v1h-12zM7 2h5v1h-5zM14 2h5v1h-5zM7 3h5v1h-5zM14 3h5v1h-5zM7 4h3v1h-3zM16 4h3v1h-3zM7 5h3v1h-3zM16 5h3v1h-3zM7 6h5v1h-5zM14 6h5v1h-5zM7 7h5v1h-5zM14 7h5v1h-5zM7 8h12v1h-12z"/><path fill="#007C91" d="M12 2h2v1h-2zM12 3h2v1h-2zM10 4h6v1h-6zM10 5h6v1h-6zM12 6h2v1h-2zM12 7h2v1h-2zM6 9h14v1h-14z"/><path fill="#0A1B2B" d="M11 15h4v1h-4z"/><path fill="#0A1B2B" d="M9 16h2v1h-2zM15 16h2v1h-2zM11 17h4v1h-4z"/>
+<path class="heart" fill="#E5484D" d="M10 23h2v1h-2zM14 23h2v1h-2zM10 24h6v1h-6zM11 25h4v1h-4zM12 26h2v1h-2z"/>
+<path class="eye" fill="#0A1B2B" d="M8 13h1v1h-1zM17 13h1v1h-1zM7 14h2v1h-2zM17 14h2v1h-2z"/>
+<path fill="#FFFFFF" d="M7 13h1v1h-1zM18 13h1v1h-1z"/>
 </svg>
