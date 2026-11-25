@@ -66,6 +66,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/logout",
+      "destination": "/api/session"
+    },
+    {
       "source": "/api/oauth/:provider/callback",
       "destination": "/api/oauth?provider=:provider&step=callback"
     },
