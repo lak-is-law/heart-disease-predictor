@@ -7,6 +7,7 @@ Figures are transparent SVGs in mid-tone colours so they read on both the light 
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -29,6 +30,7 @@ plt.rcParams.update({"svg.fonttype": "none", "font.family": "sans-serif", "font.
 def save(fig, name):
     p = ROOT / "docs" / "figures" / name
     fig.savefig(p, format="svg", bbox_inches="tight"); plt.close(fig)
+    t = p.read_text(); t = re.sub(r"<!DOCTYPE[^>]*>\s*", "", t); p.write_text(t)  # DTD-free so hosts accept the SVG
     shutil.copy(p, ROOT / "portal" / "img" / "research" / name)
 
 
