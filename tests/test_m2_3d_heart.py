@@ -22,7 +22,7 @@ PORTAL_DIR = REPO_ROOT / "portal"
 VENDOR_DIR = PORTAL_DIR / "vendor"
 CGI_HEART_PATH = REPO_ROOT / "cgi_heart.py"
 PORTAL_JS_PATH = PORTAL_DIR / "portal.js"
-PORTAL_HTML_PATH = PORTAL_DIR / "index.html"
+PORTAL_HTML_PATH = PORTAL_DIR / "app.html"
 
 # Pinned Vendor Manifest
 EXPECTED_VENDOR = {

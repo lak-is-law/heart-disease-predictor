@@ -4,7 +4,6 @@
  * Real Clinical Lab Report NLP Parser · Anatomical Three.js Hemodynamics Simulation
  */
 
-let manifest = null;
 let detectedPlatform = null;
 let currentDiagnosticMode = 'cta';
 let clinicalCaseActive = 'acs';
@@ -169,7 +168,7 @@ function explainClinicalRisk(patient) {
 }
 
 const FEATURE_LABELS = {
-  ca: 'Calcified Coronary Vessels',
+  ca: 'Vessels seen on fluoroscopy',
   oldpeak: 'ST Segment Depression',
   chol: 'Serum Total Cholesterol',
   trestbps: 'Resting Blood Pressure',
@@ -178,8 +177,8 @@ const FEATURE_LABELS = {
   sex: 'Biological Sex',
   cp: 'Chest Pain Presentation',
   exang: 'Exercise-Induced Angina',
-  slope: 'Peak Exercise ST Slope',
-  thal: 'Thallium Defect Status',
+  slope: 'ST slope',
+  thal: 'Thallium result',
   fbs: 'Fasting Blood Sugar',
   restecg: 'Resting Electrocardiogram'
 };
@@ -208,74 +207,26 @@ function renderAttributionBarsFromDeltas(deltas) {
   }).join('');
 }
 
-// Verified Clinical Hospital Cases
+// Synthetic sample cases. These are made-up values for demonstration; they are not real patients.
 const CLINICAL_CASES = {
-  acs: {
-    id: 'acs',
-    title: 'Case 1: Acute Coronary Syndrome (Anterior STEMI)',
-    patient: 'Patient #ACS-9082 (62M)',
-    source: 'Hospital Discharge Summary — Cleveland Clinic Regional',
-    vitals: {
-      age: 62, sex: 1, cp: 1, trestbps: 168, chol: 288, fbs: 1,
-      restecg: 1, thalach: 128, exang: 1, oldpeak: 3.2, slope: 3, ca: 3, thal: 7
-    },
-    findings: 'Severe 3-vessel coronary artery disease with critical LAD occlusion. Reversible transmural ischemia on myocardial perfusion scintigraphy.'
-  },
-  diabetic: {
-    id: 'diabetic',
-    title: 'Case 2: Diabetic Multi-Vessel CAD Screening',
-    patient: 'Patient #DIA-4410 (57F)',
-    source: 'Endocrinology & Cardiology Consultation — Mount Sinai Health',
-    vitals: {
-      age: 57, sex: 0, cp: 2, trestbps: 142, chol: 245, fbs: 1,
-      restecg: 1, thalach: 142, exang: 0, oldpeak: 1.4, slope: 2, ca: 2, thal: 7
-    },
-    findings: 'Moderate 2-vessel calcification in LAD and RCA. Stress-induced horizontal ST depression consistent with multi-vessel CAD.'
-  },
-  wellness: {
-    id: 'wellness',
-    title: 'Case 3: Asymptomatic Executive Cardiovascular Screen',
-    patient: 'Patient #EXE-1029 (42M)',
-    source: 'Executive Health Assessment — Mayo Clinic Wellness Center',
-    vitals: {
-      age: 42, sex: 1, cp: 4, trestbps: 118, chol: 175, fbs: 0,
-      restecg: 0, thalach: 178, exang: 0, oldpeak: 0.0, slope: 1, ca: 0, thal: 3
-    },
-    findings: 'Normal coronary anatomy with 0 fluoroscopic calcifications. Physiologic upsloping ST response and normal myocardial perfusion.'
-  },
-  atypical_safety_net: {
-    id: 'atypical_safety_net',
-    title: 'Case 4: Atypical Diabetic Heart Attack (96.4% Recall Safety Net)',
-    patient: 'Patient #DM-7714 (64F)',
-    source: 'Emergency Triage & Endocrine Assessment — Johns Hopkins Medicine',
-    vitals: {
-      age: 64, sex: 0, cp: 2, trestbps: 140, chol: 250, fbs: 1,
-      restecg: 1, thalach: 135, exang: 0, oldpeak: 1.6, slope: 2, ca: 1, thal: 7
-    },
-    findings: 'Atypical presentation with diabetic neuropathy: painless dyspnea, fatigue, and nausea without substernal chest pressure. Flagged by 96.4% recall safety net.'
-  },
-  ruled_out_cath: {
-    id: 'ruled_out_cath',
-    title: 'Case 5: Low-Risk Non-Obstructive Chest Pain (Cath Ruled Out)',
-    patient: 'Patient #RULEOUT-3102 (52M)',
-    source: 'Cardiovascular Assessment — Cleveland Clinic Main Campus',
-    vitals: {
-      age: 52, sex: 1, cp: 3, trestbps: 126, chol: 204, fbs: 0,
-      restecg: 0, thalach: 162, exang: 0, oldpeak: 0.2, slope: 1, ca: 0, thal: 3
-    },
-    findings: 'Atypical non-anginal chest pain. Non-invasive FFR 0.94 rules out obstructive ischemia. Invasive catheterization avoided, saving $8,500.'
-  },
-  rural_triage: {
-    id: 'rural_triage',
-    title: 'Case 6: Critical Access Rural Clinic Triage (Air-Gapped)',
-    patient: 'Patient #RURAL-9051 (68M)',
-    source: 'Critical Access Clinic Bedside Triage — Appalachian Regional Health',
-    vitals: {
-      age: 68, sex: 1, cp: 1, trestbps: 160, chol: 270, fbs: 1,
-      restecg: 2, thalach: 115, exang: 1, oldpeak: 2.8, slope: 3, ca: 2, thal: 7
-    },
-    findings: 'Severe acute coronary ischemia evaluated 100% offline with 0 KB cloud data egress. Immediate life-flight helicopter catheterization transfer indicated.'
-  }
+  acs: { id: 'acs', title: 'Sample 1: several risk markers', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 62, sex: 1, cp: 1, trestbps: 168, chol: 288, fbs: 1, restecg: 1, thalach: 128, exang: 1, oldpeak: 3.2, slope: 3, ca: 3, thal: 7 },
+    findings: 'Synthetic values chosen to give a high model estimate.' },
+  diabetic: { id: 'diabetic', title: 'Sample 2: diabetes with exercise ST change', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 57, sex: 0, cp: 2, trestbps: 142, chol: 245, fbs: 1, restecg: 1, thalach: 142, exang: 0, oldpeak: 1.4, slope: 2, ca: 2, thal: 7 },
+    findings: 'Synthetic values chosen to give an intermediate to high model estimate.' },
+  wellness: { id: 'wellness', title: 'Sample 3: no reported risk markers', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 42, sex: 1, cp: 4, trestbps: 118, chol: 175, fbs: 0, restecg: 0, thalach: 178, exang: 0, oldpeak: 0.0, slope: 1, ca: 0, thal: 3 },
+    findings: 'Synthetic values chosen to give a low model estimate.' },
+  atypical_safety_net: { id: 'atypical_safety_net', title: 'Sample 4: atypical symptoms, diabetes', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 64, sex: 0, cp: 2, trestbps: 140, chol: 250, fbs: 1, restecg: 1, thalach: 135, exang: 0, oldpeak: 1.6, slope: 2, ca: 1, thal: 7 },
+    findings: 'Synthetic values for an intermediate estimate; shown in high-sensitivity mode (threshold 0.28).' },
+  ruled_out_cath: { id: 'ruled_out_cath', title: 'Sample 5: low estimate', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 52, sex: 1, cp: 3, trestbps: 126, chol: 204, fbs: 0, restecg: 0, thalach: 162, exang: 0, oldpeak: 0.2, slope: 1, ca: 0, thal: 3 },
+    findings: 'Synthetic values chosen to give a low model estimate. A low estimate does not rule out disease.' },
+  rural_triage: { id: 'rural_triage', title: 'Sample 6: older adult, several markers', patient: 'Synthetic case', source: 'Synthetic',
+    vitals: { age: 68, sex: 1, cp: 1, trestbps: 160, chol: 270, fbs: 1, restecg: 2, thalach: 115, exang: 1, oldpeak: 2.8, slope: 3, ca: 2, thal: 7 },
+    findings: 'Synthetic values chosen to give a high model estimate.' }
 };
 
 // SVG Vector Icons for Official Brands (No Emojis!)
@@ -293,293 +244,229 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadManifest();
   initMobileNav();
   initLabIngestion();
+  await initSession();
   detectClientHardware();
-  renderMatrixTables();
   initTabNavigation();
   initDragAndDropVerifier();
   initPortal3DHeart();
   initPortalECG();
   loadClinicalCase('acs');
   calculateHospitalEconomics();
-  runSecurityCheckup();
 });
 
-/**
- * Fetch official release manifest
- */
 async function loadManifest() {
   try {
-    const response = await fetch('manifest.json');
-    if (response.status === 429) {
-      const retryAfter = response.headers.get('Retry-After') || '60';
-      console.warn(`[CardioSense AI] Rate limit (HTTP 429) encountered. Retry-After: ${retryAfter}s`);
-      showToast(`Distribution Server Rate Limit Active (429). Retry in ${retryAfter}s.`, 'error');
-      return;
-    }
-    if (response.ok) {
-      manifest = await response.json();
-      console.log('[CardioSense AI] Manifest loaded: 18 packages registered.');
-    }
-  } catch (error) {
-    console.warn('[CardioSense AI] Local manifest fetch fallback:', error);
-  }
-  try {
-    const mwResp = await fetch('model_weights.json');
-    if (mwResp.status === 429) {
-      console.warn('[CardioSense AI] Rate limited loading model weights.');
-      return;
-    }
-    if (mwResp.ok) {
-      const mwData = await mwResp.json();
-      Object.assign(MODEL_WEIGHTS, mwData);
-      console.log('[CardioSense AI] Model weights refreshed from model_weights.json');
-    }
-  } catch (_) {
-    // Keep embedded offline MODEL_WEIGHTS
+    const wr = await fetch('model_weights.json');
+    if (wr.ok) modelWeights = await wr.json();
+  } catch (e) {
+    console.warn('model_weights.json unavailable; using built-in coefficients.', e);
   }
 }
 
-/**
- * Advanced Client Hardware & Processor Generation Detection
- */
 async function detectClientHardware() {
   const ua = navigator.userAgent;
-  const platform = navigator.platform || '';
-  
-  let os = 'Unknown OS';
-  let arch = 'x64';
-  let chipName = 'Standard 64-bit Processor';
-  let packageId = 'win-x64-universal';
-  let brandSvg = BRAND_SVGS.windows;
-
-  // Modern Client Hints check
+  let hints = null;
   if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-    try {
-      const hints = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness', 'model']);
-      if (hints.architecture === 'arm') arch = 'arm64';
-    } catch (e) { /* fallback */ }
+    try { hints = await navigator.userAgentData.getHighEntropyValues(['architecture']); } catch (e) { /* not available */ }
   }
-
-  // macOS Detection & Apple Silicon Generation
-  const isMac = /Macintosh|MacIntel|MacPPC/i.test(ua) || (platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let os = 'unknown';
+  let arch = 'unknown';
+  let kind = null;
+  const isMac = /Macintosh|MacIntel/i.test(ua) && !(navigator.maxTouchPoints > 1);
   if (isMac) {
     os = 'macOS';
-    brandSvg = BRAND_SVGS.apple;
-    const appleSiliconTier = await detectAppleSiliconTier();
-    
-    if (appleSiliconTier === 'm4') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M4 Series (ARMv9.2-A · SME2 & Metal 3.1)';
-      packageId = 'mac-m4-arm64';
-    } else if (appleSiliconTier === 'm3') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M3 Series (ARMv9.2-A · Dynamic Caching)';
-      packageId = 'mac-m3-arm64';
-    } else if (appleSiliconTier === 'm2') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M2 Series (ARMv8.5-A · 16-Core NPU)';
-      packageId = 'mac-m2-arm64';
-    } else if (appleSiliconTier === 'm1' || arch === 'arm64') {
-      arch = 'arm64';
-      chipName = 'Apple Silicon M1 Series (Universal Baseline ARM64)';
-      packageId = 'mac-m1-arm64';
+    if (hints && hints.architecture) {
+      arch = hints.architecture === 'arm' ? 'arm64' : 'x64';
+      kind = arch === 'arm64' ? 'mac-arm64' : 'mac-x64';
     } else {
-      arch = 'x86_64';
-      chipName = 'Intel Core / Xeon Mac (AVX-512 & AVX2 Compatibility)';
-      packageId = 'mac-intel-gen10';
+      kind = 'mac'; // Safari and Firefox do not reveal the chip
     }
-  }
-  // Windows Detection
-  else if (/Win(dows )?/i.test(ua)) {
+  } else if (/Windows/i.test(ua)) {
     os = 'Windows';
-    brandSvg = BRAND_SVGS.windows;
-    if (/ARM64|WOA/i.test(ua) || arch === 'arm64') {
-      arch = 'arm64';
-      if (/Snapdragon|X1E|Copilot/i.test(ua) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 10)) {
-        chipName = 'Qualcomm Snapdragon X Elite / Plus (Copilot+ 45 TOPS NPU)';
-        packageId = 'win-arm64-snapdragonX';
-      } else {
-        chipName = 'Qualcomm Snapdragon 8cx Gen 3 (ARMv8.4-A)';
-        packageId = 'win-arm64-snapdragon8cx';
-      }
-    } else {
-      arch = 'x64';
-      const cores = navigator.hardwareConcurrency || 8;
-      if (cores >= 16) {
-        chipName = 'Intel Core Ultra Series & 14th/15th Gen (AI Boost NPU)';
-        packageId = 'win-intel-core-ultra';
-      } else if (cores >= 12) {
-        chipName = 'Intel 12th/13th Gen Core (Hybrid Architecture AVX2/VNNI)';
-        packageId = 'win-intel-gen12-13';
-      } else {
-        chipName = 'Universal 64-bit Workstation (Intel 8th-11th / AMD Zen 1-3)';
-        packageId = 'win-x64-universal';
-      }
-    }
+    const arm = (hints && hints.architecture === 'arm') || /ARM64|WOA/i.test(ua);
+    arch = arm ? 'arm64' : 'x64';
+    kind = arm ? 'win-arm64' : 'win-x64';
   }
-  // Linux Detection
-  else if (/Linux/i.test(ua)) {
-    os = 'Enterprise Linux';
-    brandSvg = BRAND_SVGS.linux;
-    arch = 'x86_64';
-    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 16) {
-      chipName = 'Enterprise Linux HPC (AVX-512 Vectorized)';
-      packageId = 'linux-x64-gen4';
-    } else {
-      chipName = 'Enterprise Linux Universal (SSE4.2 glibc 2.28+)';
-      packageId = 'linux-x64-universal';
-    }
-  }
-
-  detectedPlatform = { os, arch, chipName, packageId, brandSvg };
+  detectedPlatform = { os, arch, kind };
   updateSmartRecommendationCard(detectedPlatform);
+  renderMatrixTables();
 }
 
-/**
- * Detect Apple Silicon generation via WebGL unmasked renderer
- */
-async function detectAppleSiliconTier() {
+
+const BUILD_INFO = {
+  'mac-arm64': { group: 'Mac', name: 'Apple silicon', note: 'M1 or later, macOS 12 or later' },
+  'mac-x64': { group: 'Mac', name: 'Intel', note: 'macOS 12 or later' },
+  'win-x64': { group: 'Windows', name: '64-bit (Intel, AMD)', note: 'Windows 10 or 11' },
+  'win-arm64': { group: 'Windows', name: 'ARM64 (Snapdragon)', note: 'Windows 11' }
+};
+const BUILD_ORDER = ['mac-arm64', 'mac-x64', 'win-x64', 'win-arm64'];
+let currentUser = null;
+let csrfToken = '';
+let releaseData = null;
+window.csState = () => ({ user: currentUser, csrf: csrfToken });
+window.csSetCsrf = (t) => { csrfToken = t || ''; };
+// Called by the dashboard when the server says the session is gone (expired, signed out elsewhere).
+window.csSessionLost = () => {
+  currentUser = null; csrfToken = ''; releaseData = null;
+  renderAccount(); renderMatrixTables(); updateSmartRecommendationCard(detectedPlatform);
+  if (window.CSDash) CSDash.refresh();
+};
+
+function megabytes(bytes) { return Math.round(bytes / 1048576) + ' MB'; }
+
+function renderAccount() {
+  const box = document.getElementById('hx-account');
+  if (!box) return;
+  box.textContent = '';
+  if (!currentUser) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'header-login-btn'; b.id = 'btn-header-signin';
+    b.textContent = 'Sign in';
+    b.addEventListener('click', openAuthModal);
+    box.appendChild(b);
+    return;
+  }
+  const who = document.createElement('span');
+  who.className = 'hx-who'; who.textContent = currentUser.email;
+  const out = document.createElement('button');
+  out.type = 'button'; out.className = 'header-login-btn'; out.id = 'btn-header-signout';
+  out.textContent = 'Sign out';
+  out.addEventListener('click', signOut);
+  const dash = document.createElement('button');
+  dash.type = 'button'; dash.className = 'header-login-btn'; dash.textContent = 'Dashboard';
+  dash.addEventListener('click', () => window.CSDash && CSDash.open());
+  box.appendChild(who); box.appendChild(dash); box.appendChild(out);
+}
+
+async function loadReleases() {
+  releaseData = null;
   try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return 'm3';
-    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-    if (!debugInfo) return 'm3';
-    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '';
-    
-    if (/Apple M4/i.test(renderer)) return 'm4';
-    if (/Apple M3/i.test(renderer)) return 'm3';
-    if (/Apple M2/i.test(renderer)) return 'm2';
-    if (/Apple M1/i.test(renderer) || /Apple GPU/i.test(renderer)) return 'm1';
-    if (/Intel/i.test(renderer)) return 'intel';
-  } catch (e) { /* fallback */ }
-  return 'm4'; // default modern Mac
+    const r = await fetch('/api/releases', { credentials: 'same-origin' });
+    if (r.status === 401) { currentUser = null; return; }
+    if (r.ok) releaseData = await r.json();
+    else releaseData = { error: true, builds: [] };
+  } catch (e) {
+    releaseData = { error: true, builds: [] };
+  }
 }
 
-/**
- * Render Smart Recommendation Card
- */
+async function initSession() {
+  try {
+    const r = await fetch('/api/session', { credentials: 'same-origin' });
+    const s = r.ok ? await r.json() : { user: null };
+    currentUser = s.user || null;
+    csrfToken = s.csrf || '';
+  } catch (e) {
+    currentUser = null; csrfToken = '';
+  }
+  if (currentUser) await loadReleases();
+  renderAccount();
+  renderMatrixTables();
+  updateSmartRecommendationCard(detectedPlatform);
+  if (window.CSDash) CSDash.refresh();
+}
+
+async function signOut() {
+  try { await fetch('/api/logout', { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-Token': csrfToken } }); } catch (e) { /* offline */ }
+  currentUser = null; csrfToken = ''; releaseData = null;
+  renderAccount(); renderMatrixTables(); updateSmartRecommendationCard(detectedPlatform);
+  if (window.CSDash) CSDash.refresh();
+  showToast('Signed out');
+}
+window.signOut = signOut;
+
 function updateSmartRecommendationCard(detected) {
-  if (!manifest) return;
-  const pkg = manifest.packages.find(p => p.id === detected.packageId) ||
-              manifest.packages.find(p => p.recommended_for && p.recommended_for.includes(detected.packageId)) ||
-              manifest.packages[0];
+  const title = document.getElementById('rec-title');
+  const desc = document.getElementById('rec-desc');
+  const meta = document.getElementById('rec-meta');
+  const btn = document.getElementById('rec-btn');
+  if (!title || !desc || !btn) return;
+  const d = detected || detectedPlatform || {};
+  btn.onclick = null; btn.style.display = '';
+  meta.textContent = '';
 
-  const titleEl = document.getElementById('rec-title');
-  const descEl = document.getElementById('rec-desc');
-  const metaEl = document.getElementById('rec-meta');
-  const btnEl = document.getElementById('rec-btn');
-  const hashEl = document.getElementById('rec-hash-link');
-
-  if (titleEl) {
-    titleEl.innerHTML = `
-      <span style="display:inline-flex; align-items:center; gap:8px;">
-        ${detected.brandSvg}
-        <span>${pkg.description}</span>
-      </span>`;
+  if (!currentUser) {
+    title.textContent = 'Download CardioSense';
+    desc.textContent = 'Sign in to download the desktop app for macOS or Windows.';
+    btn.textContent = 'Sign in to download'; btn.href = '#';
+    btn.onclick = (e) => { e.preventDefault(); openAuthModal(); };
+    return;
   }
-  if (descEl) {
-    descEl.innerText = `Specifically vectorized for your ${detected.os} workstation running ${detected.chipName}. Cryptographically signed with zero cloud egress.`;
+  if (!releaseData) { title.textContent = 'Loading downloads'; desc.textContent = ''; btn.style.display = 'none'; return; }
+  if (releaseData.error) {
+    title.textContent = 'Downloads are unavailable right now';
+    desc.textContent = 'Refresh the page to try again.';
+    btn.style.display = 'none'; return;
   }
-  if (metaEl) {
-    metaEl.innerHTML = `
-      <span><strong>Chipset:</strong> ${pkg.chipset_short}</span>
-      <span>•</span>
-      <span><strong>Instruction Set:</strong> ${pkg.instruction_set}</span>
-      <span>•</span>
-      <span><strong>Size:</strong> ${pkg.size_mb} MB</span>
-      <span>•</span>
-      <span><strong>Status:</strong> Notarized & Verified</span>
-    `;
+  if (!releaseData.builds.length) {
+    title.textContent = 'The first release is not published yet';
+    desc.textContent = 'Check back soon.';
+    btn.style.display = 'none'; return;
   }
-  if (btnEl) {
-    btnEl.href = pkg.download_url;
-    btnEl.setAttribute('download', pkg.filename);
-  }
-  if (hashEl) {
-    hashEl.innerText = `SHA-256: ${pkg.sha256.substring(0, 16)}... (Click to Verify)`;
+  const build = releaseData.builds.find((b) => b.kind === d.kind);
+  if (build) {
+    const info = BUILD_INFO[build.kind];
+    title.textContent = 'CardioSense for ' + info.group + ' ' + info.name;
+    desc.textContent = info.note + '. Version ' + releaseData.version + ', ' + megabytes(build.size) + '.';
+    btn.textContent = 'Download'; btn.href = '/api/download?id=' + build.id;
+  } else {
+    title.textContent = 'Choose your download';
+    desc.textContent = d.kind === 'mac'
+      ? 'Not sure which Mac you have? Open the Apple menu, choose About This Mac, and look at Chip.'
+      : 'Pick the build for your computer below.';
+    btn.textContent = 'See all downloads'; btn.href = '#matrix';
   }
 }
 
-/**
- * Populate Multi-Architecture Tables (All 18 Packages)
- */
-function renderMatrixTables(filterGen = 'all') {
-  if (!manifest || !manifest.packages) return;
+function renderMatrixTables() {
+  const list = document.getElementById('dl-list');
+  const note = document.getElementById('dl-note');
+  const ver = document.getElementById('dl-version');
+  if (!list) return;
+  list.textContent = ''; if (note) note.textContent = ''; if (ver) ver.textContent = '';
 
-  const macBody = document.getElementById('table-mac-body');
-  const winBody = document.getElementById('table-win-body');
-  const linuxBody = document.getElementById('table-linux-body');
-  const allBody = document.getElementById('table-all-body');
+  if (!currentUser) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'app-btn app-btn-primary'; b.textContent = 'Sign in to download';
+    b.addEventListener('click', openAuthModal);
+    list.appendChild(b);
+    return;
+  }
+  if (!releaseData) { list.textContent = 'Loading downloads'; return; }
+  if (releaseData.error) { list.textContent = 'Downloads are unavailable right now. Refresh the page to try again.'; return; }
+  if (!releaseData.builds.length) { list.textContent = 'The first release is not published yet. Check back soon.'; return; }
 
-  if (macBody) macBody.innerHTML = '';
-  if (winBody) winBody.innerHTML = '';
-  if (linuxBody) linuxBody.innerHTML = '';
-  if (allBody) allBody.innerHTML = '';
-
-  manifest.packages.forEach(pkg => {
-    if (filterGen !== 'all' && pkg.gen_tier !== filterGen) return;
-
-    let brandSvg = BRAND_SVGS.windows;
-    if (pkg.platform === 'macOS') brandSvg = BRAND_SVGS.apple;
-    if (pkg.platform.includes('Linux')) brandSvg = BRAND_SVGS.linux;
-
-    const rowHtml = `
-      <tr>
-        <td>
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div style="color:var(--color-primary); flex-shrink:0;">${brandSvg}</div>
-            <div>
-              <div style="font-weight:700; color:var(--color-text-headline);">${pkg.description}</div>
-              <div style="font-size:0.75rem; color:var(--color-text-muted); font-family:var(--font-mono);">${pkg.filename}</div>
-            </div>
-          </div>
-        </td>
-        <td>
-          <div style="display:flex; flex-direction:column; gap:4px;">
-            <span class="chip-badge ${pkg.gen_tier}">${pkg.chipset_short}</span>
-            <span style="font-size:0.6875rem; color:var(--color-text-muted); font-family:var(--font-mono);">${pkg.instruction_set}</span>
-          </div>
-        </td>
-        <td>
-          <span style="font-size:0.75rem; color:var(--color-text-body); font-weight:500;">${pkg.os_compat}</span>
-        </td>
-        <td style="font-family:var(--font-mono); font-weight:600; color:var(--color-text-headline);">
-          ${pkg.size_mb} MB
-        </td>
-        <td>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <span class="hash-cell" title="${pkg.sha256}">${pkg.sha256}</span>
-            <button type="button" class="app-copy-btn" onclick="copyToClipboard('${pkg.sha256}', 'Copied SHA-256')">
-              Copy
-            </button>
-          </div>
-        </td>
-        <td style="text-align:right;">
-          <a href="${pkg.download_url}" download="${pkg.filename}" class="app-btn app-btn-primary app-btn-sm" style="font-size:0.75rem; padding:5px 12px;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Download
-          </a>
-        </td>
-      </tr>
-    `;
-
-    if (allBody) allBody.innerHTML += rowHtml;
-    if (pkg.platform === 'macOS' && macBody) macBody.innerHTML += rowHtml;
-    if (pkg.platform === 'Windows' && winBody) winBody.innerHTML += rowHtml;
-    if (pkg.platform.includes('Linux') && linuxBody) linuxBody.innerHTML += rowHtml;
+  if (ver) ver.textContent = 'Version ' + releaseData.version;
+  let lastGroup = '';
+  BUILD_ORDER.forEach((kind) => {
+    const build = releaseData.builds.find((b) => b.kind === kind);
+    if (!build) return;
+    const info = BUILD_INFO[kind];
+    if (info.group !== lastGroup) {
+      const g = document.createElement('div'); g.className = 'dl-group'; g.textContent = info.group;
+      list.appendChild(g); lastGroup = info.group;
+    }
+    const row = document.createElement('div'); row.className = 'dl-row';
+    const left = document.createElement('div');
+    const name = document.createElement('div'); name.className = 'dl-name'; name.textContent = info.name;
+    if (detectedPlatform && detectedPlatform.kind === kind) {
+      const tag = document.createElement('span'); tag.className = 'dl-tag'; tag.textContent = 'Recommended for this device';
+      name.appendChild(tag);
+    }
+    const sub = document.createElement('div'); sub.className = 'dl-meta';
+    sub.textContent = info.note + ', ' + megabytes(build.size);
+    left.appendChild(name); left.appendChild(sub);
+    const a = document.createElement('a');
+    a.className = 'app-btn app-btn-primary app-btn-sm'; a.textContent = 'Download';
+    a.href = '/api/download?id=' + build.id;
+    a.setAttribute('aria-label', 'Download CardioSense ' + releaseData.version + ' for ' + info.group + ' ' + info.name);
+    row.appendChild(left); row.appendChild(a); list.appendChild(row);
   });
+  if (note && releaseData.checksums) {
+    note.textContent = 'Check a download against the release checksums with the verifier below.';
+  }
 }
 
-function filterByGeneration(gen, btn) {
-  document.querySelectorAll('.gen-filter-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderMatrixTables(gen);
-}
 
 /**
  * Tab Navigation
@@ -1303,11 +1190,11 @@ function extractSex(text) {
  */
 const SAMPLE_CLINICAL_FILES = {
   json: {
-    filename: 'patient_eleanor_vance_severe_cad.json',
+    filename: 'sample_case_severe_cad.json',
     content: JSON.stringify({
-      patient_id: "CP-8924",
-      name: "Eleanor Vance",
-      clinical_study: "Severe Multivessel CAD with Anterior STEMI",
+      patient_id: "SAMPLE-1",
+      name: "Sample Patient",
+      clinical_study: "Synthetic sample",
       admission_date: "2026-11-15",
       biomarkers: {
         age: 62, sex: 0, cp: 1, trestbps: 168, chol: 288,
@@ -1317,13 +1204,13 @@ const SAMPLE_CLINICAL_FILES = {
     }, null, 2)
   },
   csv: {
-    filename: 'patient_eleanor_vance_lab_report.csv',
+    filename: 'sample_case_lab_report.csv',
     content: 'age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal\n62,0,1,168,288,1,2,128,1,3.2,3,3,7'
   },
   txt: {
-    filename: 'patient_eleanor_vance_consultation.txt',
+    filename: 'sample_case_consultation.txt',
     content: `PATIENT CLINICAL SUMMARY
-Patient Name: Eleanor Vance (#CP-8924)
+Patient Name: Sample Patient (#SAMPLE-1)
 Age: 62 years old (62 yo female)
 Gender: Female
 Chief Complaint: Typical angina, substernal crushing chest pressure on exertion.
@@ -1339,9 +1226,9 @@ Fluoroscopy Major Calcified Vessels: 3 vessels
 Thallium Scintigraphy: Reversible defect (7)`
   },
   hl7: {
-    filename: 'patient_eleanor_vance_hl7.hl7',
-    content: `MSH|^~\\&|EPIC_HIS|ST_JUDE_HOSPITAL|CARDIOSENSE_CDS|CARDIOLOGY|20261115083045||ORU^R01|MSG20261115-8924|P|2.5
-PID|1||8924^^^STJUDE^MR||Vance^Eleanor^^^^||19640512|F
+    filename: 'sample_case_hl7.hl7',
+    content: `MSH|^~\\&|SAMPLE_HIS|SAMPLE_FACILITY|CARDIOSENSE_CDS|CARDIOLOGY|20261115083045||ORU^R01|MSG20261115-8924|P|2.5
+PID|1||8924^^^SAMPLE^MR||Patient^Sample^^^^||19640512|F
 OBX|1|NM|AGE^Patient Age||62|years
 OBX|2|ST|SEX^Patient Sex||0|code
 OBX|3|NM|CP^Chest Pain Type||1|code
@@ -1402,53 +1289,17 @@ function loadClinicalCase(caseKey) {
   const idEl = document.getElementById('header-patient-id');
   const statusEl = document.getElementById('header-patient-status');
 
-  if (caseKey === 'acs') {
-    if (nameEl) nameEl.textContent = 'Eleanor Vance, 58 yrs';
-    if (idEl) idEl.textContent = 'ID: #CP-8924';
-    if (statusEl) {
-      statusEl.textContent = 'Acute STEMI Triage';
-      statusEl.className = 'patient-chip-status-badge critical';
-    }
-  } else if (caseKey === 'diabetic') {
-    if (nameEl) nameEl.textContent = 'Elena Gomez, 57 yrs';
-    if (idEl) idEl.textContent = 'ID: #DIA-4410';
-    if (statusEl) {
-      statusEl.textContent = 'Multi-Vessel CAD';
-      statusEl.className = 'patient-chip-status-badge warning';
-    }
-  } else if (caseKey === 'wellness') {
-    if (nameEl) nameEl.textContent = 'David Vance, 42 yrs';
-    if (idEl) idEl.textContent = 'ID: #EXE-1029';
-    if (statusEl) {
-      statusEl.textContent = 'Screening Normal';
-      statusEl.className = 'patient-chip-status-badge stable';
-    }
-  } else if (caseKey === 'atypical_safety_net') {
-    if (nameEl) nameEl.textContent = 'Maria Hernandez, 64 yrs';
-    if (idEl) idEl.textContent = 'ID: #DM-7714';
-    if (statusEl) {
-      statusEl.textContent = 'Atypical ACS (Safety Net)';
-      statusEl.className = 'patient-chip-status-badge critical';
-    }
-    // Enable Safety Net toggle to demonstrate 96.4% recall catch
+  if (nameEl) nameEl.textContent = 'Sample case';
+  if (idEl) idEl.textContent = 'Synthetic data';
+  if (statusEl) {
+    statusEl.textContent = 'Model output only';
+    statusEl.className = 'patient-chip-status-badge stable';
+  }
+  if (caseKey === 'atypical_safety_net') {
     const snToggle = document.getElementById('inp-safety-net-toggle');
     if (snToggle && !snToggle.checked) {
       snToggle.checked = true;
       toggleSafetyNetMode(true);
-    }
-  } else if (caseKey === 'ruled_out_cath') {
-    if (nameEl) nameEl.textContent = 'Robert Chen, 52 yrs';
-    if (idEl) idEl.textContent = 'ID: #RULEOUT-3102';
-    if (statusEl) {
-      statusEl.textContent = 'Cath Ruled Out (FFR 0.94)';
-      statusEl.className = 'patient-chip-status-badge stable';
-    }
-  } else if (caseKey === 'rural_triage') {
-    if (nameEl) nameEl.textContent = 'James Miller, 68 yrs';
-    if (idEl) idEl.textContent = 'ID: #RURAL-9051';
-    if (statusEl) {
-      statusEl.textContent = 'Rural Air-Gapped Triage';
-      statusEl.className = 'patient-chip-status-badge critical';
     }
   }
 
@@ -1507,42 +1358,7 @@ function toggleSafetyNetMode(checked) {
 }
 window.toggleSafetyNetMode = toggleSafetyNetMode;
 
-function updateGoldenHourTelemetry(risk, ffr) {
-  const badge = document.getElementById('portal-golden-hour-badge');
-  const d2bVal = document.getElementById('portal-d2b-val');
-  const d2bFill = document.getElementById('portal-d2b-progress-fill');
-  const d2bSaved = document.getElementById('portal-d2b-saved');
-  const myoSalvage = document.getElementById('portal-myo-salvage');
-  const necReduction = document.getElementById('portal-necrosis-reduction');
-
-  if (ffr >= 0.80 && risk < 0.35 && (!isSafetyNetActive || risk < 0.28)) {
-    // Ruled-out catheterization
-    if (badge) {
-      badge.textContent = 'Catheterization Ruled Out · Cath Avoided';
-      badge.style.background = 'rgba(45, 212, 191, 0.15)';
-      badge.style.color = '#2DD4BF';
-      badge.style.borderColor = 'rgba(45, 212, 191, 0.3)';
-    }
-    if (d2bVal) d2bVal.textContent = 'N/A';
-    if (d2bFill) d2bFill.style.width = '10%';
-    if (d2bSaved) d2bSaved.textContent = 'Cath Spared';
-    if (myoSalvage) myoSalvage.textContent = '100%';
-    if (necReduction) necReduction.textContent = '0% Risk';
-  } else {
-    // Urgent catheterization or ischemic lesion
-    if (badge) {
-      badge.textContent = '48 min shaved · ACC/AHA Target Met';
-      badge.style.background = 'rgba(16, 185, 129, 0.15)';
-      badge.style.color = '#34D399';
-      badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-    }
-    if (d2bVal) d2bVal.textContent = '44 min';
-    if (d2bFill) d2bFill.style.width = '44%';
-    if (d2bSaved) d2bSaved.textContent = '48 min';
-    if (myoSalvage) myoSalvage.textContent = '88%';
-    if (necReduction) necReduction.textContent = '-65%';
-  }
-}
+function updateGoldenHourTelemetry() { /* removed: the timeline figures were not measured */ }
 window.updateGoldenHourTelemetry = updateGoldenHourTelemetry;
 
 function calculateHospitalEconomics() {
@@ -1732,8 +1548,8 @@ function updatePortalPrediction() {
   const exang = parseFloat(document.getElementById('inp-exang')?.value || 0);
   const oldpeak = parseFloat(document.getElementById('inp-oldpeak')?.value || 1.2);
   const slope = parseFloat(document.getElementById('inp-slope')?.value || 2);
-  const ca = parseFloat(document.getElementById('inp-ca')?.value || 0);
-  const thal = parseFloat(document.getElementById('inp-thal')?.value || 3);
+  const ca = parseFloat(document.getElementById('inp-ca')?.value);
+  const thal = parseFloat(document.getElementById('inp-thal')?.value);
   const fbs = parseFloat(document.getElementById('inp-fbs')?.value || 0);
   const restecgEl = document.getElementById('inp-restecg');
   const restecg = parseFloat(
@@ -1755,6 +1571,15 @@ function updatePortalPrediction() {
   const valOp = document.getElementById('val-oldpeak');
   if (valOp) valOp.innerText = `${oldpeak.toFixed(1)} mm`;
 
+  if (Number.isNaN(ca) || Number.isNaN(thal)) {
+    const rv = document.getElementById('portal-risk-value');
+    if (rv) { rv.innerText = 'Incomplete'; rv.style.color = '#94A3B8'; }
+    const rec = document.getElementById('portal-cockpit-recommendation');
+    if (rec) rec.textContent = 'This model needs the fluoroscopy vessel count and the thallium result. Select both to see an estimate. If they are not available, this model cannot be used for the patient.';
+    const rb = document.getElementById('portal-risk-blurb');
+    if (rb) rb.textContent = '';
+    return;
+  }
   const patient = { age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal };
   const prob = predictClinicalRisk(patient);
 
@@ -1781,13 +1606,13 @@ function updatePortalPrediction() {
 
   if (riskValueEl) {
     const pct = (pTargetRisk * 100).toFixed(1);
-    let category = 'Low Risk';
+    let category = 'Lower estimate';
     let color = '#10B981';
     if (pTargetRisk >= 0.66) {
-      category = 'High Risk';
+      category = 'Higher estimate';
       color = '#EF4444';
     } else if (pTargetRisk >= 0.33) {
-      category = 'Moderate Risk';
+      category = 'Intermediate estimate';
       color = '#F59E0B';
     }
     riskValueEl.innerText = `${pct}% (${category})`;
@@ -1795,8 +1620,8 @@ function updatePortalPrediction() {
   }
 
   if (ffrEl) {
-    ffrEl.innerText = `${pFFR.toFixed(2)} (${pFFR < 0.80 ? 'Ischemia Lesion' : 'Physiologic Normal'})`;
-    ffrEl.style.color = pFFR < 0.80 ? '#EF4444' : '#10B981';
+    ffrEl.innerText = `${pFFR.toFixed(2)} (illustrative)`;
+    ffrEl.style.color = '#94A3B8';
   }
 
   if (bpmDisplay) bpmDisplay.innerText = `${Math.round(pBPM)} BPM`;
@@ -1806,23 +1631,22 @@ function updatePortalPrediction() {
   const ecgMeta = document.getElementById('portal-ecg-meta');
   if (ecgMeta) {
     const slopeText = slope === 3 ? 'Downsloping' : (slope === 2 ? 'Horizontal Flat' : 'Upsloping');
-    ecgMeta.innerText = `ST: ${(-oldpeak).toFixed(1)} mm | ${slopeText} | FFR: ${pFFR.toFixed(2)}`;
+    ecgMeta.innerText = `ST: ${(-oldpeak).toFixed(1)} mm | ${slopeText} | illustrative trace`;
   }
 
   // Update Diagnostic Risk Blurb
   if (riskBlurb) {
     if (pTargetRisk >= 0.66) {
       riskBlurb.innerHTML = `
-        <strong>Critical Ischemic Risk:</strong> Elevated ST depression (${oldpeak.toFixed(1)} mm) and fluoroscopic calcification in ${ca} major coronary vessels.
-        Indicates probable hemodynamic lesion requiring diagnostic coronary angiography and cardiology review.
+        <strong>High model estimate:</strong> ST depression ${oldpeak.toFixed(1)} mm and ${ca} vessel(s) reported by the input. A model output for a clinician to weigh, not a diagnosis.
       `;
     } else if (pTargetRisk >= 0.33) {
       riskBlurb.innerHTML = `
-        <strong>Intermediate CAD Risk:</strong> Mild to moderate ischemic markers. Recommend outpatient functional stress testing, coronary CTA, and targeted lipid optimization.
+        <strong>Intermediate model estimate:</strong> some risk markers present. Interpretation and next steps rest with the treating clinician.
       `;
     } else {
       riskBlurb.innerHTML = `
-        <strong>Low Cardiovascular Risk:</strong> Biomarkers align with physiological baseline. Recommend routine preventive primary care follow-up.
+        <strong>Lower model estimate:</strong> few risk markers in the input. The model misses some cases, so this does not rule out disease.
       `;
     }
   }
@@ -1858,16 +1682,16 @@ function updatePortalPrediction() {
 
   if (radialBand) {
     if (isSafetyNetActive && pTargetRisk >= 0.28 && pTargetRisk < 0.66) {
-      radialBand.innerText = 'SAFETY NET CAD';
+      radialBand.innerText = 'FLAGGED';
       radialBand.style.color = '#F43F5E';
     } else if (pTargetRisk >= 0.66) {
-      radialBand.innerText = 'CRITICAL CAD';
+      radialBand.innerText = 'HIGHER';
       radialBand.style.color = '#EF4444';
     } else if (pTargetRisk >= 0.33) {
-      radialBand.innerText = 'MODERATE RISK';
+      radialBand.innerText = 'INTERMEDIATE';
       radialBand.style.color = '#F59E0B';
     } else {
-      radialBand.innerText = 'BASELINE NORMAL';
+      radialBand.innerText = 'LOWER';
       radialBand.style.color = '#10B981';
     }
   }
@@ -1899,19 +1723,19 @@ function updatePortalPrediction() {
     const riskPct = Math.round(pTargetRisk * 100);
     recBar.style.width = `${Math.min(100, Math.max(8, riskPct))}%`;
     if (isSafetyNetActive && pTargetRisk >= 0.28 && pTargetRisk < 0.66) {
-      recEl.textContent = 'Clinical recommendation: Atypical presentation detected under 96.4% recall safety net. Urgent catheterization triage indicated to prevent fatal false-negative discharge.';
+      recEl.textContent = 'Model output: estimate falls between the 0.28 and 0.66 marks in high-sensitivity mode. This flags the case for review by a clinician. It is not a diagnosis.';
       recBar.style.backgroundColor = '#F43F5E';
-    } else if (pFFR >= 0.80 && pTargetRisk < 0.35 && (!isSafetyNetActive || pTargetRisk < 0.28)) {
-      recEl.textContent = `Clinical recommendation: Non-obstructive coronary hemodynamics (FFR ${pFFR.toFixed(2)} ≥ 0.80). Invasive diagnostic catheterization safely RULED OUT (sparing patient arterial complications and saving hospital $5,000–$12,000). Ambulatory follow-up appropriate.`;
+    } else if (pTargetRisk < 0.33) {
+      recEl.textContent = 'Model output: lower estimated probability. The model misses some cases, so this does not rule out disease. Decisions rest with the treating clinician.';
       recBar.style.backgroundColor = '#10B981';
     } else if (pTargetRisk >= 0.66) {
-      recEl.textContent = `Clinical recommendation: High probability obstructive coronary disease with ${ca > 0 ? ca + '-vessel calcification' : 'hemodynamic ischemia'}. Immediate diagnostic catheterization and clinical evaluation indicated.`;
+      recEl.textContent = `Model output: high estimated probability of coronary disease${ca > 0 ? ' (' + ca + ' vessel(s) reported)' : ''}. For review by a clinician.`;
       recBar.style.backgroundColor = '#F43F5E';
     } else if (pTargetRisk >= 0.33) {
-      recEl.textContent = 'Clinical recommendation: Moderate intermediate probability of CAD. Stress echocardiography or CCTA recommended with medical therapy optimization.';
+      recEl.textContent = 'Model output: intermediate estimated probability of coronary disease. Review by a clinician.';
       recBar.style.backgroundColor = '#F59E0B';
     } else {
-      recEl.textContent = 'Clinical recommendation: Low acute coronary disease probability. Outpatient follow-up, lifestyle management, and primary prevention recommended.';
+      recEl.textContent = 'Model output: lower estimated probability of coronary disease. This does not rule out disease.';
       recBar.style.backgroundColor = '#10B981';
     }
   }
@@ -1961,7 +1785,7 @@ function renderAttributionBars(v) {
   if (!container) return;
 
   const items = [
-    { name: 'Calcified Coronary Vessels', impact: (v.ca / 3) * 100, color: '#DC2626' },
+    { name: 'Vessels seen on fluoroscopy', impact: (v.ca / 3) * 100, color: '#DC2626' },
     { name: 'ST Segment Depression', impact: Math.min(100, (v.oldpeak / 4.0) * 100), color: '#DC2626' },
     { name: 'Serum Cholesterol Delta', impact: Math.min(100, (Math.max(0, v.chol - 200) / 150) * 100), color: '#D97706' },
     { name: 'Systolic Blood Pressure', impact: Math.min(100, (Math.max(0, v.trestbps - 120) / 80) * 100), color: '#0284C7' }
@@ -2169,11 +1993,11 @@ function updateLesionCalloutPosition() {
   const lesionText = document.getElementById('portal-lesion-text');
   if (lesionText) {
     if (pTargetRisk >= 0.65) {
-      lesionText.textContent = 'Coronary ischemia (LAD)';
+      lesionText.textContent = 'Illustrative marker';
     } else if (pTargetRisk >= 0.35) {
-      lesionText.textContent = 'Moderate Hypoperfusion';
+      lesionText.textContent = 'Illustrative marker';
     } else {
-      lesionText.textContent = 'Normal Perfusion';
+      lesionText.textContent = 'Illustrative marker';
     }
   }
 }
@@ -3323,7 +3147,7 @@ function animateECG(timestamp) {
   }
   // T wave (ventricular repolarization, inverted on severe ischemia or restecg=1)
   else if (phase >= 0.60 && phase < 0.82) {
-    const inverted = (currentPatientRestecg === 1 || (currentPatientOldpeak || 0) >= 2.0 || pTargetRisk >= 0.70);
+    const inverted = (currentPatientRestecg === 1 || (currentPatientOldpeak || 0) >= 2.0 || pTargetRisk >= 0.66);
     const amp = inverted ? -0.28 : 0.32;
     mV = amp * Math.sin(((phase - 0.60) / 0.22) * Math.PI);
   }
@@ -3334,8 +3158,8 @@ function animateECG(timestamp) {
   ecgCtx.moveTo(prevX, ecgLastY);
   ecgCtx.lineTo(ecgX, currentY);
   ecgCtx.lineWidth = 2.0;
-  ecgCtx.strokeStyle = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.70) ? '#EF4444' : '#38BDF8';
-  ecgCtx.shadowColor = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.70) ? '#DC2626' : '#0284C7';
+  ecgCtx.strokeStyle = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.66) ? '#EF4444' : '#38BDF8';
+  ecgCtx.shadowColor = (currentPatientOldpeak >= 1.5 || pTargetRisk >= 0.66) ? '#DC2626' : '#0284C7';
   ecgCtx.shadowBlur = 6.0;
   ecgCtx.stroke();
   ecgCtx.shadowBlur = 0;
@@ -3492,174 +3316,58 @@ async function computeFileHashAndVerify(file) {
   const detailsEl = document.getElementById('verification-status-details');
   const hashEl = document.getElementById('verification-computed-hash');
   const glyphEl = document.getElementById('verification-status-glyph');
-
   if (!resultBox || !titleEl || !detailsEl || !hashEl) return;
+
+  const ICON_OK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  const ICON_BAD = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  const ICON_INFO = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
 
   resultBox.style.display = 'flex';
   resultBox.className = 'verifier-result';
-  glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>`;
-  titleEl.innerText = 'Computing Local In-Memory SHA-256 Digest...';
+  if (glyphEl) glyphEl.innerHTML = ICON_INFO;
+  titleEl.innerText = 'Computing SHA-256';
   const sizeMb = file.size ? (file.size / 1024 / 1024).toFixed(2) : '0.00';
-  detailsEl.innerText = `Streaming ${file.name} (${sizeMb} MB) into WebCrypto API sandbox. 0 bytes uploaded.`;
-  hashEl.innerText = 'Calculating digest...';
+  detailsEl.innerText = file.name + ' (' + sizeMb + ' MB). The file is read on your device and is not uploaded.';
+  hashEl.innerText = 'Calculating';
 
   try {
     let computedHash = '';
-    const isShaCompanion = file.name.endsWith('.sha256') || file.name.endsWith('.sha');
-    if (isShaCompanion && typeof file.text === 'function') {
-      const text = await file.text();
-      const match = text.match(/[a-fA-F0-9]{64}/);
-      if (match) {
-        computedHash = match[0].toLowerCase();
-        titleEl.innerText = 'Parsed Checksum from Companion .sha256 File';
-      }
+    if (/\.(sha256|sha)$/i.test(file.name) && typeof file.text === 'function') {
+      const match = (await file.text()).match(/[a-fA-F0-9]{64}/);
+      if (match) computedHash = match[0].toLowerCase();
     }
-
     if (!computedHash) {
-      const arrayBuffer = await file.arrayBuffer();
-      const digestBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
-      const hashArray = Array.from(new Uint8Array(digestBuffer));
-      computedHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
+      computedHash = Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
     }
+    hashEl.innerText = 'SHA-256: ' + computedHash;
 
-    hashEl.innerText = `SHA-256: ${computedHash}`;
-
-    // Verify against manifest
-    const matchedPkg = manifest && manifest.packages ? manifest.packages.find(p => p.sha256 && p.sha256.toLowerCase() === computedHash.toLowerCase()) : null;
-
-    // Check if it matches Enterprise build or package filename
-    const isEnterpriseDmg = file.name.toLowerCase().includes('enterprise') && file.name.toLowerCase().endsWith('.dmg');
-
-    if (matchedPkg) {
+    const builds = (releaseData && releaseData.builds) || [];
+    const published = builds.filter((b) => b.sha256);
+    const match = published.find((b) => b.sha256 === computedHash);
+    if (match) {
+      const info = BUILD_INFO[match.kind];
       resultBox.classList.add('success');
-      glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-      titleEl.innerText = 'Cryptographic Verification Passed · Binary Authenticated';
-      detailsEl.innerHTML = `
-        <strong>Matches Official Release Package:</strong> ${matchedPkg.description}<br>
-        <strong>Architecture:</strong> ${matchedPkg.chipset_short} (${matchedPkg.instruction_set})<br>
-        <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Valid)
-      `;
-    } else if (isEnterpriseDmg || computedHash === '8c2b312be615ca46c65fd67590d598f15be72d8517e4bf2b4ce9a04aa3ffda4f') {
-      resultBox.classList.add('success');
-      glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-      titleEl.innerText = 'Cryptographic Verification Passed · Enterprise Binary Authenticated';
-      detailsEl.innerHTML = `
-        <strong>Matches Authentic Enterprise Workstation:</strong> CardioSense Enterprise v2.4.0 (.dmg · arm64)<br>
-        <strong>Architecture:</strong> Apple Silicon (ARMv8.5+ · Metal 3 / SME2)<br>
-        <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Local Authentic)
-      `;
+      if (glyphEl) glyphEl.innerHTML = ICON_OK;
+      titleEl.innerText = 'Checksum matches';
+      detailsEl.innerText = 'This is the official CardioSense ' + releaseData.version + ' build for ' + info.group + ' ' + info.name + '.';
+    } else if (!currentUser) {
+      titleEl.innerText = 'Sign in to compare';
+      detailsEl.innerText = 'The checksum above was computed on your device. Sign in to compare it with the checksums of the latest release.';
+    } else if (!published.length) {
+      titleEl.innerText = 'No checksums published';
+      detailsEl.innerText = 'The latest release has no checksum file, so this file cannot be compared.';
     } else {
       resultBox.classList.add('error');
-      glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#DC2626"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
-      titleEl.innerText = 'Checksum Mismatch or Unrecognized Binary';
-      detailsEl.innerText = `The computed SHA-256 hash does not match any official package in the 18-package release manifest. Do not execute untrusted binaries.`;
+      if (glyphEl) glyphEl.innerHTML = ICON_BAD;
+      titleEl.innerText = 'Checksum does not match';
+      detailsEl.innerText = 'This file is not an official build from the latest release. Do not run it. Download it again from this page.';
     }
   } catch (err) {
     resultBox.classList.add('error');
-    titleEl.innerText = 'Cryptographic Verification Failed';
-    detailsEl.innerText = `Error reading file: ${err.message}`;
-  }
-}
-
-/**
- * Quick simulation tests for the offline verifier
- */
-function simulateVerifierTest(type) {
-  const resultBox = document.getElementById('verification-result-box');
-  const titleEl = document.getElementById('verification-status-title');
-  const detailsEl = document.getElementById('verification-status-details');
-  const hashEl = document.getElementById('verification-computed-hash');
-  const glyphEl = document.getElementById('verification-status-glyph');
-  if (!resultBox || !titleEl || !detailsEl || !hashEl) return;
-
-  resultBox.style.display = 'flex';
-  resultBox.className = 'verifier-result';
-
-  if (type === 'm4') {
-    const pkg = manifest && manifest.packages ? manifest.packages.find(p => p.id === 'mac-m4-arm64') : null;
-    const sha = pkg ? pkg.sha256 : 'e98ef91dc9a150645ce1e67cf49c0d4a362fe5069a2a7aaee23d6a6953dc3772';
-    resultBox.classList.add('success');
-    glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-    titleEl.innerText = 'Cryptographic Verification Passed · Binary Authenticated';
-    detailsEl.innerHTML = `
-      <strong>Simulated File:</strong> CardioSense-AI-2.4.0-macos-m4-arm64.dmg (82.1 MB)<br>
-      <strong>Architecture:</strong> Apple Silicon M4 Series (ARMv9.2-A · SME2 & Metal 3)<br>
-      <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Valid)
-    `;
-    hashEl.innerText = `SHA-256: ${sha}`;
-    showToast('Verified CardioSense-AI-2.4.0-macos-m4-arm64.dmg');
-  } else if (type === 'enterprise') {
-    resultBox.classList.add('success');
-    glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#059669"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
-    titleEl.innerText = 'Cryptographic Verification Passed · Enterprise Binary Authenticated';
-    detailsEl.innerHTML = `
-      <strong>Simulated File:</strong> CardioSense-Enterprise-2.4.0-macos-arm64.dmg (1.2 MB)<br>
-      <strong>Architecture:</strong> Apple Silicon (ARMv8.5+ · Metal 3 / SME2)<br>
-      <strong>Digital Signature:</strong> CardioSense Healthcare Cryptographic Code Sign CA (Local Authentic)
-    `;
-    hashEl.innerText = `SHA-256: 8c2b312be615ca46c65fd67590d598f15be72d8517e4bf2b4ce9a04aa3ffda4f`;
-    showToast('Verified CardioSense-Enterprise-2.4.0-macos-arm64.dmg');
-  } else {
-    resultBox.classList.add('error');
-    glyphEl.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="#DC2626"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
-    titleEl.innerText = 'Checksum Mismatch or Unrecognized Binary';
-    detailsEl.innerText = `The computed SHA-256 hash does not match any official package in the 18-package release manifest. Do not execute untrusted binaries.`;
-    hashEl.innerText = `SHA-256: 0000000000000000000000000000000000000000000000000000000000000000`;
-    showToast('Simulated corrupted package detection', 'error');
-  }
-}
-
-/**
- * ==============================================================================
- * LIVE SECURITY DIAGNOSTIC CHECKUP ENGINE
- * ==============================================================================
- */
-function runSecurityCheckup() {
-  const consoleEl = document.getElementById('sec-audit-console');
-  if (!consoleEl) return;
-
-  const now = new Date().toISOString().substring(11, 19);
-  const logs = [
-    { tag: 'TLS-1.3', msg: 'Strict transport security active. HSTS preloaded (max-age=63072000).', ok: true },
-    { tag: 'HIPAA-PHI', msg: 'Zero cloud egress boundary verified. Egress socket: BLOCKED (0 bytes).', ok: true },
-    { tag: 'WEBCRYPTO', msg: 'FIPS 140-2 Level 3 primitive self-test passed (SHA-256 / AES-GCM).', ok: true },
-    { tag: 'PKI-MANIFEST', msg: 'Model coefficients digest verified: c26a2222... Authenticated.', ok: true },
-    { tag: 'GL-SANDBOX', msg: 'WebGL shader isolation active. Buffer overflow quarantine verified.', ok: true },
-    { tag: 'SANITIZER', msg: 'Clinical range boundaries verified. 13 biomarkers clamped.', ok: true }
-  ];
-
-  consoleEl.innerHTML = logs.map(l => `
-    <div class="console-line">
-      <span class="console-time">${now}</span>
-      <span class="console-tag">[${l.tag}]</span>
-      <span class="console-msg ${l.ok ? 'ok' : 'info'}">${l.msg}</span>
-    </div>
-  `).join('');
-
-  showToast('Security & Compliance Controls Verified');
-}
-
-function exportSecurityReport() {
-  const report = {
-    standard: "FIPS 140-2 Level 3 / HIPAA §164.312",
-    timestamp: new Date().toISOString(),
-    signing_authority: "CardioSense Healthcare Cryptographic Code Sign CA",
-    controls: {
-      tls_hsts: "PASS",
-      phi_zero_egress: "PASS",
-      webcrypto_fips: "PASS",
-      model_weights_seal: "PASS",
-      webgl_sandbox: "PASS",
-      clinical_sanitizer: "PASS"
-    }
-  };
-  downloadJSON(report, 'CardioSense-Security-Attestation.json');
-}
-
-function copyAuditLog() {
-  const consoleEl = document.getElementById('sec-audit-console');
-  if (consoleEl) {
-    copyToClipboard(consoleEl.innerText, 'Copied Security Audit Logs');
+    if (glyphEl) glyphEl.innerHTML = ICON_BAD;
+    titleEl.innerText = 'Could not read the file';
+    detailsEl.innerText = err.message;
   }
 }
 
@@ -3672,6 +3380,7 @@ function exportDiagnosticSummaryReport() {
   const modal = document.getElementById('app-report-modal');
   const container = document.getElementById('report-modal-content');
   if (!modal || !container) return;
+  if (!document.getElementById('inp-ca').value || !document.getElementById('inp-thal').value) { showToast('Select the vessel count and thallium result first.'); return; }
 
   const age = document.getElementById('inp-age').value;
   const sex = document.getElementById('inp-sex').value === '1' ? 'Male' : 'Female';
@@ -3689,7 +3398,7 @@ function exportDiagnosticSummaryReport() {
           CardioSense AI — Clinical Diagnostic Assessment
         </h2>
         <div style="font-size:0.75rem; color:var(--color-text-muted);">
-          Generated: ${new Date().toLocaleString()} · FDA 21 CFR § 880.6310 Non-Device CDS
+          Generated: ${new Date().toLocaleString()} · Educational use only, not a medical device
         </div>
       </div>
 
@@ -3707,23 +3416,20 @@ function exportDiagnosticSummaryReport() {
         </div>
       </div>
 
-      <div style="border-left:4px solid ${pTargetRisk >= 0.70 ? '#F43F5E' : '#34D399'}; padding-left:14px; margin-bottom:16px;">
+      <div style="border-left:4px solid ${pTargetRisk >= 0.66 ? '#F43F5E' : '#34D399'}; padding-left:14px; margin-bottom:16px;">
         <h4 style="font-size:1rem; color:var(--color-text-headline); font-weight:800;">
-          CAD Risk Stratification: <span style="color:${pTargetRisk >= 0.70 ? '#F43F5E' : '#34D399'};">${riskPct}% Probability</span>
+          Model estimate: <span style="color:${pTargetRisk >= 0.66 ? '#F43F5E' : '#34D399'};">${riskPct}%</span>
         </h4>
         <p style="font-size:0.8125rem; margin-top:4px; color:#CBD5E1;">
-          Fractional Flow Reserve (FFR Index): <strong>${pFFR.toFixed(2)}</strong> (${pFFR < 0.80 ? 'Hemodynamically Significant Ischemia' : 'Physiologic Baseline'}).
+          Model estimate: <strong>${riskPct}%</strong> (research model, trained on 303 patients from one clinic).
         </p>
         <p style="font-size:0.8125rem; margin-top:2px; color:#94A3B8;">
-          Catheterization Disposition: <strong style="color:${pFFR >= 0.80 && pTargetRisk < 0.35 ? '#10B981' : '#F43F5E'};">${pFFR >= 0.80 && pTargetRisk < 0.35 ? 'Catheterization Safely RULED OUT ($5,000–$12,000 Saved, Arterial Complications Spared)' : 'Diagnostic Catheterization Indicated'}</strong>
-        </p>
-        <p style="font-size:0.8125rem; margin-top:2px; color:#94A3B8;">
-          Safety Net Status: <strong>${isSafetyNetActive ? 'Active (96.4% Recall Sensitivity Mode)' : 'Standard Diagnostic Mode'}</strong> · Door-to-Balloon: <strong>${pFFR < 0.80 ? '44 min (48 min shaved off Golden Hour, 88% myocardium salvaged)' : 'Catheterization Spared'}</strong>
+          Mode: <strong>${isSafetyNetActive ? 'High-sensitivity (flags at 0.28 or above)' : 'Standard (flags at 0.50 or above)'}</strong>. This estimate does not rule disease in or out.
         </p>
       </div>
 
       <div style="background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:10px; font-size:0.75rem; color:#FCD34D; margin-bottom:20px;">
-        <strong>Regulatory Notice:</strong> This assessment is provided as a non-device clinical decision support aid under FDA 21 CFR § 880.6310. It does not replace physical examination, invasive angiography, or clinical judgment by a licensed physician.
+        <strong>Research prototype. Not for clinical use.</strong> Not a medical device and not reviewed by any regulator. It does not replace examination, testing or the judgment of a licensed clinician.
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px dashed rgba(255, 255, 255, 0.15); padding-top:14px; font-size:0.75rem;">
@@ -3746,14 +3452,14 @@ function closeReportModal() {
   if (modal) modal.style.display = 'none';
 }
 
-/**
- * ==============================================================================
- * AUTHENTICATION & MODAL CONTROLLERS
- * ==============================================================================
- */
 function openAuthModal() {
-  const modal = document.getElementById('app-auth-modal');
-  if (modal) modal.style.display = 'flex';
+  const m = document.getElementById('app-auth-modal');
+  if (!m) return;
+  const err = document.getElementById('auth-error');
+  if (err) err.textContent = '';
+  m.style.display = 'flex';
+  const e = document.getElementById('auth-email');
+  if (e) setTimeout(() => e.focus(), 30);
 }
 
 function closeAuthModal() {
@@ -3767,93 +3473,36 @@ function handleModalBackdropClick(event) {
   }
 }
 
-function switchAuthTab(tab, btn) {
-  document.querySelectorAll('.auth-subview').forEach(v => v.style.display = 'none');
-  const target = document.getElementById(`auth-tab-${tab}`);
-  if (target) target.style.display = 'block';
-
-  const modal = document.getElementById('app-auth-modal');
-  if (modal) {
-    modal.querySelectorAll('.app-tab-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+async function handleCredentialSubmit(event) {
+  event.preventDefault();
+  const hp = document.getElementById('clinical_security_hp');
+  if (hp && hp.value) return; // bots fill the hidden field
+  const email = document.getElementById('auth-email').value.trim();
+  const pwdEl = document.getElementById('auth-pwd');
+  const err = document.getElementById('auth-error');
+  const btn = document.getElementById('auth-submit');
+  err.textContent = '';
+  if (!email || !pwdEl.value) { err.textContent = 'Enter your email and password.'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pwdEl.value })
+    });
+    const body = await r.json().catch(() => ({}));
+    pwdEl.value = '';
+    if (!r.ok) { err.textContent = body.error || 'Could not sign in. Try again.'; return; }
+    closeAuthModal();
+    await initSession();
+    showToast('Signed in');
+    const m = document.getElementById('matrix');
+    if (m) m.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    err.textContent = 'Could not reach the server. Check your connection and try again.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Sign in';
   }
-}
-
-function handleCredentialSubmit(e) {
-  e.preventDefault();
-
-  // 1. Anti-Bot Honeypot Trap Check
-  const honeypot = document.getElementById('clinical_security_hp');
-  if (honeypot && honeypot.value.trim() !== '') {
-    console.warn('[CardioSense Security] Automated bot submission rejected via honeypot trap.');
-    showToast('Automated bot submission detected and rejected.', 'error');
-    return;
-  }
-
-  // 2. Client-Side Lockout Protection (Brute Force Defense)
-  if (window._authLockoutUntil && Date.now() < window._authLockoutUntil) {
-    const remainingSec = Math.ceil((window._authLockoutUntil - Date.now()) / 1000);
-    showToast(`Too many failed attempts. Login locked for ${remainingSec}s.`, 'error');
-    return;
-  }
-
-  const email = (document.getElementById('auth-email') ? document.getElementById('auth-email').value : '').trim();
-  const pwdInput = document.getElementById('auth-pwd');
-  const pwd = pwdInput ? pwdInput.value : '';
-  const mfaStep = document.getElementById('mfa-step');
-
-  if (!email || !pwd) {
-    showToast('Please provide both Clinical ID and Password.', 'error');
-    return;
-  }
-
-  // Enforce institutional complexity standards (minimum 8 characters)
-  if (pwd.length < 8) {
-    window._authFailures = (window._authFailures || 0) + 1;
-    if (window._authFailures >= 5) {
-      window._authLockoutUntil = Date.now() + 60000;
-      showToast('5 consecutive failed attempts. Locked for 60 seconds.', 'error');
-      return;
-    }
-    showToast('Password must be at least 8 characters with institutional complexity.', 'error');
-    return;
-  }
-
-  if (mfaStep.style.display === 'none') {
-    mfaStep.style.display = 'block';
-    showToast('Enter 6-Digit 2FA Code to Complete Login');
-    return;
-  }
-
-  const otpInput = document.getElementById('auth-otp');
-  const otp = otpInput ? otpInput.value.trim() : '';
-  if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-    showToast('Please enter a valid 6-digit numeric 2FA code.', 'error');
-    return;
-  }
-
-  // 3. Immediate In-Memory Credential Sanitization
-  pwdInput.value = '';
-  if (otpInput) otpInput.value = '';
-  window._authFailures = 0;
-
-  showToast('Clinical Session Authenticated Successfully');
-  setTimeout(() => closeAuthModal(), 600);
-}
-
-function autoFillOtp() {
-  document.getElementById('auth-otp').value = '749102';
-  showToast('Auto-Filled 2FA Security Token');
-}
-
-function simulateFido2Auth() {
-  showToast('Biometric FIDO2 Touch ID Challenge Verified');
-  setTimeout(() => closeAuthModal(), 800);
-}
-
-function loginDemoProfile(role) {
-  showToast(`Authenticated as Clinical Role: ${role.toUpperCase()}`);
-  setTimeout(() => closeAuthModal(), 500);
 }
 
 function openComplianceModal(type) {
@@ -3861,40 +3510,19 @@ function openComplianceModal(type) {
   let body = '';
 
   if (type === 'fda') {
-    title = 'FDA 21 CFR § 880.6310 Non-Device Clinical Decision Support';
+    title = 'Intended use and limits';
     body = `
-      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">
-        CardioSense AI qualifies as Non-Device Clinical Decision Support (CDS) under Section 520(o)(1)(E) of the Federal Food, Drug, and Cosmetic Act.
-      </p>
-      <ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px; margin-bottom:12px;">
-        <li>Does not acquire, process, or analyze medical images or diagnostic signals directly from hardware.</li>
-        <li>Provides transparent recommendations with full visibility into Cleveland Clinic statistical feature weights.</li>
-        <li>Enables independent review of the basis for recommendations by licensed healthcare practitioners.</li>
-      </ul>
+      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">CardioSense is a research prototype. It is not a medical device, it has not been reviewed by any regulator, and no exemption or clearance is claimed.</p><ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px;"><li>It estimates the probability that angiography would show coronary disease, from 13 inputs.</li><li>The model was trained on 303 patients from one 1980s clinic who were already referred for angiography.</li><li>It has not been tested prospectively or on other populations. Do not use it to make care decisions.</li></ul>
     `;
   } else if (type === 'hipaa') {
-    title = 'HIPAA 45 CFR § 164.514 Safe Harbor De-Identification';
+    title = 'Data handling';
     body = `
-      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">
-        The workstation enforces an absolute Zero-Cloud-Egress boundary.
-      </p>
-      <ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px; margin-bottom:12px;">
-        <li>All patient vitals and laboratory biomarkers are processed strictly in local browser process memory.</li>
-        <li>Zero network requests are dispatched containing biometric data or clinical inputs.</li>
-        <li>No cookies, persistent database records, or telemetric identifiers are stored.</li>
-      </ul>
+      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">The calculator runs in your browser. Inputs you type into it are not sent anywhere.</p><ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px;"><li>If you sign in and choose to save an assessment, the saved fields are encrypted on the server and visible to your account only.</li><li>Do not enter real patient information. No compliance certification (HIPAA or otherwise) is claimed for this prototype.</li></ul>
     `;
   } else if (type === 'fips') {
-    title = 'FIPS 140-2 Level 3 Cryptographic Attestation';
+    title = 'Download verification';
     body = `
-      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">
-        CardioSense AI utilizes WebCrypto API with hardware-backed TPM/Secure Enclave acceleration for client-side SHA-256 verification and session token generation.
-      </p>
-      <ul style="font-size:0.8125rem; line-height:1.6; margin-left:18px; margin-bottom:12px;">
-        <li>Deterministic bit-for-bit SHA-256 verification across 18 workstation packages.</li>
-        <li>NIST SP 800-131A compliant cryptographic hash primitives.</li>
-        <li>Zero plaintext session secrets transmitted across loopback interfaces.</li>
-      </ul>
+      <p style="font-size:0.875rem; line-height:1.6; margin-bottom:12px;">Each download lists a SHA-256 checksum. Compare it with the checksum of the file you received to confirm it was not altered in transit. This is an integrity check, not a security certification.</p>
     `;
   } else if (type === 'accessibility') {
     title = 'Accessibility Statement (WCAG 2.1 AA Compliance)';
@@ -4026,7 +3654,7 @@ window.closeQRScannerViewfinder = closeQRScannerViewfinder;
 function simulateQRScan() {
   closeQRScannerViewfinder();
   isMobileLinked = true;
-  showToast('Verified QR Code: Account #CP-8924 Linked Successfully!');
+  showToast('Verified QR Code: Account #SAMPLE-1 Linked Successfully!');
   const pairSection = document.getElementById('mobile-pairing-section');
   const dashSection = document.getElementById('mobile-tracking-dashboard');
   if (pairSection) pairSection.style.display = 'none';
@@ -4151,378 +3779,16 @@ function initMobileECGStream() {
 // ==============================================================================
 // 19. LAKSHYA CULTURE 3D CARDIAC VISUALIZER & CYBERNETIC ENGINE
 // ==============================================================================
-let hero3DScene, hero3DCamera, hero3DRenderer, hero3DHeartMesh, hero3DParticles;
-let hero3DAnimId = null;
-let hero3DRotating = true;
-let hero3DShadingMode = 'perfusion';
-let heroTargetRotX = 0;
-let heroTargetRotY = 0;
-let heroCurrentRotX = 0;
-let heroCurrentRotY = 0;
-
-// Safe legacy compatibility wrappers
-function setHeroSlide(_slideName) {}
-function toggleHero3DRotation() { hero3DRotating = !hero3DRotating; }
-function cycleHero3DShading() {}
-
+// DEEP LINK: #mobile opens the mobile companion view
 // ==============================================================================
-// 20. LAKSHYA CULTURE ZERO-ASSET PROCEDURAL AUDIO ENGINE
-// Real-time audio haptics synthesized in browser with zero external assets
-// ==============================================================================
-class LakshyaAudioEngine {
-  constructor() {
-    this.ctx = null;
-    this.isMuted = false;
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        const stored = localStorage.getItem('cs_arcade_muted');
-        this.isMuted = stored === 'true';
-      } catch (_e) {}
-    }
-  }
-
-  initContext() {
-    if (typeof window === 'undefined') return null;
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-    return this.ctx;
-  }
-
-  toggleMute() {
-    this.isMuted = !this.isMuted;
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        localStorage.setItem('cs_arcade_muted', String(this.isMuted));
-      } catch (_e) {}
-    }
-    return this.isMuted;
-  }
-
-  getMuted() {
-    return this.isMuted;
-  }
-
-  playHover() {
-    if (this.isMuted) return;
-    const ctx = this.initContext();
-    if (!ctx) return;
-    try {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1400, now);
-      osc.frequency.exponentialRampToValueAtTime(800, now + 0.025);
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.03);
-    } catch (_e) {}
-  }
-
-  playClick() {
-    if (this.isMuted) return;
-    const ctx = this.initContext();
-    if (!ctx) return;
-    try {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(480, now);
-      osc.frequency.exponentialRampToValueAtTime(240, now + 0.035);
-      gain.gain.setValueAtTime(0.07, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.04);
-    } catch (_e) {}
-  }
-
-  playPrediction() {
-    if (this.isMuted) return;
-    const ctx = this.initContext();
-    if (!ctx) return;
-    try {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(640, now + 0.12);
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.15);
-    } catch (_e) {}
-  }
-}
-
-const lakshyaAudio = new LakshyaAudioEngine();
-
-function toggleArcadeAudio() {
-  const isMuted = lakshyaAudio.toggleMute();
-  const label = document.getElementById('audio-btn-label');
-  if (label) {
-    label.textContent = isMuted ? '🔇 Audio Haptics: OFF' : '🔊 Audio Haptics: ON';
-  }
-  if (!isMuted) {
-    lakshyaAudio.playClick();
-  }
-}
-
-function initHero3DVisualizer() {
-  const canvas = document.getElementById('hero-3d-canvas');
-  if (!canvas || typeof THREE === 'undefined') return;
-
-  try {
-    const stage = canvas.parentElement;
-    const width = (stage && stage.clientWidth) || 400;
-    const height = (stage && stage.clientHeight) || 400;
-
-    hero3DScene = new THREE.Scene();
-    hero3DCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    hero3DCamera.position.set(0, 0, 7.5);
-
-    hero3DRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
-    hero3DRenderer.setSize(width, height);
-    hero3DRenderer.setPixelRatio(Math.min((typeof window !== 'undefined' && window.devicePixelRatio) || 1, 2));
-
-    const ambLight = new THREE.AmbientLight(0x06B6D4, 0.75);
-    hero3DScene.add(ambLight);
-
-    const dirLight1 = new THREE.DirectionalLight(0xE0F2FE, 1.4);
-    dirLight1.position.set(5, 8, 5);
-    hero3DScene.add(dirLight1);
-
-    const dirLight2 = new THREE.DirectionalLight(0x00F0FF, 1.0);
-    dirLight2.position.set(-5, -4, -3);
-    hero3DScene.add(dirLight2);
-
-    const heartGroup = new THREE.Group();
-
-    const heartGeo = new THREE.SphereGeometry(1.7, 32, 24);
-    const pos = heartGeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      let x = pos.getX(i);
-      let y = pos.getY(i);
-      let z = pos.getZ(i);
-      if (y < 0) {
-        const factor = 1.0 + (y / 1.7) * 0.45;
-        x *= factor;
-        z *= factor;
-      }
-      if (x > -0.2 && x < 0.2 && y > -1.0 && y < 0.8) {
-        z *= 0.85;
-      }
-      pos.setXYZ(i, x, y, z);
-    }
-    heartGeo.computeVertexNormals();
-
-    const heartMat = new THREE.MeshStandardMaterial({
-      color: 0x071526,
-      roughness: 0.25,
-      metalness: 0.85,
-      emissive: 0x020B14,
-      emissiveIntensity: 0.4
-    });
-    hero3DHeartMesh = new THREE.Mesh(heartGeo, heartMat);
-    heartGroup.add(hero3DHeartMesh);
-
-    const curve1 = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.2, 1.6, 0.5),
-      new THREE.Vector3(-0.4, 0.8, 1.4),
-      new THREE.Vector3(-0.1, 0.0, 1.55),
-      new THREE.Vector3(0.2, -0.8, 1.2),
-      new THREE.Vector3(0.1, -1.5, 0.4)
-    ]);
-    const tubeGeo1 = new THREE.TubeGeometry(curve1, 36, 0.065, 8, false);
-    const coronaryMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF });
-    const coronaryMesh1 = new THREE.Mesh(tubeGeo1, coronaryMat);
-    heartGroup.add(coronaryMesh1);
-
-    const curve2 = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0.2, 1.5, 0.4),
-      new THREE.Vector3(0.9, 0.9, 1.1),
-      new THREE.Vector3(1.4, 0.1, 0.6),
-      new THREE.Vector3(1.1, -0.8, 0.3)
-    ]);
-    const tubeGeo2 = new THREE.TubeGeometry(curve2, 28, 0.05, 8, false);
-    const coronaryMesh2 = new THREE.Mesh(tubeGeo2, coronaryMat);
-    heartGroup.add(coronaryMesh2);
-
-    const nodeGeo = new THREE.SphereGeometry(0.09, 12, 12);
-    const nodeMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
-    const nodePositions = [
-      new THREE.Vector3(-0.4, 0.8, 1.4),
-      new THREE.Vector3(-0.1, 0.0, 1.55),
-      new THREE.Vector3(0.2, -0.8, 1.2),
-      new THREE.Vector3(0.9, 0.9, 1.1)
-    ];
-    nodePositions.forEach(p => {
-      const node = new THREE.Mesh(nodeGeo, nodeMat);
-      node.position.copy(p);
-      heartGroup.add(node);
-    });
-
-    const ringGeo = new THREE.TorusGeometry(2.8, 0.012, 8, 80);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF, transparent: true, opacity: 0.22 });
-    const ring3D = new THREE.Mesh(ringGeo, ringMat);
-    ring3D.rotation.x = Math.PI / 3;
-    ring3D.rotation.y = Math.PI / 6;
-    heartGroup.add(ring3D);
-
-    const partCount = 90;
-    const partGeo = new THREE.BufferGeometry();
-    const partPositions = new Float32Array(partCount * 3);
-    for (let i = 0; i < partCount; i++) {
-      const radius = 2.4 + Math.random() * 1.8;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      partPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      partPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      partPositions[i * 3 + 2] = radius * Math.cos(phi);
-    }
-    partGeo.setAttribute('position', new THREE.BufferAttribute(partPositions, 3));
-    const partMat = new THREE.PointsMaterial({ color: 0x38BDF8, size: 0.05, transparent: true, opacity: 0.6 });
-    hero3DParticles = new THREE.Points(partGeo, partMat);
-    heartGroup.add(hero3DParticles);
-
-    hero3DScene.add(heartGroup);
-
-    let isDragging = false;
-    let prevMouseX = 0;
-    let prevMouseY = 0;
-
-    canvas.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-    });
-    if (typeof window !== 'undefined') {
-      window.addEventListener('mouseup', () => { isDragging = false; });
-      window.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-          const deltaX = e.clientX - prevMouseX;
-          const deltaY = e.clientY - prevMouseY;
-          heroTargetRotY += deltaX * 0.01;
-          heroTargetRotX += deltaY * 0.01;
-          prevMouseX = e.clientX;
-          prevMouseY = e.clientY;
-        } else {
-          const rect = canvas.getBoundingClientRect();
-          const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-          const normY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-          if (normX >= -1.2 && normX <= 1.2 && normY >= -1.2 && normY <= 1.2) {
-            heroTargetRotY = normX * 0.4;
-            heroTargetRotX = -normY * 0.25;
-          }
-        }
-      });
-    }
-
-    canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        isDragging = true;
-        prevMouseX = e.touches[0].clientX;
-        prevMouseY = e.touches[0].clientY;
-      }
-    }, { passive: true });
-    if (typeof window !== 'undefined') {
-      window.addEventListener('touchend', () => { isDragging = false; });
-      canvas.addEventListener('touchmove', (e) => {
-        if (isDragging && e.touches.length === 1) {
-          const deltaX = e.touches[0].clientX - prevMouseX;
-          const deltaY = e.touches[0].clientY - prevMouseY;
-          heroTargetRotY += deltaX * 0.015;
-          heroTargetRotX += deltaY * 0.015;
-          prevMouseX = e.touches[0].clientX;
-          prevMouseY = e.touches[0].clientY;
-        }
-      }, { passive: true });
-
-      window.addEventListener('resize', () => {
-        if (!canvas || !canvas.parentElement || !hero3DRenderer || !hero3DCamera) return;
-        const w = canvas.parentElement.clientWidth || 360;
-        const h = canvas.parentElement.clientHeight || 360;
-        hero3DCamera.aspect = w / h;
-        hero3DCamera.updateProjectionMatrix();
-        hero3DRenderer.setSize(w, h);
-      });
-    }
-
-    let clock = new THREE.Clock();
-    function animateHero3D() {
-      hero3DAnimId = requestAnimationFrame(animateHero3D);
-      const elapsed = clock.getElapsedTime();
-
-      const pulsePhase = (elapsed * 3.8) % (Math.PI * 2);
-      const beat = Math.sin(pulsePhase);
-      const systolic = Math.max(0, beat) * 0.06;
-      const currentScale = 1.0 + systolic;
-      if (hero3DHeartMesh) {
-        hero3DHeartMesh.scale.set(currentScale, currentScale, currentScale);
-      }
-
-      heroCurrentRotX += (heroTargetRotX - heroCurrentRotX) * 0.05;
-      heroCurrentRotY += (heroTargetRotY - heroCurrentRotY) * 0.05;
-
-      if (hero3DRotating) {
-        heartGroup.rotation.y += 0.006;
-      }
-      heartGroup.rotation.y += heroCurrentRotY * 0.02;
-      heartGroup.rotation.x = heroCurrentRotX * 0.5 + Math.sin(elapsed * 0.6) * 0.05;
-
-      if (hero3DParticles) {
-        hero3DParticles.rotation.y -= 0.003;
-        hero3DParticles.rotation.z += 0.001;
-      }
-
-      hero3DRenderer.render(hero3DScene, hero3DCamera);
-    }
-    animateHero3D();
-
-  } catch (err) {
-    console.warn('[CardioSense] Hero 3D visualizer initialization skipped:', err);
-  }
-}
-
-function attachLakshyaHaptics() {
-  if (typeof document === 'undefined') return;
-  try {
-    const clickables = document.querySelectorAll('button, a, .cockpit-tab-pill, .scenario-chip, .app-btn, .lakshya-btn, .dock-item, .dock-icon-btn, .stepper-btn, .case-chip');
-    clickables.forEach(el => {
-      el.addEventListener('mouseenter', () => { lakshyaAudio.playHover(); });
-      el.addEventListener('click', () => { lakshyaAudio.playClick(); });
-    });
-  } catch (_e) {}
-}
-
-// Check URL hash for direct mobile view activation, initialize Hero, and attach audio haptics
 if (typeof window !== 'undefined' && window.addEventListener) {
   window.addEventListener('DOMContentLoaded', () => {
     try {
-      initHero3DVisualizer();
-      attachLakshyaHaptics();
-      if (typeof window !== 'undefined' && window.location) {
-        const hash = window.location.hash || '';
-        const search = window.location.search || '';
-        if (hash === '#mobile' || search.includes('mobile=1')) {
-          openMobileCompanionView();
-        }
-      }
+      const hash = window.location.hash || '';
+      const search = window.location.search || '';
+      if (hash === '#mobile' || search.includes('mobile=1')) openMobileCompanionView();
     } catch (_e) {
-      // In headless testing or sandbox environments where window.location is partially mocked
+      // partially mocked window.location in headless tests
     }
   });
 }

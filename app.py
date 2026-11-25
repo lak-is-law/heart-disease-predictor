@@ -14,8 +14,7 @@ from cgi_heart import render_cgi_heart
 from core import (
     CP_OPTIONS, ECG_OPTIONS, FEATURE_LABELS, FEATURES, ROOT, SEX_OPTIONS,
     SLOPE_OPTIONS, THAL_OPTIONS, YESNO_OPTIONS, explain, risk_band,
-    calculate_virtual_ffr, calculate_hospital_economics,
-    evaluate_safety_net, calculate_golden_hour_timeline,
+    evaluate_safety_net,
 )
 
 st.set_page_config(page_title="CardioSense AI | Cardiac Hemodynamics & Decision Support", layout="wide")
@@ -199,9 +198,9 @@ st.markdown(CSS, unsafe_allow_html=True)
 
 HERO = """
 <div class="hero">
-  <span class="pill">Clinical Decision Support · Non-Device CDS (FDA 21 CFR § 880.6310)</span>
+  <span class="pill">Research prototype · not for clinical use</span>
   <h1>CardioSense AI</h1>
-  <p>Hemodynamic risk evaluation and coronary artery stenosis simulation calibrated on the Cleveland Clinic cardiovascular cohort.</p>
+  <p>Estimates the probability of angiographic coronary disease from 13 inputs, using a model trained on the UCI Cleveland dataset (303 patients, one clinic).</p>
   <svg class="ecg" viewBox="0 0 1200 54" preserveAspectRatio="none">
     <path d="M0 30 H210 L228 30 L242 8 L262 50 L280 18 L294 30 H520 L538 30 L552 6 L572 50 L590 20 L604 30 H830 L848 30 L862 10 L882 50 L900 20 L914 30 H1200"/>
   </svg>
@@ -373,8 +372,8 @@ with st.sidebar:
     )
 
 pipe = bundle["models"][model_name]
-tab_pred, tab_lab, tab_about, tab_downloads, tab_security = st.tabs([
-    "Risk Assessment", "Model Lab", "About & Documentation", "Workstation Downloads (18 Packages)", "Security & Compliance Checkup"
+tab_pred, tab_lab, tab_about, tab_downloads = st.tabs([
+    "Risk Assessment", "Model Lab", "About & Documentation", "Downloads"
 ])
 
 # --------------------------------------------------------------------- tab 1: predict
@@ -385,16 +384,16 @@ with tab_pred:
         b1, b2, b3 = st.columns(3)
         b1.button("Case 3: Wellness", on_click=apply_preset, args=("low",))
         b2.button("Case 2: Diabetic CAD", on_click=apply_preset, args=("mid",))
-        b3.button("Case 1: ACS STEMI", on_click=apply_preset, args=("high",))
+        b3.button("Sample 1: several markers", on_click=apply_preset, args=("high",))
         b4, b5, b6 = st.columns(3)
         b4.button("Case 4: Atypical ACS", on_click=apply_preset, args=("atypical",))
         b5.button("Case 5: Rule-Out Cath", on_click=apply_preset, args=("ruleout",))
         b6.button("Case 6: Rural Triage", on_click=apply_preset, args=("rural",))
 
         safety_net_active = st.checkbox(
-            "High-Sensitivity Safety Net Mode (96.4% Recall)",
+            "High-sensitivity mode (threshold 0.28)",
             value=False,
-            help="Lowers decision threshold to 0.28 to prevent fatal false-negative discharges of atypical coronary syndrome presentations.",
+            help="Lowers the decision threshold to 0.28 so more patients are flagged for review. In cross-validation it caught about 88% of cases and flagged about 27% of people without disease.",
         )
 
         st.markdown('<div class="section">Demographics & vitals</div>', unsafe_allow_html=True)
@@ -422,7 +421,7 @@ with tab_pred:
     patient = {f: float(st.session_state[f]) for f in FEATURES}
     p, deltas = explain(pipe, patient, bundle["baseline"])
     band, blurb = risk_band(p)
-    cls = {"Low risk": "low", "Moderate risk": "mid", "High risk": "high"}[band]
+    cls = {"Lower estimate": "low", "Intermediate estimate": "mid", "Higher estimate": "high"}[band]
 
     with right:
         st.markdown('<div class="section">Diagnostic Coronary Hemodynamics & 12-Lead ECG</div>', unsafe_allow_html=True)
@@ -442,55 +441,29 @@ with tab_pred:
         )
         components.html(cgi_html, height=630)
 
-        # Telemetry metrics row
-        ffr_val = calculate_virtual_ffr(
-            int(patient["ca"]), float(patient["oldpeak"]), int(patient["exang"]), int(patient["slope"])
-        )
         safety_net_eval = evaluate_safety_net(p, threshold=0.28 if safety_net_active else 0.50)
-        d2b_info = calculate_golden_hour_timeline()
 
-        st.markdown('<div class="section">Calibrated Model Output & Hemodynamics</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section">Model output</div>', unsafe_allow_html=True)
         col_badge, col_gauge = st.columns([1, 1], gap="medium")
         with col_badge:
             badge_title = band
             if safety_net_active and safety_net_eval["is_flagged"]:
-                badge_title = "SAFETY NET FLAG" if band != "High risk" else band
+                badge_title = "SAFETY NET FLAG" if band != "Higher estimate" else band
 
             st.markdown(
                 f'<div class="glass" style="text-align:center; height:100%; display:flex; flex-direction:column; justify-content:center;">'
                 f'<span class="badge {cls}">{badge_title}</span>'
                 f'<div style="font-size:2.2rem; font-weight:800; color:#fff; margin:6px 0;">{p:.1%}</div>'
                 f'<p class="note">{blurb}</p>'
-                f'<div style="margin-top:8px; font-size:0.85rem; font-weight:700; color:#38bdf8;">'
-                f'Virtual FFR: {ffr_val:.2f} · {"Ischemic (<0.80)" if ffr_val < 0.80 else "Normal (>=0.80)"}'
-                f'</div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
         with col_gauge:
             show(gauge(p, h=200))
 
-        # Golden Hour & Catheterization Triage Guidance
-        if ffr_val >= 0.80 and p < 0.33:
-            cath_msg = (
-                f'<div style="background:rgba(16,185,129,0.12); border:1px solid #10b981; border-radius:10px; padding:12px 14px; margin:12px 0; color:#6ee7b7; font-size:0.85rem;">'
-                f'<strong>Catheterization Ruled Out:</strong> Non-obstructive hemodynamics (FFR {ffr_val:.2f} &ge; 0.80). '
-                f'Invasive diagnostic catheterization avoided, sparing patient arterial puncture complications and saving $5,000–$12,000.'
-                f'</div>'
-            )
-        else:
-            cath_msg = (
-                f'<div style="background:rgba(244,63,94,0.12); border:1px solid #f43f5e; border-radius:10px; padding:12px 14px; margin:12px 0; color:#fca5a5; font-size:0.85rem;">'
-                f'<strong>Diagnostic Catheterization Indicated:</strong> FFR {ffr_val:.2f} &le; 0.80 with elevated risk. '
-                f'Door-to-balloon Golden Hour compression active (saves {d2b_info["minutes_shaved"]:.0f} min, {d2b_info["myocardial_salvage_pct"]:.0f}% tissue salvage).'
-                f'</div>'
-            )
-        st.markdown(cath_msg, unsafe_allow_html=True)
-
         if safety_net_active and safety_net_eval["atypical_risk_mitigated"]:
             st.warning(
-                "High-Sensitivity Safety Net Triggered (96.4% Recall): Atypical presentation detected. "
-                "Prevents fatal false-negative discharge of atypical acute myocardial infarction."
+                "Flagged at the lower 0.28 threshold. Review clinically. A low estimate never rules out disease."
             )
 
         # Occlusion explanation feature importance
@@ -506,36 +479,9 @@ with tab_pred:
         show(style(fig, 280))
         st.markdown(
             '<div class="note">Raises risk (+) &nbsp;·&nbsp; Lowers risk (-), relative to typical training baseline.</div>'
-            '<div class="warn">Non-Device Clinical Decision Support (FDA 21 CFR § 880.6310). For educational and clinical decision support research.</div>',
+            '<div class="warn">Research prototype. Not for clinical use. Not a medical device. A low estimate never rules out disease.</div>',
             unsafe_allow_html=True,
         )
-
-        with st.expander("Hospital Economics & Catheterization Cost Reduction Engine", expanded=False):
-            st.markdown(
-                "<p style='color:#94a3b8; font-size:0.85rem;'>"
-                "Slashes millions in hospital expenditures by ruling out up to 60% of unnecessary diagnostic catheterizations "
-                "($5,000–$12,000 per procedure), compressing emergency boarding hours, and eliminating cloud infrastructure costs."
-                "</p>",
-                unsafe_allow_html=True,
-            )
-            e_col1, e_col2 = st.columns(2)
-            c_vol = e_col1.slider("Annual Diagnostic Cath Volume", 200, 5000, 1200, step=100)
-            c_cost = e_col2.slider("Cath Cost per Procedure ($)", 5000, 12000, 8500, step=500)
-            c_ruleout = e_col1.slider("Unnecessary Cath Rule-Out Rate (%)", 10, 60, 52, step=2) / 100.0
-            e_hrs = e_col2.slider("ED Boarding Hours Saved / Patient", 1.0, 6.0, 4.2, step=0.1)
-
-            econ = calculate_hospital_economics(
-                annual_caths=c_vol,
-                cath_cost=c_cost,
-                rule_out_pct=c_ruleout,
-                ed_hours_saved=e_hrs,
-            )
-
-            kpi1, kpi2, kpi3, kpi4 = st.columns(4)
-            kpi1.metric("Caths Avoided", f"{econ['unnecessary_caths_avoided']:,}")
-            kpi2.metric("Cath Lab Direct Savings", f"${econ['cath_cost_savings']:,.0f}")
-            kpi3.metric("Complications Spared", f"{econ['complications_spared']:.0f}")
-            kpi4.metric("Total Annual Savings", f"${econ['total_annual_savings']:,.0f}")
 
 # ---------------------------------------------------------------------- tab 2: lab
 with tab_lab:
@@ -773,181 +719,3 @@ with tab_downloads:
         """,
             unsafe_allow_html=True,
         )
-
-# ---------------------------------------------------------------- tab 5: security
-with tab_security:
-    st.markdown(
-        """
-<div class="glass" style="border-top: 4px solid #10b981; margin-bottom: 20px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div>
-            <span class="pill" style="color:#6ee7b7; background:rgba(16,185,129,0.15); border-color:#10b981;">
-                FIPS 140-2 / HIPAA Safe Harbor Engine
-            </span>
-            <h2 style="margin:4px 0 8px; font-size:1.85rem; letter-spacing:-0.5px;">
-                Enterprise Security Architecture & Clinical Checkup
-            </h2>
-            <p style="color:#94a3b8; max-width:760px; font-size:0.95rem; line-height:1.5;">
-                Cryptographic integrity diagnostics, local in-memory isolation audit, and adversarial input sanitization verification.
-                All model scoring executes strictly on-chip with zero cloud egress.
-            </p>
-        </div>
-        <div>
-            <div style="background:rgba(16,185,129,0.12); border:1px solid #10b981; color:#6ee7b7; padding:10px 18px; border-radius:8px; font-family:monospace; font-size:0.85rem; font-weight:700;">
-                ALL CONTROLS COMPLIANT
-            </div>
-        </div>
-    </div>
-</div>
-""",
-        unsafe_allow_html=True,
-    )
-
-    sec_col1, sec_col2 = st.columns([1.1, 0.9], gap="large")
-
-    with sec_col1:
-        st.markdown('<div class="section">Automated Clinical Security Checkup Suite</div>', unsafe_allow_html=True)
-        
-        # 1. Model Bundle Hash Check
-        model_path = ROOT / "artifacts" / "heart_model.joblib"
-        if model_path.exists():
-            with open(model_path, "rb") as f:
-                model_sha = hashlib.sha256(f.read()).hexdigest()
-            model_status = "PASS"
-            model_info = f"SHA-256: {model_sha[:20]}..."
-        else:
-            model_status = "WARN"
-            model_info = "Model file not found"
-
-        # 2. Cleveland Dataset Integrity Check
-        data_path = ROOT / "data" / "processed.cleveland.data"
-        if data_path.exists():
-            with open(data_path, "rb") as f:
-                data_sha = hashlib.sha256(f.read()).hexdigest()
-            data_status = "PASS"
-            data_info = f"SHA-256: {data_sha[:20]}..."
-        else:
-            data_status = "WARN"
-            data_info = "Dataset file not found"
-
-        # 3. Clinical Bounds & Sanitizer Check
-        test_patient_raw = {"age": 999, "trestbps": -50, "chol": 1500, "thalach": 10, "oldpeak": -5.0}
-        sanitizer_status = "PASS"
-        sanitizer_info = "13 Biomarkers protected against NaN & adversarial overflow"
-
-        # 4. Local Execution & Zero Egress
-        egress_status = "PASS"
-        egress_info = "Zero outbound sockets; 100% in-process Python runtime"
-
-        # 5. Deterministic Benchmark
-        import numpy as np
-        import pandas as pd
-        t_start = time.perf_counter()
-        dummy_row = pd.DataFrame([{
-            "age": 54, "sex": 1, "cp": 4, "trestbps": 130, "chol": 240,
-            "fbs": 0, "restecg": 0, "thalach": 150, "exang": 0,
-            "oldpeak": 1.2, "slope": 2, "ca": 1, "thal": 7
-        }])
-        for _ in range(100):
-            pipe.predict_proba(dummy_row)
-        t_elapsed = (time.perf_counter() - t_start) / 100 * 1000
-        perf_status = "PASS"
-        perf_info = f"Latency: {t_elapsed:.2f} ms/eval | Deterministic Float64"
-
-        checks = [
-            ("Model Artifact Integrity", model_status, model_info),
-            ("Clinical Cohort Dataset Digest", data_status, data_info),
-            ("Biomarker Range & Adversarial Sanitizer", sanitizer_status, sanitizer_info),
-            ("Zero-Trust HIPAA Cloud Egress Boundary", egress_status, egress_info),
-            ("Deterministic Inference Latency", perf_status, perf_info),
-            ("FIPS 140-2 Cryptographic Token Signing", "PASS", "Active SHA-256 ephemeral seal generation"),
-        ]
-
-        table_rows = ""
-        for name, status, metric in checks:
-            badge_color = "#10b981" if status == "PASS" else "#f59e0b"
-            bg_color = "rgba(16,185,129,0.12)" if status == "PASS" else "rgba(245,158,11,0.12)"
-            table_rows += f"""
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-                <td style="padding: 12px 8px; font-weight:600; color:#f1f5f9;">{name}</td>
-                <td style="padding: 12px 8px;"><span style="background:{bg_color}; color:{badge_color}; border:1px solid {badge_color}; padding:3px 8px; border-radius:12px; font-size:0.75rem; font-weight:700;">{status}</span></td>
-                <td style="padding: 12px 8px; font-family:monospace; font-size:0.8rem; color:#94a3b8;">{metric}</td>
-            </tr>
-            """
-
-        st.markdown(
-            f"""
-        <table style="width:100%; border-collapse:collapse; margin-top:8px;">
-            <thead>
-                <tr style="text-align:left; color:#CBD5E1; font-size:0.75rem; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.12);">
-                    <th style="padding:8px;">Security Control</th>
-                    <th style="padding:8px;">Status</th>
-                    <th style="padding:8px;">Diagnostic Telemetry</th>
-                </tr>
-            </thead>
-            <tbody>
-                {table_rows}
-            </tbody>
-        </table>
-        """,
-            unsafe_allow_html=True
-        )
-
-    with sec_col2:
-        st.markdown('<div class="section">Live Cryptographic Audit Seal</div>', unsafe_allow_html=True)
-        # Compute ephemeral cryptographic seal for current patient
-        seal_payload = json.dumps({
-            "age": float(st.session_state.get("age", 54)),
-            "sex": int(st.session_state.get("sex", 1)),
-            "trestbps": float(st.session_state.get("trestbps", 130)),
-            "chol": float(st.session_state.get("chol", 240)),
-            "thalach": float(st.session_state.get("thalach", 150)),
-            "oldpeak": float(st.session_state.get("oldpeak", 1.2)),
-            "ca": int(st.session_state.get("ca", 0)),
-            "model": model_name,
-            "prob": float(p)
-        }, sort_keys=True)
-        seal_hash = hashlib.sha256(seal_payload.encode()).hexdigest().upper()
-        active_seal = f"CARDIOSENSE-SEAL-{seal_hash[:4]}-{seal_hash[4:8]}"
-
-        st.markdown(
-            f"""
-        <div class="glass" style="margin-top:8px; border-color:rgba(0,111,207,0.4);">
-            <div style="font-size:0.8rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Active Patient Cryptographic Seal</div>
-            <div style="font-family:monospace; font-size:1.5rem; font-weight:800; color:#38bdf8; margin:8px 0;">
-                {active_seal}
-            </div>
-            <p class="note" style="margin-bottom:12px;">
-                HIPAA §164.312 non-repudiation audit hash binding current patient clinical biomarkers, model weights digest, and local execution state.
-            </p>
-            <div style="background:rgba(0,0,0,0.3); border-radius:6px; padding:10px; font-family:monospace; font-size:0.75rem; color:#6ee7b7; line-height:1.5;">
-                • Model: {model_name}<br>
-                • Output Risk: {p*100:.1f}% ({band})<br>
-                • Egress Packets: 0 (RAM-only)<br>
-                • Security Level: FIPS 140-2 Level 3
-            </div>
-        </div>
-        """,
-            unsafe_allow_html=True
-        )
-
-        st.markdown('<div class="section" style="margin-top:20px;">Download Security Attestation</div>', unsafe_allow_html=True)
-        attestation_doc = json.dumps({
-            "system": "CardioSense AI Enterprise",
-            "version": "2.4.0",
-            "model": model_name,
-            "seal": active_seal,
-            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "model_sha256": model_sha,
-            "dataset_sha256": data_sha,
-            "benchmark_latency_ms": round(t_elapsed, 3),
-            "compliance": ["FIPS 140-2", "HIPAA Safe Harbor", "GDPR Zero-Egress"]
-        }, indent=2)
-
-        st.download_button(
-            label="Download Signed Compliance Certificate (JSON)",
-            data=attestation_doc,
-            file_name=f"CardioSense_Security_Certificate_{active_seal}.json",
-            mime="application/json"
-        )
-

@@ -1,4 +1,26 @@
-# CardioSense AI: Clinical Decision Support & Cardiac Hemodynamics Workstation
+# CardioSense
+
+**Research question.** A first-visit heart-disease risk model is cheap but less accurate than one that needs a stress test,
+fluoroscopy and a nuclear scan. Can conformal uncertainty decide who can skip the extra tests, and at what cost?
+
+**Answer (internal validation, 303 patients).** About one third of patients can skip the extra tests for a 1.5 point loss in
+accuracy; 60% for 3 points. No model family beat logistic regression (AUC 0.91, or 0.84 with first-visit inputs). More data
+should help the full model; the first-visit model needs new predictors. External validity is untested.
+
+| Read | |
+|---|---|
+| [docs/PAPER.md](docs/PAPER.md) | Working paper: methods, results, limitations, ethics |
+| [docs/MODEL_CARD.md](docs/MODEL_CARD.md), [docs/DATASHEET.md](docs/DATASHEET.md) | Model card and datasheet |
+| [docs/MODEL_REPORT.md](docs/MODEL_REPORT.md) | Benchmark and rigour checks |
+| `bash reproduce.sh` | Regenerates every number and figure |
+| `external_validation.py` | Train on Cleveland, test on other hospitals (needs the multi-site file) |
+
+**Not a medical device and not for clinical use.** Whether a tool like this reduces heart attacks is an open empirical
+question that needs prospective evidence, clinician oversight and regulatory review.
+
+---
+
+# CardioSense AI
 
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-black?logo=vercel)](https://heart-disease-predictor-kohl-nine.vercel.app)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/lak-is-law/heart-disease-predictor)
@@ -7,7 +29,9 @@
 > **[https://heart-disease-predictor-kohl-nine.vercel.app](https://heart-disease-predictor-kohl-nine.vercel.app)**
 
 Logistic Regression, Random Forest and XGBoost trained on the UCI Heart Disease data, wrapped in an
-interactive 3D anatomical heart biomechanics laboratory, clinical lab report ingestion parser, and multi-architecture desktop distribution portal.
+an interactive 3D heart, a lab report parser and a download portal.
+
+**Research prototype. Not for clinical use. Not a medical device.** See Limitations below.
 
 ## Run it
 
@@ -64,21 +88,21 @@ CardioSense AI is packaged as native standalone desktop executables (`.dmg` for 
   python desktop_launcher.py
   ```
 
-## American Express (Amex) Reverse-Engineered Download Portal
+## Download portal
 
-The download portal in `portal/` has been reverse-engineered from the American Express Design Language System (DLS):
-- **Visual Design:** Authentic Amex Primary Action Blue (`#006FCF`), Deep Midnight Navy (`#00175A`), Centurion gold accents (`#C5A059`), and crisp white card containers (`#D5D8DC` borders).
-- **Client Auto-Detection:** Automatically inspects client processor architecture (Apple Silicon vs Intel vs Windows x64 vs ARM64) and displays a personalized recommendation card with 1-click download.
-- **Oracle-Style Tabbed Matrix:** Filter by macOS, Windows, Linux, and Master Checksum tables.
-- **Live In-Browser SHA-256 Verifier:** Drag-and-drop downloaded `.dmg` or `.exe` files into the browser; uses the client-side Web Crypto API to compute authentic SHA-256 digests and display a verified seal.
-- **IT Deployment Guides:** Silent installation command-line flags and macOS Gatekeeper bypass commands.
-
-### Launching the Amex Download Portal
+The portal in `portal/` detects the visitor's operating system and processor, lists the matching installers with SHA-256 checksums, and includes an in-browser checksum verifier. Sign-in, saved assessments and the dashboard are served by the functions in `api/` (see `docs/DEPLOY.md`).
 
 ```bash
 python serve_portal.py --port 8080
 ```
-Open [http://localhost:8080](http://localhost:8080) to view the live American Express download center.
+
+## Limitations
+
+- The model is trained on the UCI Cleveland data: 303 patients from one clinic in the 1980s, all referred for angiography, 97 of them women. The label is angiographic disease, not future events.
+- Measured on repeated cross-validation, ROC AUC is 0.91 (95% CI 0.87 to 0.94) with all 13 inputs, but 0.84 (0.79 to 0.88) when the invasive and stress-test inputs are left out; see `artifacts/validation.json` and `evaluate.py`. The 13-input model needs fluoroscopy and thallium results, so it does not apply to a first visit, and the 0.91 figure is optimistic for that reason.
+- It has not been tested prospectively or at any other site. Good AUC does not show that using it improves outcomes.
+- A low estimate does not rule out disease. The 0.28 threshold gives about 88% sensitivity in cross-validation and flags many patients without disease.
+- No regulatory clearance, exemption or compliance certification is claimed. Use only synthetic or de-identified data.
 
 ## Notes
 

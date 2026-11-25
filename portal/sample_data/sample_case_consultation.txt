@@ -1,8 +1,8 @@
 ================================================================================
 ST. JUDE CARDIAC CARE CENTER · CLINICAL CONSULTATION NOTE
 ================================================================================
-PATIENT ID:       #CP-8924
-PATIENT NAME:     Eleanor Vance
+PATIENT ID:       #SAMPLE-1
+PATIENT NAME:     Sample Patient
 ADMISSION:        2026-11-15 08:30 EST
 ATTENDING:        Marcus Thorne, MD, FACC
 

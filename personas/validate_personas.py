@@ -292,7 +292,7 @@ def validate_personas() -> None:
         prob = core.predict_proba(best_pipe, cp)
         assert 0.0 <= prob <= 1.0, f"{pid}: Probability out of range: {prob}"
         band, _ = core.risk_band(prob)
-        assert band in ("Low risk", "Moderate risk", "High risk"), f"{pid}: Invalid risk band {band}"
+        assert band in ("Lower estimate", "Intermediate estimate", "Higher estimate"), f"{pid}: Invalid risk band {band}"
 
         # 4. Feedback & User Journey Verification
         uj = p["user_journey"]

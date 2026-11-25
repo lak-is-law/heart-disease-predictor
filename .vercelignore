@@ -6,3 +6,17 @@ tests/
 .github/
 __pycache__/
 *.pyc
+portal/downloads/
+portal/manifest.json
+.env*
+*.py
+*.patch
+docs/
+data/
+personas/
+artifacts/
+packaging/
+scripts/
+components/
+requirements.txt
+TEST_READY.md

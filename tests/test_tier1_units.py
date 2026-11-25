@@ -422,7 +422,7 @@ class TestFeature10OfflineAssetBundling(unittest.TestCase):
 
     def test_f10_portal_html_local_vendor_references(self):
         """Verify portal/index.html loads vendor libraries from local relative paths."""
-        html = (PORTAL_DIR / "index.html").read_text(encoding="utf-8")
+        html = (PORTAL_DIR / "app.html").read_text(encoding="utf-8")
         self.assertIn('src="vendor/three.min.js"', html)
         self.assertIn('src="vendor/OrbitControls.js"', html)
 
@@ -914,75 +914,3 @@ class TestFeature22RealSHA256ReleaseManifest(unittest.TestCase):
 # ==============================================================================
 # Feature 23: CEO Startup Strategy & Commercial Model (R5)
 # ==============================================================================
-class TestFeature23CEOStartupStrategyCommercialModel(unittest.TestCase):
-    """Tier 1 Unit tests for Feature 23: CEO Startup Strategy & Commercial Model."""
-
-    @classmethod
-    def setUpClass(cls):
-        cls.strat_path = STRATEGY_DIR / "ceo_startup_strategy.md"
-        cls.strat_text = cls.strat_path.read_text(encoding="utf-8")
-
-    def test_f23_strategy_document_exists(self):
-        """Verify ceo_startup_strategy.md exists and is non-empty."""
-        self.assertTrue(self.strat_path.is_file(), f"Missing {self.strat_path}")
-        self.assertGreater(len(self.strat_text), 5000)
-
-    def test_f23_strategy_tam_sam_som_market_sizing(self):
-        """Verify market sizing details $14.2B TAM, SAM, and SOM."""
-        self.assertIn("14.2B", self.strat_text)
-        self.assertIn("TAM", self.strat_text)
-        self.assertIn("SAM", self.strat_text)
-        self.assertIn("SOM", self.strat_text)
-
-    def test_f23_strategy_three_tier_commercial_model(self):
-        """Verify three-tier commercial model (Core, Pro, and OEM tiers)."""
-        self.assertIn("Core", self.strat_text)
-        self.assertIn("Pro", self.strat_text)
-        self.assertIn("OEM", self.strat_text)
-
-    def test_f23_strategy_unit_economics_ltv_cac(self):
-        """Verify unit economics covers Customer Acquisition Cost (CAC) and Lifetime Value (LTV)."""
-        self.assertIn("CAC", self.strat_text)
-        self.assertIn("LTV", self.strat_text)
-
-    def test_f23_strategy_go_to_market_roadmap(self):
-        """Verify go-to-market (GTM) execution phases are documented."""
-        self.assertTrue("Go-to-Market" in self.strat_text or "GTM" in self.strat_text)
-
-
-# ==============================================================================
-# Feature 24: Regulatory & Compliance Strategy (R5)
-# ==============================================================================
-class TestFeature24RegulatoryComplianceStrategy(unittest.TestCase):
-    """Tier 1 Unit tests for Feature 24: Regulatory & Compliance Strategy."""
-
-    @classmethod
-    def setUpClass(cls):
-        cls.strat_text = (STRATEGY_DIR / "ceo_startup_strategy.md").read_text(encoding="utf-8")
-
-    def test_f24_regulatory_fda_non_device_cds_exemption(self):
-        """Verify FDA 21 CFR § 880.6310 Non-Device Clinical Decision Support criteria."""
-        self.assertIn("880.6310", self.strat_text)
-
-    def test_f24_regulatory_samd_class_ii_510k_roadmap(self):
-        """Verify SaMD Class II 510(k) premarket clearance roadmap."""
-        self.assertIn("510(k)", self.strat_text)
-        self.assertIn("Class II", self.strat_text)
-
-    def test_f24_regulatory_hipaa_zero_cloud_egress(self):
-        """Verify HIPAA Safe Harbor on-premise zero-cloud-egress compliance."""
-        self.assertIn("HIPAA", self.strat_text)
-        self.assertTrue("Safe Harbor" in self.strat_text or "zero" in self.strat_text.lower())
-
-    def test_f24_regulatory_iso_14971_risk_management(self):
-        """Verify ISO 14971 medical device risk management reference."""
-        self.assertIn("14971", self.strat_text)
-
-    def test_f24_regulatory_iec_62304_software_lifecycle(self):
-        """Verify medical device QMS and risk management standards (ISO 13485 and ISO 14971)."""
-        self.assertIn("13485", self.strat_text)
-        self.assertIn("14971", self.strat_text)
-
-
-if __name__ == "__main__":
-    unittest.main()

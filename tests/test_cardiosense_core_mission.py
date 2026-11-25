@@ -97,7 +97,7 @@ class TestCardioSenseHospitalEconomics(unittest.TestCase):
 
 
 class TestHighSensitivitySafetyNet(unittest.TestCase):
-    """Verifies the 96.4% recall safety net for preventing atypical false-negative discharges."""
+    """Verifies the high-sensitivity (0.28 threshold) mode reports measured sensitivity and never says a patient is safe."""
 
     def test_safety_net_flags_atypical_patient(self):
         """Verify atypical presentation (prob = 0.38) is caught under 0.28 safety net threshold."""
@@ -110,15 +110,17 @@ class TestHighSensitivitySafetyNet(unittest.TestCase):
         # Under 0.28 safety net, patient is flagged for urgent evaluation
         self.assertTrue(safety_net_eval["is_flagged"])
         self.assertTrue(safety_net_eval["atypical_risk_mitigated"])
-        self.assertEqual(safety_net_eval["recall_sensitivity"], 0.964)
-        self.assertIn("SAFETY NET INTERVENTION", safety_net_eval["clinical_note"])
+        self.assertEqual(safety_net_eval["recall_sensitivity"], core.MEASURED_SENSITIVITY_AT_028)
+        self.assertLess(safety_net_eval["recall_sensitivity"], 0.95, "must report the measured value, not a marketing figure")
+        self.assertIn("HIGH-SENSITIVITY FLAG", safety_net_eval["clinical_note"])
 
     def test_safety_net_allows_truly_low_risk_baseline(self):
         """Verify completely normal screening profile (prob = 0.12) is not flagged."""
         res = core.evaluate_safety_net(prob=0.12, threshold=0.28)
         self.assertFalse(res["is_flagged"])
         self.assertFalse(res["atypical_risk_mitigated"])
-        self.assertIn("Safe for Ambulatory Pathway", res["disposition"])
+        self.assertIn("Lower likelihood in this model", res["disposition"])
+        self.assertNotIn("Safe", res["disposition"])
 
 
 class TestVirtualFFRFluidDynamics(unittest.TestCase):
@@ -175,35 +177,25 @@ class TestOfflineFirstAndPortalIntegrity(unittest.TestCase):
         self.assertIn('"atypical":', app_text)
         self.assertIn('"ruleout":', app_text)
         self.assertIn('"rural":', app_text)
-        self.assertIn("High-Sensitivity Safety Net Mode (96.4% Recall)", app_text)
-        self.assertIn("Hospital Economics & Catheterization Cost Reduction Engine", app_text)
+        self.assertIn("High-sensitivity mode (threshold 0.28)", app_text)
+        self.assertNotIn("96.4", app_text)
+        for gone in ("Hospital Economics", "Virtual FFR", "FIPS 140-2", "HIPAA", "880.6310", "STEMI"):
+            self.assertNotIn(gone, app_text)
+        self.assertIn("Not for clinical use", app_text)
 
     def test_portal_html_contains_economics_and_safety_net_elements(self):
         """Verify portal/index.html includes economics section, safety net, and golden hour widgets."""
-        index_html = (PORTAL_DIR / "index.html").read_text(encoding="utf-8")
+        index_html = (PORTAL_DIR / "app.html").read_text(encoding="utf-8")
 
-        # Hospital Economics section
-        self.assertIn('id="hospital-economics"', index_html)
-        self.assertIn('id="inp-econ-vol"', index_html)
-        self.assertIn('id="inp-econ-cost"', index_html)
-        self.assertIn('id="inp-econ-ruleout"', index_html)
-        self.assertIn('id="econ-kpi-total-savings"', index_html)
-        self.assertIn('id="econ-kpi-caths-avoided"', index_html)
-        self.assertIn('id="econ-kpi-direct-savings"', index_html)
+        # Unfounded economics, timeline and compliance content must stay removed
+        for gone in ('id="hospital-economics"', 'golden-hour', 'STEMI', 'FIPS', 'HIPAA', '880.6310'):
+            self.assertNotIn(gone, index_html)
 
         # Safety Net Toggle & Alert Banner
         self.assertIn('id="inp-safety-net-toggle"', index_html)
         self.assertIn('id="portal-safety-net-banner"', index_html)
-        self.assertIn("96.4% Recall", index_html)
-
-        # Door-to-Balloon Golden Hour Card
-        self.assertIn('id="portal-golden-hour-badge"', index_html)
-        self.assertIn('id="portal-d2b-val"', index_html)
-        self.assertIn('id="portal-d2b-saved"', index_html)
-
-        # Rural clinic air-gapped support
-        self.assertIn("Critical Access & Rural Clinic Architecture", index_html)
-        self.assertIn("Offline-First 0.00 KB Egress", index_html)
+        self.assertIn("threshold 0.28", index_html)
+        self.assertNotIn("96.4", index_html)
 
     def test_portal_js_contains_required_functions_and_cases(self):
         """Verify portal/portal.js exports calculateHospitalEconomics and new clinical cases."""
