@@ -12,13 +12,17 @@
 .about-frames { position: relative; }
 .about-motion { position: relative; transform: translate3d(0, var(--lift, 0px), 0) rotate(var(--lean, 0deg)); }
 .about-motion img { display: block; width: 100%; height: auto; }
-.about-smile { position: absolute; inset: 0; opacity: var(--smile, 0); }
-.about-portrait figcaption { margin-top: 8px; color: var(--dim); font-size: .77rem; }
+.about-expression { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .about-scene.is-animated { display: flow-root; }
+  .about-scene.is-animated .about-intro { position: sticky; top: var(--portrait-top); }
+  .about-scene.is-animated::after { display: block; content: ''; height: 65svh; }
+}
 @media (max-width: 760px) {
   .about-intro { grid-template-columns: 1fr; gap: 28px; padding-block: 36px; }
   .about-copy > p:not(.kicker) { max-width: 54ch; }
 }
 @media (prefers-reduced-motion: reduce) {
   .about-motion { transform: none; }
-  .about-smile { display: none; }
+  .about-expression { display: none; }
 }
