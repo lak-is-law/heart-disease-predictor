@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About us | CardioSense</title>
+<meta name="description" content="Meet Lakshya UK, the developer of CardioSense, and explore the evidence behind its coronary disease research workstation.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script src="/theme-init.js"></script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/chat.css">
+
+<link rel="stylesheet" href="/about.css">
+<script src="/about.js" defer></script>
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+    <nav class="nav" aria-label="Main">
+      <a href="/about" aria-current="page">About us</a>
+      <a href="/features">Features</a>
+      <a href="/research">Research</a>
+      <a href="/download">Download</a>
+      <a href="/#reviews">Reviews</a>
+      <a href="/app">Workstation</a>
+      <a class="m-only" href="/signin">Sign in</a><a class="m-only" href="/signup">Create account</a>
+    </nav>
+    <div class="head-right">
+      <div id="acct" style="display:flex;align-items:center;gap:14px"></div>
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<main class="wrap about">
+  <section class="about-intro" aria-labelledby="about-title">
+    <div class="about-copy">
+      <p class="kicker">About Lakshya UK</p>
+      <h1 id="about-title">Why we built CardioSense</h1>
+      <p>Lakshya UK develops CardioSense, a research workstation for studying coronary disease. We built it so clinicians, researchers and students can follow a risk estimate back to the values that shaped it.</p>
+      <a class="btn" href="/research">Explore the research</a>
+    </div>
+    <figure class="about-portrait">
+      <div class="about-frames">
+        <div class="about-motion">
+          <img src="/img/clinical-portrait.webp" width="1145" height="687" alt="Illustrative portrait of three smiling physicians standing with folded arms.">
+          <img class="about-smile" src="/img/clinical-portrait-smile.webp" width="1145" height="687" alt="">
+        </div>
+      </div>
+      <figcaption>AI-generated editorial portrait of fictional physicians.</figcaption>
+    </figure>
+  </section>
+  <section class="row"><h2>Inside a case review</h2><div class="body">
+    <p>A single probability leaves an important question open. Which findings contributed most? In the workstation, you can enter a sample case, inspect the contribution of each input, then change a value and compare the estimates.</p>
+    <a href="/app">Open the workstation</a>
+  </div></section>
+  <section class="row"><h2>What the evidence shows</h2><div class="body">
+    <p>We evaluated the model on historical records from 303 patients referred for coronary angiography in Cleveland. With all 13 inputs, it achieved a cross-validated AUC of 0.91 (95% confidence interval 0.87–0.94).</p>
+    <p>That study measured how well the model distinguished cases within this cohort. Its effect on clinical decisions and patient outcomes has yet to be tested.</p>
+    <a href="/research">Read the evaluation and study limits</a>
+  </div></section>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="news">
+      <div><h4>Newsletter</h4><p>Occasional product updates and research notes. Unsubscribe any time. See the <a href="/privacy">privacy policy</a>.</p></div>
+      <form id="news-form" novalidate>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="hx-sr" for="news-email">Email address</label>
+        <input id="news-email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="120">
+        <button class="btn sm" type="submit">Subscribe</button>
+        <p class="msg" id="news-msg" role="status"></p>
+      </form>
+    </div>
+    <div class="foot-grid">
+      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+      <div><h4>Product</h4><a href="/features">Features</a><a href="/research">Research</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
+      <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
+      <div><h4>Project</h4><a href="/about">About us</a><a href="/report">Report a bug</a><a href="/features#limits">Limits</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+    </div>
+    <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
+  </div>
+</footer>
+<script src="/site.js"></script>
+<script src="/onboarding.js" defer></script>
+<script src="/chat.js" defer></script>
+</body>
+</html>

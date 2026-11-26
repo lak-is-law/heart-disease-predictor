@@ -1,6 +1,6 @@
 # CardioSense model: what was tried and what it shows
 
-Internal validation only: 303 patients from the Cleveland Clinic, repeated stratified 5-fold cross-validation
+Internal model comparison: 303 patients from the Cleveland Clinic, repeated stratified 5-fold cross-validation
 (6 repeats here, 20 in `evaluate.py`). Reproduce with `python benchmark.py`.
 
 ## Result: no model family beats the shipped logistic regression
@@ -22,11 +22,7 @@ reading is that all the sensible models are tied. More complex models were equal
 
 ## What would actually improve the model
 
-1. **More and different patients.** The multi-site UCI file (920 patients, Cleveland, Hungary, Switzerland,
-   VA Long Beach) is already readable by `core.load_raw()`. Put `heart_disease_uci.csv` in `data/` and run
-   `python external_validation.py --data data/heart_disease_uci.csv`. It trains on Cleveland and scores each other
-   hospital untouched, plus leave-one-site-out. That is the first real external test. Expect lower AUC than 0.91
-   and calibration drift; Switzerland and the VA file are missing many vessel and thallium values.
+1. **External evaluation.** With all 13 valid measurements required, the shipped model could score 1/294 Hungarian records, 0/123 Swiss records and 1/200 VA records. Both eligible cases had disease. The paired sample cannot establish discrimination. The seven-input research model scored 261/294, 0/123 and 100/200 respectively. See the [site results with uncertainty, calibration and threshold errors](rehearsal-validation.json). Reproduce with `python rehearsal_validation.py <uci-archive.zip>` using the [original UCI Heart Disease archive](https://archive.ics.uci.edu/static/public/45/heart+disease.zip). The evaluator loads the shipped coefficients and fits the prespecified seven-input comparator on the same Cleveland training split before opening the external archive. Missing values and values outside the workstation input rules are ineligible.
 2. **Modern data.** These patients were referred for angiography in the 1980s. Current populations differ in
    risk factors, treatment and test use, and women are under-represented (97 of 303).
 3. **The right outcome.** The label is angiographic disease, not future heart attack or death.

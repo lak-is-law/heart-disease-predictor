@@ -1,0 +1,24 @@
+.about-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+  padding-block: clamp(48px, 8vw, 112px);
+}
+.about-copy .kicker { color: var(--accent); margin: 0 0 16px; }
+.about-copy h1 { font-size: clamp(2.65rem, 5vw, 4.65rem); line-height: 1.03; letter-spacing: -.045em; font-weight: 500; margin: 0; text-wrap: balance; }
+.about-copy > p:not(.kicker) { color: var(--dim); margin: 24px 0; max-width: 40ch; }
+.about-portrait { margin: 0; }
+.about-frames { position: relative; }
+.about-motion { position: relative; transform: translate3d(0, var(--lift, 0px), 0) rotate(var(--lean, 0deg)); }
+.about-motion img { display: block; width: 100%; height: auto; }
+.about-smile { position: absolute; inset: 0; opacity: var(--smile, 0); }
+.about-portrait figcaption { margin-top: 8px; color: var(--dim); font-size: .77rem; }
+@media (max-width: 760px) {
+  .about-intro { grid-template-columns: 1fr; gap: 28px; padding-block: 36px; }
+  .about-copy > p:not(.kicker) { max-width: 54ch; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-motion { transform: none; }
+  .about-smile { display: none; }
+}

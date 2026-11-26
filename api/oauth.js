@@ -72,11 +72,13 @@ async function resolveUser(name, info) {
   if (existing) {
     if (!info.verified) return 'email_exists';        // never link to someone else's account on an unverified address
     await db.set(idKey, existing.email);
+    await db.sadd('uoi:' + existing.id, idKey);
     return existing;
   }
-  const u = { id: C.randomId(12), email, name: String(info.name || '').trim().slice(0, 80), role: 'clinician', pw: '', createdAt: Date.now(), disabled: false, mustChange: false, via: name };
+  const u = { id: C.randomId(12), email, name: String(info.name || '').trim().slice(0, 80), role: 'user', pw: '', createdAt: Date.now(), disabled: false, mustChange: false, via: name };
   await A.saveUser(u);
   await db.set(idKey, email);
+  await db.sadd('uoi:' + u.id, idKey);
   return u;
 }
 

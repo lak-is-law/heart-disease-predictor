@@ -11,7 +11,20 @@ const PROD = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL
 const COOKIE = PROD ? '__Host-cs_session' : 'cs_session';
 const IDLE = 60 * 60 * 12;          // a session ends after 12 hours without use
 const ABSOLUTE = 60 * 60 * 24 * 7;  // and never lasts longer than 7 days
-const ROLES = ['clinician', 'admin'];
+const ROLES = ['clinician', 'admin', 'user'];
+const PROFILE_ROLES = [
+  'Clinician / Physician', 'Medical Student / Resident', 'Researcher / Academic',
+  'Data Scientist / Engineer', 'Educator / Instructor', 'Personal / Curious Learner', 'Other',
+];
+const EXPERIENCE_LEVELS = ['Exploring', 'Student / Trainee', 'Practicing', 'Research / Academic'];
+const REFERRAL_SOURCES = [
+  'Search engine', 'GitHub / Open source', 'Colleague or friend', 'University or class',
+  'Social media', 'Research paper', 'AI assistant', 'Other',
+];
+const USE_CASES = [
+  'Coronary risk estimation', 'Interactive 3D heart & ECG', 'Lab report import',
+  'Selective-escalation research', 'Teaching & case studies', 'Desktop offline app',
+];
 
 // ------------------------------------------------------------------ http helpers
 function json(res, status, body) {
@@ -22,13 +35,20 @@ function json(res, status, body) {
 }
 
 async function readJson(req, limit = 20_000) {
-  if (req.body && typeof req.body === 'object') return req.body;
-  if (typeof req.body === 'string') { try { return JSON.parse(req.body); } catch { return {}; } }
+  const tooLarge = () => Object.assign(new Error('Request body is too large.'), { status: 413 });
+  if (req.body && typeof req.body === 'object') {
+    if (Buffer.byteLength(JSON.stringify(req.body)) > limit) throw tooLarge();
+    return req.body;
+  }
+  if (typeof req.body === 'string') {
+    if (Buffer.byteLength(req.body) > limit) throw tooLarge();
+    try { return JSON.parse(req.body); } catch { return {}; }
+  }
   const chunks = [];
   let size = 0;
   for await (const c of req) {
     size += c.length;
-    if (size > limit) return {};
+    if (size > limit) throw tooLarge();
     chunks.push(c);
   }
   try { return JSON.parse(Buffer.concat(chunks).toString() || '{}'); } catch { return {}; }
@@ -108,18 +128,90 @@ async function createUser({ email, name, role, password, mustChange = true }) {
   return u;
 }
 
-const publicUser = (u) => ({ email: u.email, name: u.name || '', role: u.role });
+const cleanStr = (v, max) => String(v == null ? '' : v).replace(/[\x00-\x1f\x7f]/g, ' ').trim().slice(0, max);
+
+function sanitizeProfile(raw, fallbackName = '') {
+  const r = raw && typeof raw === 'object' ? raw : {};
+  const useCase = Array.isArray(r.useCase)
+    ? Array.from(new Set(r.useCase.map((x) => cleanStr(x, 60)).filter((x) => USE_CASES.includes(x)))).slice(0, USE_CASES.length)
+    : [];
+  const roleType = cleanStr(r.roleType, 60);
+  const experience = cleanStr(r.experience, 40);
+  const referralSource = cleanStr(r.referralSource, 60);
+  return {
+    name: r.name !== undefined ? cleanStr(r.name, 80) : cleanStr(fallbackName, 80),
+    headline: cleanStr(r.headline, 100),
+    roleType: PROFILE_ROLES.includes(roleType) ? roleType : '',
+    organization: cleanStr(r.organization, 100),
+    country: cleanStr(r.country, 60),
+    experience: EXPERIENCE_LEVELS.includes(experience) ? experience : '',
+    useCase,
+    referralSource: REFERRAL_SOURCES.includes(referralSource) ? referralSource : '',
+    referralDetail: cleanStr(r.referralDetail, 120),
+    acceptedGuidelines: Boolean(r.acceptedGuidelines),
+    onboardedAt: Number(r.onboardedAt) > 0 ? Number(r.onboardedAt) : null,
+    onboardingSkippedAt: Number(r.onboardingSkippedAt) > 0 ? Number(r.onboardingSkippedAt) : null,
+    tourSeenAt: Number(r.tourSeenAt) > 0 ? Number(r.tourSeenAt) : null,
+  };
+}
+
+async function getProfile(uid) {
+  if (!uid) return null;
+  const raw = await db.get('prof:' + uid);
+  if (!raw) return null;
+  try { return sanitizeProfile(JSON.parse(raw)); } catch { return null; }
+}
+
+async function saveProfile(uid, prof) {
+  const clean = sanitizeProfile(prof);
+  await db.set('prof:' + uid, JSON.stringify(clean));
+  return clean;
+}
+
+const publicUser = (u, prof) => {
+  const name = prof && prof.name !== undefined ? prof.name : (u.name || '');
+  return {
+    email: u.email,
+    name,
+    role: u.role,
+    onboarded: Boolean(prof && prof.onboardedAt),
+    onboardingSkipped: Boolean(prof && prof.onboardingSkippedAt),
+    tourSeen: Boolean(prof && prof.tourSeenAt),
+  };
+};
 
 // ------------------------------------------------------------------ sessions
-async function createSession(res, user) {
+async function createSession(res, user, profOverride) {
   const id = C.randomId(32);
   const now = Date.now();
-  const s = { uid: user.id, email: user.email, name: user.name || '', role: user.role, csrf: C.randomId(18), created: now, seen: now, mustChange: Boolean(user.mustChange) };
+  const prof = profOverride !== undefined ? profOverride : await getProfile(user.id);
+  const name = prof && prof.name !== undefined ? prof.name : (user.name || '');
+  const s = {
+    uid: user.id, email: user.email, name, role: user.role, csrf: C.randomId(18),
+    created: now, seen: now, mustChange: Boolean(user.mustChange),
+    onboarded: Boolean(prof && prof.onboardedAt),
+    onboardingSkipped: Boolean(prof && prof.onboardingSkippedAt),
+    tourSeen: Boolean(prof && prof.tourSeenAt),
+  };
   const h = C.sha256(id);
   await db.set('s:' + h, JSON.stringify(s), IDLE);
   await db.sadd('us:' + user.id, h);
   res.setHeader('Set-Cookie', cookieString(id, ABSOLUTE));
   return s;
+}
+
+async function syncSessions(uid, patch) {
+  const now = Date.now();
+  for (const h of await db.smembers('us:' + uid)) {
+    const raw = await db.get('s:' + h);
+    if (!raw) continue;
+    try {
+      const s = JSON.parse(raw);
+      Object.assign(s, patch);
+      const ttl = Math.max(60, Math.min(IDLE, Math.floor((s.created + ABSOLUTE * 1000 - now) / 1000)));
+      await db.set('s:' + h, JSON.stringify(s), ttl);
+    } catch { /* ignore */ }
+  }
 }
 
 async function getSession(req) {
@@ -154,6 +246,24 @@ async function endSession(req, res) {
 async function endAllSessions(uid) {
   for (const h of await db.smembers('us:' + uid)) await db.del('s:' + h);
   await db.del('us:' + uid);
+}
+
+async function deleteUserAccount(user) {
+  if (!user || user.source === 'env') {
+    throw Object.assign(new Error('This bootstrap account is defined in environment variables and cannot be deleted here.'), { status: 400 });
+  }
+  await require('./assessment-sync').close(user.id);
+  await endAllSessions(user.id);
+  await require("./pilot").erase(user.id);
+  for (const k of await db.smembers('uoi:' + user.id)) await db.del(k);
+  await db.del('uoi:' + user.id);
+  await db.del('prof:' + user.id);
+  await db.del('a:' + user.id);
+  await db.del('audit:' + user.id);
+  await db.del('del:' + user.id);
+  await db.hdel('reviews', C.hmacId('review:' + user.id));
+  await db.srem('users', user.email);
+  await db.del(emailKey(user.email));
 }
 
 // Gate for API routes. Returns the session, or answers the request and returns null.
@@ -200,7 +310,9 @@ function handle(fn) {
 module.exports = {
   json, readJson, clientIp, sameOrigin, handle,
   normEmail, validEmail, findUser, saveUser, createUser, publicUser, emailKey,
-  cookies, PROD, createSession, getSession, endSession, endAllSessions, requireSession,
+  getProfile, saveProfile, sanitizeProfile, cleanStr, deleteUserAccount,
+  PROFILE_ROLES, EXPERIENCE_LEVELS, REFERRAL_SOURCES, USE_CASES,
+  cookies, PROD, createSession, syncSessions, getSession, endSession, endAllSessions, requireSession,
   hit, audit, ROLES,
   hashPassword: C.hashPassword, checkPassword: C.checkPassword,
 };

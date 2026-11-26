@@ -308,3 +308,160 @@ test('newsletter: public subscribe is validated, idempotent, rate limited; only 
   assert.equal(l.status, 200);
   assert.equal(l.json.items.filter((i) => i.email === 'reader@example.org').length, 1);
 });
+
+test('onboarding flow and profile/name editing persist across session, dashboard and admin', async () => {
+  const c = new Client();
+  const su = await c.call('POST', '/api/signup', { email: 'onboard@example.org', name: 'Initial Name', password: 'a very strong passphrase 42' });
+  assert.equal(su.status, 201);
+  c.csrf = su.json.csrf;
+  assert.equal(su.json.user.onboarded, false);
+
+  // Skip works first
+  const sk = await c.call('POST', '/api/account', { action: 'onboarding', skip: true });
+  assert.equal(sk.status, 200);
+  assert.equal(sk.json.user.onboardingSkipped, true);
+  assert.equal(sk.json.user.onboarded, false);
+
+  // Incomplete onboarding is rejected
+  const bad = await c.call('POST', '/api/account', { action: 'onboarding', name: 'Dr. Asha', roleType: 'Clinician / Physician' });
+  assert.equal(bad.status, 400);
+
+  // Complete onboarding
+  const done = await c.call('POST', '/api/account', {
+    action: 'onboarding',
+    name: 'Dr. Asha Verma',
+    headline: 'Cardiology Fellow',
+    roleType: 'Clinician / Physician',
+    organization: 'AIIMS Delhi',
+    country: 'India',
+    experience: 'Practicing',
+    useCase: ['Coronary risk estimation', 'Lab report import'],
+    referralSource: 'Colleague or friend',
+    referralDetail: 'Recommended by resident team',
+    acceptedGuidelines: true,
+  });
+  assert.equal(done.status, 200);
+  assert.equal(done.json.user.onboarded, true);
+  assert.equal(done.json.user.onboardingSkipped, false);
+  assert.equal(done.json.user.name, 'Dr. Asha Verma');
+
+  // Session reflects updated name and onboarded state
+  const sess = await c.call('GET', '/api/session');
+  assert.equal(sess.json.user.name, 'Dr. Asha Verma');
+  assert.equal(sess.json.user.onboarded, true);
+
+  // Edit name and profile later
+  const ed = await c.call('POST', '/api/account', {
+    action: 'profile',
+    name: 'Dr. Asha K. Verma',
+    headline: 'Attending Cardiologist',
+    referralSource: 'GitHub / Open source',
+  });
+  assert.equal(ed.status, 200);
+  assert.equal(ed.json.profile.name, 'Dr. Asha K. Verma');
+  assert.equal(ed.json.profile.organization, 'AIIMS Delhi');
+
+  // Admin sees profile summary and referral counts
+  const admin = new Client();
+  await admin.login('admin@example.org', 'admin password 123');
+  const adm = await admin.call('GET', '/api/admin');
+  assert.equal(adm.status, 200);
+  const row = adm.json.users.find((u) => u.email === 'onboard@example.org');
+  assert.equal(row.onboarded, true);
+  assert.equal(row.referralSource, 'GitHub / Open source');
+  assert.ok(adm.json.referralCounts['GitHub / Open source'] >= 1);
+
+  // Mark guided tutorial seen
+  const tr = await c.call('POST', '/api/account', { action: 'tour' });
+  assert.equal(tr.status, 200);
+  assert.equal(tr.json.user.tourSeen, true);
+  assert.equal((await c.call('GET', '/api/session')).json.user.tourSeen, true);
+});
+
+test('delete account requires CONFIRM, email code and YES, and erases user data and sessions', async () => {
+  const c = new Client();
+  const su = await c.call('POST', '/api/signup', { email: 'delme@example.org', name: 'Delete Me', password: 'delete account pass 99' });
+  assert.equal(su.status, 201);
+  c.csrf = su.json.csrf;
+  await c.call('POST', '/api/assessments', { inputs: GOOD, risk: 0.4, label: 'to delete' });
+  await c.call('POST', '/api/reviews', { rating: 5, text: 'Temporary review before deletion.' });
+
+  // Wrong phrase / email rejected
+  assert.equal((await c.call('POST', '/api/account', { action: 'delete-request', email: 'delme@example.org', phrase: 'nope' })).status, 400);
+  assert.equal((await c.call('POST', '/api/account', { action: 'delete-request', email: 'other@example.org', phrase: 'CONFIRM' })).status, 400);
+
+  // Request deletion code (emailed: false in test env -> returns confirmationCode)
+  const reqRes = await c.call('POST', '/api/account', { action: 'delete-request', email: 'delme@example.org', phrase: 'CONFIRM' });
+  assert.equal(reqRes.status, 200);
+  assert.equal(reqRes.json.emailed, false);
+  const code = reqRes.json.confirmationCode;
+  assert.ok(code && code.length === 6);
+
+  // Missing YES or wrong code rejected
+  assert.equal((await c.call('POST', '/api/account', { action: 'delete-account', email: 'delme@example.org', phrase: 'CONFIRM', code, yes: 'no' })).status, 400);
+  assert.equal((await c.call('POST', '/api/account', { action: 'delete-account', email: 'delme@example.org', phrase: 'CONFIRM', code: 'WRONG1', yes: 'YES' })).status, 400);
+
+  // Successful deletion
+  const del = await c.call('POST', '/api/account', { action: 'delete-account', email: 'delme@example.org', phrase: 'CONFIRM', code, yes: 'YES' });
+  assert.equal(del.status, 200);
+  assert.equal((await c.call('GET', '/api/session')).json.user, null);
+  assert.equal((await new Client().login('delme@example.org', 'delete account pass 99')).status, 401);
+
+  // Verify user and assessments are gone
+  const A = require('../../api/_lib/auth');
+  assert.equal(await A.findUser('delme@example.org'), null);
+});
+
+test('clinic rehearsal binds visits, acknowledgements and membership to authenticated accounts', async () => {
+  db._reset();
+  const admin = new Client();
+  await admin.login('admin@example.org','admin password 123');
+  async function user(email) {
+    const client = new Client();
+    const reply = await client.call('POST','/api/signup',{email,password:'fictional sample passphrase'});
+    assert.equal(reply.status,201); client.csrf = reply.json.csrf; return client;
+  }
+  const manager = await user('manager@sample.test'), patient = await user('visitor@sample.test'), staff = await user('reader@sample.test');
+  const get = async client => (await client.call('GET','/api/pilot')).json;
+  const post = async (client,action,body={}) => (await client.call('POST','/api/pilot',{action,...body})).status;
+  const managerId = (await get(manager)).id, patientId = (await get(patient)).id, staffId = (await get(staff)).id;
+  const rewritten = await manager.call('GET', '/api/account?route=pilot');
+  assert.equal(rewritten.status, 200);
+  assert.equal(rewritten.json.id, managerId);
+  await post(manager,'workspace',{workspace:'facility'});
+  await post(patient,'workspace',{workspace:'patient'});
+  await post(staff,'workspace',{workspace:'facility'});
+  const setup = {name:'Fictional clinic',instructions:'Read on weekdays. Call the clinic for time-sensitive questions.',target:managerId};
+  assert.equal(await post(patient,'setup',setup),403);
+  assert.equal(await post(admin,'setup',setup),200);
+  assert.equal(await post(manager,'inviteStaff',{target:staffId}),200);
+  await post(staff,'workspace',{workspace:'facility'});
+  const visit = crypto.randomUUID();
+  assert.equal(await post(staff,'inviteVisit',{visit,target:patientId}),200);
+  assert.equal((await get(staff)).visits.length,0);
+  const content={visit,version:0,question:'Sample question'};
+  assert.equal(await post(manager,'share',content),403);
+  assert.equal(await post(patient,'draft',content),200);
+  assert.equal((await get(patient)).draft.question,content.question);
+  assert.deepEqual(await Promise.all([post(patient,'share',content),post(patient,'share',content)]),[200,200]);
+  assert.equal((await get(staff)).visits[0].version,1);
+  assert.equal(await post(staff,'review',{visit,version:1}),200);
+  assert.ok((await get(patient)).visits[0].reviewed);
+  assert.equal(await post(patient,'share',{visit,version:1,question:'Corrected example'}),200);
+  assert.equal(await post(staff,'review',{visit,version:1}),409);
+  assert.equal((await get(patient)).visits[0].reviewed,null);
+  assert.equal(await post(manager,'removeStaff',{target:staffId}),200);
+  assert.equal((await get(staff)).visits.length,0);
+  assert.equal(await post(staff,'review',{visit,version:2}),403);
+  assert.equal(await post(patient,'withdraw',{visit,version:2}),200);
+  await post(manager,'workspace',{workspace:'facility'});
+  assert.equal((await get(manager)).visits.length,0);
+});
+
+test('assessment calculates from versioned weights and requires measured inputs', () => {
+  const validate = require('../../api/_lib/validate').assessment;
+  const a = validate({inputs:GOOD,risk:0,model:'arbitrary'});
+  assert.ok(a.risk > 0 && a.risk < 1);
+  assert.match(a.model,/^cleveland-lr-[0-9a-f]{12}$/);
+  for (const value of [null, '', false, undefined, 1.5]) assert.throws(()=>validate({inputs:{...GOOD,sex:value}}));
+});

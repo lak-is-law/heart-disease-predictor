@@ -15,12 +15,21 @@
     var t = document.documentElement.getAttribute('data-theme');
     return t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
+  function closeMenu() {
+    var n = document.querySelector('.nav');
+    var mb = document.querySelector('[data-menu-toggle]');
+    if (n) n.classList.remove('open');
+    if (mb) mb.setAttribute('aria-expanded', 'false');
+  }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-theme-toggle]');
     if (b) setTheme(isDark() ? 'light' : 'dark');
     var mb = e.target.closest('[data-menu-toggle]');
-    if (mb) { var n = document.querySelector('.nav'); var o = n.classList.toggle('open'); mb.setAttribute('aria-expanded', o); }
+    if (mb) { var n = document.querySelector('.nav'); var o = n.classList.toggle('open'); mb.setAttribute('aria-expanded', o); return; }
+    if (e.target.closest('.nav a')) { closeMenu(); return; }
+    if (!e.target.closest('.site-head')) closeMenu();
   });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
 
   // ---------------------------------------------------------------- http
   function api(method, url, body) {
@@ -32,25 +41,55 @@
   S.api = api;
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function nextUrl() {
+    var choice = $('workspace');
+    if (choice && choice.value) return '/pilot#' + choice.value;
     var n = new URLSearchParams(location.search).get('next') || '';
-    return /^\/[a-z0-9\-_/]*(#[a-z0-9\-_]*)?$/i.test(n) && n.slice(0, 2) !== '//' ? n : '/app';
+    return /^\/[a-z0-9\-_/]*(#[a-z0-9\-_]*)?$/i.test(n) && n.slice(0, 2) !== '//' ? n : '/pilot';
   }
 
   // ---------------------------------------------------------------- header account
-  function renderAccount() {
-    var box = $('acct'); if (!box) return;
-    box.textContent = '';
+  function initials(u) {
+    var parts = (u.name || u.email || '?').trim().split(/\s+/);
+    if (parts.length > 1) return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    return (parts[0] || '?').charAt(0).toUpperCase();
+  }
+  function doSignOut() { api('POST', '/api/logout').then(function () { location.href = '/'; }); }
+  function renderMobileNavAccount() {
+    var nav = document.querySelector('.site-head .nav'); if (!nav) return;
+    nav.querySelectorAll('.m-only').forEach(function (n) { n.remove(); });
     if (S.user) {
-      var d = el('a', 'link', 'Dashboard'); d.href = '/dashboard';
-      var o = el('button', 'btn sm line', 'Sign out'); o.type = 'button';
-      o.addEventListener('click', function () { api('POST', '/api/logout').then(function () { location.href = '/'; }); });
-      box.append(d, o);
+      var who = el('span', 'm-only m-user', S.user.name ? S.user.name + ' (' + S.user.email + ')' : S.user.email);
+      var d = el('a', 'm-only', 'Dashboard'); d.href = '/dashboard';
+      if (location.pathname === '/dashboard' || location.pathname === '/dashboard.html') d.setAttribute('aria-current', 'page');
+      var o = el('button', 'm-only m-signout', 'Sign out'); o.type = 'button';
+      o.addEventListener('click', function () { closeMenu(); doSignOut(); });
+      nav.append(who, d, o);
     } else {
-      var si = el('a', 'link', 'Sign in'); si.href = '/signin';
-      var su = el('a', 'btn sm', 'Get started'); su.href = '/signup';
-      box.append(si, su);
+      var si = el('a', 'm-only', 'Sign in'); si.href = '/signin';
+      var su = el('a', 'm-only', 'Create account'); su.href = '/signup';
+      nav.append(si, su);
     }
   }
+  function renderAccount() {
+    var box = $('acct');
+    if (box) {
+      box.textContent = '';
+      if (S.user) {
+        var d = el('a', 'link', 'Dashboard'); d.href = '/dashboard';
+        var o = el('button', 'btn sm line', 'Sign out'); o.type = 'button';
+        o.addEventListener('click', doSignOut);
+        var av = el('a', 'm-acct-av', initials(S.user)); av.href = '/dashboard';
+        av.setAttribute('aria-label', 'Dashboard'); av.title = 'Dashboard';
+        box.append(d, o, av);
+      } else {
+        var si = el('a', 'link', 'Sign in'); si.href = '/signin';
+        var su = el('a', 'btn sm', 'Get started'); su.href = '/signup';
+        box.append(si, su);
+      }
+    }
+    renderMobileNavAccount();
+  }
+  S.setUser = function (u) { S.user = u || null; renderAccount(); };
   var hd = document.querySelector('.site-head');
   if (hd) { var sc = function () { hd.classList.toggle('scrolled', window.scrollY > 8); }; window.addEventListener('scroll', sc, { passive: true }); sc(); }
   S.ready = api('GET', '/api/session').then(function (s) {
@@ -92,7 +131,16 @@
         row.appendChild(el('span', 'meta', 'Version ' + d.version + ' \u00b7 ' + mb(b.size)));
         if (b.sha256) {
           var sum = el('button', 'sum', 'SHA-256 ' + b.sha256.slice(0, 12) + '\u2026'); sum.type = 'button'; sum.title = b.sha256 + ' (click to copy)';
-          sum.addEventListener('click', function () { try { navigator.clipboard.writeText(b.sha256); sum.textContent = 'Copied'; setTimeout(function () { sum.textContent = 'SHA-256 ' + b.sha256.slice(0, 12) + '\u2026'; }, 1500); } catch (e) { /* ignore */ } });
+          sum.addEventListener('click', async function () {
+            try {
+              await navigator.clipboard.writeText(b.sha256);
+              sum.textContent = 'Copied';
+              setTimeout(function () { sum.textContent = 'SHA-256 ' + b.sha256.slice(0, 12) + '\u2026'; }, 1500);
+            } catch (e) {
+              sum.textContent = b.sha256;
+              sum.classList.add('show-checksum');
+            }
+          });
           row.appendChild(sum);
         } else row.appendChild(el('span', 'meta', ''));
         var a = el('a', 'btn sm', S.user ? 'Download' : 'Sign in to download');
@@ -123,6 +171,7 @@
   function loadReviews() {
     if (!rl) return;
     api('GET', '/api/reviews').then(function (d) {
+      if (!d.ok) throw new Error('Reviews unavailable');
       rl.textContent = '';
       $('rev-avg').textContent = d.count ? d.average.toFixed(1) : '-';
       $('rev-count').textContent = d.count ? d.count + (d.count === 1 ? ' review' : ' reviews') : 'No reviews yet';
@@ -134,6 +183,10 @@
         rl.appendChild(c);
       });
       if (!d.count) rl.appendChild(el('div', 'empty', 'Be the first to review CardioSense.'));
+    }).catch(function () {
+      $('rev-avg').textContent = '–'; $('rev-stars').textContent = '';
+      $('rev-count').textContent = 'Reviews unavailable';
+      rl.textContent = 'Could not load reviews. Refresh to try again.';
     });
   }
   loadReviews();
@@ -148,7 +201,7 @@
       api('POST', '/api/reviews', { rating: rating, text: $('rev-text').value }).then(function (r) {
         if (!r.ok) { m.textContent = r.error || 'Could not save your review.'; return; }
         m.className = 'msg ok'; m.textContent = 'Thanks. Your review is published.'; loadReviews();
-      });
+      }).catch(function () { m.textContent = 'Could not publish the review. Try again.'; });
     });
   }
 
@@ -161,7 +214,10 @@
     fetch('/api/oauth?providers=1').then(function (r) { return r.json(); }).then(function (d) {
       (d.providers || []).forEach(function (p) {
         var a = sp.querySelector('[data-provider="' + p.id + '"]'); if (!a) return;
-        if (p.enabled) a.href = '/api/oauth/' + p.id + '?next=' + encodeURIComponent(nextUrl());
+        if (p.enabled) {
+          const refresh = () => { a.href = '/api/oauth/' + p.id + '?next=' + encodeURIComponent(nextUrl()); };
+          refresh(); $('workspace').addEventListener('change', refresh);
+        }
         else { a.classList.add('off'); a.setAttribute('aria-disabled', 'true'); a.removeAttribute('href'); a.title = 'Not set up on this site yet'; }
       });
       if (sp.querySelector('.off')) { var h = el('p', 'hint', 'Dimmed options are not enabled on this site yet.'); sp.appendChild(h); }

@@ -5,7 +5,7 @@ fluoroscopy and a nuclear scan. Can conformal uncertainty decide who can skip th
 
 **Answer (internal validation, 303 patients).** About one third of patients can skip the extra tests for a 1.5 point loss in
 accuracy; 60% for 3 points. No model family beat logistic regression (AUC 0.91, or 0.84 with first-visit inputs). More data
-should help the full model; the first-visit model needs new predictors. External validity is untested.
+should help the full model; the first-visit model needs new predictors. Only 2 of 617 external historical records met the full input rules. See [external results](docs/rehearsal-validation.json).
 
 | Read | |
 |---|---|
@@ -112,3 +112,7 @@ python serve_portal.py --port 8080
   separate 20% hold-out.
 - If `xgboost` is not installed, scikit-learn's gradient boosting is used in its place.
 - Educational project only. It is not a medical device.
+
+## Clinic rehearsal
+
+The patient and facility workspaces at `/pilot` use fictional visit summaries. See [setup, rehearsal scenarios and enrollment gates](docs/CLINIC_REHEARSAL.md).

@@ -12,12 +12,29 @@ module.exports = A.handle(async (req, res) => {
   if (req.method === 'GET') {
     const emails = await db.smembers('users');
     const users = [];
+    const referralCounts = {};
     for (const e of emails) {
       const u = await A.findUser(e);
-      if (u) users.push({ email: u.email, name: u.name, role: u.role, disabled: Boolean(u.disabled), createdAt: u.createdAt });
+      if (u) {
+        const prof = await A.getProfile(u.id);
+        const ref = (prof && prof.referralSource) || '';
+        if (ref) referralCounts[ref] = (referralCounts[ref] || 0) + 1;
+        users.push({
+          email: u.email,
+          name: (prof && prof.name) || u.name || '',
+          role: u.role,
+          disabled: Boolean(u.disabled),
+          createdAt: u.createdAt,
+          onboarded: Boolean(prof && prof.onboardedAt),
+          roleType: (prof && prof.roleType) || '',
+          referralSource: ref,
+          organization: (prof && prof.organization) || '',
+          country: (prof && prof.country) || '',
+        });
+      }
     }
     const events = (await db.range('audit:all', 50)).map((r) => { try { return JSON.parse(r); } catch { return null; } }).filter(Boolean);
-    return A.json(res, 200, { users, events });
+    return A.json(res, 200, { users, events, referralCounts });
   }
   if (req.method !== 'POST') return A.json(res, 405, { error: 'Method not allowed.' });
   if (await A.hit('admin', s.uid, 60, 60)) return A.json(res, 429, { error: 'Slow down for a moment.' });

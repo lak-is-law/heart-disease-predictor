@@ -1,0 +1,9 @@
+.visit{max-width:42rem;margin:auto;padding:1.2rem;color:#182e33;background:#fff;min-height:100vh;color-scheme:light}
+.visit header,.visit footer{display:flex;align-items:center;justify-content:space-between;padding:1rem 0}
+.visit section{padding:1.2rem 0;border-top:1px solid #c5d6d4}
+.visit label,.visit textarea,.visit input,.visit select{display:block;width:100%}
+.visit label{margin:.85rem 0;font-weight:600}
+.visit textarea,.visit input,.visit select{padding:.65rem;border:1px solid #819896;border-radius:.4rem;color:#172d32;background:white;font:inherit}
+.visit button{min-height:44px;margin:.25rem .5rem .25rem 0;padding:.55rem .85rem;background:#12615b;color:white;border:0;border-radius:.4rem;font:inherit;cursor:pointer}
+.visit button:disabled{opacity:.55}.visit p{white-space:pre-line;overflow-wrap:anywhere}.visit .notice{background:#e0f2ee;padding:.7rem}.visit h2{margin:.5rem 0}.visit a{color:#11635c}.visit details{margin:1rem 0}
+@media print{.visit>*:not(#content),#content>*:not(.preview),.preview button{display:none!important}.visit{max-width:none}.preview:before{content:"CardioSense · Fictional rehearsal summary"}}

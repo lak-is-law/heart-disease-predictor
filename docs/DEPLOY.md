@@ -17,6 +17,7 @@ Without a database the API refuses requests in production instead of falling bac
 | `DATA_ENCRYPTION_KEY_PREVIOUS` | Optional. Put the old key here when rotating; records re-encrypt on next save. |
 | `CARDIOSENSE_USERS` | Bootstrap accounts, JSON: `{"you@example.org": {"hash": "scrypt$...", "role": "admin", "name": "You"}}`. Use it to create the first admin, then create everyone else from the dashboard. |
 | `GITHUB_TOKEN`, `GITHUB_REPO` | Read access to the repository whose latest Release holds the installers (see `api/_lib/releases.js`). |
+| `RESEND_API_KEY`, `MAIL_FROM` | Optional. Enables sending real confirmation emails (via Resend) for account deletion. When omitted, deletion still requires typing `CONFIRM`, `YES`, and a one-time code shown on-screen. |
 
 ## 3. First admin
 

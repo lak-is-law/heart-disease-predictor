@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "test:api": "node --test tests/api/api.test.js",
-    "test": "node --test tests/api/api.test.js tests/site/site.test.js"
+    "test": "node --test tests/api/api.test.js tests/api/sync.test.js tests/sync/*.test.js tests/site/site.test.js",
+    "test:sync": "node --test tests/api/sync.test.js tests/sync/*.test.js"
   },
   "engines": {
     "node": ">=18"

@@ -30,5 +30,8 @@ module.exports = A.handle(async (req, res) => {
   await require('./_lib/db').del(`rl:${lockKey}:${C.hmacId(email)}`);
   const s = await A.createSession(res, user);
   await A.audit(user.id, user.email, 'login', req);
-  A.json(res, 200, { user: A.publicUser(user), csrf: s.csrf, mustChange: s.mustChange });
+  A.json(res, 200, {
+    user: { email: s.email, name: s.name, role: s.role, onboarded: Boolean(s.onboarded), onboardingSkipped: Boolean(s.onboardingSkipped), tourSeen: Boolean(s.tourSeen) },
+    csrf: s.csrf, mustChange: s.mustChange,
+  });
 });

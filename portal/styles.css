@@ -168,6 +168,7 @@ a:hover {
    1. GLOBAL CONTAINER & GRID SYSTEM
    ============================================================================== */
 .container-lock {
+  width: 100%;
   max-width: var(--grid-max-width);
   margin: 0 auto;
   padding: 0 var(--grid-gutter);
@@ -1050,9 +1051,18 @@ a:hover {
   align-items: stretch;
 }
 
+.ingestion-container > div:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 @media (max-width: 960px) {
   .ingestion-container {
     grid-template-columns: 1fr;
+  }
+  .clinical-dropzone {
+    height: auto;
   }
 }
 
@@ -1114,7 +1124,8 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 100%;
+  flex: 1;
+  height: auto;
   justify-content: space-between;
 }
 
@@ -1137,8 +1148,6 @@ a:hover {
   background-color: #0B2925;
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(4, 44, 41, 0.35);
-}
-  box-shadow: 0 2px 10px rgba(0, 229, 255, 0.1);
 }
 .case-study-card.selected {
   border-color: #00E5FF;
@@ -1245,6 +1254,20 @@ a:hover {
   grid-template-columns: minmax(360px, 5fr) minmax(460px, 7fr);
   gap: var(--grid-gap);
   align-items: start;
+}
+
+.workstation-grid > *,
+.ingestion-container > *,
+.cockpit-subgrid-container > *,
+.clinical-input-panel,
+.workstation-sticky-col,
+.cockpit-center-column,
+.cockpit-right-column,
+.cockpit-middle-zone,
+.cockpit-card,
+.app-section {
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (min-width: 1024px) {
@@ -1819,6 +1842,7 @@ a:hover {
 
 .quick-scenario-strip {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   overflow-x: auto;
@@ -2491,6 +2515,7 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .app-modal-close {
@@ -2500,6 +2525,8 @@ a:hover {
   color: #94A3B8;
   cursor: pointer;
   line-height: 1;
+  flex-shrink: 0;
+  padding: 4px 8px;
   transition: color 0.15s ease;
 }
 .app-modal-close:hover {
@@ -2517,7 +2544,38 @@ a:hover {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 10px;
+}
+
+.report-params-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  font-size: 0.8125rem;
+}
+
+.report-signoff-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  padding-top: 14px;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .report-params-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .report-params-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Toast */
@@ -2601,6 +2659,10 @@ a:hover {
 /* 3D Viewport Interactive Lesion Callout */
 .viewport-lesion-callout {
   position: absolute;
+  top: 50%;
+  left: 16px;
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   z-index: 15;
   display: flex;
@@ -3333,6 +3395,8 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   margin-bottom: 8px;
 }
 
@@ -3375,6 +3439,8 @@ a:hover {
   padding: 2px 8px;
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .cockpit-new-btn:hover {
@@ -3441,7 +3507,10 @@ a:hover {
 .cockpit-card-title-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-width: 0;
+  flex: 1;
 }
 
 .ecg-status-indicator {
@@ -3451,11 +3520,13 @@ a:hover {
   font-size: 0.75rem;
   font-weight: 600;
   color: #10B981;
+  white-space: nowrap;
 }
 
 .ecg-playback-controls {
   display: flex;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .ecg-ctrl-btn {
@@ -3502,9 +3573,19 @@ a:hover {
 }
 
 .cockpit-card-menu-btn {
+  background: transparent;
+  border: none;
+  padding: 2px 6px;
+  line-height: 1;
+  border-radius: 4px;
   color: #64748B;
   font-size: 1.1rem;
   cursor: pointer;
+  flex-shrink: 0;
+}
+.cockpit-card-menu-btn:hover {
+  color: #00E5FF;
+  background: rgba(0, 229, 255, 0.08);
 }
 
 .radial-gauge-wrapper {
@@ -4175,29 +4256,98 @@ a:hover {
 
   .header-brand-group {
     gap: 8px !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+  }
+
+  .app-brand-block {
+    gap: 7px !important;
+    min-width: 0 !important;
+  }
+
+  .app-brand-block img {
+    width: 26px !important;
+    height: 26px !important;
     flex-shrink: 0 !important;
+  }
+
+  .app-brand-block span {
+    font-size: 0.95rem !important;
+    white-space: nowrap;
   }
 
   .header-actions-group {
     gap: 6px !important;
+    flex-shrink: 0 !important;
   }
 
-  .header-mobile-btn {
-    padding: 5px 8px !important;
-    font-size: 0.75rem !important;
-    min-height: 36px !important;
+  #hx-account {
+    gap: 6px !important;
   }
 
-  .header-login-btn {
-    padding: 5px 8px !important;
-    font-size: 0.75rem !important;
-    min-height: 36px !important;
+  #hx-account .hx-who,
+  .app-home-link {
+    display: none !important;
   }
 
+  .app-theme-btn {
+    width: 34px !important;
+    height: 34px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .header-mobile-btn,
+  .header-login-btn,
   .header-save-btn {
     padding: 5px 10px !important;
     font-size: 0.75rem !important;
     min-height: 36px !important;
+    white-space: nowrap !important;
+  }
+
+  .app-section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .clinical-input-panel,
+  .ingestion-container,
+  .cockpit-card,
+  .extracted-values-box {
+    padding: 14px !important;
+  }
+
+  .cockpit-card-header {
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .cockpit-card-header > div:first-child {
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+    gap: 6px 8px !important;
+  }
+
+  .extracted-values-box > div:first-child {
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+
+  .app-toast {
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 12px !important;
+    left: 12px !important;
+    justify-content: center !important;
+  }
+
+  .case-study-card {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    text-align: left !important;
   }
 
   /* Nav Tabs Horizontal Momentum Scroll */
@@ -4232,7 +4382,13 @@ a:hover {
     max-height: 88vh !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    padding: 18px 14px !important;
+    padding: 0 !important;
+  }
+
+  .app-modal-header,
+  .app-modal-body,
+  .app-modal-footer {
+    padding: 14px 16px !important;
   }
 
   /* Word break safety for clinical hashes */
@@ -4267,8 +4423,24 @@ a:hover {
   }
 
   .bmc-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
     min-height: 82px !important;
     padding: 12px 14px !important;
+  }
+
+  .bmc-card-wide {
+    grid-column: span 1 !important;
+  }
+
+  .bmc-card .label-primary {
+    white-space: normal !important;
+  }
+
+  .bmc-card .clinical-select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
   }
 
   .bmc-card .form-label-row {
@@ -4280,7 +4452,20 @@ a:hover {
     flex-wrap: wrap !important;
     justify-content: center !important;
     text-align: center !important;
-    gap: 6px !important;
+    gap: 4px 12px !important;
+  }
+
+  .radial-gauge-footer > span:not([id]):not([title]) {
+    display: none !important;
+  }
+
+  .lesion-leader-svg {
+    width: 24px;
+  }
+
+  .lesion-badge {
+    font-size: 0.625rem;
+    padding: 2px 6px;
   }
 
   .header-mobile-btn span:last-child {
@@ -4291,6 +4476,41 @@ a:hover {
     content: "Pair";
     font-size: 0.75rem;
     font-weight: 700;
+  }
+
+  /* On narrow phones after login, keep Dashboard + Save in the top bar; Sign out lives in the slide-out drawer */
+  #btn-header-signout {
+    display: none !important;
+  }
+
+  .app-brand-block {
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .app-brand-block img {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .app-brand-block span {
+    font-size: 0.82rem !important;
+  }
+
+  .header-actions-group {
+    gap: 4px !important;
+  }
+
+  .app-theme-btn {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .header-login-btn,
+  .header-save-btn {
+    padding: 4px 7px !important;
+    font-size: 0.7rem !important;
+    min-height: 32px !important;
   }
 }
 
@@ -4546,4 +4766,6 @@ a:hover {
   letter-spacing: 0.04em;
   padding: 3px 10px;
   border-radius: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

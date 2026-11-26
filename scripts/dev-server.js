@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
-const types = { '.png': 'image/png', '.ico': 'image/x-icon', '.json': 'application/json', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
+const types = { '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.ico': 'image/x-icon', '.json': 'application/json', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
 
 if (process.env.MOCK_RELEASES) {
   const real = global.fetch;
@@ -29,6 +29,9 @@ function createServer() {
   const u = new URL(req.url, 'http://x');
   if (u.pathname === '/api/logout') {
     return require(path.join(root, 'api', 'session.js'))(req, res);
+  }
+  if (u.pathname === '/api/pilot') {
+    return require(path.join(root, 'api', 'account.js'))(req, res);
   }
   const oa = u.pathname.match(/^\/api\/oauth\/([a-z]+)(\/callback)?$/);
   if (oa) { u.searchParams.set('provider', oa[1]); u.searchParams.set('step', oa[2] ? 'callback' : 'start'); req.url = '/api/oauth?' + u.searchParams; return require(path.join(root, 'api', 'oauth.js'))(req, res); }

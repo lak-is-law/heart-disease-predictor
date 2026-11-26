@@ -54,7 +54,9 @@ global.document = {
 };
 global.navigator = { userAgent: 'node', clipboard: { writeText: async () => {} } };
 const code = fs.readFileSync('""" + str(PORTAL_JS_FILE).replace("\\", "/") + """', 'utf8');
-eval(code + '\\nglobal.MODEL_WEIGHTS = MODEL_WEIGHTS;\\nglobal.predictClinicalRisk = predictClinicalRisk;\\nglobal.calculateClinicalFFR = calculateClinicalFFR;');
+const ResearchScore = require('""" + str(WEIGHTS_FILE.parent / "research-score.js") + """');
+const artifact = require('""" + str(WEIGHTS_FILE) + """');
+eval(code + ' ; MODEL_WEIGHTS = artifact;' + '\\nglobal.MODEL_WEIGHTS = MODEL_WEIGHTS;\\nglobal.predictClinicalRisk = predictClinicalRisk;\\nglobal.calculateClinicalFFR = calculateClinicalFFR;');
 """ + script
 
     cmd = ["node", "-e", harness]
@@ -80,7 +82,7 @@ class TestM3ChallengerMathematicalParity(unittest.TestCase):
             cls.weights = json.load(f)
 
     def test_model_weights_json_ast_parity_with_portal_js(self):
-        """portal/model_weights.json must match embedded MODEL_WEIGHTS in portal.js."""
+        """portal/model_weights.json supplies the weights used by the workstation."""
         res = run_node_eval("console.log(JSON.stringify(MODEL_WEIGHTS));")
         js_weights = json.loads(res)
 
@@ -153,7 +155,10 @@ const preds = cases.map(p => predictClinicalRisk(p));
 console.log(JSON.stringify(preds));
 """
         res = run_node_eval(node_script, [json.dumps(edge_cases)])
-        js_preds = np.array(json.loads(res))
+        values = json.loads(res)
+        self.assertEqual(values[3:], [None] * 5)
+        js_preds = np.array(values[:3])
+        py_preds = py_preds[:3]
 
         drifts = np.abs(py_preds - js_preds)
         max_drift = float(np.max(drifts))

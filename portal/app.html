@@ -91,6 +91,7 @@
       backdrop-filter: blur(8px);
     }
   </style>
+<link rel="stylesheet" href="/sync.css">
 </head>
 <body>
 <div class="app-cockpit-wrapper">
@@ -207,8 +208,11 @@
       </a>
       
     </div>
-    <div style="padding:16px; border-top:1px solid rgba(255,255,255,0.08);">
-      
+    <div class="drawer-footer" id="drawer-account-footer" style="margin-top:auto; padding:16px; border-top:1px solid rgba(255,255,255,0.08);">
+      <a href="/" class="drawer-nav-item" style="margin-bottom:4px;">Home</a>
+      <a href="/about" class="drawer-nav-item">About us</a>
+      <a href="/download" class="drawer-nav-item" style="margin-bottom:4px;">Download</a>
+      <a href="/features#limits" class="drawer-nav-item">Limits</a>
     </div>
   </aside>
 
@@ -260,7 +264,8 @@
             </label>
             <label class="safety-net-switch" for="inp-safety-net-toggle">
               <input type="checkbox" id="inp-safety-net-toggle" onchange="toggleSafetyNetMode(this.checked)" aria-label="Toggle High-Sensitivity Safety Net Mode">
-              </label>
+              <span class="safety-net-slider"></span>
+            </label>
           </div>
           <div id="portal-safety-net-banner" class="safety-net-alert-banner" role="alert">
             <strong>HIGH-SENSITIVITY MODE:</strong> threshold 0.28. More patients are flagged for review. In cross-validation on the Cleveland data it caught about 88 of every 100 cases and flagged about 27 of every 100 people without disease. It still misses cases.
@@ -301,7 +306,8 @@
           <div class="biomarkers-cockpit-grid">
             <!-- 1. Resting Blood Pressure -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-trestbps">
+              <button type="button" id="confirm-import" hidden onclick="pendingImport=false;this.hidden=true;updatePortalPrediction()">I checked the imported values</button>
+<label class="form-label-row" for="inp-trestbps">
                 <span class="label-primary">Resting BP</span>
                 <span class="label-sub clinical-acronym" title="Systolic resting blood pressure upon hospital intake in mmHg">(trestbps · normal &lt; 120)</span>
               </label>
@@ -310,7 +316,7 @@
                 <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
                   <path d="M0,12 Q25,4 50,11 T100,6" fill="none" stroke="#00E5FF" stroke-width="2"/>
                 </svg>
-                <input type="range" class="clinical-slider" id="inp-trestbps" min="80" max="220" value="142"
+                <input type="number" class="clinical-input" id="inp-trestbps" min="70" max="260" value="142"
                        aria-valuemin="80" aria-valuemax="220" aria-valuenow="142" aria-label="Resting Blood Pressure in mmHg"
                        oninput="updatePortalPrediction()">
               </div>
@@ -327,7 +333,7 @@
                 <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
                   <path d="M0,10 Q30,15 60,5 T100,12" fill="none" stroke="#00E5FF" stroke-width="2"/>
                 </svg>
-                <input type="range" class="clinical-slider" id="inp-chol" min="100" max="550" value="248"
+                <input type="number" class="clinical-input" id="inp-chol" min="80" max="700" value="248"
                        aria-valuemin="100" aria-valuemax="550" aria-valuenow="248" aria-label="Serum Total Cholesterol in mg/dL"
                        oninput="updatePortalPrediction()">
               </div>
@@ -344,7 +350,7 @@
                 <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
                   <path d="M0,8 L20,8 L25,2 L32,14 L38,4 L42,10 L50,8 L70,8 L75,2 L82,14 L88,5 L100,8" fill="none" stroke="#00E5FF" stroke-width="1.8"/>
                 </svg>
-                <input type="range" class="clinical-slider" id="inp-thalach" min="60" max="210" value="155"
+                <input type="number" class="clinical-input" id="inp-thalach" min="40" max="230" value="155"
                        aria-valuemin="60" aria-valuemax="210" aria-valuenow="155" aria-label="Maximum Heart Rate in BPM"
                        oninput="updatePortalPrediction()">
               </div>
@@ -361,7 +367,7 @@
                 <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
                   <path d="M0,6 Q35,14 70,10 T100,14" fill="none" stroke="#00E5FF" stroke-width="2"/>
                 </svg>
-                <input type="range" class="clinical-slider" id="inp-oldpeak" min="0" max="6.0" step="0.1" value="1.8"
+                <input type="number" class="clinical-input" id="inp-oldpeak" min="0" max="8" step="0.1" value="1.8"
                        aria-valuemin="0" aria-valuemax="6.0" aria-valuenow="1.8" aria-label="ST Segment Depression in millimeters"
                        oninput="updatePortalPrediction()">
               </div>
@@ -375,7 +381,7 @@
               </label>
               <span class="form-value-tag" id="val-age" aria-live="polite">58 yrs</span>
               <div class="clinical-slider-wrapper">
-                <input type="range" class="clinical-slider" id="inp-age" min="20" max="90" value="58"
+                <input type="number" class="clinical-input" id="inp-age" min="18" max="110" value="58"
                        aria-valuemin="20" aria-valuemax="90" aria-valuenow="58" aria-label="Patient Age in years"
                        oninput="updatePortalPrediction()">
               </div>
@@ -684,9 +690,6 @@
       
     </nav>
 
-          </button>
-    </nav>
-
     <!-- ==============================================================================
          SECTION 1: CLINICAL LAB REPORT & DOCTOR FILE INGESTION
          ============================================================================== -->
@@ -927,9 +930,22 @@
         <!-- Rendered dynamically via portal.js -->
       </div>
 
+      <section class="cloud-sync" aria-label="Cloud sync">
+  <label for="dash-ref">Assessment reference (optional; no names or ID numbers)</label>
+  <input id="dash-ref" type="text" maxlength="40" autocomplete="off" aria-describedby="cloud-reference-help">
+  <p id="cloud-reference-help">Use a synthetic case label. Only this assessment is uploaded when you choose Save to encrypted cloud.</p>
+  <p id="cloud-sync-status" role="status" aria-live="polite" aria-atomic="true">Only assessments you choose to save are uploaded. Failed saves stay in this tab until you leave or sign out.</p>
+  <p>Encrypted cloud storage can be decrypted by the service. Use synthetic or de-identified data only.</p>
+  <div style="display:flex; flex-wrap:wrap; gap:12px">
+    <button type="button" id="cloud-refresh">Refresh cloud records</button>
+    <button type="button" id="cloud-pause" aria-pressed="false">Pause automatic sync</button>
+    <button type="button" id="cloud-retry" hidden>Retry pending save</button>
+    <button type="button" id="cloud-discard" hidden>Discard pending save</button>
+  </div>
+</section>
       <div class="app-modal-footer">
         <button type="button" class="app-btn app-btn-outline app-btn-sm" onclick="closeReportModal()">Close</button>
-        <button type="button" class="app-btn app-btn-outline app-btn-sm" onclick="CSDash.saveCurrent()">Save to dashboard</button>
+        <button type="button" class="app-btn app-btn-outline app-btn-sm" onclick="CSDash.saveCurrent()">Save to encrypted cloud</button>
         <button type="button" class="app-btn app-btn-primary app-btn-sm" onclick="window.print()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Print / Save PDF
@@ -943,9 +959,12 @@
     <span id="app-toast-text">Operation Successful</span>
   </div>
 
-    <script src="portal.js"></script>
+    <script src="research-score.js"></script><script src="portal.js"></script>
+  <script src="sync-client.js" defer></script>
   <script src="dashboard.js" defer></script>
   <script src="site.js" defer></script>
+  <script src="onboarding.js" defer></script>
+  <script src="tutorial.js" defer></script>
   <script src="app-extras.js" defer></script>
 </div></div>
 

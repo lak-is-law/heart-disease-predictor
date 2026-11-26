@@ -49,6 +49,15 @@ class Memory {
     const e = this._get(key);
     const set = (v, exp) => { this.data.set(key, { v, exp: exp === undefined ? (e && e.exp) || 0 : exp }); this._save(); };
     switch (op) {
+      case 'EVAL': {
+        if (Number(a[0]) === 4) {
+          return require('./sync-storage').memory(this, key, a.slice(1, 5), a.slice(5));
+        }
+        // The single-key compare-and-set operation used by the rehearsal workspace.
+        const [, target, expected, replacement] = a;
+        if ((this._get(target)?.v || '') !== expected) return 0;
+        this.data.set(target, { v: replacement, exp: 0 }); this._save(); return 1;
+      }
       case 'GET': return e ? e.v : null;
       case 'SET': {
         let ex = 0, nx = false;
@@ -98,9 +107,13 @@ const asObject = (flat) => {
 };
 
 module.exports = {
+  eval: (script, keys, args = []) => run('EVAL', script, keys.length, ...keys, ...args),
   DbUnavailable,
   _reset() { backend = null; },
   _Memory: Memory,
+  compareAndSet: async (key, expected, replacement) => Number(await run('EVAL',
+    "if (redis.call('GET',KEYS[1]) or '') ~= ARGV[1] then return 0 end redis.call('SET',KEYS[1],ARGV[2]) return 1",
+    1, key, expected || '', replacement)) === 1,
   get: (k) => run('GET', k),
   set: (k, v, ttlSeconds) => (ttlSeconds ? run('SET', k, v, 'EX', ttlSeconds) : run('SET', k, v)),
   setIfAbsent: async (k, v) => (await run('SET', k, v, 'NX')) === 'OK',
