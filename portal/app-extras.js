@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   window.openAuthModal = function () { location.href = '/signin?next=/app'; };
-  function openHash() { if (location.hash === '#dashboard') location.replace('/dashboard'); }
+  function openHash() { if (location.hash === '#dashboard') location.replace('/app'); }
   document.addEventListener('cs:session', function () { setTimeout(openHash, 300); });
   window.addEventListener('hashchange', openHash);
 })();

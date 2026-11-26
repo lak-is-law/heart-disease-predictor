@@ -115,4 +115,4 @@ python serve_portal.py --port 8080
 
 ## Clinic rehearsal
 
-The patient and facility workspaces at `/pilot` use fictional visit summaries. See [setup, rehearsal scenarios and enrollment gates](docs/CLINIC_REHEARSAL.md).
+Everyone starts in the shared workstation at `/app`. Patient visit preparation is at `/pilot`, and the doctor’s multi-patient directory is at `/doctor`. The clinic rehearsal uses fictional records. See [setup, rehearsal scenarios and enrollment gates](docs/CLINIC_REHEARSAL.md).

@@ -1,7 +1,7 @@
 'use strict';
 const db = require('./db');
 const C = require('./crypto');
-const A = require('./auth');
+
 
 // One invited clinic per pilot installation. All membership and visit transitions
 // share a compare-and-set boundary so removal or withdrawal wins over stale updates.
@@ -31,9 +31,26 @@ async function load() {
 }
 const code = uid => C.hmacId('rehearsal:' + uid);
 const draftKey = uid => 'rehearsal:draft:' + uid;
+// The account type is assigned once. Membership remains independently revocable.
+const typeKey = accountCode => 'account-type:' + accountCode;
+async function accountType(uid, role, assigned) {
+  const id = code(uid);
+  const key = typeKey(id);
+  const existing = await db.get(key);
+  if (existing) return existing;
+  let type = assigned;
+  if (!type) {
+    const prior = await db.get('workspace:' + uid);
+    const clinic = await load();
+    type = role === 'admin' || clinic.members[id] || prior === 'facility' ? 'facility' : 'patient';
+  }
+  if (await db.setIfAbsent(key, type)) return type;
+  return db.get(key);
+}
 async function erase(uid) {
   const id = code(uid);
   await db.del('rehearsal:account:' + id);
+  await db.del(typeKey(id));
   await db.del(draftKey(uid));
   await db.del('workspace:' + uid);
   if (await db.get(key)) await change(s => {
@@ -41,4 +58,4 @@ async function erase(uid) {
     for (const [k,v] of Object.entries(s.visits)) if (v.patient === id) delete s.visits[k];
   });
 }
-module.exports = { load, change, erase, summary, field, fail, code, draftKey };
+module.exports = { accountType, typeKey, load, change, erase, summary, field, fail, code, draftKey };

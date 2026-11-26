@@ -416,12 +416,12 @@ test('clinic rehearsal binds visits, acknowledgements and membership to authenti
   db._reset();
   const admin = new Client();
   await admin.login('admin@example.org','admin password 123');
-  async function user(email) {
+  async function user(email,accountType='patient') {
     const client = new Client();
-    const reply = await client.call('POST','/api/signup',{email,password:'fictional sample passphrase'});
+    const reply = await client.call('POST','/api/signup',{email,accountType,password:'fictional sample passphrase'});
     assert.equal(reply.status,201); client.csrf = reply.json.csrf; return client;
   }
-  const manager = await user('manager@sample.test'), patient = await user('visitor@sample.test'), staff = await user('reader@sample.test');
+  const manager = await user('manager@sample.test','facility'), patient = await user('visitor@sample.test'), staff = await user('reader@sample.test','facility');
   const get = async client => (await client.call('GET','/api/pilot')).json;
   const post = async (client,action,body={}) => (await client.call('POST','/api/pilot',{action,...body})).status;
   const managerId = (await get(manager)).id, patientId = (await get(patient)).id, staffId = (await get(staff)).id;
@@ -431,6 +431,11 @@ test('clinic rehearsal binds visits, acknowledgements and membership to authenti
   await post(manager,'workspace',{workspace:'facility'});
   await post(patient,'workspace',{workspace:'patient'});
   await post(staff,'workspace',{workspace:'facility'});
+  assert.equal(await post(patient,'workspace',{workspace:'facility'}),403);
+  assert.equal(await post(staff,'workspace',{workspace:'patient'}),403);
+  assert.equal((await patient.call('GET','/api/pilot?view=doctor')).status,403);
+  assert.equal((await staff.call('GET','/api/pilot?view=patient')).status,403);
+  assert.equal(await post(staff,'draft',{question:'Example'}),403);
   const setup = {name:'Fictional clinic',instructions:'Read on weekdays. Call the clinic for time-sensitive questions.',target:managerId};
   assert.equal(await post(patient,'setup',setup),403);
   assert.equal(await post(admin,'setup',setup),200);
@@ -439,6 +444,17 @@ test('clinic rehearsal binds visits, acknowledgements and membership to authenti
   const visit = crypto.randomUUID();
   assert.equal(await post(staff,'inviteVisit',{visit,target:patientId}),200);
   assert.equal((await get(staff)).visits.length,0);
+  const doctor = async client => (await client.call('GET','/api/pilot?view=doctor')).json;
+  const second = await user('second@sample.test');
+  await post(second,'workspace',{workspace:'patient'});
+  const secondId=(await get(second)).id;
+  await post(staff,'inviteVisit',{visit:crypto.randomUUID(),target:secondId,reference:'Case two'});
+  await post(staff,'inviteVisit',{visit:crypto.randomUUID(),target:patientId});
+  const rows=(await doctor(staff)).roster;
+  assert.equal(new Set(rows.map(r=>r.patient)).size,2);
+  assert.equal(rows.filter(r=>r.patient===patientId).length,2);
+  assert.ok(rows.some(r=>r.reference==='Case two'));
+  assert.equal((await doctor(patient)).roster,undefined);
   const content={visit,version:0,question:'Sample question'};
   assert.equal(await post(manager,'share',content),403);
   assert.equal(await post(patient,'draft',content),200);
@@ -453,6 +469,7 @@ test('clinic rehearsal binds visits, acknowledgements and membership to authenti
   assert.equal(await post(manager,'removeStaff',{target:staffId}),200);
   assert.equal((await get(staff)).visits.length,0);
   assert.equal(await post(staff,'review',{visit,version:2}),403);
+  assert.equal((await doctor(staff)).roster,undefined);
   assert.equal(await post(patient,'withdraw',{visit,version:2}),200);
   await post(manager,'workspace',{workspace:'facility'});
   assert.equal((await get(manager)).visits.length,0);
@@ -464,4 +481,19 @@ test('assessment calculates from versioned weights and requires measured inputs'
   assert.ok(a.risk > 0 && a.risk < 1);
   assert.match(a.model,/^cleveland-lr-[0-9a-f]{12}$/);
   for (const value of [null, '', false, undefined, 1.5]) assert.throws(()=>validate({inputs:{...GOOD,sex:value}}));
+});
+
+test('concurrent patient and facility registrations reserve a single account type', async () => {
+  db._reset();
+  const clients = [new Client(), new Client()];
+  const email = 'one-identity@example.test', password = 'fictional sample passphrase';
+  const types = ['patient','facility'];
+  const replies = await Promise.all(clients.map((client,i) =>
+    client.call('POST','/api/signup',{email,password,accountType:types[i]})));
+  assert.deepEqual(replies.map(x=>x.status).sort(),[201,409]);
+  const assigned = types[replies.findIndex(x=>x.status===201)];
+  const returning = new Client();
+  await returning.login(email,password);
+  assert.equal((await returning.call('GET','/api/session')).json.user.accountType,assigned);
+  assert.equal((await returning.call('POST','/api/pilot',{action:'workspace',workspace:types.find(t=>t!==assigned)})).status,403);
 });

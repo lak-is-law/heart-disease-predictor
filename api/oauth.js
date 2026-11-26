@@ -52,7 +52,7 @@ const safeNext = (n) => (typeof n === 'string' && /^\/[a-z0-9\-_/]*(#[a-z0-9\-_]
 async function start(req, res, name, p, url) {
   const state = C.randomId(24), verifier = C.randomId(32);
   const challenge = require('crypto').createHash('sha256').update(verifier).digest('base64url');
-  await db.set('oa:' + C.sha256(state), JSON.stringify({ provider: name, verifier, next: safeNext(url.searchParams.get('next')) }), 600);
+  await db.set('oa:' + C.sha256(state), JSON.stringify({ provider: name, verifier, accountType: url.searchParams.get('accountType') === 'facility' ? 'facility' : 'patient', next: safeNext(url.searchParams.get('next')) }), 600);
   const q = new URLSearchParams({
     response_type: 'code', client_id: p.id(), redirect_uri: `${origin(req)}/api/oauth/${name}/callback`,
     scope: p.scope, state, code_challenge: challenge, code_challenge_method: 'S256',
@@ -62,7 +62,7 @@ async function start(req, res, name, p, url) {
   });
 }
 
-async function resolveUser(name, info) {
+async function resolveUser(name, info, accountType) {
   const idKey = `oi:${name}:${C.sha256(String(info.sub))}`;
   const known = await db.get(idKey);
   if (known) return A.findUser(known);
@@ -75,8 +75,8 @@ async function resolveUser(name, info) {
     await db.sadd('uoi:' + existing.id, idKey);
     return existing;
   }
-  const u = { id: C.randomId(12), email, name: String(info.name || '').trim().slice(0, 80), role: 'user', pw: '', createdAt: Date.now(), disabled: false, mustChange: false, via: name };
-  await A.saveUser(u);
+  const u = { id: C.randomId(12), email, name: String(info.name || '').trim().slice(0, 80), role: 'user', accountType, pw: '', createdAt: Date.now(), disabled: false, mustChange: false, via: name };
+  if (!(await A.insertUser(u))) return resolveUser(name, info, accountType);
   await db.set(idKey, email);
   await db.sadd('uoi:' + u.id, idKey);
   return u;
@@ -101,7 +101,7 @@ async function callback(req, res, name, p, url) {
     info = p.read(u);
   } catch { return fail(res, 'provider'); }
   if (!info || !info.sub) return fail(res, 'provider');
-  const user = await resolveUser(name, info);
+  const user = await resolveUser(name, info, rec.accountType);
   if (user === 'email_exists') return fail(res, 'email_exists');
   if (!user || user.disabled) return fail(res, 'disabled');
   await A.createSession(res, user);

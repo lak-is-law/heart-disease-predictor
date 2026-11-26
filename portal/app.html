@@ -25,7 +25,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#06625F">
-  <script src="/theme-init.js"></script>
+  <script src="/account-tab.js"></script><script src="/theme-init.js"></script>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="theme.css">
   <link rel="stylesheet" href="app-light.css">
@@ -118,7 +118,7 @@
     
     <div style="margin-top:auto; display:flex; flex-direction:column; align-items:center; gap:12px;">
       
-      <button type="button" class="hx-avatar" id="dock-avatar" onclick="CSDash.open()" title="Dashboard" aria-label="Open dashboard">In</button>
+      <button type="button" class="hx-avatar" id="dock-avatar" onclick="CSDash.open()" title="Saved records" aria-label="Open saved records">In</button>
     </div>
   </aside>
   <div class="cockpit-content">
@@ -129,7 +129,7 @@
   <header class="app-header">
     <div class="app-header-container container-lock" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
       <div class="header-brand-group" style="display:flex; align-items:center;">
-        <a href="/" class="app-brand-block" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+        <a href="/app" class="app-brand-block" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
           <img src="/logo-icon-transparent.png" alt="CardioSense Logo" width="32" height="32" style="object-fit:contain; display:block;">
           <span style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.3px;">CardioSense</span>
         </a>
@@ -144,7 +144,7 @@
           <span class="patient-chip-status-badge stable" id="header-patient-status" style="margin-left:8px;">Model output only</span>
         </div>
         
-        <a class="app-home-link" href="/">Home</a>
+        <a class="app-home-link" href="/app">Dashboard</a>
         <button type="button" class="app-theme-btn" data-theme-toggle aria-label="Switch between light and dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
         <div class="hx-account" id="hx-account"><button type="button" class="header-login-btn" id="btn-header-signin" onclick="openAuthModal()">Sign in</button></div>
         <button type="button" class="header-save-btn" onclick="exportDiagnosticSummaryReport()" style="background:#00E5FF; color:#06101E; font-weight:700; font-size:0.8125rem; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
@@ -597,7 +597,7 @@
             <div class="hx-strip" role="note">Research prototype. Not for clinical use.</div>
             <div class="cockpit-card radial-gauge-card">
               <div class="cockpit-card-header">
-                <h3 class="cockpit-card-title">Risk Assessment</h3>
+                <h3 class="cockpit-card-title">Risk Assessment · Sample case</h3>
                 <div class="cockpit-card-actions">
                   <span class="cockpit-card-menu-btn" title="Options">⋮</span>
                 </div>
