@@ -42,6 +42,7 @@
   </div>
 </header>
 <main class="wrap about">
+  <div class="about-scene">
   <section class="about-intro" aria-labelledby="about-title">
     <div class="about-copy">
       <p class="kicker">About Lakshya UK</p>
@@ -53,12 +54,12 @@
       <div class="about-frames">
         <div class="about-motion">
           <img src="/img/clinical-portrait.webp" width="1145" height="687" alt="Illustrative portrait of three smiling physicians standing with folded arms.">
-          <img class="about-smile" src="/img/clinical-portrait-smile.webp" width="1145" height="687" alt="">
+          <canvas class="about-expression" width="1145" height="687" aria-hidden="true"></canvas>
         </div>
       </div>
-      <figcaption>AI-generated editorial portrait of fictional physicians.</figcaption>
     </figure>
   </section>
+  </div>
   <section class="row"><h2>Inside a case review</h2><div class="body">
     <p>A single probability leaves an important question open. Which findings contributed most? In the workstation, you can enter a sample case, inspect the contribution of each input, then change a value and compare the estimates.</p>
     <a href="/app">Open the workstation</a>
