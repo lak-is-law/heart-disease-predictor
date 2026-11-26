@@ -7,8 +7,8 @@
   const ctx = canvas.getContext('2d');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const sheet = new Image();
-  const regions = [[185, 83], [475, 118], [764, 82]];
-  const width = 178, height = 152, lastFrame = 15;
+  const regions = [[196, 262], [435, 311], [692, 219]];
+  const width = 96, height = 60, lastFrame = 15;
   let value = 0, target = 0, frame = 0, previous = 0;
 
   function ease(t) { return t * t * (3 - 2 * t); }
@@ -32,8 +32,6 @@
       }
     });
     ctx.globalAlpha = 1;
-    portrait.style.setProperty('--lift', (-10 * value) + 'px');
-    portrait.style.setProperty('--lean', (.45 * value) + 'deg');
     if (target !== value) frame = requestAnimationFrame(draw);
     else previous = 0;
   }
@@ -50,7 +48,7 @@
     scene.classList.toggle('is-animated', active);
     cancelAnimationFrame(frame);
     frame = previous = 0;
-    if (!active) { value = target = 0; ctx?.clearRect(0, 0, canvas.width, canvas.height); portrait.removeAttribute('style'); return; }
+    if (!active) { value = target = 0; ctx?.clearRect(0, 0, canvas.width, canvas.height); return; }
     const header = document.querySelector('.site-head').offsetHeight;
     scene.style.setProperty('--portrait-top', Math.min(header, innerHeight - intro.offsetHeight) + 'px');
     update();
