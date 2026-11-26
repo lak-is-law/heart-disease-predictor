@@ -41,10 +41,8 @@
   S.api = api;
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function nextUrl() {
-    var choice = $('workspace');
-    if (choice && choice.value) return '/pilot#' + choice.value;
     var n = new URLSearchParams(location.search).get('next') || '';
-    return /^\/[a-z0-9\-_/]*(#[a-z0-9\-_]*)?$/i.test(n) && n.slice(0, 2) !== '//' ? n : '/pilot';
+    return /^\/[a-z0-9\-_/]*(#[a-z0-9\-_]*)?$/i.test(n) && n.slice(0, 2) !== '//' ? n : '/app';
   }
 
   // ---------------------------------------------------------------- header account
@@ -54,16 +52,23 @@
     return (parts[0] || '?').charAt(0).toUpperCase();
   }
   function doSignOut() { api('POST', '/api/logout').then(function () { location.href = '/'; }); }
+  const publicNav = document.querySelector('.site-head .nav')?.cloneNode(true);
   function renderMobileNavAccount() {
     var nav = document.querySelector('.site-head .nav'); if (!nav) return;
+    nav.replaceChildren(...Array.from(publicNav.children, n=>n.cloneNode(true)));
     nav.querySelectorAll('.m-only').forEach(function (n) { n.remove(); });
     if (S.user) {
+      nav.replaceChildren();
+      const facility = S.user.accountType === 'facility';
+      for (const [href, label] of [['/app','Dashboard'],[facility ? '/doctor':'/pilot',facility ? 'Doctor portal':'My visits'],['/dashboard','Saved records']]) {
+        const link = el('a','',label); link.href = href;
+        if (location.pathname.replace(/\.html$/, '') === href) link.setAttribute('aria-current','page');
+        nav.append(link);
+      }
       var who = el('span', 'm-only m-user', S.user.name ? S.user.name + ' (' + S.user.email + ')' : S.user.email);
-      var d = el('a', 'm-only', 'Dashboard'); d.href = '/dashboard';
-      if (location.pathname === '/dashboard' || location.pathname === '/dashboard.html') d.setAttribute('aria-current', 'page');
       var o = el('button', 'm-only m-signout', 'Sign out'); o.type = 'button';
       o.addEventListener('click', function () { closeMenu(); doSignOut(); });
-      nav.append(who, d, o);
+      nav.append(who, o);
     } else {
       var si = el('a', 'm-only', 'Sign in'); si.href = '/signin';
       var su = el('a', 'm-only', 'Create account'); su.href = '/signup';
@@ -71,16 +76,16 @@
     }
   }
   function renderAccount() {
+    document.querySelectorAll('a.brand').forEach(a => { a.href = S.user ? '/app' : '/'; });
     var box = $('acct');
     if (box) {
       box.textContent = '';
       if (S.user) {
-        var d = el('a', 'link', 'Dashboard'); d.href = '/dashboard';
         var o = el('button', 'btn sm line', 'Sign out'); o.type = 'button';
         o.addEventListener('click', doSignOut);
         var av = el('a', 'm-acct-av', initials(S.user)); av.href = '/dashboard';
-        av.setAttribute('aria-label', 'Dashboard'); av.title = 'Dashboard';
-        box.append(d, o, av);
+        av.setAttribute('aria-label', 'Saved records and account'); av.title = 'Saved records and account';
+        box.append(o, av);
       } else {
         var si = el('a', 'link', 'Sign in'); si.href = '/signin';
         var su = el('a', 'btn sm', 'Get started'); su.href = '/signup';
@@ -89,11 +94,12 @@
     }
     renderMobileNavAccount();
   }
-  S.setUser = function (u) { S.user = u || null; renderAccount(); };
+  S.setUser = function (u) { S.user = u ? Object.assign({}, S.user, u) : null; renderAccount(); };
   var hd = document.querySelector('.site-head');
   if (hd) { var sc = function () { hd.classList.toggle('scrolled', window.scrollY > 8); }; window.addEventListener('scroll', sc, { passive: true }); sc(); }
   S.ready = api('GET', '/api/session').then(function (s) {
     S.user = s.user || null; S.csrf = s.csrf || '';
+    window.watchAccountTab?.(S.csrf);
     renderAccount();
     document.dispatchEvent(new CustomEvent('cs:session'));
   }).catch(function () { renderAccount(); });
@@ -215,8 +221,8 @@
       (d.providers || []).forEach(function (p) {
         var a = sp.querySelector('[data-provider="' + p.id + '"]'); if (!a) return;
         if (p.enabled) {
-          const refresh = () => { a.href = '/api/oauth/' + p.id + '?next=' + encodeURIComponent(nextUrl()); };
-          refresh(); $('workspace').addEventListener('change', refresh);
+          const refresh = () => { a.href = '/api/oauth/' + p.id + '?next=' + encodeURIComponent(nextUrl()) + ($('workspace') ? '&accountType=' + $('workspace').value : ''); };
+          refresh(); $('workspace')?.addEventListener('change', refresh);
         }
         else { a.classList.add('off'); a.setAttribute('aria-disabled', 'true'); a.removeAttribute('href'); a.title = 'Not set up on this site yet'; }
       });
@@ -239,7 +245,7 @@
   }
   authForm('signin-form', '/api/login', function (f) { return { email: f.email.value, password: f.password.value, website: f.website.value }; });
   authForm('signup-form', '/api/signup', function (f) {
-    return { name: f.name.value, email: f.email.value, password: f.password.value, website: f.website.value };
+    return { accountType: $('workspace').value, name: f.name.value, email: f.email.value, password: f.password.value, website: f.website.value };
   });
 })();
 

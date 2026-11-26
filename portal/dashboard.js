@@ -101,7 +101,7 @@
       if (ref) ref.value = '';
       render();
       say('Saved. Risk ' + pct(j.item.risk) + ', ' + label(j.item.risk).toLowerCase() + ' estimate.');
-      if (window.showToast) showToast('Saved to your dashboard');
+      if (window.showToast) showToast('Assessment saved to your records');
     } catch (e) {
       say(e.message, true);
       if (window.showToast) showToast(e.message);
@@ -255,7 +255,7 @@
     var parts = (u.name || nm).trim().split(/\s+/);
     $('dash-avatar').textContent = ((parts[0] || '?').charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : '')).toUpperCase();
     var intro = $('dash-intro'), n = items.length;
-    if (!n) intro.textContent = 'Welcome to CardioSense. Nothing is saved yet. Open the workstation, set up a synthetic or de-identified case and choose Save to dashboard. Your report will build up below.';
+    if (!n) intro.textContent = 'Welcome to CardioSense. Nothing is saved yet. Open the workstation, set up a synthetic or de-identified case and choose Save to encrypted cloud. Your report will build up below.';
     else {
       var avg = items.reduce(function (s, a) { return s + a.risk; }, 0) / n;
       intro.textContent = 'You have ' + n + ' saved ' + (n === 1 ? 'assessment' : 'assessments') + ', the latest on ' + when(items[0].createdAt) + '. The average estimated risk across them is ' + pct(avg) + '. Scroll to see your report.';

@@ -18,7 +18,7 @@ module.exports = A.handle(async (req, res) => {
   if (!s) return A.json(res, 200, { user: null });
   A.json(res, 200, {
     user: {
-      email: s.email, name: s.name || '', role: s.role,
+      accountType: s.accountType || await require('./_lib/pilot').accountType(s.uid,s.role), email: s.email, name: s.name || '', role: s.role,
       onboarded: Boolean(s.onboarded), onboardingSkipped: Boolean(s.onboardingSkipped), tourSeen: Boolean(s.tourSeen),
     },
     csrf: s.csrf, mustChange: s.mustChange,

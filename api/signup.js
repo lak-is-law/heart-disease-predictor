@@ -9,7 +9,8 @@ module.exports = A.handle(async (req, res) => {
 
   const body = await A.readJson(req);
   if (body.website) return A.json(res, 400, { error: 'Request blocked.' }); // honeypot
-  const user = await A.createUser({ email: body.email, name: body.name, role: 'user', password: body.password, mustChange: false });
+  if (body.accountType !== undefined && !['patient','facility'].includes(body.accountType)) return A.json(res, 400, {error: 'Choose a valid account type.'});
+  const user = await A.createUser({ email: body.email, name: body.name, role: 'user', accountType: body.accountType || 'patient', password: body.password, mustChange: false });
   const s = await A.createSession(res, user);
   await A.audit(user.id, user.email, 'signup', req);
   A.json(res, 201, {

@@ -199,6 +199,7 @@ const BUILD_INFO = {
   'win-arm64': { group: 'Windows', name: 'ARM64 (Snapdragon)', note: 'Windows 11' }
 };
 const BUILD_ORDER = ['mac-arm64', 'mac-x64', 'win-x64', 'win-arm64'];
+let doctorPortalVisible = false;
 let currentUser = null;
 let csrfToken = '';
 let releaseData = null;
@@ -227,8 +228,10 @@ function renderDrawerAccount() {
     who.style.cssText = 'font-size:0.75rem;color:#94A3B8;padding:0 12px 8px;overflow-wrap:anywhere;';
     who.textContent = currentUser.name ? `${currentUser.name} (${currentUser.email})` : currentUser.email;
     foot.appendChild(who);
-    foot.appendChild(mkLink('/dashboard', 'Dashboard'));
-    foot.appendChild(mkLink('/', 'Home'));
+    if (!doctorPortalVisible) foot.appendChild(mkLink('/pilot', 'My visits'));
+    if (doctorPortalVisible) foot.appendChild(mkLink('/doctor', 'Doctor portal'));
+    foot.appendChild(mkLink('/dashboard', 'Saved records'));
+    foot.appendChild(mkLink('/app', 'Dashboard'));
     foot.appendChild(mkLink('/download', 'Download'));
     foot.appendChild(mkLink('/privacy', 'Privacy'));
     const tourBtn = document.createElement('button');
@@ -275,9 +278,19 @@ function renderAccount() {
       out.addEventListener('click', signOut);
       const dash = document.createElement('button');
       dash.type = 'button'; dash.className = 'header-login-btn'; dash.id = 'btn-header-dashboard';
-      dash.textContent = 'Dashboard';
+      dash.textContent = 'Saved records';
       dash.addEventListener('click', () => window.CSDash && CSDash.open());
-      box.appendChild(who); box.appendChild(dash); box.appendChild(out);
+      const visits = document.createElement('a');
+      visits.href = '/pilot'; visits.className = 'header-login-btn';
+      visits.textContent = 'My visits';
+      box.appendChild(who);
+      if (!doctorPortalVisible) box.appendChild(visits);
+      if (doctorPortalVisible) {
+        const doctor = document.createElement('a');
+        doctor.href = '/doctor'; doctor.className = 'header-login-btn'; doctor.textContent = 'Doctor portal';
+        box.appendChild(doctor);
+      }
+      box.append(dash, out);
     }
   }
   renderDrawerAccount();
@@ -304,7 +317,11 @@ async function initSession() {
   } catch (e) {
     currentUser = null; csrfToken = '';
   }
-  if (currentUser) await loadReleases();
+  doctorPortalVisible = false;
+  if (currentUser) {
+    doctorPortalVisible = currentUser.accountType === 'facility';
+    await loadReleases();
+  }
   renderAccount();
   renderMatrixTables();
   updateSmartRecommendationCard(detectedPlatform);
@@ -320,7 +337,10 @@ document.addEventListener('cs:user-updated', (ev) => {
 });
 
 async function signOut() {
-  try { await fetch('/api/logout', { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-Token': csrfToken } }); } catch (e) { /* offline */ }
+  try {
+    const response = await fetch('/api/logout', { method:'POST', credentials:'same-origin', headers:{'X-CSRF-Token':csrfToken} });
+    if (!response.ok) throw new Error();
+  } catch { showToast('Sign-out failed. Check your connection and retry.'); return; }
   currentUser = null; csrfToken = ''; releaseData = null;
   renderAccount(); renderMatrixTables(); updateSmartRecommendationCard(detectedPlatform);
   if (window.CSDash) CSDash.refresh();

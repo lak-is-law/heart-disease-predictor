@@ -438,6 +438,7 @@
 
   function maybeAutoOpen() {
     var p = location.pathname;
+    if (p === '/app' || p === '/app.html') return;
     if (p === '/signin' || p === '/signup' || p === '/signin.html' || p === '/signup.html') return;
     var a = getAuth();
     if (a.user && !a.user.onboarded && !a.user.onboardingSkipped) {

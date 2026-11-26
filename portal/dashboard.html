@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard | CardioSense</title>
+<title>Saved records | CardioSense</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Your saved assessments and report.">
 <meta name="theme-color" content="#FFFFFF">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<script src="/theme-init.js"></script>
+<script src="/account-tab.js"></script><script src="/theme-init.js"></script>
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="/chat.css">
 
@@ -19,7 +19,7 @@
 <body>
 <header class="site-head">
   <div class="wrap">
-    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
+    <a class="brand" href="/app"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
     <nav class="nav" aria-label="Main">
       <a href="/about">About us</a>
       <a href="/features">Features</a>
@@ -41,7 +41,6 @@
     </div>
   </div>
 </header>
-<a class="btn" href="/pilot">Visit workspace</a>
 <main id="dashboard" class="dash" hidden>
 <section class="dash-hero" id="dash-hero">
   <div class="wrap dash-hero-in">
@@ -86,7 +85,7 @@
   <div class="hx-panel">
     <div class="hx-panel-head"><h3>Saved assessments</h3><button type="button" class="btn sm line" id="dash-export">Export CSV</button></div>
     <div class="hx-table-wrap"><table class="hx-table" id="dash-table"><thead><tr><th>Reference</th><th>Saved</th><th>Age, sex</th><th>Risk</th><th>Band</th><th><span class="hx-sr">Actions</span></th></tr></thead><tbody id="dash-rows"></tbody></table></div>
-    <p class="hx-empty" id="dash-empty">Nothing saved yet. Set up a case in the workstation, then choose Save to dashboard.</p>
+    <p class="hx-empty" id="dash-empty">Nothing saved yet. Set up a case in the workstation, then choose Save to encrypted cloud.</p>
     <button type="button" class="btn sm line" id="dash-more" hidden>Show more</button>
   </div>
 </section>
@@ -212,7 +211,7 @@
 </section>
 </div>
 </main>
-<noscript><a class="btn" href="/pilot">Visit workspace</a>
+<noscript>
 <main class="wrap"><p>The dashboard needs JavaScript.</p></main></noscript>
 <footer class="site-foot">
   <div class="wrap">
@@ -227,7 +226,7 @@
       </form>
     </div>
     <div class="foot-grid">
-      <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
+      <div><a class="brand" href="/app"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
       <div><h4>Product</h4><a href="/features">Features</a><a href="/research">Research</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
       <div><h4>Project</h4><a href="/about">About us</a><a href="/report">Report a bug</a><a href="/features#limits">Limits</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>

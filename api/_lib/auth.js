@@ -114,7 +114,13 @@ async function saveUser(u) {
   await db.sadd('users', u.email);
 }
 
-async function createUser({ email, name, role, password, mustChange = true }) {
+async function insertUser(user) {
+  if (!(await db.setIfAbsent(emailKey(user.email), JSON.stringify(user)))) return false;
+  await db.sadd('users', user.email);
+  return true;
+}
+
+async function createUser({ email, name, role, password, accountType, mustChange = true }) {
   email = normEmail(email);
   if (!validEmail(email)) throw Object.assign(new Error('Enter a valid email address.'), { status: 400 });
   const problem = C.passwordProblem(password, email);
@@ -122,9 +128,9 @@ async function createUser({ email, name, role, password, mustChange = true }) {
   if (await findUser(email)) throw Object.assign(new Error('An account with that email already exists.'), { status: 409 });
   const u = {
     id: C.randomId(12), email, name: String(name || '').trim().slice(0, 80), role: ROLES.includes(role) ? role : 'clinician',
-    pw: C.hashPassword(password), createdAt: Date.now(), disabled: false, mustChange,
+    accountType, pw: C.hashPassword(password), createdAt: Date.now(), disabled: false, mustChange,
   };
-  await saveUser(u);
+  if (!(await insertUser(u))) throw Object.assign(new Error('An account with that email already exists.'), { status: 409 });
   return u;
 }
 
@@ -187,7 +193,7 @@ async function createSession(res, user, profOverride) {
   const prof = profOverride !== undefined ? profOverride : await getProfile(user.id);
   const name = prof && prof.name !== undefined ? prof.name : (user.name || '');
   const s = {
-    uid: user.id, email: user.email, name, role: user.role, csrf: C.randomId(18),
+    uid: user.id, email: user.email, name, role: user.role, accountType: await require('./pilot').accountType(user.id,user.role,user.accountType), csrf: C.randomId(18),
     created: now, seen: now, mustChange: Boolean(user.mustChange),
     onboarded: Boolean(prof && prof.onboardedAt),
     onboardingSkipped: Boolean(prof && prof.onboardingSkippedAt),
@@ -309,7 +315,7 @@ function handle(fn) {
 
 module.exports = {
   json, readJson, clientIp, sameOrigin, handle,
-  normEmail, validEmail, findUser, saveUser, createUser, publicUser, emailKey,
+  normEmail, validEmail, findUser, saveUser, insertUser, createUser, publicUser, emailKey,
   getProfile, saveProfile, sanitizeProfile, cleanStr, deleteUserAccount,
   PROFILE_ROLES, EXPERIENCE_LEVELS, REFERRAL_SOURCES, USE_CASES,
   cookies, PROD, createSession, syncSessions, getSession, endSession, endAllSessions, requireSession,
