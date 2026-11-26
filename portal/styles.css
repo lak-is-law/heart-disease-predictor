@@ -4769,3 +4769,40 @@ a:hover {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* Assessment controls and contextual help */
+.compact-nav { display: none; }
+.case-picker { margin: .65rem 0; }
+.field-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.field-heading label { font-size: .92rem; font-weight: 600; line-height: 1.35; }
+.field-help { display: inline-grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; color: inherit; background: transparent; border: 0; cursor: pointer; }
+.field-help span { display: grid; place-items: center; border: 1px solid currentColor; border-radius: 50%; width: 19px; height: 19px; font: 600 13px/1 system-ui; }
+.case-picker select, .bmc-card .clinical-select, .number-entry { width: 100%; min-width: 0; min-height: 44px; font-size: 1rem; }
+.case-picker select, .bmc-card .clinical-select { color: #f0fdfa; background: #101e2b; border: 1px solid #456172; border-radius: 6px; padding: .55rem; }
+.number-entry { display: flex; align-items: center; gap: 6px; border: 1px solid #456172; border-radius: 6px; padding-right: .7rem; background: #101e2b; }
+.number-entry input { width: 100%; min-width: 0; min-height: 44px; color: #f0fdfa; background: transparent; border: 0; padding: .55rem; font: inherit; }
+.number-entry span { font-size: .86rem; white-space: nowrap; }
+.model-settings summary { cursor: pointer; }
+.model-settings .safety-net-toggle-wrapper { margin-top: .7rem; }
+#measurement-help { box-sizing: border-box; width: min(25rem,calc(100% - 2rem)); max-height: 85dvh; margin: auto; padding: 1.25rem; border: 1px solid #668392; border-radius: 12px; color: #172d37; background: #fff; }
+#measurement-help h2 { font-size: 1.15rem; margin: 0 0 .6rem; }
+#measurement-help p { font-size: 1rem; line-height: 1.5; margin: 0 0 1rem; }
+#measurement-help button, .compact-nav { padding: .45rem .8rem; min-height: 44px; font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid #607886; }
+#measurement-help button { color: white; background: #125461; }
+#measurement-help::backdrop { background: rgb(0 10 20 / .65); }
+.app-nav-drawer { height: 100dvh; overflow-y: auto; overscroll-behavior: contain; padding-bottom: env(safe-area-inset-bottom); }
+@media (max-width: 1199px) {
+  .app-header #hx-account, .app-header .app-home-link, .app-header .header-patient-chip, .app-header .header-patient-context-text { display: none !important; }
+  .app-header .compact-nav { display: inline-grid; place-items:center; font-size:.85rem; font-weight:600; background:transparent; color:inherit; }
+  .app-header .header-brand-group { flex:0 0 auto !important; }
+  .app-header .header-actions-group { margin-left:auto; }
+  .app-header .header-save-btn, .app-header .app-theme-btn { min-height:44px !important; }
+  .app-header .app-theme-btn { min-width:44px !important; }
+}
+@media (max-width: 768px) {
+  .cockpit-dock { display:none !important; }
+  .cockpit-content { padding-bottom:env(safe-area-inset-bottom,0px) !important; }
+  .app-header { padding-inline: max(8px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-right)) !important; }
+  .app-header .header-actions-group { gap:4px !important; }
+  .app-header .app-header-container { column-gap:4px; }
+}

@@ -72,7 +72,11 @@ test('mobile post-login navigation, dashboard tables, and portal markup stay con
   const dashJs = fs.readFileSync(path.join(P, 'dashboard.js'), 'utf8');
   assert.match(dashJs, /data-label/);
   const appHtml = fs.readFileSync(path.join(P, 'app.html'), 'utf8');
-  assert.match(appHtml, /safety-net-slider/);
+  assert.match(appHtml, /type="checkbox" id="inp-safety-net-toggle"/);
+  assert.match(appHtml, /<select[^>]+id="sample-case"/);
+  assert.match(appHtml, /class="compact-nav"[^>]+aria-controls="app-nav-drawer"/);
+  assert.equal((appHtml.match(/class="field-help"/g) || []).length, 15);
+  assert.match(appHtml, /<dialog id="measurement-help"/);
   assert.equal((appHtml.match(/<nav(?:\s|>)/g) || []).length, (appHtml.match(/<\/nav>/g) || []).length);
   assert.equal((appHtml.match(/<button(?:\s|>)/g) || []).length, (appHtml.match(/<\/button>/g) || []).length);
   const featHtml = fs.readFileSync(path.join(P, 'features.html'), 'utf8');

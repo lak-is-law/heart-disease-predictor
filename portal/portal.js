@@ -1240,12 +1240,8 @@ function loadClinicalCase(caseKey) {
     if (activeBtn.setAttribute) activeBtn.setAttribute('aria-checked', 'true');
   }
 
-  // Synchronize Quick Scenario Chips
-  document.querySelectorAll('.quick-scenario-chip').forEach(chip => {
-    chip.classList.remove('active');
-  });
-  const chipTarget = document.querySelector(`.quick-scenario-chip[onclick*="${caseKey}"]`);
-  if (chipTarget) chipTarget.classList.add('active');
+  const picker = document.getElementById('sample-case');
+  if (picker) picker.value = caseKey;
 
   // Synchronize Top Header Patient Chip with active clinical profile
   const nameEl = document.getElementById('header-patient-name');
@@ -1401,12 +1397,39 @@ function switchMatrixTab(tabId) {
 }
 window.switchMatrixTab = switchMatrixTab;
 
+let drawerOpener;
 function toggleNavDrawer() {
   const drawer = document.getElementById('app-nav-drawer');
-  const backdrop = document.getElementById('app-drawer-backdrop');
-  if (drawer) drawer.classList.toggle('open');
-  if (backdrop) backdrop.classList.toggle('open');
+  const opening = drawer.classList.toggle('open');
+  drawer.inert = !opening;
+  document.getElementById('app-drawer-backdrop').classList.toggle('open', opening);
+  document.querySelectorAll('[aria-controls="app-nav-drawer"]').forEach(button => button.setAttribute('aria-expanded', String(opening)));
+  if (opening) {
+    drawerOpener = document.activeElement;
+    drawer.querySelector('button').focus();
+  } else drawerOpener?.focus();
 }
+document.addEventListener('keydown', event => {
+  const drawer = document.getElementById('app-nav-drawer');
+  if (!drawer?.classList.contains('open')) return;
+  if (event.key === 'Escape') toggleNavDrawer();
+  if (event.key !== 'Tab') return;
+  const items = [...drawer.querySelectorAll('a[href],button')].filter(item => item.offsetWidth > 0);
+  const first = items[0], last = items[items.length - 1];
+  if (event.shiftKey && document.activeElement === first) {event.preventDefault(); last.focus();}
+  if (!event.shiftKey && document.activeElement === last) {event.preventDefault(); first.focus();}
+});
+document.addEventListener('click', event => {
+  const help = event.target.closest('button[data-help]');
+  if (!help) return;
+  const dialog = document.getElementById('measurement-help');
+  document.getElementById('measurement-help-title').textContent = help.getAttribute('aria-label');
+  document.getElementById('measurement-help-text').textContent = help.dataset.help;
+  dialog.showModal();
+});
+document.addEventListener('input', event => {
+  if (event.target.closest('.biomarkers-cockpit-grid')) document.getElementById('sample-case').value = '';
+});
 window.toggleNavDrawer = toggleNavDrawer;
 
 function applyVitalsToInterface(vitals, sourceLabel, meta = {}, missing = [], extractedCount = 13) {
@@ -1415,6 +1438,7 @@ function applyVitalsToInterface(vitals, sourceLabel, meta = {}, missing = [], ex
     if (field) field.value = missing.includes(key) || !ResearchScore.valid(key,vitals[key]) ? '' : vitals[key];
   }
   pendingImport = Object.keys(meta).length > 0;
+  if (pendingImport) document.getElementById('sample-case').value = '';
   const confirm = document.getElementById('confirm-import');
   if (confirm) confirm.hidden = !pendingImport;
   renderExtractedValuesCard(vitals, sourceLabel, meta, missing, extractedCount);

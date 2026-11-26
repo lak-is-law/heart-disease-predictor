@@ -60,14 +60,14 @@
     if (document.getElementById('live-workstation')) {
       return [
         {
-          sel: '.quick-scenario-strip',
+          sel: '.case-picker',
           title: '1. Load a sample or lab report',
-          body: 'Tap any synthetic scenario chip here, or scroll down to EHR & Lab Ingestion to drop in a CSV, JSON, HL7 or text report.'
+          body: 'Choose a fictional example from the dropdown, then adjust its measurements.'
         },
         {
-          sel: '.safety-net-toggle-wrapper',
+          sel: '.model-settings',
           title: '2. Adjust inputs & threshold',
-          body: 'Edit the 13 clinical values below. Toggle High-sensitivity mode (0.28) to flag more borderline cases for review.'
+          body: 'Open model settings to change which examples are flagged. Tap a question mark beside any measurement for help.'
         },
         {
           sel: '#portal-cgi-viewport',

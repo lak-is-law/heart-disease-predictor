@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Workstation | CardioSense</title>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CardioSense — Clinical Intelligence">
@@ -97,7 +97,7 @@
 <div class="app-cockpit-wrapper">
   <!-- Left Vertical Icon Dock (Matching Cockpit Mockup) -->
   <aside class="cockpit-dock" aria-label="Workstation Navigation Dock">
-    <button type="button" class="dock-icon-btn" id="btn-dock-nav" title="Navigation Menu" onclick="toggleNavDrawer()" aria-label="Toggle Navigation Drawer">
+    <button type="button" class="dock-icon-btn" id="btn-dock-nav" aria-controls="app-nav-drawer" aria-expanded="false" title="Navigation Menu" onclick="toggleNavDrawer()" aria-label="Toggle Navigation Drawer">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <button type="button" class="dock-icon-btn active" title="Cardiac Cockpit" onclick="switchCockpitView('cockpit')">
@@ -146,10 +146,11 @@
         
         <a class="app-home-link" href="/app">Dashboard</a>
         <button type="button" class="app-theme-btn" data-theme-toggle aria-label="Switch between light and dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.800A9 9 0 1 1 11.200 3a7 7 0 0 0 9.800 9.800z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
+        <button class="compact-nav" type="button" aria-expanded="false" aria-controls="app-nav-drawer" onclick="toggleNavDrawer()">Menu</button>
         <div class="hx-account" id="hx-account"><button type="button" class="header-login-btn" id="btn-header-signin" onclick="openAuthModal()">Sign in</button></div>
         <button type="button" class="header-save-btn" onclick="exportDiagnosticSummaryReport()" style="background:#00E5FF; color:#06101E; font-weight:700; font-size:0.8125rem; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save ▾
+          Save
         </button>
       </div>
 
@@ -175,7 +176,7 @@
 
   <!-- Slide-Out Navigation Drawer -->
   <div class="drawer-backdrop" id="app-drawer-backdrop" onclick="toggleNavDrawer()" aria-hidden="true"></div>
-  <aside class="app-nav-drawer" id="app-nav-drawer" aria-label="Clinical Navigation Drawer">
+  <aside class="app-nav-drawer" id="app-nav-drawer" inert aria-label="Clinical Navigation Drawer">
     <div class="drawer-header">
       <div style="display:flex; align-items:center; gap:10px;">
         <img src="/logo-icon-transparent.png" alt="CardioSense Logo" width="28" height="28" style="object-fit:contain; display:block;">
@@ -187,16 +188,16 @@
     </div>
     <div class="drawer-links">
       <a href="#live-workstation" class="drawer-nav-item active" onclick="toggleNavDrawer(); switchCockpitView('cockpit');">
-        Diagnostic Cockpit
+        Assessment
       </a>
       <a href="#portal-ecg-canvas" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('ecg');">
-        12-Lead ECG Telemetry
+        Heart rhythm strip
       </a>
       <a href="#portal-cgi-viewport" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('heart');">
         3D Heart Anatomy
       </a>
       <a href="#lab-ingestion" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('lab');">
-        EHR & Lab Ingestion
+        Import a sample report
       </a>
       
       <a href="#security-checkup" class="drawer-nav-item" onclick="toggleNavDrawer(); switchCockpitView('security');">
@@ -247,248 +248,126 @@
         <!-- Left: Clinical Parameter Adjustment Panel -->
         <div class="clinical-input-panel">
           <div class="cockpit-card-header">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <h3 class="cockpit-card-title">Patient Biomarkers</h3>
-              <span class="rural-air-gapped-pill" title="100% On-Chip In-Memory Execution - Zero Cloud PHI Egress">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                Runs in your browser
-              </span>
+            <h3 class="cockpit-card-title">Sample assessment</h3>
+          </div>
+          <div class="case-picker">
+            <div class="field-heading"><label for="sample-case">Choose an example</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with choosing an example" data-help="Choose a fictional example to fill in the measurements. Changing examples replaces the current values. Edit any field to see how the model responds."><span aria-hidden="true">?</span></button></div>
+            <select class="clinical-select" id="sample-case" onchange="loadClinicalCase(this.value)">
+              <option value="acs">Higher blood pressure and cholesterol</option>
+              <option value="diabetic">Higher blood sugar during fasting</option>
+              <option value="wellness">No reported chest pain</option>
+              <option value="atypical_safety_net">Less typical chest pain</option>
+              <option value="ruled_out_cath">Chest pain with a lower estimate</option>
+              <option value="rural_triage">Older adult with several risk factors</option>
+              <option value="" hidden>Edited measurements</option>
+            </select>
+          </div>
+          <details class="hx-evidence model-settings">
+            <summary>Model settings and evidence</summary>
+            <div class="safety-net-toggle-wrapper">
+              <label for="inp-safety-net-toggle">Flag more cases for review</label>
+              <input type="checkbox" id="inp-safety-net-toggle" onchange="toggleSafetyNetMode(this.checked)">
             </div>
-            <button type="button" class="cockpit-new-btn" onclick="loadClinicalCase('wellness')" title="Reset Biomarkers">+ New</button>
-          </div>
-
-          <!-- High-sensitivity mode toggle (threshold 0.28) -->
-          <div class="safety-net-toggle-wrapper">
-            <label class="safety-net-toggle-label" for="inp-safety-net-toggle">
-              <span>High-sensitivity mode <strong>(threshold 0.28)</strong></span>
-            </label>
-            <label class="safety-net-switch" for="inp-safety-net-toggle">
-              <input type="checkbox" id="inp-safety-net-toggle" onchange="toggleSafetyNetMode(this.checked)" aria-label="Toggle High-Sensitivity Safety Net Mode">
-              <span class="safety-net-slider"></span>
-            </label>
-          </div>
-          <div id="portal-safety-net-banner" class="safety-net-alert-banner" role="alert">
-            <strong>HIGH-SENSITIVITY MODE:</strong> threshold 0.28. More patients are flagged for review. In cross-validation on the Cleveland data it caught about 88 of every 100 cases and flagged about 27 of every 100 people without disease. It still misses cases.
-          </div>
-          <details class="hx-evidence">
-            <summary>How reliable is this estimate?</summary>
-            <p>Measured on the 303-patient Cleveland data with 20 repeats of 5-fold cross-validation (every patient scored by a model that never saw them):</p>
-            <ul>
-              <li>All 13 inputs: AUC 0.91 (95% interval 0.87 to 0.94). At the 0.28 threshold it caught 88% of cases, flagged 27% of people without disease, and missed 16 of 139 cases.</li>
-              <li>Using only what a first visit provides (age, sex, chest pain type, blood pressure, cholesterol, glucose, resting ECG): AUC 0.84 (0.79 to 0.88).</li>
-            </ul>
-            <p>The data is one 1980s US clinic of patients referred for angiography. It has not been tested on other hospitals, countries or today's patients, so treat the output as a research prototype, not a diagnosis. The FFR, door-to-balloon and savings figures are illustrative models, not measurements.</p>
+            <p>This setting flags examples with an estimate of 28% or higher. The estimated percentage stays the same.</p>
+            <p>The model was trained on historical Cleveland patients referred for an artery test. Only two records across three other hospitals met all 13 input requirements. <a href="/research">Read the research</a>.</p>
           </details>
-
-          <!-- Quick Clinical Scenario Preset Strip -->
-          <div class="quick-scenario-strip" role="toolbar" aria-label="Quick Clinical Scenarios">
-            <button type="button" class="quick-scenario-chip active" onclick="loadClinicalCase('acs')">
-              <span style="color:#F43F5E;">●</span> High estimate
-            </button>
-            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('diabetic')">
-              <span style="color:#F59E0B;">●</span> Diabetic CAD
-            </button>
-            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('wellness')">
-              <span style="color:#10B981;">●</span> Baseline Normal
-            </button>
-            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('atypical_safety_net')">
-              <span style="color:#EC4899;">●</span> Atypical presentation
-            </button>
-            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('ruled_out_cath')">
-              <span style="color:#2DD4BF;">●</span> Lower estimate
-            </button>
-            <button type="button" class="quick-scenario-chip" onclick="loadClinicalCase('rural_triage')">
-              <span style="color:#A78BFA;">●</span> Rural Offline Triage
-            </button>
-          </div>
-
+          <button type="button" id="confirm-import" hidden onclick="pendingImport=false;this.hidden=true;updatePortalPrediction()">I checked the imported values</button>
           <!-- 2-Column Clinical Biomarkers Card Grid -->
           <div class="biomarkers-cockpit-grid">
-            <!-- 1. Resting Blood Pressure -->
             <div class="bmc-card">
-              <button type="button" id="confirm-import" hidden onclick="pendingImport=false;this.hidden=true;updatePortalPrediction()">I checked the imported values</button>
-<label class="form-label-row" for="inp-trestbps">
-                <span class="label-primary">Resting BP</span>
-                <span class="label-sub clinical-acronym" title="Systolic resting blood pressure upon hospital intake in mmHg">(trestbps · normal &lt; 120)</span>
-              </label>
-              <span class="form-value-tag" id="val-trestbps" aria-live="polite">142 mmHg</span>
-              <div class="clinical-slider-wrapper">
-                <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
-                  <path d="M0,12 Q25,4 50,11 T100,6" fill="none" stroke="#00E5FF" stroke-width="2"/>
-                </svg>
-                <input type="number" class="clinical-input" id="inp-trestbps" min="70" max="260" value="142"
-                       aria-valuemin="80" aria-valuemax="220" aria-valuenow="142" aria-label="Resting Blood Pressure in mmHg"
-                       oninput="updatePortalPrediction()">
-              </div>
+              <div class="field-heading"><label for="inp-trestbps">Resting blood pressure</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Resting blood pressure" data-help="Use the top number of a resting blood pressure reading. For a sample reading of 142/86, enter 142."><span aria-hidden="true">?</span></button></div>
+              <div class="number-entry"><input type="number" class="clinical-input" id="inp-trestbps" min="70" max="260" value="142"
+                       aria-describedby="unit-trestbps" oninput="updatePortalPrediction()"><span id="unit-trestbps">mmHg</span></div>
             </div>
-
-            <!-- 2. Serum Total Cholesterol -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-chol">
-                <span class="label-primary">Cholesterol</span>
-                <span class="label-sub clinical-acronym" title="Total serum fasting cholesterol in mg/dL">(chol · normal &lt; 200)</span>
-              </label>
-              <span class="form-value-tag" id="val-chol" aria-live="polite">248 mg/dL</span>
-              <div class="clinical-slider-wrapper">
-                <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
-                  <path d="M0,10 Q30,15 60,5 T100,12" fill="none" stroke="#00E5FF" stroke-width="2"/>
-                </svg>
-                <input type="number" class="clinical-input" id="inp-chol" min="80" max="700" value="248"
-                       aria-valuemin="100" aria-valuemax="550" aria-valuenow="248" aria-label="Serum Total Cholesterol in mg/dL"
-                       oninput="updatePortalPrediction()">
-              </div>
+              <div class="field-heading"><label for="inp-chol">Total cholesterol</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Total cholesterol" data-help="Find total cholesterol on the lipid panel in the sample report. Use the value in mg/dL. LDL and HDL are separate measurements."><span aria-hidden="true">?</span></button></div>
+              <div class="number-entry"><input type="number" class="clinical-input" id="inp-chol" min="80" max="700" value="248"
+                       aria-describedby="unit-chol" oninput="updatePortalPrediction()"><span id="unit-chol">mg/dL</span></div>
             </div>
-
-            <!-- 3. Maximum Heart Rate -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-thalach">
-                <span class="label-primary">Max HR</span>
-                <span class="label-sub clinical-acronym" title="Maximum heart rate achieved during peak exercise stress in BPM">(thalach · normal 120-200)</span>
-              </label>
-              <span class="form-value-tag" id="val-thalach" aria-live="polite">155 bpm</span>
-              <div class="clinical-slider-wrapper">
-                <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
-                  <path d="M0,8 L20,8 L25,2 L32,14 L38,4 L42,10 L50,8 L70,8 L75,2 L82,14 L88,5 L100,8" fill="none" stroke="#00E5FF" stroke-width="1.8"/>
-                </svg>
-                <input type="number" class="clinical-input" id="inp-thalach" min="40" max="230" value="155"
-                       aria-valuemin="60" aria-valuemax="210" aria-valuenow="155" aria-label="Maximum Heart Rate in BPM"
-                       oninput="updatePortalPrediction()">
-              </div>
+              <div class="field-heading"><label for="inp-thalach">Peak exercise heart rate</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Peak exercise heart rate" data-help="Find the highest heart rate recorded during the exercise stress test. Use beats per minute."><span aria-hidden="true">?</span></button></div>
+              <div class="number-entry"><input type="number" class="clinical-input" id="inp-thalach" min="40" max="230" value="155"
+                       aria-describedby="unit-thalach" oninput="updatePortalPrediction()"><span id="unit-thalach">bpm</span></div>
             </div>
-
-            <!-- 4. ST Segment Depression -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-oldpeak">
-                <span class="label-primary">ST Depression</span>
-                <span class="label-sub clinical-acronym" title="ST segment depression induced by exercise relative to rest in millimeters">(oldpeak · normal 0.0 mm)</span>
-              </label>
-              <span class="form-value-tag" id="val-oldpeak" aria-live="polite">1.8 mm</span>
-              <div class="clinical-slider-wrapper">
-                <svg class="mini-sparkline" viewBox="0 0 100 16" preserveAspectRatio="none">
-                  <path d="M0,6 Q35,14 70,10 T100,14" fill="none" stroke="#00E5FF" stroke-width="2"/>
-                </svg>
-                <input type="number" class="clinical-input" id="inp-oldpeak" min="0" max="8" step="0.1" value="1.8"
-                       aria-valuemin="0" aria-valuemax="6.0" aria-valuenow="1.8" aria-label="ST Segment Depression in millimeters"
-                       oninput="updatePortalPrediction()">
-              </div>
+              <div class="field-heading"><label for="inp-oldpeak">ST drop during exercise</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with ST drop during exercise" data-help="Find ST depression on the exercise ECG report. Use the reported change from rest in millimetres."><span aria-hidden="true">?</span></button></div>
+              <div class="number-entry"><input type="number" class="clinical-input" id="inp-oldpeak" min="0" max="8" step="0.1" value="1.8"
+                       aria-describedby="unit-oldpeak" oninput="updatePortalPrediction()"><span id="unit-oldpeak">mm</span></div>
             </div>
-
-            <!-- 5. Patient Age -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-age">
-                <span class="label-primary">Patient Age</span>
-                <span class="label-sub clinical-acronym" title="Patient chronological age in years">(age · 20-90 yrs)</span>
-              </label>
-              <span class="form-value-tag" id="val-age" aria-live="polite">58 yrs</span>
-              <div class="clinical-slider-wrapper">
-                <input type="number" class="clinical-input" id="inp-age" min="18" max="110" value="58"
-                       aria-valuemin="20" aria-valuemax="90" aria-valuenow="58" aria-label="Patient Age in years"
-                       oninput="updatePortalPrediction()">
-              </div>
+              <div class="field-heading"><label for="inp-age">Age</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Age" data-help="Use the age in completed years at the time of the sample assessment."><span aria-hidden="true">?</span></button></div>
+              <div class="number-entry"><input type="number" class="clinical-input" id="inp-age" min="18" max="110" value="58"
+                       aria-describedby="unit-age" oninput="updatePortalPrediction()"><span id="unit-age">years</span></div>
             </div>
-
-            <!-- 6. Chest Pain Presentation -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-cp">
-                <span class="label-primary">Chest Pain</span>
-                <span class="label-sub clinical-acronym" title="Angina symptom characterization (Classes 1-4)">(cp · Type 1-4)</span>
-              </label>
+              <div class="field-heading"><label for="inp-cp">Chest pain type</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Chest pain type" data-help="Use the category documented by the clinician in the sample history. Leave the field unknown if the report does not classify the pain."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-cp" onchange="updatePortalPrediction()">
-                <option value="1">Class 1: Typical Angina</option>
-                <option value="2">Class 2: Atypical Angina</option>
-                <option value="3" selected>Class 3: Non-Anginal</option>
-                <option value="4">Class 4: Asymptomatic</option>
+                <option value="">Unknown</option>
+                <option value="1">Typical angina</option>
+                <option value="2">Atypical angina</option>
+                <option value="3" selected>Chest pain classified as non-anginal</option>
+                <option value="4">No chest pain</option>
               </select>
             </div>
-
-            <!-- 7. Biological Sex -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-sex">
-                <span class="label-primary">Biological Sex</span>
-                <span class="label-sub clinical-acronym" title="Biological sex at birth">(sex · 1=M, 0=F)</span>
-              </label>
+              <div class="field-heading"><label for="inp-sex">Recorded sex</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Recorded sex" data-help="Use the sex recorded for the example. The historical dataset used two categories."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-sex" onchange="updatePortalPrediction()">
-                <option value="1" selected>Male (1)</option>
-                <option value="0">Female (0)</option>
+                <option value="">Unknown</option>
+                <option value="1" selected>Male</option>
+                <option value="0">Female</option>
               </select>
             </div>
-
-            <!-- 8. Fasting Blood Sugar -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-fbs">
-                <span class="label-primary">Fasting Blood Sugar</span>
-                <span class="label-sub clinical-acronym" title="Fasting blood sugar > 120 mg/dL diabetic threshold">(fbs · normal &le; 120)</span>
-              </label>
+              <div class="field-heading"><label for="inp-fbs">Fasting blood sugar</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Fasting blood sugar" data-help="Look for fasting glucose in mg/dL on the lab report. Select the range containing the reported value."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-fbs" onchange="updatePortalPrediction()">
-                <option value="0" selected>0: Normal (&le; 120 mg/dL)</option>
-                <option value="1">1: Diabetic / Elevated (&gt; 120)</option>
+                <option value="">Unknown</option>
+                <option value="0" selected>120 mg/dL or below</option>
+                <option value="1">Above 120 mg/dL</option>
               </select>
             </div>
-
-            <!-- 9. Resting Electrocardiogram -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-restecg">
-                <span class="label-primary">Resting ECG</span>
-                <span class="label-sub clinical-acronym" title="Resting 12-lead electrocardiographic waveform findings">(restecg · 0-2)</span>
-              </label>
+              <div class="field-heading"><label for="inp-restecg">Resting ECG result</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Resting ECG result" data-help="Look at the interpretation on the resting electrocardiogram (ECG) report. Use the wording from the report."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-restecg" onchange="updatePortalPrediction()">
-                <option value="0" selected>0: Normal Sinus Rhythm</option>
-                <option value="1">1: ST-T Wave Abnormality</option>
-                <option value="2">2: Left Ventricular Hypertrophy (LVH)</option>
+                <option value="">Unknown</option>
+                <option value="0" selected>Normal</option>
+                <option value="1">ST or T wave changes</option>
+                <option value="2">Signs of left ventricular thickening</option>
               </select>
             </div>
-
-            <!-- 10. Exercise-Induced Angina -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-exang">
-                <span class="label-primary">Exercise Angina</span>
-                <span class="label-sub clinical-acronym" title="Chest pain provoked by treadmill stress testing">(exang · 0/1)</span>
-              </label>
+              <div class="field-heading"><label for="inp-exang">Chest pain during exercise</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Chest pain during exercise" data-help="Use the stress test report to see whether exercise brought on angina (chest pain)."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-exang" onchange="updatePortalPrediction()">
-                <option value="0" selected>0: Negative (No Angina)</option>
-                <option value="1">1: Positive (Exertional Angina)</option>
+                <option value="">Unknown</option>
+                <option value="0" selected>No</option>
+                <option value="1">Yes</option>
               </select>
             </div>
-
-            <!-- 11. Peak ST Slope -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-slope">
-                <span class="label-primary">Peak ST Slope</span>
-                <span class="label-sub clinical-acronym" title="Slope of ST segment at peak exercise relative to isoelectric baseline">(slope · 1-3)</span>
-              </label>
+              <div class="field-heading"><label for="inp-slope">ST direction at peak exercise</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with ST direction at peak exercise" data-help="On the exercise ECG report, look for the ST segment slope at peak exercise. Choose the direction the report gives."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-slope" onchange="updatePortalPrediction()">
-                <option value="1">1: Upsloping (Normal)</option>
-                <option value="2" selected>2: Horizontal Flat (Ischemia)</option>
-                <option value="3">3: Downsloping (Severe)</option>
+                <option value="">Unknown</option>
+                <option value="1">Slopes upward</option>
+                <option value="2" selected>Flat</option>
+                <option value="3">Slopes downward</option>
               </select>
             </div>
-
-            <!-- 12. Calcified Major Vessels -->
             <div class="bmc-card">
-              <label class="form-label-row" for="inp-ca">
-                <span class="label-primary">Major vessels colored by fluoroscopy</span>
-                <span class="label-sub clinical-acronym" title="Number of major vessels (0-3) colored by fluoroscopy, an invasive study. Required by this 13-input model.">(ca · required)</span>
-              </label>
+              <div class="field-heading"><label for="inp-ca">Vessels seen on imaging</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Vessels seen on imaging" data-help="Use the reported number of major vessels colored by contrast on fluoroscopy. A blank result means unknown. Zero is a recorded result."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-ca" onchange="updatePortalPrediction()">
-                <option value="" selected>Select</option>
+                <option value="">Unknown</option>
                 <option value="0">0 vessels</option>
                 <option value="1">1 vessel</option>
                 <option value="2">2 vessels</option>
                 <option value="3">3 vessels</option>
               </select>
             </div>
-
-            <!-- 13. Thallium Scintigraphy -->
-            <div class="bmc-card bmc-card-wide">
-              <label class="form-label-row" for="inp-thal">
-                <span class="label-primary">Thallium stress test</span>
-                <span class="label-sub clinical-acronym" title="Nuclear myocardial perfusion scintigraphy status (3=Normal, 6=Fixed, 7=Reversible)">(thal · required)</span>
-              </label>
+            <div class="bmc-card">
+              <div class="field-heading"><label for="inp-thal">Heart blood flow scan</label><button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with Heart blood flow scan" data-help="Look for the conclusion of the thallium stress scan. A fixed defect appears at rest and during stress. A reversible defect appears during stress and improves at rest."><span aria-hidden="true">?</span></button></div>
               <select class="clinical-select" id="inp-thal" onchange="updatePortalPrediction()">
-                <option value="" selected>Select</option>
-                <option value="3">3: Normal perfusion</option>
-                <option value="6">6: Fixed defect</option>
-                <option value="7">7: Reversible defect</option>
+                <option value="">Unknown</option>
+                <option value="3">Normal blood flow</option>
+                <option value="6">Fixed defect</option>
+                <option value="7">Reversible defect</option>
               </select>
             </div>
           </div>
@@ -599,7 +478,7 @@
               <div class="cockpit-card-header">
                 <h3 class="cockpit-card-title">Risk Assessment · Sample case</h3>
                 <div class="cockpit-card-actions">
-                  <span class="cockpit-card-menu-btn" title="Options">⋮</span>
+                  <button type="button" class="field-help" aria-haspopup="dialog" aria-label="Help with the model estimate" data-help="The model combines all 13 measurements using weights learned from historical patients referred for coronary angiography. The percentage estimates the chance of finding artery narrowing in that setting. It does not predict your chance of a future heart attack. Use fictional examples here."><span aria-hidden="true">?</span></button>
                 </div>
               </div>
               <div class="radial-gauge-wrapper">
@@ -668,7 +547,7 @@
     <nav class="cockpit-nav-bar" role="tablist" aria-label="Workstation View Modes">
       <button type="button" class="cockpit-nav-btn active" id="tab-btn-cockpit" onclick="switchCockpitView('cockpit')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        Diagnostic Cockpit (Active)
+        Assessment (Active)
       </button>
       <button type="button" class="cockpit-nav-btn" id="tab-btn-ecg" onclick="switchCockpitView('ecg')">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -968,5 +847,9 @@
   <script src="app-extras.js" defer></script>
 </div></div>
 
+<dialog id="measurement-help" aria-labelledby="measurement-help-title">
+  <h2 id="measurement-help-title"></h2><p id="measurement-help-text"></p>
+  <form method="dialog"><button autofocus>Close</button></form>
+</dialog>
 </body>
 </html>
