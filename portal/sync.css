@@ -1,0 +1,8 @@
+.cloud-sync { padding: 16px; border: 1px solid currentColor; border-radius: 8px; margin: 12px 0; overflow-wrap: anywhere; font-size: 1rem; line-height: 1.5; }
+.cloud-sync p { margin: 0 0 12px; }
+.cloud-sync button { min-height: 44px; padding: 10px 14px; border: 1px solid currentColor; border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.cloud-sync button:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.cloud-sync button[hidden] { display: none; }
+.cloud-sync label { display: block; margin-bottom: 6px; }
+.cloud-sync input { display: block; width: 100%; box-sizing: border-box; min-height: 44px; margin-bottom: 8px; padding: 10px; background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 6px; font: inherit; }
+.cloud-sync input:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }

@@ -36,6 +36,7 @@
   <div class="wrap">
     <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
     <nav class="nav" aria-label="Main">
+      <a href="/about">About us</a>
       <a href="/features">Features</a>
       <a href="/research">Research</a>
       <a href="/download">Download</a>
@@ -55,18 +56,30 @@
     </div>
   </div>
 </header>
-<section class="hx" id="hero-overview" aria-label="CardioSense">
+<section class="hx hx-static" id="hero-overview" aria-label="CardioSense">
   <div class="hx-sticky">
-    <canvas id="hx-canvas" class="hx-canvas" aria-hidden="true"></canvas>
+    <div class="hx-stage">
+      <canvas id="hx-canvas" class="hx-canvas" aria-hidden="true"></canvas>
+      <div class="hx-landmarks"></div>
+      <figure class="hx-plate hx-section">
+        <div class="hx-specimen">
+          <img src="/img/heart-section.webp" alt="Four-chamber section showing the valve leaflets, chordae, papillary muscles and muscular septum.">
+          <span aria-hidden="true" class="hx-anchor hx-anchor-l" style="--x:25%;--y:46%"><b>1</b><span>Tricuspid valve</span></span>
+          <span aria-hidden="true" class="hx-anchor hx-anchor-r" style="--x:66%;--y:42%"><b>2</b><span>Mitral valve</span></span>
+          <span aria-hidden="true" class="hx-anchor hx-anchor-l" style="--x:50%;--y:74%"><b>3</b><span>Interventricular septum</span></span>
+        </div>
+        <ol class="hx-key"><li>Tricuspid valve</li><li>Mitral valve</li><li>Interventricular septum</li></ol>
+      </figure>
+    </div>
     <div class="hx-copy is-on" data-beat="0">
       <p class="kicker" style="margin-bottom:18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg>Coronary disease risk estimation</p>
       <h1>Estimate heart disease risk from 13 clinical values.</h1>
       <p>CardioSense turns a cardiac work-up into a probability and shows which values moved it.</p>
       <div class="hx-actions"><a class="btn" href="/app">Open the workstation</a><a class="btn line" href="/download">Download</a></div>
     </div>
-    <div class="hx-copy" data-beat="1"><h2>Look inside.</h2><p>Keep scrolling. The heart turns and opens along the four-chamber plane.</p></div>
-    <div class="hx-copy" data-beat="2"><h2>Change a value, see the effect.</h2><p>The estimate, the heart and the ECG trace respond as you edit the inputs.</p></div>
-    <div class="hx-copy" data-beat="3"><h2>Try it now.</h2><p>Use it in your browser, or install the desktop app for macOS or Windows.</p>
+    <div class="hx-copy" inert aria-hidden="true" data-beat="1"><h2>Coronary anatomy</h2><p>The aortic arch rises above the heart. On its anterior surface, coronary branches trace the groove between the ventricles.</p></div>
+    <div class="hx-copy" inert aria-hidden="true" data-beat="2"><h2>Four-chamber anatomy</h2><p>Fine chordae connect the valve leaflets to papillary muscles. The cut surface reveals the thicker wall of the left ventricle.</p></div>
+    <div class="hx-copy" inert aria-hidden="true" data-beat="3"><h2>Explore the workstation</h2><p>Use it in your browser, or install the desktop app for macOS or Windows.</p>
       <div class="hx-actions"><a class="btn" href="/app">Open the workstation</a><a class="btn line" href="/download">Download</a></div></div>
     <p class="hx-note">Research prototype. Not a medical device.</p>
   </div>
@@ -154,7 +167,7 @@
   <h2>Questions.</h2>
   <details class="faq"><summary>Is it a medical device?</summary><p>No. It is a research prototype, not reviewed by any regulator. Do not use it to diagnose, to rule out disease or to decide care.</p></details>
   <details class="faq"><summary>What if I have chest pain?</summary><p>Call your local emergency number now (112 in India) or go to the nearest hospital. This site cannot help in an emergency.</p></details>
-  <details class="faq"><summary>How accurate is it?</summary><p>On repeated cross-validation of the 303-patient training set, the area under the ROC curve is 0.91 with all 13 inputs and 0.84 without the invasive and stress-test inputs. It has not been tested at another site or prospectively. <a href="/features#limits">Details and limits</a>.</p></details>
+  <details class="faq"><summary>How accurate is it?</summary><p>On repeated cross-validation of the 303-patient training set, the area under the ROC curve is 0.91 with all 13 inputs and 0.84 without the invasive and stress-test inputs. At three other historical hospitals, only two records had all 13 usable inputs. Prospective performance remains unknown. <a href="/features#limits">Details and limits</a>.</p></details>
   <details class="faq"><summary>What happens to the data I enter?</summary><p>The calculator runs in your browser. If you save an assessment, the fields are encrypted on the server and tied to your account. Use synthetic or de-identified data only.</p></details>
   <details class="faq"><summary>Which platforms are supported?</summary><p>macOS on Apple silicon and Intel, Windows on x64 and ARM64, and any modern browser.</p></details>
 </div></section>
@@ -175,12 +188,13 @@
       <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
       <div><h4>Product</h4><a href="/features">Features</a><a href="/research">Research</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
-      <div><h4>Project</h4><a href="/report">Report a bug</a><a href="/features#limits">Limits</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+      <div><h4>Project</h4><a href="/about">About us</a><a href="/report">Report a bug</a><a href="/features#limits">Limits</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
     </div>
     <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
   </div>
 </footer>
 <script src="/site.js"></script>
+<script src="/onboarding.js" defer></script>
 <script src="/chat.js" defer></script>
 <script src="/hero-heart.js" defer></script>
 </body>

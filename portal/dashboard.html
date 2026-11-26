@@ -14,12 +14,14 @@
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="/chat.css">
 
+<link rel="stylesheet" href="/sync.css">
 </head>
 <body>
 <header class="site-head">
   <div class="wrap">
     <a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a>
     <nav class="nav" aria-label="Main">
+      <a href="/about">About us</a>
       <a href="/features">Features</a>
       <a href="/research">Research</a>
       <a href="/download">Download</a>
@@ -39,25 +41,41 @@
     </div>
   </div>
 </header>
+<a class="btn" href="/pilot">Visit workspace</a>
 <main id="dashboard" class="dash" hidden>
 <section class="dash-hero" id="dash-hero">
   <div class="wrap dash-hero-in">
     <div class="avatar" id="dash-avatar" aria-hidden="true">?</div>
     <div>
       <h1 id="dash-hi">Hi</h1>
+      <p class="hx-role-line" id="dash-role-line" hidden></p>
       <p class="lede" id="dash-intro"></p>
-      <div class="hx-actions"><a class="btn" href="/app">New assessment</a><a class="btn line" href="#report">View my report</a></div>
+      <div class="hx-actions"><a class="btn" href="/app">New assessment</a><a class="btn line" href="#report">View my report</a><a class="btn line" href="#dash-profile">Edit profile</a></div>
     </div>
   </div>
   <a class="scroll-cue" href="#report" aria-label="Scroll to your report"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></a>
 </section>
 
 <div class="wrap">
-<section class="sec" id="report" style="padding-top:64px">
+<section class="sec" id="report">
   <h2>Your report</h2>
   <p class="lede" id="dash-sub"></p>
   <div class="hx-banner" id="dash-must-change" hidden>Choose a new password to finish setting up your account. <a href="#dash-account" onclick="document.getElementById('pw-current').focus()">Change password</a></div>
+  <div class="hx-banner hx-banner-flex" id="dash-onboard-banner" hidden>
+    <span>Finish setting up your profile (display name, role and how you heard about CardioSense).</span>
+    <button type="button" class="btn sm" id="dash-start-onboard">Complete onboarding</button>
+  </div>
   <p class="hx-msg" id="dash-msg" role="status"></p>
+<section class="cloud-sync" aria-label="Cloud sync">
+  <p id="cloud-sync-status" role="status" aria-live="polite" aria-atomic="true">Only assessments you choose to save are uploaded. Failed saves stay in this tab until you leave or sign out.</p>
+  <p>Encrypted cloud storage can be decrypted by the service. Use synthetic or de-identified data only.</p>
+  <div style="display:flex; flex-wrap:wrap; gap:12px">
+    <button type="button" id="cloud-refresh">Refresh cloud records</button>
+    <button type="button" id="cloud-pause" aria-pressed="false">Pause automatic sync</button>
+    <button type="button" id="cloud-retry" hidden>Retry pending save</button>
+    <button type="button" id="cloud-discard" hidden>Discard pending save</button>
+  </div>
+</section>
   <div class="hx-stats" id="dash-stats"></div>
   <div class="hx-grid">
     <div class="hx-panel"><h3>Risk over time</h3>
@@ -74,7 +92,71 @@
 </section>
 
 <section class="sec" id="dash-account" style="padding-top:0">
-  <h2>Account</h2>
+  <h2>Account &amp; profile</h2>
+  <div class="hx-panel" id="dash-profile">
+    <div class="hx-panel-head"><h3>Your profile</h3><div class="hx-row" style="margin-top:0"><button type="button" class="btn sm line" id="dash-tour-btn">Take a tour</button><button type="button" class="btn sm line" id="prof-rerun-onboard">Run onboarding guide</button></div></div>
+    <p class="hx-meta">Your display name appears on your dashboard and any review you publish.</p>
+    <form id="profile-form" class="hx-form" novalidate>
+      <div class="hx-two">
+        <div><label for="prof-name">Display name</label><input type="text" id="prof-name" maxlength="80" autocomplete="name" placeholder="Your name"></div>
+        <div><label for="prof-headline">Role / title (optional)</label><input type="text" id="prof-headline" maxlength="100" placeholder="e.g. Cardiology Fellow, Researcher"></div>
+      </div>
+      <div class="hx-two">
+        <div><label for="prof-role">Primary background</label>
+          <select id="prof-role">
+            <option value="">Select a role</option>
+            <option value="Clinician / Physician">Clinician / Physician</option>
+            <option value="Medical Student / Resident">Medical Student / Resident</option>
+            <option value="Researcher / Academic">Researcher / Academic</option>
+            <option value="Data Scientist / Engineer">Data Scientist / Engineer</option>
+            <option value="Educator / Instructor">Educator / Instructor</option>
+            <option value="Personal / Curious Learner">Personal / Curious Learner</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div><label for="prof-exp">Experience level</label>
+          <select id="prof-exp">
+            <option value="">Select level</option>
+            <option value="Exploring">Exploring</option>
+            <option value="Student / Trainee">Student / Trainee</option>
+            <option value="Practicing">Practicing</option>
+            <option value="Research / Academic">Research / Academic</option>
+          </select>
+        </div>
+      </div>
+      <div class="hx-two">
+        <div><label for="prof-org">Organization / school (optional)</label><input type="text" id="prof-org" maxlength="100" autocomplete="organization" placeholder="Hospital, university or lab"></div>
+        <div><label for="prof-country">Country / region (optional)</label><input type="text" id="prof-country" maxlength="60" autocomplete="country-name" placeholder="e.g. India, United States"></div>
+      </div>
+      <label>Focus areas</label>
+      <div class="hx-checkgrid" id="prof-goals">
+        <label class="hx-checkchip"><input type="checkbox" value="Coronary risk estimation"><span>Coronary risk estimation</span></label>
+        <label class="hx-checkchip"><input type="checkbox" value="Interactive 3D heart &amp; ECG"><span>Interactive 3D heart &amp; ECG</span></label>
+        <label class="hx-checkchip"><input type="checkbox" value="Lab report import"><span>Lab report import</span></label>
+        <label class="hx-checkchip"><input type="checkbox" value="Selective-escalation research"><span>Selective-escalation research</span></label>
+        <label class="hx-checkchip"><input type="checkbox" value="Teaching &amp; case studies"><span>Teaching &amp; case studies</span></label>
+        <label class="hx-checkchip"><input type="checkbox" value="Desktop offline app"><span>Desktop offline app</span></label>
+      </div>
+      <div class="hx-two">
+        <div><label for="prof-ref">How did you hear about CardioSense?</label>
+          <select id="prof-ref">
+            <option value="">Select source</option>
+            <option value="Search engine">Search engine</option>
+            <option value="GitHub / Open source">GitHub / Open source</option>
+            <option value="Colleague or friend">Colleague or friend</option>
+            <option value="University or class">University or class</option>
+            <option value="Social media">Social media</option>
+            <option value="Research paper">Research paper</option>
+            <option value="AI assistant">AI assistant</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div><label for="prof-ref-detail">More detail (optional)</label><input type="text" id="prof-ref-detail" maxlength="120" placeholder="e.g. colleague, search term, course"></div>
+      </div>
+      <p class="hx-msg" id="prof-msg" role="status"></p>
+      <div class="hx-row"><button type="submit" class="btn sm" id="prof-save">Save profile</button></div>
+    </form>
+  </div>
   <div class="hx-grid">
     <div class="hx-panel"><h3>Sign-in details</h3><p class="hx-meta" id="acct-line"></p>
       <form id="pw-form" class="hx-form" novalidate>
@@ -90,6 +172,28 @@
     <p class="hx-meta">Saved assessments hold only the 13 model inputs, the risk estimate and the reference you type. They are encrypted before they reach the database. Do not put names or ID numbers in the reference.</p>
     <button type="button" class="btn sm line hx-danger" id="dash-erase">Erase all my assessments</button></div>
 
+  <div class="hx-panel hx-danger-panel" id="dash-delete-panel"><h3>Delete account</h3>
+    <p class="hx-meta">Permanently delete your account, profile, reviews and all encrypted assessments. To proceed, type <strong>CONFIRM</strong> and verify <strong>YES</strong> via your email confirmation code.</p>
+    <form id="delete-req-form" class="hx-form" novalidate>
+      <div class="hx-two">
+        <div><label for="del-email">Your account email</label><input type="email" id="del-email" autocomplete="email" placeholder="you@example.com"></div>
+        <div><label for="del-phrase">Type CONFIRM</label><input type="text" id="del-phrase" autocomplete="off" placeholder="CONFIRM" maxlength="16"></div>
+      </div>
+      <div class="hx-row"><button type="submit" class="btn sm line hx-danger" id="del-request-btn">Send confirmation email</button></div>
+    </form>
+    <div id="del-step-2" hidden>
+      <div class="hx-banner" id="del-code-banner"></div>
+      <form id="delete-confirm-form" class="hx-form" novalidate>
+        <div class="hx-two">
+          <div><label for="del-code">Email confirmation code</label><input type="text" id="del-code" autocomplete="off" placeholder="6-character code" maxlength="16"></div>
+          <div><label for="del-yes">Type YES to confirm via email</label><input type="text" id="del-yes" autocomplete="off" placeholder="YES" maxlength="16"></div>
+        </div>
+        <div class="hx-row"><button type="submit" class="btn sm hx-danger-fill" id="del-confirm-btn">Yes, permanently delete my account</button><button type="button" class="btn sm line" id="del-cancel-btn">Cancel</button></div>
+      </form>
+    </div>
+    <p class="hx-msg" id="del-msg" role="alert"></p>
+  </div>
+
   <div class="hx-panel" id="dash-admin" hidden><h3>People</h3>
     <p class="hx-meta">Anyone can sign up. Use this to create an account for someone, or to disable or reset one.</p>
     <form id="user-form" class="hx-form hx-inline" novalidate>
@@ -99,7 +203,8 @@
       <button type="submit" class="btn sm">Create account</button>
     </form>
     <p class="hx-error" id="nu-error" role="alert"></p><div class="hx-banner" id="nu-secret" hidden></div>
-    <div class="hx-table-wrap"><table class="hx-table"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th><span class="hx-sr">Actions</span></th></tr></thead><tbody id="admin-rows"></tbody></table></div>
+    <p class="hx-meta" id="admin-referrals" hidden></p>
+    <div class="hx-table-wrap"><table class="hx-table"><thead><tr><th>Email</th><th>Role</th><th>Profile</th><th>Status</th><th><span class="hx-sr">Actions</span></th></tr></thead><tbody id="admin-rows"></tbody></table></div>
     <h4 class="hx-sub">Sign-ins and changes</h4><ul class="hx-activity" id="admin-events"></ul>
     <h4 class="hx-sub">Newsletter</h4><p class="hx-meta" id="sub-line"></p><button type="button" class="btn sm line" id="sub-export" hidden>Export subscribers (CSV)</button>
     <h4 class="hx-sub">Bug reports</h4><ul class="hx-activity hx-bugs" id="bug-rows"></ul>
@@ -107,7 +212,8 @@
 </section>
 </div>
 </main>
-<noscript><main class="wrap"><p>The dashboard needs JavaScript.</p></main></noscript>
+<noscript><a class="btn" href="/pilot">Visit workspace</a>
+<main class="wrap"><p>The dashboard needs JavaScript.</p></main></noscript>
 <footer class="site-foot">
   <div class="wrap">
     <div class="news">
@@ -124,13 +230,16 @@
       <div><a class="brand" href="/"><img src="/favicon.svg" alt="" width="26" height="26">CardioSense</a></div>
       <div><h4>Product</h4><a href="/features">Features</a><a href="/research">Research</a><a href="/app">Workstation</a><a href="/download">Download</a></div>
       <div><h4>Account</h4><a href="/signin">Sign in</a><a href="/signup">Create account</a><a href="/#reviews">Reviews</a></div>
-      <div><h4>Project</h4><a href="/report">Report a bug</a><a href="/features#limits">Limits</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+      <div><h4>Project</h4><a href="/about">About us</a><a href="/report">Report a bug</a><a href="/features#limits">Limits</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
     </div>
     <p class="legal">Research prototype built on the UCI Heart Disease dataset. Not a medical device and not for clinical use. Do not enter real patient information.</p>
   </div>
 </footer>
 <script src="/site.js"></script>
+<script src="/sync-client.js" defer></script>
 <script src="/dashboard.js" defer></script>
+<script src="/onboarding.js" defer></script>
+<script src="/tutorial.js" defer></script>
 <script src="/chat.js" defer></script>
 </body>
 </html>

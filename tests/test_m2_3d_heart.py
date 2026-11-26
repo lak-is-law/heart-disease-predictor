@@ -213,7 +213,8 @@ const mockElement = (id) => ({{
   style: {{}},
   classList: {{ add: () => {{}}, remove: () => {{}}, toggle: () => {{}} }},
   setAttribute: () => {{}},
-  addEventListener: () => {{}}
+  addEventListener: () => {{}},
+  replaceChildren: () => {{}}
 }});
 
 const sandbox = {{
@@ -244,6 +245,7 @@ vm.createContext(sandbox);
 
 // 1. Compile and evaluate portal.js into the sandbox
 try {{
+  vm.runInContext(fs.readFileSync({json.dumps(str(PORTAL_JS_PATH.parent / 'research-score.js'))}, 'utf8'), sandbox);
   vm.runInContext(code, sandbox);
 }} catch (err) {{
   console.error("PARSING_ERROR:", err.stack);

@@ -23,7 +23,7 @@ let pAnimationId = null;
 let isPortalContextLost = false;
 let pBeatPhase = 0;
 let pBPM = 128;
-let pTargetRisk = 0.948;
+let pTargetRisk = NaN;
 let pCurrentRisk = 0.948;
 let pFFR = 0.64;
 let pLastFrameTime = 0;
@@ -47,110 +47,9 @@ let ecgLastY = 0;
 let ecgST = -3.2;
 let ecgSlope = 3;
 
-// Calibrated Cleveland Clinic Logistic Regression Model Weights (AUC 0.959, 22 features)
-const MODEL_WEIGHTS = {
-  features: ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"],
-  baseline: {
-    age: 56.0, sex: 1.0, trestbps: 130.0, chol: 244.5, fbs: 0.0,
-    thalach: 153.5, exang: 0.0, oldpeak: 0.8, ca: 0.0,
-    cp: 4.0, restecg: 0.0, slope: 1.0, thal: 3.0
-  },
-  numeric: ["age", "sex", "trestbps", "chol", "fbs", "thalach", "exang", "oldpeak", "ca"],
-  categorical: ["cp", "restecg", "slope", "thal"],
-  intercept: -0.4165916542714232,
-  coef: [
-    -0.06726548345630262,
-     0.6973046669215379,
-     0.32550819028039846,
-     0.2032705587797891,
-    -0.10667793687743356,
-    -0.35625542314376873,
-     0.3024801271844997,
-     0.18283102057737122,
-     1.0894775894817752,
-    -0.5897811582868155,
-     0.1216347969403256,
-    -0.4500529104505105,
-     0.912586594378731,
-    -0.15567275302274555,
-    -0.06306704410537402,
-     0.21312711970984988,
-    -0.4719023011633478,
-     0.5762478663580963,
-    -0.10995824261301837,
-    -0.5461052293592539,
-    -0.20602906269333246,
-     0.7465216146343161
-  ],
-  num_mean: [
-    54.549586776859506, 0.6818181818181818, 130.95867768595042,
-    249.8388429752066, 0.1446280991735537, 149.96280991735537,
-    0.32644628099173556, 0.9991735537190083, 0.6074380165289256
-  ],
-  num_scale: [
-    8.978372765440131, 0.46577048936179993, 17.58610302878636,
-    52.737566192586975, 0.35172547832506873, 22.639527461380734,
-    0.4689126854952853, 1.1206178835595506, 0.8807083258655833
-  ],
-  cat_categories: [
-    [1.0, 2.0, 3.0, 4.0], // cp
-    [0.0, 1.0, 2.0],      // restecg
-    [1.0, 2.0, 3.0],      // slope
-    [3.0, 6.0, 7.0]       // thal
-  ]
-};
-const CLINICAL_MODEL = MODEL_WEIGHTS; // Backward compatibility alias
-
-/**
- * Exact 22-dimensional in-browser prediction matching Python scikit-learn pipeline (< 1e-12 drift)
- */
-function predictClinicalRisk(patient) {
-  const p = patient || {};
-  const mw = MODEL_WEIGHTS;
-
-  const age = p.age !== undefined ? p.age : mw.baseline.age;
-  const sex = p.sex !== undefined ? p.sex : mw.baseline.sex;
-  const trestbps = p.trestbps !== undefined ? p.trestbps : mw.baseline.trestbps;
-  const chol = p.chol !== undefined ? p.chol : mw.baseline.chol;
-  const fbs = p.fbs !== undefined ? p.fbs : mw.baseline.fbs;
-  const thalach = p.thalach !== undefined ? p.thalach : mw.baseline.thalach;
-  const exang = p.exang !== undefined ? p.exang : mw.baseline.exang;
-  const oldpeak = p.oldpeak !== undefined ? p.oldpeak : mw.baseline.oldpeak;
-  const ca = p.ca !== undefined ? p.ca : mw.baseline.ca;
-
-  const cp = p.cp !== undefined ? p.cp : mw.baseline.cp;
-  const restecg = p.restecg !== undefined ? p.restecg : mw.baseline.restecg;
-  const slope = p.slope !== undefined ? p.slope : mw.baseline.slope;
-  const thal = p.thal !== undefined ? p.thal : mw.baseline.thal;
-
-  // 1. Standardize 9 numeric features
-  const numVals = [
-    (age - mw.num_mean[0]) / mw.num_scale[0],
-    (sex - mw.num_mean[1]) / mw.num_scale[1],
-    (trestbps - mw.num_mean[2]) / mw.num_scale[2],
-    (chol - mw.num_mean[3]) / mw.num_scale[3],
-    (fbs - mw.num_mean[4]) / mw.num_scale[4],
-    (thalach - mw.num_mean[5]) / mw.num_scale[5],
-    (exang - mw.num_mean[6]) / mw.num_scale[6],
-    (oldpeak - mw.num_mean[7]) / mw.num_scale[7],
-    (ca - mw.num_mean[8]) / mw.num_scale[8]
-  ];
-
-  // 2. One-hot encode 4 categorical features
-  const catCp = mw.cat_categories[0].map(c => (cp === c ? 1.0 : 0.0));
-  const catRestecg = mw.cat_categories[1].map(c => (restecg === c ? 1.0 : 0.0));
-  const catSlope = mw.cat_categories[2].map(c => (slope === c ? 1.0 : 0.0));
-  const catThal = mw.cat_categories[3].map(c => (thal === c ? 1.0 : 0.0));
-
-  const x = numVals.concat(catCp, catRestecg, catSlope, catThal);
-
-  let logit = mw.intercept;
-  for (let i = 0; i < mw.coef.length; i++) {
-    logit += mw.coef[i] * x[i];
-  }
-
-  return 1.0 / (1.0 + Math.exp(-logit));
-}
+let MODEL_WEIGHTS = null;
+let pendingImport = false;
+function predictClinicalRisk(patient) { return ResearchScore.predict(MODEL_WEIGHTS, patient); }
 
 /**
  * Occlusion-based feature importance matching core.py:explain()
@@ -257,9 +156,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadManifest() {
   try {
     const wr = await fetch('model_weights.json');
-    if (wr.ok) modelWeights = await wr.json();
+    if (wr.ok) MODEL_WEIGHTS = await wr.json();
   } catch (e) {
-    console.warn('model_weights.json unavailable; using built-in coefficients.', e);
+    console.warn('model_weights.json unavailable; scoring is unavailable.', e);
   }
 }
 
@@ -314,28 +213,74 @@ window.csSessionLost = () => {
 
 function megabytes(bytes) { return Math.round(bytes / 1048576) + ' MB'; }
 
+function renderDrawerAccount() {
+  const foot = document.getElementById('drawer-account-footer');
+  if (!foot) return;
+  foot.textContent = '';
+  const mkLink = (href, text) => {
+    const a = document.createElement('a');
+    a.href = href; a.className = 'drawer-nav-item'; a.textContent = text;
+    return a;
+  };
+  if (currentUser) {
+    const who = document.createElement('div');
+    who.style.cssText = 'font-size:0.75rem;color:#94A3B8;padding:0 12px 8px;overflow-wrap:anywhere;';
+    who.textContent = currentUser.name ? `${currentUser.name} (${currentUser.email})` : currentUser.email;
+    foot.appendChild(who);
+    foot.appendChild(mkLink('/dashboard', 'Dashboard'));
+    foot.appendChild(mkLink('/', 'Home'));
+    foot.appendChild(mkLink('/download', 'Download'));
+    foot.appendChild(mkLink('/privacy', 'Privacy'));
+    const tourBtn = document.createElement('button');
+    tourBtn.type = 'button'; tourBtn.className = 'drawer-nav-item';
+    tourBtn.style.cssText = 'width:100%;text-align:left;background:none;border:0;color:#38BDF8;cursor:pointer;font:inherit;';
+    tourBtn.textContent = 'Guided tour';
+    tourBtn.addEventListener('click', () => { toggleNavDrawer(); if (window.CSTutorial) CSTutorial.start(); });
+    foot.appendChild(tourBtn);
+    const out = document.createElement('button');
+    out.type = 'button'; out.className = 'drawer-nav-item';
+    out.style.cssText = 'width:100%;text-align:left;background:none;border:0;color:#FF8A80;cursor:pointer;font:inherit;';
+    out.textContent = 'Sign out';
+    out.addEventListener('click', () => { toggleNavDrawer(); signOut(); });
+    foot.appendChild(out);
+  } else {
+    foot.appendChild(mkLink('/', 'Home'));
+    foot.appendChild(mkLink('/download', 'Download'));
+    foot.appendChild(mkLink('/privacy', 'Privacy'));
+    const si = document.createElement('button');
+    si.type = 'button'; si.className = 'drawer-nav-item';
+    si.style.cssText = 'width:100%;text-align:left;background:none;border:0;color:#38BDF8;cursor:pointer;font:inherit;';
+    si.textContent = 'Sign in';
+    si.addEventListener('click', () => { toggleNavDrawer(); openAuthModal(); });
+    foot.appendChild(si);
+  }
+}
+
 function renderAccount() {
   const box = document.getElementById('hx-account');
-  if (!box) return;
-  box.textContent = '';
-  if (!currentUser) {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'header-login-btn'; b.id = 'btn-header-signin';
-    b.textContent = 'Sign in';
-    b.addEventListener('click', openAuthModal);
-    box.appendChild(b);
-    return;
+  if (box) {
+    box.textContent = '';
+    if (!currentUser) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'header-login-btn'; b.id = 'btn-header-signin';
+      b.textContent = 'Sign in';
+      b.addEventListener('click', openAuthModal);
+      box.appendChild(b);
+    } else {
+      const who = document.createElement('span');
+      who.className = 'hx-who'; who.textContent = currentUser.email;
+      const out = document.createElement('button');
+      out.type = 'button'; out.className = 'header-login-btn'; out.id = 'btn-header-signout';
+      out.textContent = 'Sign out';
+      out.addEventListener('click', signOut);
+      const dash = document.createElement('button');
+      dash.type = 'button'; dash.className = 'header-login-btn'; dash.id = 'btn-header-dashboard';
+      dash.textContent = 'Dashboard';
+      dash.addEventListener('click', () => window.CSDash && CSDash.open());
+      box.appendChild(who); box.appendChild(dash); box.appendChild(out);
+    }
   }
-  const who = document.createElement('span');
-  who.className = 'hx-who'; who.textContent = currentUser.email;
-  const out = document.createElement('button');
-  out.type = 'button'; out.className = 'header-login-btn'; out.id = 'btn-header-signout';
-  out.textContent = 'Sign out';
-  out.addEventListener('click', signOut);
-  const dash = document.createElement('button');
-  dash.type = 'button'; dash.className = 'header-login-btn'; dash.textContent = 'Dashboard';
-  dash.addEventListener('click', () => window.CSDash && CSDash.open());
-  box.appendChild(who); box.appendChild(dash); box.appendChild(out);
+  renderDrawerAccount();
 }
 
 async function loadReleases() {
@@ -364,7 +309,15 @@ async function initSession() {
   renderMatrixTables();
   updateSmartRecommendationCard(detectedPlatform);
   if (window.CSDash) CSDash.refresh();
+  document.dispatchEvent(new CustomEvent('cs:session'));
 }
+
+document.addEventListener('cs:user-updated', (ev) => {
+  if (ev && ev.detail && ev.detail.user) {
+    currentUser = ev.detail.user;
+    renderAccount();
+  }
+});
 
 async function signOut() {
   try { await fetch('/api/logout', { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-Token': csrfToken } }); } catch (e) { /* offline */ }
@@ -684,6 +637,17 @@ function extractPdfOperators(sourceStr, outChunks) {
  * STRUCTURED CLINICAL PAYLOAD PARSERS (JSON, CSV, HL7 / FHIR)
  * ==============================================================================
  */
+function importedNumber(key, raw) {
+  if (typeof raw !== 'string' && typeof raw !== 'number') return NaN;
+  const text = String(raw).trim().toLowerCase();
+  if (key === 'sex') {
+    if (['f','female','woman'].includes(text)) return 0;
+    if (['m','male','man'].includes(text)) return 1;
+  }
+  const value = text ? Number(text) : NaN;
+  return ResearchScore.valid(key, value) ? value : NaN;
+}
+
 function parseClinicalJson(text) {
   try {
     const raw = JSON.parse(text);
@@ -702,20 +666,14 @@ function parseClinicalJson(text) {
       oldpeak: ['oldpeak', 'st_depression'],
       slope: ['slope', 'st_slope'],
       ca: ['ca', 'major_vessels', 'vessels'],
-      thal: ['thal', 'thalassemia', 'thallium']
+      thal: ['thal', 'thallium']
     };
 
     let count = 0;
     for (const [key, aliases] of Object.entries(mapping)) {
       for (const a of aliases) {
         if (obj[a] !== undefined) {
-          let val = obj[a];
-          if (key === 'sex') {
-            if (typeof val === 'string') val = /f|woman|female/i.test(val) ? 0 : 1;
-            else val = val === 0 ? 0 : 1;
-          } else {
-            val = parseFloat(val);
-          }
+          const val = importedNumber(key, obj[a]);
           if (!isNaN(val)) {
             meta[key] = { value: val, extracted: true, conf: 1.0 };
             count++;
@@ -754,7 +712,7 @@ function parseClinicalCsv(text) {
     oldpeak: ['oldpeak', 'st_depression'],
     slope: ['slope', 'st_slope'],
     ca: ['ca', 'major_vessels', 'vessels'],
-    thal: ['thal', 'thalassemia', 'thallium']
+    thal: ['thal', 'thallium']
   };
 
   // Style A: Header row + value row
@@ -770,9 +728,7 @@ function parseClinicalCsv(text) {
     const values = lines[1].split(/[,;\t]/).map(v => v.trim());
     for (const [key, idx] of Object.entries(headerIndices)) {
       if (values[idx] !== undefined) {
-        let val = values[idx];
-        if (key === 'sex') val = /f|woman|female/i.test(val) ? 0 : 1;
-        else val = parseFloat(val);
+        const val = importedNumber(key, values[idx]);
         if (!isNaN(val)) meta[key] = { value: val, extracted: true, conf: 0.99 };
       }
     }
@@ -787,12 +743,8 @@ function parseClinicalCsv(text) {
       const k = parts[0].toLowerCase();
       let v = parts[1];
       for (const [canonical, aliases] of Object.entries(mapping)) {
-        if (aliases.includes(k) || aliases.some(a => k.includes(a))) {
-          if (canonical === 'sex') v = /f|woman|female/i.test(v) ? 0 : 1;
-          else {
-            const m = v.match(/[-+]?[0-9]*\.?[0-9]+/);
-            v = m ? parseFloat(m[0]) : NaN;
-          }
+        if (aliases.includes(k)) {
+          v = importedNumber(canonical, v);
           if (!isNaN(v)) {
             meta[canonical] = { value: v, extracted: true, conf: 0.99 };
             kvCount++;
@@ -823,7 +775,7 @@ function parseClinicalHl7(text) {
     oldpeak: ['oldpeak', 'st_depression'],
     slope: ['slope', 'st_slope'],
     ca: ['ca', 'vessels'],
-    thal: ['thal', 'thalassemia']
+    thal: ['thal', 'thallium']
   };
 
   let patientInfo = null;
@@ -840,13 +792,8 @@ function parseClinicalHl7(text) {
         const idField = (parts[3] || '').toLowerCase();
         let valField = (parts[5] || '').trim();
         for (const [canonical, aliases] of Object.entries(mapping)) {
-          if (aliases.some(a => idField.includes(a))) {
-            let v = NaN;
-            if (canonical === 'sex') v = /f|woman|female/i.test(valField) ? 0 : (valField === '0' ? 0 : 1);
-            else {
-              const m = valField.match(/[-+]?[0-9]*\.?[0-9]+/);
-              v = m ? parseFloat(m[0]) : NaN;
-            }
+          if (aliases.includes(idField.split('^')[0])) {
+            const v = importedNumber(canonical, valField);
             if (!isNaN(v)) meta[canonical] = { value: v, extracted: true, conf: 0.99 };
             break;
           }
@@ -879,20 +826,16 @@ function parseClinicalDocumentText(text, filename) {
   // 0. Structured Format Ingestion (JSON, CSV, HL7 / FHIR)
   const structuredRes = parseClinicalStructuredPayload(clean, filename);
   if (structuredRes && Object.keys(structuredRes.meta).length >= 3) {
-    const defaults = {
-      age: 50, sex: 1, cp: 4, trestbps: 120, chol: 195, fbs: 0,
-      restecg: 0, thalach: 150, exang: 0, oldpeak: 0.0, slope: 1, ca: 0, thal: 3
-    };
     const finalMeta = {};
     const missingKeys = [];
     const parsedVitals = {};
-    for (const key of Object.keys(defaults)) {
+    for (const key of Object.keys(ResearchScore.limits)) {
       if (structuredRes.meta[key] && structuredRes.meta[key].extracted) {
         finalMeta[key] = structuredRes.meta[key];
         parsedVitals[key] = structuredRes.meta[key].value;
       } else {
-        finalMeta[key] = { value: defaults[key], extracted: false, conf: 0.0 };
-        parsedVitals[key] = defaults[key];
+        finalMeta[key] = { value: null, extracted: false, conf: 0.0 };
+        parsedVitals[key] = null;
         missingKeys.push(key);
       }
     }
@@ -924,9 +867,9 @@ function parseClinicalDocumentText(text, filename) {
   let mAge = clean.match(/\b(?:patient\s+)?age[\s:=]+([1-9][0-9])\b/i);
   if (!mAge) mAge = clean.match(/\b([1-9][0-9])[\s-]*(?:yo\b|y\.o\.|years?[\s-]old|years?\s+of\s+age)\b/i);
   if (mAge) {
-    meta.age = { value: Math.max(20, Math.min(90, parseInt(mAge[1]))), extracted: true, conf: 0.98 };
+    meta.age = { value: Number(mAge[1]), extracted: true, conf: 0.98 };
   } else {
-    meta.age = { value: 50, extracted: false, conf: 0.0 };
+    meta.age = { value: null, extracted: false, conf: 0.0 };
     missing.push('age');
   }
 
@@ -945,7 +888,7 @@ function parseClinicalDocumentText(text, filename) {
     } else if (femIdx !== -1 && maleIdx !== -1) {
       meta.sex = { value: femIdx < maleIdx ? 0 : 1, extracted: true, conf: 0.85 };
     } else {
-      meta.sex = { value: 1, extracted: false, conf: 0.0 };
+      meta.sex = { value: null, extracted: false, conf: 0.0 };
       missing.push('sex');
     }
   }
@@ -970,7 +913,7 @@ function parseClinicalDocumentText(text, filename) {
     } else if (cpIdx !== -1 && !isClinicallyNegated(clean, cpIdx)) {
       meta.cp = { value: 1, extracted: true, conf: 0.80 };
     } else {
-      meta.cp = { value: 4, extracted: false, conf: 0.0 };
+      meta.cp = { value: null, extracted: false, conf: 0.0 };
       missing.push('cp');
     }
   }
@@ -983,7 +926,7 @@ function parseClinicalDocumentText(text, filename) {
   } else if (mBpMmhg && parseInt(mBpMmhg[1]) >= 80 && parseInt(mBpMmhg[1]) <= 220) {
     meta.trestbps = { value: parseInt(mBpMmhg[1]), extracted: true, conf: 0.95 };
   } else {
-    meta.trestbps = { value: 120, extracted: false, conf: 0.0 };
+    meta.trestbps = { value: null, extracted: false, conf: 0.0 };
     missing.push('trestbps');
   }
 
@@ -1005,7 +948,7 @@ function parseClinicalDocumentText(text, filename) {
       }
     }
     if (!foundC) {
-      meta.chol = { value: 195, extracted: false, conf: 0.0 };
+      meta.chol = { value: null, extracted: false, conf: 0.0 };
       missing.push('chol');
     }
   }
@@ -1019,7 +962,7 @@ function parseClinicalDocumentText(text, filename) {
     if (mDm) {
       meta.fbs = { value: isClinicallyNegated(clean, clean.indexOf(mDm[0]), clean.indexOf(mDm[0]) + mDm[0].length) ? 0 : 1, extracted: true, conf: 0.95 };
     } else {
-      meta.fbs = { value: 0, extracted: false, conf: 0.0 };
+      meta.fbs = { value: null, extracted: false, conf: 0.0 };
       missing.push('fbs');
     }
   }
@@ -1040,7 +983,7 @@ function parseClinicalDocumentText(text, filename) {
   } else if ((mLvh && isClinicallyNegated(clean, clean.indexOf(mLvh[0]))) || (mStt && isClinicallyNegated(clean, clean.indexOf(mStt[0])))) {
     meta.restecg = { value: 0, extracted: true, conf: 0.95 };
   } else {
-    meta.restecg = { value: 0, extracted: false, conf: 0.0 };
+    meta.restecg = { value: null, extracted: false, conf: 0.0 };
     missing.push('restecg');
   }
 
@@ -1053,7 +996,7 @@ function parseClinicalDocumentText(text, filename) {
     if (mGenHr && !clean.slice(Math.max(0, mGenHr.index - 15), mGenHr.index).toLowerCase().includes('resting') && parseInt(mGenHr[1]) >= 60 && parseInt(mGenHr[1]) <= 210) {
       meta.thalach = { value: parseInt(mGenHr[1]), extracted: true, conf: 0.80 };
     } else {
-      meta.thalach = { value: 150, extracted: false, conf: 0.0 };
+      meta.thalach = { value: null, extracted: false, conf: 0.0 };
       missing.push('thalach');
     }
   }
@@ -1074,11 +1017,11 @@ function parseClinicalDocumentText(text, filename) {
         } else if (/exercise|treadmill|stress|bruce|exertion/i.test(clean)) {
           meta.exang = { value: 1, extracted: true, conf: 0.85 };
         } else {
-          meta.exang = { value: 0, extracted: false, conf: 0.0 };
+          meta.exang = { value: null, extracted: false, conf: 0.0 };
           missing.push('exang');
         }
       } else {
-        meta.exang = { value: 0, extracted: false, conf: 0.0 };
+        meta.exang = { value: null, extracted: false, conf: 0.0 };
         missing.push('exang');
       }
     }
@@ -1091,9 +1034,9 @@ function parseClinicalDocumentText(text, filename) {
   } else {
     const mOldNum = clean.match(/\b(?:st\s+(?:segment\s+)?depression|oldpeak)[\s:=]+([+-]?[0-9]+(?:\.[0-9]+)?)\s*(?:mm)?\b/i);
     if (mOldNum) {
-      meta.oldpeak = { value: Math.min(6.0, Math.abs(parseFloat(mOldNum[1]))), extracted: true, conf: 0.98 };
+      meta.oldpeak = { value: Number(mOldNum[1]), extracted: true, conf: 0.98 };
     } else {
-      meta.oldpeak = { value: 0.0, extracted: false, conf: 0.0 };
+      meta.oldpeak = { value: null, extracted: false, conf: 0.0 };
       missing.push('oldpeak');
     }
   }
@@ -1114,7 +1057,7 @@ function parseClinicalDocumentText(text, filename) {
     } else if (mUp) {
       meta.slope = { value: 1, extracted: true, conf: 0.95 };
     } else {
-      meta.slope = { value: 1, extracted: false, conf: 0.0 };
+      meta.slope = { value: null, extracted: false, conf: 0.0 };
       missing.push('slope');
     }
   }
@@ -1137,7 +1080,7 @@ function parseClinicalDocumentText(text, filename) {
     } else if (mCaCnt) {
       meta.ca = { value: parseInt(mCaCnt[1]), extracted: true, conf: 0.95 };
     } else {
-      meta.ca = { value: 0, extracted: false, conf: 0.0 };
+      meta.ca = { value: null, extracted: false, conf: 0.0 };
       missing.push('ca');
     }
   }
@@ -1158,7 +1101,7 @@ function parseClinicalDocumentText(text, filename) {
     } else if (mNorm) {
       meta.thal = { value: 3, extracted: true, conf: 0.98 };
     } else {
-      meta.thal = { value: 3, extracted: false, conf: 0.0 };
+      meta.thal = { value: null, extracted: false, conf: 0.0 };
       missing.push('thal');
     }
   }
@@ -1342,6 +1285,10 @@ function switchCockpitView(viewName) {
   const targetEl = document.getElementById(targetId);
   if (targetEl) {
     targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else if (viewName === 'security' && typeof openComplianceModal === 'function') {
+    openComplianceModal('hipaa');
+  } else if (viewName === 'compliance' && typeof openComplianceModal === 'function') {
+    openComplianceModal('fda');
   }
 }
 window.switchCockpitView = switchCockpitView;
@@ -1443,36 +1390,14 @@ function toggleNavDrawer() {
 window.toggleNavDrawer = toggleNavDrawer;
 
 function applyVitalsToInterface(vitals, sourceLabel, meta = {}, missing = [], extractedCount = 13) {
-  if (vitals.age !== undefined && document.getElementById('inp-age')) document.getElementById('inp-age').value = vitals.age;
-  if (vitals.sex !== undefined && document.getElementById('inp-sex')) document.getElementById('inp-sex').value = vitals.sex;
-  if (vitals.trestbps !== undefined && document.getElementById('inp-trestbps')) document.getElementById('inp-trestbps').value = vitals.trestbps;
-  if (vitals.chol !== undefined && document.getElementById('inp-chol')) document.getElementById('inp-chol').value = vitals.chol;
-  if (vitals.thalach !== undefined && document.getElementById('inp-thalach')) document.getElementById('inp-thalach').value = vitals.thalach;
-  if (vitals.cp !== undefined && document.getElementById('inp-cp')) document.getElementById('inp-cp').value = vitals.cp;
-  if (vitals.exang !== undefined && document.getElementById('inp-exang')) document.getElementById('inp-exang').value = vitals.exang;
-  if (vitals.oldpeak !== undefined && document.getElementById('inp-oldpeak')) document.getElementById('inp-oldpeak').value = vitals.oldpeak;
-  if (vitals.slope !== undefined && document.getElementById('inp-slope')) document.getElementById('inp-slope').value = vitals.slope;
-  if (vitals.ca !== undefined && document.getElementById('inp-ca')) document.getElementById('inp-ca').value = vitals.ca;
-  if (vitals.thal !== undefined && document.getElementById('inp-thal')) document.getElementById('inp-thal').value = vitals.thal;
-  const fbsEl = document.getElementById('inp-fbs');
-  if (fbsEl && vitals.fbs !== undefined) fbsEl.value = vitals.fbs;
-  const restecgInputEl = document.getElementById('inp-restecg');
-  if (restecgInputEl && vitals.restecg !== undefined) {
-    restecgInputEl.value = vitals.restecg;
+  for (const key of Object.keys(ResearchScore.limits)) {
+    const field = document.getElementById('inp-' + key);
+    if (field) field.value = missing.includes(key) || !ResearchScore.valid(key,vitals[key]) ? '' : vitals[key];
   }
-
-  // Update extracted card
+  pendingImport = Object.keys(meta).length > 0;
+  const confirm = document.getElementById('confirm-import');
+  if (confirm) confirm.hidden = !pendingImport;
   renderExtractedValuesCard(vitals, sourceLabel, meta, missing, extractedCount);
-
-  // Clinical Guardrail: If extractedCount < 3, suspend automated prediction
-  if (extractedCount < 3) {
-    const riskValueEl = document.getElementById('portal-risk-value');
-    if (riskValueEl) {
-      riskValueEl.innerText = 'Suspended (Guardrail Active)';
-      riskValueEl.style.color = '#EF4444';
-    }
-    return;
-  }
 
   // Update prediction & 3D visualization
   updatePortalPrediction();
@@ -1521,11 +1446,11 @@ function renderExtractedValuesCard(v, sourceText, meta = {}, missing = [], extra
     const m = meta[item.key] || { extracted: true, conf: 0.98 };
     const confBadge = m.extracted
       ? `<span style="color:#059669; font-weight:700;">${Math.round(m.conf * 100)}% Conf</span>`
-      : `<span style="color:#D97706; font-style:italic;">Imputed Baseline</span>`;
+      : `<span style="color:#D97706; font-style:italic;">Missing</span>`;
     return `
       <div class="extracted-item ${m.extracted ? '' : 'extracted-imputed'}">
         <div class="extracted-label">${item.label}</div>
-        <div class="extracted-value">${item.val}</div>
+        <div class="extracted-value">${m.extracted ? item.val : 'Unknown'}</div>
         <div class="confidence-indicator">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           ${confBadge}
@@ -1539,50 +1464,41 @@ function renderExtractedValuesCard(v, sourceText, meta = {}, missing = [], extra
  * Calibrated Cleveland Clinic Logistic Regression Model Inference
  */
 function updatePortalPrediction() {
-  const age = parseFloat(document.getElementById('inp-age')?.value || 54);
-  const sex = parseFloat(document.getElementById('inp-sex')?.value || 1);
-  const trestbps = parseFloat(document.getElementById('inp-trestbps')?.value || 130);
-  const chol = parseFloat(document.getElementById('inp-chol')?.value || 240);
-  const thalach = parseFloat(document.getElementById('inp-thalach')?.value || 150);
-  const cp = parseFloat(document.getElementById('inp-cp')?.value || 4);
-  const exang = parseFloat(document.getElementById('inp-exang')?.value || 0);
-  const oldpeak = parseFloat(document.getElementById('inp-oldpeak')?.value || 1.2);
-  const slope = parseFloat(document.getElementById('inp-slope')?.value || 2);
-  const ca = parseFloat(document.getElementById('inp-ca')?.value);
-  const thal = parseFloat(document.getElementById('inp-thal')?.value);
-  const fbs = parseFloat(document.getElementById('inp-fbs')?.value || 0);
-  const restecgEl = document.getElementById('inp-restecg');
-  const restecg = parseFloat(
-    restecgEl?.value ||
-    (typeof clinicalCaseActive !== 'undefined' && CLINICAL_CASES[clinicalCaseActive]?.vitals?.restecg !== undefined
-      ? CLINICAL_CASES[clinicalCaseActive].vitals.restecg
-      : 0)
-  );
-
+  const patient = {};
+  for (const key of Object.keys(ResearchScore.limits)) {
+    patient[key] = parseFloat(document.getElementById('inp-' + key)?.value);
+  }
+  const {age,sex,trestbps,chol,thalach,cp,exang,oldpeak,slope,ca,thal,fbs,restecg} = patient;
+  const prob = pendingImport ? NaN : predictClinicalRisk(patient);
   // Update Badge Labels
   const valAge = document.getElementById('val-age');
-  if (valAge) valAge.innerText = `${age} yrs`;
+  if (valAge) valAge.innerText = Number.isFinite(age) ? `${age} yrs` : 'Unknown';
   const valBp = document.getElementById('val-trestbps');
-  if (valBp) valBp.innerText = `${trestbps} mmHg`;
+  if (valBp) valBp.innerText = Number.isFinite(trestbps) ? `${trestbps} mmHg` : 'Unknown';
   const valChol = document.getElementById('val-chol');
-  if (valChol) valChol.innerText = `${chol} mg/dl`;
+  if (valChol) valChol.innerText = Number.isFinite(chol) ? `${chol} mg/dl` : 'Unknown';
   const valHr = document.getElementById('val-thalach');
-  if (valHr) valHr.innerText = `${thalach} BPM`;
+  if (valHr) valHr.innerText = Number.isFinite(thalach) ? `${thalach} BPM` : 'Unknown';
   const valOp = document.getElementById('val-oldpeak');
-  if (valOp) valOp.innerText = `${oldpeak.toFixed(1)} mm`;
+  if (valOp) valOp.innerText = Number.isFinite(oldpeak) ? `${oldpeak.toFixed(1)} mm` : 'Unknown';
 
-  if (Number.isNaN(ca) || Number.isNaN(thal)) {
-    const rv = document.getElementById('portal-risk-value');
-    if (rv) { rv.innerText = 'Incomplete'; rv.style.color = '#94A3B8'; }
+  if (!Number.isFinite(prob)) {
+    pTargetRisk = NaN;
+    for (const id of ['portal-risk-value','portal-radial-gauge-band','portal-radial-gauge-pct','portal-ffr-val','portal-cockpit-ffr-val','portal-stenosis-val','portal-bpm-display','portal-ecg-meta','portal-ecg-strip-bpm','portal-pulse-pressure','portal-rpp-val']) {
+      const el = document.getElementById(id); if (el) el.textContent = '—';
+    }
+    const circle = document.getElementById('portal-radial-gauge-circle');
+    if (circle) circle.style.strokeDashoffset = 364.425;
+    const bar = document.getElementById('portal-cockpit-rec-bar');
+    if (bar) bar.style.width = '0%';
+    const attribution = document.getElementById('portal-attribution-bars');
+    if (attribution) attribution.replaceChildren();
+    const blurb = document.getElementById('portal-risk-blurb');
+    if (blurb) blurb.textContent = '';
     const rec = document.getElementById('portal-cockpit-recommendation');
-    if (rec) rec.textContent = 'This model needs the fluoroscopy vessel count and the thallium result. Select both to see an estimate. If they are not available, this model cannot be used for the patient.';
-    const rb = document.getElementById('portal-risk-blurb');
-    if (rb) rb.textContent = '';
+    if (rec) rec.textContent = pendingImport ? 'Check imported values and confirm them before scoring.' : 'A loaded model and all 13 valid measurements are required.';
     return;
   }
-  const patient = { age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal };
-  const prob = predictClinicalRisk(patient);
-
   pTargetRisk = prob;
   pBPM = thalach;
   ecgST = -oldpeak;
@@ -1974,6 +1890,7 @@ function updateLesionCalloutPosition() {
   // Check if position is facing the camera
   if (_pScreenPos.z > 1.0) {
     callout.style.opacity = '0';
+    callout.style.visibility = 'hidden';
     callout.style.pointerEvents = 'none';
     return;
   }
@@ -1982,9 +1899,12 @@ function updateLesionCalloutPosition() {
   const width = rect.width || container.clientWidth || 400;
   const height = rect.height || container.clientHeight || 400;
 
-  const x = Math.round((_pScreenPos.x * 0.5 + 0.5) * width);
-  const y = Math.round((-_pScreenPos.y * 0.5 + 0.5) * height);
+  const rawX = Math.round((_pScreenPos.x * 0.5 + 0.5) * width);
+  const rawY = Math.round((-_pScreenPos.y * 0.5 + 0.5) * height);
+  const x = Math.min(Math.max(rawX, 24), Math.max(24, width - 190));
+  const y = Math.min(Math.max(rawY, 28), Math.max(28, height - 28));
 
+  callout.style.visibility = 'visible';
   callout.style.opacity = '1';
   callout.style.left = `${x}px`;
   callout.style.top = `${y}px`;
@@ -3380,7 +3300,7 @@ function exportDiagnosticSummaryReport() {
   const modal = document.getElementById('app-report-modal');
   const container = document.getElementById('report-modal-content');
   if (!modal || !container) return;
-  if (!document.getElementById('inp-ca').value || !document.getElementById('inp-thal').value) { showToast('Select the vessel count and thallium result first.'); return; }
+  if (!Number.isFinite(pTargetRisk)) { showToast('Complete and confirm the measurements first.'); return; }
 
   const age = document.getElementById('inp-age').value;
   const sex = document.getElementById('inp-sex').value === '1' ? 'Male' : 'Female';
@@ -3406,7 +3326,7 @@ function exportDiagnosticSummaryReport() {
         <h4 style="font-size:0.875rem; color:var(--color-text-headline); font-weight:700; margin-bottom:6px;">
           Patient Biomarkers & Hemodynamic Parameters
         </h4>
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; font-size:0.8125rem;">
+        <div class="report-params-grid">
           <div><strong>Demographics:</strong> ${age} yrs, ${sex}</div>
           <div><strong>Resting BP:</strong> ${trestbps} mmHg</div>
           <div><strong>Cholesterol:</strong> ${chol} mg/dL</div>
@@ -3432,9 +3352,9 @@ function exportDiagnosticSummaryReport() {
         <strong>Research prototype. Not for clinical use.</strong> Not a medical device and not reviewed by any regulator. It does not replace examination, testing or the judgment of a licensed clinician.
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px dashed rgba(255, 255, 255, 0.15); padding-top:14px; font-size:0.75rem;">
+      <div class="report-signoff-row">
         <div>
-          <div><strong>Attending Reviewer:</strong> _________________________________</div>
+          <div><strong>Attending Reviewer:</strong> _________________________</div>
           <div style="color:var(--color-text-muted); margin-top:2px;">MD / Interventional Cardiologist Sign-Off</div>
         </div>
         <div style="font-family:var(--font-mono); color:var(--color-text-muted);">
@@ -3705,7 +3625,7 @@ function syncMobileDataWithActivePatient() {
   const st = document.getElementById('inp-oldpeak')?.value || '1.2';
   const ca = document.getElementById('inp-ca')?.value || '2';
   const ffr = typeof pFFR !== 'undefined' ? pFFR.toFixed(2) : '0.48';
-  const risk = typeof pTargetRisk !== 'undefined' ? (pTargetRisk * 100).toFixed(1) + '%' : '94.8%';
+  const risk = Number.isFinite(pTargetRisk) ? (pTargetRisk * 100).toFixed(1) + '%' : 'Unavailable';
 
   if (hrEl) hrEl.innerText = hr;
   if (ffrEl) ffrEl.innerText = ffr;

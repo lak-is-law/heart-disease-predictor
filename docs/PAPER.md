@@ -97,7 +97,7 @@ predictors (smoking, diabetes status, family history, BMI, lipid panel).
 
 ## 6. Limitations
 
-1. One hospital, 1980s, referred patients: no external validation, unknown transport to other populations,
+1. One hospital, 1980s, referred patients: external complete-case coverage of 2/617 for the shipped model, unknown transport to current populations,
    ethnicities or to current practice. Prevalence is 46%, so probabilities overstate risk in screening populations.
 2. The outcome is angiographic disease, not heart attack or death, and not a treatment decision.
 3. The reference policy is the full model, not a clinician. Tests are assumed available when escalated; their cost

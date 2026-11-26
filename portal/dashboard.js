@@ -8,25 +8,47 @@
     login: 'Signed in', logout: 'Signed out', login_failed: 'Failed sign-in attempt', assessment_saved: 'Saved an assessment',
     assessment_deleted: 'Deleted an assessment', assessments_erased: 'Erased all assessments', password_changed: 'Changed password',
     signout_all: 'Signed out everywhere', download: 'Downloaded the app', user_created: 'Created an account', user_disabled: 'Disabled an account',
-    user_enabled: 'Enabled an account', user_role_changed: 'Changed a role', signup: 'Created the account', oauth_login: 'Signed in with a provider', review_saved: 'Saved a review', user_password_reset: 'Reset a password'
+    user_enabled: 'Enabled an account', user_role_changed: 'Changed a role', signup: 'Created the account', oauth_login: 'Signed in with a provider', review_saved: 'Saved a review', user_password_reset: 'Reset a password',
+    profile_updated: 'Updated profile', onboarding_completed: 'Completed onboarding', onboarding_skipped: 'Skipped onboarding',
+    account_delete_requested: 'Requested account deletion', account_deleted: 'Deleted account'
   };
   var items = [];
+  var currentProfile = null;
+  var deleteToken = '';
   var shown = 15;
   var $ = function (id) { return document.getElementById(id); };
 
   function state() { return window.csState ? window.csState() : (window.CS ? { user: window.CS.user, csrf: window.CS.csrf } : { user: null, csrf: '' }); }
 
-  async function api(method, path, body) {
-    var r = await fetch(path, {
-      method: method, credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': state().csrf },
-      body: body ? JSON.stringify(body) : undefined
-    });
+  async function api(method, path, body, headers) {
+    var requestState = state(), controller = new AbortController();
+    var timeout = setTimeout(function () { controller.abort(); }, 15000);
+    var r;
+    try {
+      r = await fetch(path, {
+        method: method, credentials: 'same-origin', signal: controller.signal,
+        headers: Object.assign({ 'Content-Type': 'application/json', 'X-CSRF-Token': requestState.csrf }, headers || {}),
+        body: body ? JSON.stringify(body) : undefined
+      });
+    } finally { clearTimeout(timeout); }
+
     var j = await r.json().catch(function () { return {}; });
-    if (r.status === 401) { if (window.csSessionLost) window.csSessionLost(); else if ($('dash-hero')) location.replace('/signin?next=/dashboard'); }
-    if (!r.ok) { var e = new Error(j.error || 'Something went wrong. Try again.'); e.status = r.status; throw e; }
+    if (r.status === 401 && requestState.csrf === state().csrf) { if (window.csSessionLost) window.csSessionLost(); else if ($('dash-hero')) location.replace('/signin?next=/dashboard'); }
+    if (!r.ok) { var e = new Error(j.error || 'Something went wrong. Try again.'); e.status = r.status; e.retryAfter = (Number(r.headers.get('Retry-After')) || 0) * 1000; throw e; }
     return j;
   }
+
+  var sync = window.CSSync.create({
+    request: api,
+    identity: function () { var s = state(); return s.user ? s.user.email + '|' + s.csrf : ''; },
+    onChange: function (next) { items = next; render(); },
+    onStatus: function (text, pending) {
+      if ($('cloud-sync-status')) $('cloud-sync-status').textContent = text;
+      if ($('cloud-retry')) $('cloud-retry').hidden = !pending;
+      if ($('cloud-discard')) $('cloud-discard').hidden = !pending;
+    }
+  });
+  var syncPaused = false;
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -72,10 +94,10 @@
     try {
       var body = readCockpit();
       var ref = $('dash-ref');
-      body.label = ref ? ref.value.trim() : (window.csAskRef ? window.csAskRef() : '');
+      body.label = ref ? ref.value.trim() : '';
       if (btn) btn.disabled = true;
-      var j = await api('POST', '/api/assessments', body);
-      items.unshift(j.item);
+      var j = await sync.save(body);
+      if (!j || !j.item) { say('This assessment was already deleted on another device.'); return; }
       if (ref) ref.value = '';
       render();
       say('Saved. Risk ' + pct(j.item.risk) + ', ' + label(j.item.risk).toLowerCase() + ' estimate.');
@@ -178,12 +200,15 @@
     $('dash-export').disabled = items.length === 0;
     items.slice(0, shown).forEach(function (a) {
       var tr = el('tr');
-      tr.appendChild(el('td', 'hx-ref', a.label || 'Untitled'));
-      tr.appendChild(el('td', '', when(a.createdAt)));
-      tr.appendChild(el('td', '', a.inputs.age + ', ' + (a.inputs.sex === 1 ? 'male' : 'female')));
-      tr.appendChild(el('td', 'hx-num', pct(a.risk)));
-      var b = el('td'); b.appendChild(el('span', 'hx-chip ' + band(a.risk).toLowerCase(), label(a.risk))); tr.appendChild(b);
-      var act = el('td', 'hx-actions-cell');
+      var cells = [
+        ['Reference', 'hx-ref', a.label || 'Untitled'],
+        ['Saved', '', when(a.createdAt)],
+        ['Age, sex', '', a.inputs.age + ', ' + (a.inputs.sex === 1 ? 'male' : 'female')],
+        ['Risk', 'hx-num', pct(a.risk)]
+      ];
+      cells.forEach(function (c) { var td = el('td', c[1], c[2]); td.setAttribute('data-label', c[0]); tr.appendChild(td); });
+      var b = el('td'); b.setAttribute('data-label', 'Band'); b.appendChild(el('span', 'hx-chip ' + band(a.risk).toLowerCase(), label(a.risk))); tr.appendChild(b);
+      var act = el('td', 'hx-actions-cell'); act.setAttribute('data-label', 'Actions');
       var open = el('button', 'hx-linkbtn', 'Open'); open.type = 'button';
       open.setAttribute('aria-label', 'Open ' + (a.label || 'assessment') + ' in the workstation');
       open.addEventListener('click', function () { openInWorkstation(a); });
@@ -197,17 +222,20 @@
   }
 
   function render() {
+    if (!$('dash-sub')) return;
     var u = state().user;
     $('dash-sub').textContent = items.length
       ? items.length + ' saved ' + (items.length === 1 ? 'assessment' : 'assessments') + '. Stored encrypted. Use synthetic or de-identified data only.'
       : 'Your saved assessments appear here. Stored encrypted. Use synthetic or de-identified data only.';
     renderStats(); renderTrend(); renderBands(); renderTable(); renderHero();
     var line = $('acct-line');
-    if (u && line) line.textContent = u.email + (u.name ? ', ' + u.name : '') + ', ' + (u.role === 'admin' ? 'admin' : 'clinician');
+    if (u && line) line.textContent = u.email + (u.name ? ', ' + u.name : '') + ', ' + u.role;
   }
 
   function firstName(u) {
-    var n = (u.name || '').trim().split(/\s+/)[0];
+    var tokens = (u.name || '').trim().split(/\s+/).filter(Boolean);
+    var n = tokens[0] || '';
+    if (/^(dr|prof|mr|mrs|ms)\.?$/i.test(n) && tokens[1]) n = tokens[0] + ' ' + tokens[1];
     if (!n) n = String(u.email || '').split('@')[0].replace(/[._\-+0-9]+/g, ' ').trim().split(' ')[0];
     return n ? n.charAt(0).toUpperCase() + n.slice(1) : 'there';
   }
@@ -216,6 +244,14 @@
     if (!u || !hi) return;
     var nm = firstName(u);
     hi.textContent = 'Hi, ' + nm;
+    var rl = $('dash-role-line');
+    if (rl) {
+      var partsRole = currentProfile ? [currentProfile.headline || currentProfile.roleType, currentProfile.organization, currentProfile.country].filter(Boolean) : [];
+      rl.textContent = partsRole.join(' \u00b7 ');
+      rl.hidden = !partsRole.length;
+    }
+    var obBanner = $('dash-onboard-banner');
+    if (obBanner) obBanner.hidden = Boolean(u.onboarded);
     var parts = (u.name || nm).trim().split(/\s+/);
     $('dash-avatar').textContent = ((parts[0] || '?').charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : '')).toUpperCase();
     var intro = $('dash-intro'), n = items.length;
@@ -235,8 +271,7 @@
   function remove(a, btn) {
     armed(btn, 'Confirm delete', async function () {
       try {
-        await api('DELETE', '/api/assessments?id=' + encodeURIComponent(a.id));
-        items = items.filter(function (x) { return x.id !== a.id; });
+        await sync.remove(a);
         render(); say('Deleted.');
       } catch (e) { say(e.message, true); }
     });
@@ -258,10 +293,66 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   }
 
-  // ------------------------------------------------------------ account
+  // ------------------------------------------------------------ account & profile
+  function fillProfileForm(prof, u) {
+    if (!$('profile-form')) return;
+    var p = prof || {};
+    $('prof-name').value = (p.name !== undefined ? p.name : (u && u.name)) || '';
+    $('prof-headline').value = p.headline || '';
+    $('prof-role').value = p.roleType || '';
+    $('prof-exp').value = p.experience || '';
+    $('prof-org').value = p.organization || '';
+    $('prof-country').value = p.country || '';
+    $('prof-ref').value = p.referralSource || '';
+    $('prof-ref-detail').value = p.referralDetail || '';
+    var chosen = Array.isArray(p.useCase) ? p.useCase : [];
+    var cbs = $('prof-goals') ? $('prof-goals').querySelectorAll('input[type="checkbox"]') : [];
+    for (var i = 0; i < cbs.length; i++) cbs[i].checked = chosen.indexOf(cbs[i].value) >= 0;
+  }
+
+  async function saveProfile(ev) {
+    ev.preventDefault();
+    var msg = $('prof-msg'), btn = $('prof-save');
+    msg.className = 'hx-msg'; msg.textContent = '';
+    var goals = [];
+    var cbs = $('prof-goals') ? $('prof-goals').querySelectorAll('input[type="checkbox"]:checked') : [];
+    for (var i = 0; i < cbs.length; i++) goals.push(cbs[i].value);
+    btn.disabled = true;
+    try {
+      var j = await api('POST', '/api/account', {
+        action: 'profile',
+        name: $('prof-name').value,
+        headline: $('prof-headline').value,
+        roleType: $('prof-role').value,
+        experience: $('prof-exp').value,
+        organization: $('prof-org').value,
+        country: $('prof-country').value,
+        useCase: goals,
+        referralSource: $('prof-ref').value,
+        referralDetail: $('prof-ref-detail').value
+      });
+      currentProfile = j.profile || currentProfile;
+      if (j.user && window.CS && window.CS.setUser) window.CS.setUser(j.user);
+      render();
+      loadAccount();
+      loadAdmin();
+      msg.textContent = 'Profile saved.';
+      if (window.showToast) showToast('Profile saved');
+    } catch (e) {
+      msg.className = 'hx-msg is-bad';
+      msg.textContent = e.message;
+    } finally { btn.disabled = false; }
+  }
+
   async function loadAccount() {
     try {
       var j = await api('GET', '/api/account');
+      currentProfile = j.profile || null;
+      if (j.user && window.CS && window.CS.setUser) window.CS.setUser(j.user);
+      fillProfileForm(j.profile, j.user);
+      renderHero();
+      var line = $('acct-line');
+      if (j.user && line) line.textContent = j.user.email + (j.user.name ? ', ' + j.user.name : '') + ', ' + j.user.role;
       var ul = $('acct-activity'); clear(ul);
       if (!j.activity.length) ul.appendChild(el('li', 'hx-empty', 'No activity yet.'));
       j.activity.slice(0, 12).forEach(function (r) {
@@ -297,7 +388,86 @@
   }
 
   async function erase() {
-    try { await api('DELETE', '/api/assessments?all=1'); items = []; render(); say('All assessments erased.'); } catch (e) { say(e.message, true); }
+    try { await sync.erase(); items = []; render(); say('All assessments erased.'); } catch (e) { say(e.message, true); }
+  }
+
+  function showDeleteStep2(message, codeText) {
+    var box = $('del-code-banner'), step2 = $('del-step-2');
+    if (!box || !step2) return;
+    clear(box);
+    box.appendChild(el('span', '', message + ' '));
+    if (codeText) {
+      box.appendChild(el('code', '', codeText));
+    }
+    step2.hidden = false;
+  }
+
+  async function requestDeleteAccount(ev) {
+    ev.preventDefault();
+    var msg = $('del-msg'), btn = $('del-request-btn');
+    msg.className = 'hx-msg'; msg.textContent = '';
+    var email = ($('del-email').value || '').trim();
+    var phrase = ($('del-phrase').value || '').trim();
+    if (!email || phrase.toUpperCase() !== 'CONFIRM') {
+      msg.className = 'hx-msg is-bad';
+      msg.textContent = 'Enter your exact email address and type CONFIRM.';
+      return;
+    }
+    btn.disabled = true;
+    try {
+      var j = await api('POST', '/api/account', { action: 'delete-request', email: email, phrase: phrase });
+      deleteToken = '';
+      if (j.emailed) {
+        showDeleteStep2('We sent a confirmation email to ' + email + '. Enter the 6-character code from the email and type YES below.');
+      } else {
+        showDeleteStep2('Email delivery is not configured on this server. Enter this one-time code and type YES below:', j.confirmationCode || '');
+      }
+      if ($('del-code')) $('del-code').focus();
+    } catch (e) {
+      msg.className = 'hx-msg is-bad';
+      msg.textContent = e.message;
+    } finally { btn.disabled = false; }
+  }
+
+  async function confirmDeleteAccount(ev) {
+    ev.preventDefault();
+    var msg = $('del-msg'), btn = $('del-confirm-btn');
+    msg.className = 'hx-msg'; msg.textContent = '';
+    var email = ($('del-email').value || '').trim();
+    var phrase = ($('del-phrase').value || '').trim();
+    var code = ($('del-code').value || '').trim();
+    var yes = ($('del-yes').value || '').trim();
+    if (!email || phrase.toUpperCase() !== 'CONFIRM') {
+      msg.className = 'hx-msg is-bad';
+      msg.textContent = 'Enter your account email and type CONFIRM above.';
+      return;
+    }
+    if (!code && !deleteToken) {
+      msg.className = 'hx-msg is-bad';
+      msg.textContent = 'Enter the confirmation code from your email.';
+      return;
+    }
+    if (yes.toUpperCase() !== 'YES') {
+      msg.className = 'hx-msg is-bad';
+      msg.textContent = 'Type YES to permanently delete your account.';
+      return;
+    }
+    btn.disabled = true;
+    try {
+      await api('POST', '/api/account', {
+        action: 'delete-account',
+        email: email,
+        phrase: phrase,
+        code: code,
+        token: deleteToken,
+        yes: yes
+      });
+      location.replace('/?deleted=1');
+    } catch (e) {
+      msg.className = 'hx-msg is-bad';
+      msg.textContent = e.message;
+      btn.disabled = false;
+    }
   }
 
   // ------------------------------------------------------------ admin
@@ -308,13 +478,23 @@
     if (panel.hidden) return;
     try {
       var j = await api('GET', '/api/admin');
+      var refEl = $('admin-referrals');
+      if (refEl) {
+        var entries = Object.entries(j.referralCounts || {}).sort(function (a, b) { return b[1] - a[1]; });
+        refEl.textContent = entries.length
+          ? 'How people heard about us: ' + entries.map(function (e) { return e[0] + ' (' + e[1] + ')'; }).join(' \u00b7 ')
+          : '';
+        refEl.hidden = !entries.length;
+      }
       var body = $('admin-rows'); clear(body);
       j.users.forEach(function (p) {
         var tr = el('tr');
-        tr.appendChild(el('td', '', p.email + (p.name ? ' (' + p.name + ')' : '')));
-        tr.appendChild(el('td', '', p.role));
-        var st = el('td'); st.appendChild(el('span', 'hx-chip ' + (p.disabled ? 'high' : 'low'), p.disabled ? 'Disabled' : 'Active')); tr.appendChild(st);
-        var act = el('td', 'hx-actions-cell');
+        var em = el('td', 'hx-ref', p.email + (p.name ? ' (' + p.name + ')' : '')); em.setAttribute('data-label', 'Email'); tr.appendChild(em);
+        var rl = el('td', '', p.role); rl.setAttribute('data-label', 'Role'); tr.appendChild(rl);
+        var prText = [p.roleType, p.referralSource].filter(Boolean).join(' \u00b7 ') || (p.onboarded ? 'Onboarded' : 'Not onboarded');
+        var pr = el('td', '', prText); pr.setAttribute('data-label', 'Profile'); tr.appendChild(pr);
+        var st = el('td'); st.setAttribute('data-label', 'Status'); st.appendChild(el('span', 'hx-chip ' + (p.disabled ? 'high' : 'low'), p.disabled ? 'Disabled' : 'Active')); tr.appendChild(st);
+        var act = el('td', 'hx-actions-cell'); act.setAttribute('data-label', 'Actions');
         if (p.email !== state().user.email) {
           var tog = el('button', 'hx-linkbtn', p.disabled ? 'Enable' : 'Disable'); tog.type = 'button';
           tog.addEventListener('click', async function () { try { await api('POST', '/api/admin', { action: p.disabled ? 'enable' : 'disable', email: p.email }); loadAdmin(); } catch (e) { say(e.message, true); } });
@@ -376,14 +556,14 @@
   // ------------------------------------------------------------ session hooks
   async function refresh() {
     var u = state().user, sec = $('dashboard'), av = $('dock-avatar');
+    if (!u) sync.reset();
     if (!u && !sec) return;
     if (av) av.textContent = u ? (u.name || u.email).trim().slice(0, 1).toUpperCase() : 'In';
-    if (!sec) { if (u) { try { items = (await api('GET', '/api/assessments')).items || []; } catch (e) { items = []; } } return; }
+    if (!sec) { if (u) { try { await sync.refresh(); } catch (e) { say(e.message, true); } } return; }
     if (!u) { items = []; if ($('dash-hero')) return; sec.hidden = true; return; }
     try {
-      var j = await api('GET', '/api/assessments');
-      items = j.items || [];
-    } catch (e) { items = []; say(e.message, true); }
+      await sync.refresh();
+    } catch (e) { say(e.message, true); }
     render(); loadAccount(); loadAdmin();
   }
 
@@ -396,19 +576,65 @@
   function init() {
     var on = function (id, ev, fn) { var n = $(id); if (n) n.addEventListener(ev, fn); };
     on('dash-save', 'click', saveCurrent);
+    on('cloud-refresh', 'click', function () { sync.refresh().catch(function (e) { say(e.message, true); }); });
+    on('cloud-retry', 'click', function () { sync.retry(false).catch(function (e) { say(e.message, true); }); });
+    on('cloud-discard', 'click', function () { if (window.confirm('Discard the pending save from this tab? If the server already received it, it may still be in your cloud account.')) sync.discard(); });
+    on('cloud-pause', 'click', function (e) {
+      syncPaused = !syncPaused;
+      e.currentTarget.textContent = syncPaused ? 'Resume automatic sync' : 'Pause automatic sync';
+      e.currentTarget.setAttribute('aria-pressed', String(syncPaused));
+      sync.announce(syncPaused ? 'Automatic sync paused in this tab. Existing cloud copies remain. Manual save and refresh are available.' : 'Automatic sync resumed.');
+    });
+    var polling = false;
+    function tick() {
+      if (!polling && !syncPaused && state().user && !document.hidden) {
+        polling = true;
+        sync.retry(true).then(function () { return sync.refresh(); }).catch(function () {}).finally(function () { polling = false; });
+      }
+    }
+    setInterval(tick, 5000);
+    window.addEventListener('online', tick);
+    document.addEventListener('visibilitychange', tick);
+    document.addEventListener('cs:session', function () { sync.snapshot(); if (state().user) tick(); });
+    window.addEventListener('beforeunload', function (e) { if (sync.hasPending()) { e.preventDefault(); e.returnValue = ''; } });
     on('dash-export', 'click', exportCsv);
     on('dash-more', 'click', function () { shown += 15; renderTable(); });
     on('dash-erase', 'click', function (e) { armed(e.currentTarget, 'Click again to erase everything', erase); });
     on('pw-form', 'submit', changePassword);
+    on('profile-form', 'submit', saveProfile);
+    on('dash-start-onboard', 'click', function () { if (window.CSOnboard) CSOnboard.open({ prefill: currentProfile || undefined }); });
+    on('prof-rerun-onboard', 'click', function () { if (window.CSOnboard) CSOnboard.open({ prefill: currentProfile || undefined }); });
+    on('dash-tour-btn', 'click', function () { if (window.CSTutorial) CSTutorial.start(); });
+    on('delete-req-form', 'submit', requestDeleteAccount);
+    on('delete-confirm-form', 'submit', confirmDeleteAccount);
+    on('del-cancel-btn', 'click', function () {
+      deleteToken = '';
+      if ($('del-step-2')) $('del-step-2').hidden = true;
+      if ($('del-msg')) $('del-msg').textContent = '';
+    });
     on('signout-all', 'click', signOutEverywhere);
     on('user-form', 'submit', createUser);
+    var q = new URLSearchParams(location.search);
     if ($('dash-hero') && window.CS && CS.ready) {
       CS.ready.then(function () {
-        if (!CS.user) { location.replace('/signin?next=/dashboard'); return; }
-        refresh().then(function () { $('dashboard').hidden = false; if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); } });
+        if (!CS.user) { location.replace('/signin?next=' + encodeURIComponent(location.pathname + location.search)); return; }
+        refresh().then(function () {
+          $('dashboard').hidden = false;
+          var dt = q.get('delete_token');
+          if (dt) {
+            deleteToken = dt;
+            if ($('del-email') && CS.user.email) $('del-email').value = CS.user.email;
+            if ($('del-code') && $('del-code').parentElement) $('del-code').parentElement.hidden = true;
+            showDeleteStep2('Email confirmation link verified. Type CONFIRM above and YES below to permanently delete your account.');
+            var dp = $('dash-delete-panel');
+            if (dp) dp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else if (location.hash) {
+            var t = document.getElementById(location.hash.slice(1));
+            if (t) t.scrollIntoView();
+          }
+        });
       });
     }
-    var q = new URLSearchParams(location.search);
     if (q.get('signin') === '1' && !state().user && window.openAuthModal) setTimeout(openAuthModal, 400);
   }
 

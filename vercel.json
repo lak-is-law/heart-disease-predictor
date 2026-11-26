@@ -70,6 +70,10 @@
       "destination": "/api/session"
     },
     {
+      "source": "/api/pilot",
+      "destination": "/api/account?route=pilot"
+    },
+    {
       "source": "/api/oauth/:provider/callback",
       "destination": "/api/oauth?provider=:provider&step=callback"
     },
