@@ -113,6 +113,7 @@
       try { sessionStorage.setItem('cs-open', JSON.stringify(a.inputs)); } catch (e) { /* ignore */ }
       location.href = '/app'; return;
     }
+    if ($('sample-case')) $('sample-case').value = '';
     FIELDS.forEach(function (f) {
       var node = $('inp-' + f);
       if (node) node.value = String(a.inputs[f]);

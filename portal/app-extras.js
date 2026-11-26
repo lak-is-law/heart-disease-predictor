@@ -14,6 +14,8 @@
   var vals; try { vals = JSON.parse(raw); } catch (e) { return; }
   window.addEventListener('load', function () {
     setTimeout(function () {
+      const picker = document.getElementById('sample-case');
+      if (picker) picker.value = '';
       Object.keys(vals).forEach(function (k) { var n = document.getElementById('inp-' + k); if (n) n.value = String(vals[k]); });
       if (window.updatePortalPrediction) updatePortalPrediction();
       var ws = document.getElementById('live-workstation'); if (ws) ws.scrollIntoView({ behavior: 'smooth' });
